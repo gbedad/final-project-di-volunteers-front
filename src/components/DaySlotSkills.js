@@ -15,6 +15,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import Fade from '@mui/material/Fade';
 
 
 
@@ -25,7 +27,8 @@ const DaySlotSkill = () => {
     const [selectedStartTime, setSelectedStartTime] = useState(null);
     const [selectedEndTime, setSelectedEndTime] = useState(null);
     const [locale, setLocale] = useState('en')
-    const [dayTimeSlot, setDayTimeSlot] = useState([])
+    const [dayTimeSlot, setDayTimeSlot] = useState(null)
+    const [reload, setReload] = useState(false)
     
 
     console.log(location.state.userLogged.id);
@@ -81,47 +84,52 @@ const DaySlotSkill = () => {
     const parsedData = selectedItems.forEach((element)=> {
       JSON.stringify(element)
     });
-    console.log(parsedData)
+
     const handleDaysSubmit = async () => {
        const response = await axios.post(`/create-skill/${location.state.userLogged.id}`,{
           // headers: {
           //   "Content-Type": "application/json"
           // },
+          when_day_slot:selectedItems  
+      }  
+  ) 
+  if (response) {
+    setReload(true)
+  }
+      }
 
-          when_day_slot:selectedItems
-      }
-  )
-        
-        
-      }
 useEffect(() => {
-
   const getSkills =  async () => {
     const response = await axios.get(`/user-by-id/${location.state.userLogged.id}`)
     console.log("====>>>", response.data.skill)
     if (response.data.skill) {
       setDayTimeSlot(response.data.skill)
+      setReload(false)
     }
   }
   getSkills()
-}, [])
+}, [reload, selectedItems])
+
+
   return (
     <>
     <LocalizationProvider dateAdapter={AdapterDayjs} >
 
       <TimePicker
             label="Time From"
+            size="small"
             ampm={false}
             value={selectedStartTime}
             onChange={handleStartTimeChange}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField size='small' {...params} />}
           /> 
         <TimePicker
             label="Time To"
+            size='small'
             ampm={false}
             value={selectedEndTime}
             onChange={handleEndTimeChange}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField size='small' {...params} />}
           />  
       
       <List>
@@ -146,24 +154,31 @@ useEffect(() => {
       <Button onClick={handleDaysSubmit}>Submit</Button>
     </LocalizationProvider>
 
+    <Card sx={{ minWidth: 275, mt:6, p:4}}>
+                  <Typography variant="h5" component="div">
+                      My Days Slots
+                  </Typography>
 
-  {dayTimeSlot.length !== 0 ? 
-  <Card sx={{ minWidth: 275, mt:6, p:4}}>
-    <Typography variant="h5" component="div">
-         My Days Slots 
-    </Typography>
-    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-        {dayTimeSlot.when_day_slot.map((item, index) => (
-          <p>{JSON.parse(item).day} from {JSON.parse(item).startTime} to {JSON.parse(item).endTime}</p>
-        ))}
-    </Typography>
-  </Card> :
-  
-      <></>
-}
-
+                {!dayTimeSlot ?
+                  <Box sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                  </Box>
+                :
+                dayTimeSlot.when_day_slot.length !== 0 ? 
+ 
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      {dayTimeSlot.when_day_slot.map((item, index) => (
+                    <p>{JSON.parse(item).day} from {JSON.parse(item).startTime} to {JSON.parse(item).endTime}</p>
+                    ))}
+                  </Typography>
+                :
+               
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      You don't yet have inserted data.
+                  </Typography>
+                        }
+                </Card>
     </>
-  
 )}
 
 export default DaySlotSkill

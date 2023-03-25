@@ -3,11 +3,19 @@ import {useLocation} from 'react-router-dom';
 import axios from 'axios';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@mui/material';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import Fade from '@mui/material/Fade';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
 
 
 const TopicSkills = () => {
     const location = useLocation()
     const [selectedItems, setSelectedItems] = useState([]);
+    const [whichTopics, setWhichTopics] = useState(null)
+    const [reload, setReload] = useState(false)
 
 
     console.log(location.state.userLogged.id);
@@ -28,11 +36,25 @@ const TopicSkills = () => {
         console.log(selectedItems);
 
         const handleTopicsSubmit = async () => {
-            await axios.post(`/create-skill/${location.state.userLogged.id}`, 
+          const response =  await axios.post(`/create-skill/${location.state.userLogged.id}`, 
                 {topics: selectedItems}
             )
+            if (response) {
+              setReload(true)
+            }
           }
-          
+          useEffect(() => {
+            const getSkills =  async () => {
+              const response = await axios.get(`/user-by-id/${location.state.userLogged.id}`)
+              console.log("====>>>", response.data.skill)
+              if (response.data.skill) {
+                setWhichTopics(response.data.skill)
+                setReload(false)
+              }
+            }
+            getSkills()
+          }, [selectedItems, reload])
+
         return (
             <>  
               <List>
@@ -54,7 +76,33 @@ const TopicSkills = () => {
                   <div>{topic} </div>
                 </div>
               ))}
-              <button onClick={handleTopicsSubmit}>Submit</button>
+              <Button onClick={handleTopicsSubmit}>Submit</Button>
+              <Card sx={{ minWidth: 275, mt:6, p:4}}>
+                  <Typography variant="h5" component="div">
+                      My Topics
+                  </Typography>
+
+                {!whichTopics ?
+                  <Box sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                  </Box>
+                :
+                whichTopics.topics.length !== 0 ? 
+ 
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      {whichTopics.topics.map((item, index) => (
+                        <p>{item}</p>
+                      ))}
+                  </Typography>
+                :
+               
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                      You don't yet have inserted data.
+                  </Typography>
+                        }
+                </Card>
+            
+
             </>
           );
         };
