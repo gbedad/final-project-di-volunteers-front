@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack'
 
 
+
 // const cardsData = [
 //   {
 //     id: 1,
@@ -82,7 +83,7 @@ console.log(cardsData);
         {cardsData.map((card) => (
         <Card
             key={card.id}
-            // image={card.image}
+            image={card.image}
             id={card.id}
             title={card.title}
             description={card.description}

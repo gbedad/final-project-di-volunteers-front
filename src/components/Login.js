@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -20,7 +20,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        DI Final Project Gerald Berrebi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -33,47 +33,46 @@ const theme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate()
   const [userConnected, setUserConnected] = useState({})
-  // const [email, setEmail] = useState('');
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // const [phone, setPhone] = useState('');
-  // const [message, setMessage] = useState('');
-  // const [status, setStatus] = useState('');
-  // const [isActive, setIsactive] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-const response = await axios.post('/login', {email: data.get('email'), password: data.get('password')})
-const userLogged = response.data.user
-if (response.data.token) {
-  localStorage.setItem("user", JSON.stringify(response.data))
-}
-setUserConnected(userLogged)
-console.log(userLogged);
-if (userLogged.role === 'volunteer') {
-  navigate('/stepper', {state:{userLogged}})
-}
-else {
-  navigate('/view-users', {state:{userLogged}})
+        const response = await axios.post('/login', {email: data.get('email'), password: data.get('password')})
+        const userLogged = response.data.user
+        if (response.data.token) {
+          // localStorage.setItem("user", JSON.stringify(response.data))
+          setIsLoading(false)
+
+          setUserConnected(userLogged)
+
+          console.log(userLogged.role, isLoading);
+        if (userLogged.role === 'volunteer') {
+  
+          navigate('/stepper', {state:{userLogged}})
+        }
+        else if (userLogged.role === 'admin') {
+        
+          navigate('/view-users', {state:{userLogged}})
+        }
+        else {
+          console.log("Loading.....");
+          return <div>Loading...</div>;
+        }
+  
+  
+        
 }
 
-
-// setEmail(userConnected.email)
-// setFirstName(userConnected.first_name)
-// setLastName(userConnected.last_name)
-// setPhone(userConnected.phone)
-// setMessage(userConnected.message)
-// setStatus(userConnected.status)
 
     }
     catch (err) {
       console.log(err)
     }
   };
- 
+
 return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

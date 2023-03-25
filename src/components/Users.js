@@ -19,12 +19,18 @@ function preventDefault(event) {
 function createData(userid, first_name, last_name, email, mission, created_at, status) {
     return { userid, first_name, last_name, email, mission, created_at, status };
   }
-export default function Users() {
+export default function Users(props) {
+
+  console.log(props.data)
   const navigate = useNavigate()
   const location = useLocation()
 
-    const [users, setUsers] = useState([])
+  const users = props.data
+    // const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null);
+    const [dataActive, setDataActive] = useState([]);
+    const [activeUsers, setActiveUsers] = useState(null)
+    const [countUsersByStatus, setCountUsersByStatus] = useState({})
   
     console.log("location====>>>", location);
 // Generate Order Data
@@ -34,20 +40,38 @@ const handleRowClick = (userId) => {
 };
 console.log(selectedUser);
 
-    const fetchUserList = async () => {
-        try {
-          const response = await axios.post('/all-users');
-          console.log(response)
-          setUsers(response.data)
-        //   return response.data;
-        } catch (error) {
-          console.error(error);
-        }
+console.log(users);
+
+// useEffect(() => {
+//     const fetchUserList = async () => {
+//         try {
+//           const response = await axios.post('/all-users');
+//           console.log(response)
+
+          
+//           const filteredData = response.data.filter(item => item.is_active === true);
+//           const rowCounts = response.data.reduce((acc, item) => {
+//             const { status } = item;
+//             acc[status] = (acc[status] || 0) + 1;
+//             return acc;
+//           }, {});
+//           setUsers(response.data)
+//           setDataActive(filteredData);
+//           setActiveUsers(filteredData.length);
+//           setCountUsersByStatus(rowCounts)
+
+//         //   return response.data;
+//         } catch (error) {
+//           console.error(error);
+//         }
       
-      };
-      useEffect(() => {
-        fetchUserList()
-      }, [])
+//       };
+     
+//         fetchUserList()
+//       }, [])
+
+//     console.log("Active Users", activeUsers)
+//     console.log("By Status", countUsersByStatus)
    
     console.log(users);
 

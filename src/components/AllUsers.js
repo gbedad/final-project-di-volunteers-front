@@ -1,4 +1,5 @@
-import * as React from 'react';
+import  React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import {useLocation} from 'react-router-dom'
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,7 +20,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './ListItems';
-import Users from './Users'
+import Users from './Users';
+import ActiveUsers from './ActiveUsers';
+import UsersByStatusGrid from './UsersByStatus';
 
 
 
@@ -30,7 +33,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        DI Final Project Gerald Berrebi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -89,6 +92,48 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const location = useLocation()
   const [open, setOpen] = React.useState(true);
+
+  const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [dataActive, setDataActive] = useState([]);
+  const [activeUsers, setActiveUsers] = useState(null)
+  const [countUsersByStatus, setCountUsersByStatus] = useState({})
+
+
+  useEffect(() => {
+    const fetchUserList = async () => {
+        try {
+          const response = await axios.post('/all-users');
+          console.log(response)
+
+          
+          const filteredData = response.data.filter(item => item.is_active === true);
+          const rowCounts = response.data.reduce((acc, item) => {
+            const { status } = item;
+            acc[status] = (acc[status] || 0) + 1;
+            return acc;
+          }, {});
+          setUsers(response.data)
+          setDataActive(filteredData);
+          setActiveUsers(filteredData.length);
+          setCountUsersByStatus(rowCounts)
+
+        //   return response.data;
+        } catch (error) {
+          console.error(error);
+        }
+      
+      };
+     
+        fetchUserList()
+      }, [])
+
+    console.log("Active Users", activeUsers)
+    console.log("By Status", countUsersByStatus)
+   
+    console.log(users);
+
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -167,16 +212,16 @@ console.log(location);
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
        
-              <Grid item xs={12} md={8} lg={9}>
+              <Grid item xs={4} md={8} lg={9}>
                 <Paper
                   sx={{
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 140,
                   }}
                 >
-          
+                  <UsersByStatusGrid data={countUsersByStatus}/>
                 </Paper>
               </Grid>
  
@@ -186,16 +231,16 @@ console.log(location);
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 140,
                   }}
                 >
-
+                    <ActiveUsers data={activeUsers}/>
                 </Paper>
               </Grid>
      
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <Users/>
+                    <Users data={users}/>
                 </Paper>
               </Grid>
             </Grid>

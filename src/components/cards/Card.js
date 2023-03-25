@@ -7,13 +7,15 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+import image from '../../assets/hands.jpeg'
+
 import './Card.css'; 
 
 const card = (props) => {
     console.log("Mission ID",props);
   return (
     <div className="card">
-      <img src={props.image} alt={props.title} />
+      <img src={image} alt={props.title} />
       <div className="card-body">
         <h2 className="card-title">{props.title}</h2>
         <p className="card-text">{props.description}</p>

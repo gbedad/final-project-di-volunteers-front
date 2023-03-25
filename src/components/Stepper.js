@@ -53,7 +53,7 @@ const BasicTabs = () => {
   let status = location.state.userLogged.status;
   console.log(location.state.userLogged.status);
   return (
-    <Container sx={{ width: '100%' }}>
+    <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}

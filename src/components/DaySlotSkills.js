@@ -116,20 +116,27 @@ useEffect(() => {
     <LocalizationProvider dateAdapter={AdapterDayjs} >
 
       <TimePicker
+            sx={{
+                border: 'none'
+            }}
             label="Time From"
-            size="small"
+            size="sm"
             ampm={false}
+            maxTime='22:00'
+            minTime='09:00'
+            inputVariant="outlined"
             value={selectedStartTime}
             onChange={handleStartTimeChange}
-            renderInput={(params) => <TextField size='small' {...params} />}
+            renderInput={(params) => <TextField size='sm' variant="standard" {...params} />}
           /> 
         <TimePicker
             label="Time To"
             size='small'
             ampm={false}
+            inputVariant="outlined"
             value={selectedEndTime}
             onChange={handleEndTimeChange}
-            renderInput={(params) => <TextField size='small' {...params} />}
+            renderInput={(params) => <TextField size='small' variant="standard" {...params} />}
           />  
       
       <List>

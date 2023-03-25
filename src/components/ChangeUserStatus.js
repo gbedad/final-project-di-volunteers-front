@@ -36,6 +36,8 @@ import Paper from '@mui/material/Paper';
 
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { lightBlue } from '@mui/material/colors';
@@ -58,6 +60,32 @@ const ChangeUserStatus = () => {
     const [user, setUser] = useState(null)
     const [status, setStatus] = useState('');
     const [newStatus, setNewStatus] = useState('');
+    const [checked, setChecked] = React.useState(false);
+    const [newIsActive, setNewIsActive] = useState(false)
+
+
+  const handleChange = async (event) => {
+    setChecked(event.target.checked);
+    if (checked === true) {
+      setNewIsActive(true)
+    }
+    else {
+      setNewIsActive(false)
+    }
+ 
+    try {
+
+      const response = await axios.put(`/update-active-user/${state.userId}`, {
+
+        newIsActive: newIsActive 
+      })
+      console.log(response.data.is_active);
+    }
+    catch (err) {
+      console.log(err)
+    }
+
+  };
 
     console.log(state);
     let userLogged = state.userLogged
@@ -74,7 +102,7 @@ const ChangeUserStatus = () => {
           break;
       }
     }
-
+console.log("userId", state.userId);
 
     useEffect(() => {
       const getUser = async () => {
@@ -83,6 +111,7 @@ const ChangeUserStatus = () => {
           console.log(response.data);
           setUser(response.data)
           setStatus(response.data.status)
+          setChecked(response.data.is_active)
         }
         catch (err) {
           console.log(err)
@@ -123,6 +152,12 @@ const ChangeUserStatus = () => {
         <Grid container spacing={2}>
           <Grid item xs={5}>
           <h2>Change Status</h2>
+          <FormControlLabel control={<Switch
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />} label="Is Active" />
+          
           {user.mission ?
           <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
               <ListItem>
@@ -206,6 +241,7 @@ const ChangeUserStatus = () => {
                 onClick={handleConfirmClick}>
                 Confirm Status
               </Button>
+
           </div>
           </Grid>
           <Grid item xs={4} sx={{ mt: 3 }}>
