@@ -40,36 +40,37 @@ import Stack from '@mui/material/Stack'
 const CardList = () => {
     const [cardsData, setCardsData] = useState([]);
     useEffect(() => {
-        const getCardList = async () => {
-          const data = await fetchMissionsList();
-          setCardsData(data);
-        };
-    
-        getCardList();
+      
+          const fetchMissionsList = async () => {
+            try {
+              const response = await axios.get('/');
+              if (response.data) {
+                setCardsData(response.data.missions);
+              }
+              
+            } catch (error) {
+              console.error(error);
+            }
+          
+          };
+       
+       fetchMissionsList();
       }, []);
 
 
-    const fetchMissionsList = async () => {
-        try {
-          const response = await axios.get('/');
-          return response.data.missions;
-        } catch (error) {
-          console.error(error);
-        }
+    
+      // axios.interceptors.response.use(
+      //     response => {
+      //         return response
+      //     },
+      //     error => {
+      //         if (!error.response) {
+      //             console.log("Please check your internet connection.");
+      //         }
       
-      };
-      axios.interceptors.response.use(
-          response => {
-              return response
-          },
-          error => {
-              if (!error.response) {
-                  console.log("Please check your internet connection.");
-              }
-      
-              return Promise.reject(error)
-          }
-      )
+      //         return Promise.reject(error)
+      //     }
+      // )
 console.log(cardsData);
   return (
     !cardsData ? (
