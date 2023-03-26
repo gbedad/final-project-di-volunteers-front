@@ -23,7 +23,7 @@ import Fade from '@mui/material/Fade';
 const DaySlotSkill = () => {
     const location = useLocation()
     const [selectedItems, setSelectedItems] = useState([]);
-    const [selectedDate, handleDateChange] = useState();
+    // const [selectedDate, handleDateChange] = useState(new Date());
     const [selectedStartTime, setSelectedStartTime] = useState(null);
     const [selectedEndTime, setSelectedEndTime] = useState(null);
     const [locale, setLocale] = useState('en')
@@ -87,9 +87,9 @@ const DaySlotSkill = () => {
 
     const handleDaysSubmit = async () => {
        const response = await axios.post(`/create-skill/${location.state.userLogged.id}`,{
-          // headers: {
-          //   "Content-Type": "application/json"
-          // },
+          headers: {
+            "Content-Type": "application/json"
+          },
           when_day_slot:selectedItems  
       }  
   ) 

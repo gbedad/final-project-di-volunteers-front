@@ -36,18 +36,18 @@ import Stack from '@mui/material/Stack'
 //     link: '#',
 //   },
 // ];
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+// fetch(`${BASE_URL}/users`)
 const CardList = () => {
     const [cardsData, setCardsData] = useState([]);
     useEffect(() => {
       
           const fetchMissionsList = async () => {
             try {
-              const response = await axios.get('/');
-              if (response.data) {
-                setCardsData(response.data.missions);
-              }
-              
+              const response = await fetch(`${BASE_URL}/`)
+              const data = await response.json()
+              console.log(data)
+              setCardsData(data.missions);
             } catch (error) {
               console.error(error);
             }
@@ -57,7 +57,9 @@ const CardList = () => {
        fetchMissionsList();
       }, []);
 
+useEffect(()=> {
 
+}, [])
     
       // axios.interceptors.response.use(
       //     response => {
@@ -73,6 +75,7 @@ const CardList = () => {
       // )
 console.log(cardsData);
   return (
+    
     !cardsData ? (
       <Stack sx={{ display: 'flex', alignItems:"center", justifyContent:"center" }}>
         <CircularProgress />

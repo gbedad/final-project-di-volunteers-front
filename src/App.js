@@ -18,6 +18,7 @@ import Stepper from './components/Stepper';
 import Uploads from './components/FileUploader';
 import DaySlotSkill from './components/DaySlotSkills';
 import TopicSkills from './components/TopicSkills';
+import CardList from './components/cards/Cards';
 
 function App() {
   return (
@@ -40,7 +41,8 @@ function App() {
         />
         <Route path="/view-users" element={<AllUsers />} />
         <Route path="/change-status" element={<ChangeUserStatus />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<CardList />} />
+        <Route exact path="/" element={<Home />} />
       </Routes>
     </>
     // <div >
