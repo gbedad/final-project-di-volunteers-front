@@ -72,7 +72,7 @@ const CardList = () => {
       )
 console.log(cardsData);
   return (
-    cardsData.length === 0 ? (
+    !cardsData ? (
       <Stack sx={{ display: 'flex', alignItems:"center", justifyContent:"center" }}>
         <CircularProgress />
       </Stack>
