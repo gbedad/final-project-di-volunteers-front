@@ -51,7 +51,7 @@ const CardList = () => {
 
     const fetchMissionsList = async () => {
         try {
-          const response = await axios.get('http://localhost:3030');
+          const response = await axios.get('/');
           return response.data.missions;
         } catch (error) {
           console.error(error);
