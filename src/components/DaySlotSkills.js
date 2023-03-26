@@ -32,7 +32,7 @@ const DaySlotSkill = () => {
     
 
     console.log(location.state.userLogged.id);
-
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   const handleStartTimeChange = (newTime) => {
@@ -86,7 +86,7 @@ const DaySlotSkill = () => {
     // });
 
     const handleDaysSubmit = async () => {
-       const response = await axios.post(`/create-skill/${location.state.userLogged.id}`,{
+       const response = await axios.post(`${BASE_URL}/create-skill/${location.state.userLogged.id}`,{
           headers: {
             "Content-Type": "application/json"
           },
@@ -100,7 +100,7 @@ const DaySlotSkill = () => {
 
 useEffect(() => {
   const getSkills =  async () => {
-    const response = await axios.get(`/user-by-id/${location.state.userLogged.id}`)
+    const response = await axios.get(`${BASE_URL}/user-by-id/${location.state.userLogged.id}`)
     console.log("====>>>", response.data.skill)
     if (response.data.skill) {
       setDayTimeSlot(response.data.skill)

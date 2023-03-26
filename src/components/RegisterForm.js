@@ -39,6 +39,7 @@ function Copyright(props) {
   );
 }
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const theme = createTheme();
 
 const RegisterForm = ({ mission }) => {
@@ -57,7 +58,7 @@ const RegisterForm = ({ mission }) => {
     e.preventDefault();
     console.log("Going to handlesubmit")
     try {
-      const response = await axios.post('/register', {
+      const response = await axios.post(`${BASE_URL}/register`, {
         email,
         password,
         first_name,

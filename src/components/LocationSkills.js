@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const LocationSkills = () => {
     const location = useLocation()
     const [selectedItems, setSelectedItems] = useState([]);
@@ -35,7 +36,7 @@ const LocationSkills = () => {
         console.log(selectedItems);
 
         const handleLocationSubmit = async () => {
-         const response =   await axios.post(`/create-skill/${location.state.userLogged.id}`, 
+         const response =   await axios.post(`${BASE_URL}/create-skill/${location.state.userLogged.id}`, 
                 {where_location: selectedItems}
             )
             if (response) {
@@ -45,7 +46,7 @@ const LocationSkills = () => {
 
           useEffect(() => {
             const getSkills =  async () => {
-              const response = await axios.get(`/user-by-id/${location.state.userLogged.id}`)
+              const response = await axios.get(`${BASE_URL}/user-by-id/${location.state.userLogged.id}`)
               console.log("====>>>", response.data.skill)
               if (response.data.skill) {
                 setWhereLocation(response.data.skill)

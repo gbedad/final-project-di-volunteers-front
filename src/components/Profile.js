@@ -32,7 +32,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TrafficIcon from '@mui/icons-material/Traffic';
 
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
     const location = useLocation();
     const navigate = useNavigate()
@@ -45,7 +45,7 @@ const ProfilePage = () => {
     // setUser(location.state.userLogged)
 
     const handleCancelRegistration = () => {
-        axios.delete(`/delete-registration/${user.id}`)
+        axios.delete(`${BASE_URL}/delete-registration/${user.id}`)
           .then(response => {
             setIsRegistered(false);
             console.log(response.data)

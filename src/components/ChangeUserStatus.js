@@ -42,7 +42,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { lightBlue } from '@mui/material/colors';
 
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   textAlign: 'center',
@@ -75,7 +75,7 @@ const ChangeUserStatus = () => {
  
     try {
 
-      const response = await axios.put(`/update-active-user/${state.userId}`, {
+      const response = await axios.put(`${BASE_URL}/update-active-user/${state.userId}`, {
 
         newIsActive: newIsActive 
       })
@@ -107,7 +107,7 @@ console.log("userId", state.userId);
     useEffect(() => {
       const getUser = async () => {
         try {
-          const response = await axios.get(`/user-by-id/${state.userId}`)
+          const response = await axios.get(`${BASE_URL}/user-by-id/${state.userId}`)
           console.log(response.data);
           setUser(response.data)
           setStatus(response.data.status)

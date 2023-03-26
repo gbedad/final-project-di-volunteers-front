@@ -29,7 +29,7 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 export default function SignIn() {
   const navigate = useNavigate()
   const [userConnected, setUserConnected] = useState({})
@@ -40,7 +40,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-        const response = await axios.post('/login', {email: data.get('email'), password: data.get('password')})
+        const response = await axios.post(`${BASE_URL}/login`, {email: data.get('email'), password: data.get('password')})
         const userLogged = response.data.user
         if (response.data.token) {
           // localStorage.setItem("user", JSON.stringify(response.data))

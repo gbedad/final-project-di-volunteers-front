@@ -86,7 +86,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     },
   }),
 );
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const mdTheme = createTheme();
 
 function DashboardContent() {
@@ -103,7 +103,7 @@ function DashboardContent() {
   useEffect(() => {
     const fetchUserList = async () => {
         try {
-          const response = await axios.post('/all-users');
+          const response = await axios.post(`${BASE_URL}/all-users`);
           console.log(response)
 
           

@@ -19,6 +19,8 @@ import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 function ResponsiveAppBar() {
     const navigate = useNavigate();
     const location = useLocation()
@@ -48,7 +50,7 @@ function ResponsiveAppBar() {
 
     const handleLogout = async (req, res) => {
       try {
-          await axios.get('/logout')
+          await axios.get(`${BASE_URL}/logout`)
           navigate('/')
       }
       catch (err) {
