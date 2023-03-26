@@ -81,9 +81,9 @@ const DaySlotSkill = () => {
     setSelectedItems(newChecked);
   };
     console.log(selectedItems);
-    const parsedData = selectedItems.forEach((element)=> {
-      JSON.stringify(element)
-    });
+    // const parsedData = selectedItems.forEach((element)=> {
+    //   JSON.stringify(element)
+    // });
 
     const handleDaysSubmit = async () => {
        const response = await axios.post(`/create-skill/${location.state.userLogged.id}`,{
