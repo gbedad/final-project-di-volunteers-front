@@ -103,11 +103,11 @@ function DashboardContent() {
   useEffect(() => {
     const fetchUserList = async () => {
         try {
-          const response = await fetch(`${BASE_URL}/all-users`);
+          const response = await axios.post(`${BASE_URL}/all-users`);
           console.log(response)
-          const data = await response.json()
+
           
-          const filteredData = data.filter(item => item.is_active === true);
+          const filteredData = response.data.filter(item => item.is_active === true);
           const rowCounts = response.data.reduce((acc, item) => {
             const { status } = item;
             acc[status] = (acc[status] || 0) + 1;
