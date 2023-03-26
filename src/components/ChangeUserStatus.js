@@ -129,7 +129,7 @@ console.log("userId", state.userId);
     console.log("new status:", newStatus);
     const handleConfirmClick = async () => {
       try {
-        const response = await axios.patch(`/update-status/${user.id}`, { newStatus: newStatus });
+        const response = await axios.patch(`${BASE_URL}/update-status/${user.id}`, { newStatus: newStatus });
         setStatus(response.data.status);
       } catch (error) {
         console.error(error);

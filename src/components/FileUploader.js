@@ -20,7 +20,7 @@ import Fade from '@mui/material/Fade';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Uploads() {
     const location = useLocation()
@@ -47,7 +47,7 @@ export default function Uploads() {
     
     useEffect(() => {
     const getFiles = async () => {
-        const response = await axios.get(`/user-by-id/${location.state.userLogged.id}`)
+        const response = await axios.get(`${BASE_URL}/user-by-id/${location.state.userLogged.id}`)
         setFilesUploaded(response.data.file)
     }
     
@@ -62,7 +62,7 @@ export default function Uploads() {
         const formData = new FormData();
         formData.append('file', selectedFile);
         try {
-          const response = await axios.post(`/upload/${location.state.userLogged.id}`, formData);
+          const response = await axios.post(`${BASE_URL}/upload/${location.state.userLogged.id}`, formData);
           console.log(response.data);
           setFileUploaded(true);
         } catch (error) {
