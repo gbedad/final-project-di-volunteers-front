@@ -36,10 +36,11 @@ import Stack from '@mui/material/Stack'
 //     link: '#',
 //   },
 // ];
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 // fetch(`${BASE_URL}/users`)
 const CardList = () => {
     const [cardsData, setCardsData] = useState([]);
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     useEffect(() => {
       
           const fetchMissionsList = async () => {
