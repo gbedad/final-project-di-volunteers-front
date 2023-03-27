@@ -109,21 +109,37 @@ function DashboardContent() {
   useEffect(() => {
     const fetchUserList = async () => {
         try {
-          const response = await axios.post(`${BASE_URL}/all-users`,
-          {headers});
-          console.log(response)
-
+          // const response = await axios.post(`${BASE_URL}/all-users`,
+          // {headers});
+          // console.log(response)
           
-          const filteredData = response.data.filter(item => item.is_active === true);
-          const rowCounts = response.data.reduce((acc, item) => {
-            const { status } = item;
-            acc[status] = (acc[status] || 0) + 1;
-            return acc;
-          }, {});
+          axios.get(`${BASE_URL}/all-users`)
+          .then(response => {
+          const data = response.data;
+    
+          // filter data based on a condition
+          const filteredData = data.filter(item => item.is_active === true);
+    
+    // use the filtered data
+    console.log(filteredData);
           setUsers(response.data)
           setDataActive(filteredData);
           setActiveUsers(filteredData.length);
-          setCountUsersByStatus(rowCounts)
+  })
+  .catch(error => console.log(error));
+
+
+          
+          // const filteredData = response.data.filter(item => item.is_active === true);
+          // const rowCounts = response.data.reduce((acc, item) => {
+          //   const { status } = item;
+          //   acc[status] = (acc[status] || 0) + 1;
+          //   return acc;
+          // }, {});
+          // setUsers(response.data)
+          // setDataActive(filteredData);
+          // setActiveUsers(filteredData.length);
+          // setCountUsersByStatus(rowCounts)
 
         //   return response.data;
         } catch (error) {
