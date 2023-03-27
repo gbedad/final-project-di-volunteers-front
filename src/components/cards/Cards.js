@@ -77,7 +77,7 @@ useEffect(()=> {
 console.log(cardsData);
   return (
     
-    cardsData && cardsData.length === 0 ? (
+    cardsData === []? (
       <Stack sx={{ display: 'flex', alignItems:"center", justifyContent:"center" }}>
         <CircularProgress />
       </Stack>
