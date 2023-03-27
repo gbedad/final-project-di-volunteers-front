@@ -92,6 +92,10 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const location = useLocation()
   const [open, setOpen] = React.useState(true);
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -106,9 +110,7 @@ function DashboardContent() {
     const fetchUserList = async () => {
         try {
           const response = await axios.post(`${BASE_URL}/all-users`,
-          {headers: {
-            "Content-Type": "application/json",
-          }});
+          {headers});
           console.log(response)
 
           

@@ -44,6 +44,7 @@ export default function SignIn() {
         const userLogged = response.data.user
         if (response.data.token) {
           // localStorage.setItem("user", JSON.stringify(response.data))
+          localStorage.setItem('token', response.data.token);
           setIsLoading(false)
 
           setUserConnected(userLogged)
