@@ -73,7 +73,7 @@ function ResponsiveAppBar() {
 
     const handleViewUsers = () => {
       if (userLogged.role === 'admin') {
-        navigate('/view-users', {state:{userLogged}})
+        navigate(`/view-users`, {state:{userLogged}})
       }
     }
 

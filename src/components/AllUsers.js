@@ -86,12 +86,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     },
   }),
 );
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const mdTheme = createTheme();
 
 function DashboardContent() {
   const location = useLocation()
   const [open, setOpen] = React.useState(true);
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
@@ -103,7 +105,10 @@ function DashboardContent() {
   useEffect(() => {
     const fetchUserList = async () => {
         try {
-          const response = await axios.post(`${BASE_URL}/all-users`);
+          const response = await axios.post(`${BASE_URL}/all-users`,
+          {headers: {
+            "Content-Type": "application/json",
+          }});
           console.log(response)
 
           

@@ -41,7 +41,7 @@ function App() {
         />
         <Route path="/view-users" element={<AllUsers />} />
         <Route path="/change-status" element={<ChangeUserStatus />} />
-        <Route path="/" element={<CardList />} />
+        {/* <Route path="/" element={<CardList />} /> */}
         <Route exact path="/" element={<Home />} />
       </Routes>
     </>
