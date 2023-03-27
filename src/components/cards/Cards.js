@@ -48,7 +48,7 @@ const CardList = () => {
               const response = await fetch(`${BASE_URL}/`)
               const data = await response.json()
               console.log(data)
-              setCardsData(data.missions);
+              setCardsData(data);
             } catch (error) {
               console.error(error);
             }
@@ -77,7 +77,7 @@ useEffect(()=> {
 console.log(cardsData);
   return (
     
-    cardsData === []? (
+    !cardsData ? (
       <Stack sx={{ display: 'flex', alignItems:"center", justifyContent:"center" }}>
         <CircularProgress />
       </Stack>
