@@ -39,10 +39,13 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+  
     try {
         const response = await axios.post(`${BASE_URL}/login`, {email: data.get('email'), password: data.get('password')})
         const userLogged = response.data.user
-        if (response.data.token) {
+      
+        console.log("Handlesubmit token",response.data.token);
+        if (response.data) {
           // localStorage.setItem("user", JSON.stringify(response.data))
           localStorage.setItem('token', response.data.token);
           setIsLoading(false)

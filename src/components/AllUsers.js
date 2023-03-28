@@ -93,9 +93,7 @@ function DashboardContent() {
   const location = useLocation()
   const [open, setOpen] = React.useState(true);
   const token = localStorage.getItem('token');
-  const headers = {
-    'Authorization': `Bearer ${token}`
-  };
+
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -108,38 +106,42 @@ function DashboardContent() {
 
   useEffect(() => {
     const fetchUserList = async () => {
+      console.log(token);
         try {
-          // const response = await axios.post(`${BASE_URL}/all-users`,
-          // {headers});
-          // console.log(response)
+          const response = await axios.get(`${BASE_URL}/all-users`, {
+            headers:{
+            "x-access-token":token.token
+            }
+          });
+          console.log("Response",response)
           
-          axios.get(`${BASE_URL}/all-users`)
-          .then(response => {
-          const data = response.data;
+  //        await axios.get(`${BASE_URL}/all-users`, {headers})
+  //         .then(response => {
+  //         const data = response.data;
     
-          // filter data based on a condition
-          const filteredData = data.filter(item => item.is_active === true);
+  //         // filter data based on a condition
+  //         const filteredData = data.filter(item => item.is_active === true);
     
-    // use the filtered data
-    console.log(filteredData);
+  //   // use the filtered data
+  //   console.log(filteredData);
+  //         setUsers(response.data)
+  //         setDataActive(filteredData);
+  //         setActiveUsers(filteredData.length);
+  // })
+  // .catch(error => console.log(error));
+
+
+          
+          const filteredData = response.data.filter(item => item.is_active === true);
+          const rowCounts = response.data.reduce((acc, item) => {
+            const { status } = item;
+            acc[status] = (acc[status] || 0) + 1;
+            return acc;
+          }, {});
           setUsers(response.data)
           setDataActive(filteredData);
           setActiveUsers(filteredData.length);
-  })
-  .catch(error => console.log(error));
-
-
-          
-          // const filteredData = response.data.filter(item => item.is_active === true);
-          // const rowCounts = response.data.reduce((acc, item) => {
-          //   const { status } = item;
-          //   acc[status] = (acc[status] || 0) + 1;
-          //   return acc;
-          // }, {});
-          // setUsers(response.data)
-          // setDataActive(filteredData);
-          // setActiveUsers(filteredData.length);
-          // setCountUsersByStatus(rowCounts)
+          setCountUsersByStatus(rowCounts)
 
         //   return response.data;
         } catch (error) {

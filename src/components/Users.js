@@ -10,14 +10,16 @@ import TableRow from '@mui/material/TableRow';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Title from './Title';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 
 
 function preventDefault(event) {
   event.preventDefault();
 }
-function createData(userid, first_name, last_name, email, mission, created_at, status) {
-    return { userid, first_name, last_name, email, mission, created_at, status };
+function createData(userid, first_name, last_name, email, mission, created_at, status, is_active) {
+    return { userid, first_name, last_name, email, mission, created_at, status, is_active };
   }
 export default function Users(props) {
 
@@ -83,11 +85,12 @@ console.log(users);
     item.email,
     item.mission.title,
     item.created_at,
-    item.status
+    item.status,
+    item.is_active
         )
     })
     
-
+console.log(rows);
   return (
     !rows ? (
       <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
@@ -107,7 +110,8 @@ console.log(users);
             <TableCell>EMAIL</TableCell>
             <TableCell>MISSION</TableCell>
             <TableCell>CREATED</TableCell>
-            <TableCell align="right">STATUS</TableCell>
+            <TableCell>STATUS</TableCell>
+            <TableCell align="right">IS ACTIVE</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -119,7 +123,8 @@ console.log(users);
                 <TableCell>{row.email}</TableCell>
                 <TableCell>{row.mission}</TableCell>
                 <TableCell>{row.created_at}</TableCell>
-                <TableCell align="right">{row.status}</TableCell>
+                <TableCell >{row.status}</TableCell>
+                <TableCell align="right">{row.is_active ? <VerifiedIcon color="success"/> : ""}</TableCell>
             </TableRow>
           )) :
           (

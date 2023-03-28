@@ -61,33 +61,40 @@ const ChangeUserStatus = () => {
     const [status, setStatus] = useState('');
     const [newStatus, setNewStatus] = useState('');
     const [checked, setChecked] = React.useState(false);
-    const [newIsActive, setNewIsActive] = useState(false)
+    // const [newIsActive, setNewIsActive] = useState(false)
 
 
-  const handleChange = async (event) => {
+  const handleActiveChange = async (event) => {
+   
+    console.log("Checked state", event.target.checked);
     setChecked(event.target.checked);
-    if (checked === true) {
-      setNewIsActive(true)
-    }
-    else {
-      setNewIsActive(false)
-    }
+  }
+    // if (checked === true) {
+    //   setNewIsActive(true)
+    // }
+    // else {
+    //   setNewIsActive(false)
+    // }
+    const handleSubmitActiveChange = async () => {
+      try {
+  
+        await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
+  
+          newIsActive: checked 
+        })
+      
+       
+      }
+      catch (err) {
+        console.log(err)
+      }
+  
+    };
+
+
  
-    try {
 
-      const response = await axios.put(`${BASE_URL}/update-active-user/${state.userId}`, {
-
-        newIsActive: newIsActive 
-      })
-      console.log(response.data.is_active);
-    }
-    catch (err) {
-      console.log(err)
-    }
-
-  };
-
-    console.log(state);
+    // console.log(state);
     let userLogged = state.userLogged
 
     const checkFileType = (mime) => {
@@ -102,16 +109,17 @@ const ChangeUserStatus = () => {
           break;
       }
     }
-console.log("userId", state.userId);
+// console.log("userId", state.userId);
 
     useEffect(() => {
       const getUser = async () => {
         try {
           const response = await axios.get(`${BASE_URL}/user-by-id/${state.userId}`)
-          console.log(response.data);
+          // console.log(response.data);
           setUser(response.data)
           setStatus(response.data.status)
           setChecked(response.data.is_active)
+          // setNewIsActive(response.data.is_active)
         }
         catch (err) {
           console.log(err)
@@ -126,7 +134,7 @@ console.log("userId", state.userId);
 
     // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
-    console.log("new status:", newStatus);
+    // console.log("new status:", newStatus);
     const handleConfirmClick = async () => {
       try {
         const response = await axios.patch(`${BASE_URL}/update-status/${user.id}`, { newStatus: newStatus });
@@ -154,9 +162,13 @@ console.log("userId", state.userId);
           <h2>Change Status</h2>
           <FormControlLabel control={<Switch
                 checked={checked}
-                onChange={handleChange}
+                onChange={handleActiveChange}
                 inputProps={{ 'aria-label': 'controlled' }}
               />} label="Is Active" />
+              <Button
+                onClick={handleSubmitActiveChange}>
+                Validate is active
+              </Button>
           
           {user.mission ?
           <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
