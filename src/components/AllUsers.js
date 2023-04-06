@@ -110,7 +110,7 @@ function DashboardContent() {
         try {
           const response = await axios.get(`${BASE_URL}/all-users`, {
             headers:{
-            "x-access-token":token.token
+            "x-access-token":token
             }
           });
           console.log("Response",response)
