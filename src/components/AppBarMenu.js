@@ -127,7 +127,7 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', md: 'inherit', lg: 'inherit' },
               }}
             >
               {/* {pages.map((page) => (
@@ -172,7 +172,7 @@ function ResponsiveAppBar() {
           {location.state && location.state.userLogged ?
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>{location.state.userLogged.first_name.charAt(0).toUpperCase()}{location.state.userLogged.last_name.charAt(0).toUpperCase()}</Avatar>
+                <Avatar>{location.state.userLogged.user.first_name.charAt(0).toUpperCase()}{location.state.userLogged.user.last_name.charAt(0).toUpperCase()}</Avatar>
               </IconButton>
             </Tooltip> : <span></span>
 }
@@ -193,12 +193,12 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {(location.pathname !== '/register' || location.pathname === '/view-users') && location.state && location.state.userLogged.role === 'admin' ? 
+              {(location.pathname !== '/register' || location.pathname === '/view-users') && location.state && location.state.userLogged.user.role === 'admin' ? 
                 <div>
                   <MenuItem onClick={handleViewUsers}><Typography textAlign="center">Dashboard</Typography></MenuItem>
                   <MenuItem onClick={handleLogout}><Typography textAlign="center">Logout</Typography></MenuItem>
                 </div> : 
-                location.pathname !== '/profile' &&  location.pathname !== '/register' && location.state && location.state.userLogged.role && location.state.userLogged.role === 'volunteer' ?
+                location.pathname !== '/profile' &&  location.pathname !== '/register' && location.state && location.state.userLogged.user.role && location.state.userLogged.user.role === 'volunteer' ?
                 <div>
                   <MenuItem onClick={handleProfile}><Typography textAlign="center">Profile</Typography></MenuItem> 
                   <MenuItem onClick={handleLogout}><Typography textAlign="center">Logout</Typography></MenuItem>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
@@ -32,6 +32,8 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TrafficIcon from '@mui/icons-material/Traffic';
 
+import { UserContext } from '../UserContext';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
     const location = useLocation();
@@ -40,9 +42,9 @@ const ProfilePage = () => {
     const [resp, setResp] = useState(null)
     
     console.log("from location", location.state.userLogged);
-    const user = location.state.userLogged
-    
-    // setUser(location.state.userLogged)
+    // const user = location.state.userLogged
+    const { user } = location.state.userLogged;
+    console.log(user);
 
     const handleCancelRegistration = () => {
         axios.delete(`${BASE_URL}/delete-registration/${user.id}`)
@@ -60,7 +62,7 @@ const ProfilePage = () => {
       
 
   return (
-    <Container>
+    <>
     {!isRegistered && <Stack sx={{ width: '100%' }} spacing={2}>
     <Alert onClose={() => {}}>This is a success alert — check it out!</Alert>
       <Alert
@@ -76,9 +78,9 @@ const ProfilePage = () => {
     <Box>
 
     </Box>
-    <Box sx={{ display: 'flex' }}>
-      
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          <Box sx={{ display: 'flex' }}>
+            {user.mission ? (
+              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
               <ListItem>
                 <ListItemAvatar>
                   <Avatar>
@@ -120,18 +122,24 @@ const ProfilePage = () => {
                 <ListItemText primary={user.status} secondary="Your status will change when we have checked information." />
               </ListItem>
             </List>
+            ): (
+              <p>Please log in to view your profile.</p>
+            )}
+            
           </Box>
 
     <Button
         type="submit"
         onClick={handleCancelRegistration}
         fullWidth
+        disabled = {user.skill ? 'true': 'false'} 
         variant="contained"
         sx={{ backgroundColor:'red', mt: 3, mb: 2 }}
       >
         Cancel registration
     </Button>
-  </Container>
+
+  </>
   );
 }
 

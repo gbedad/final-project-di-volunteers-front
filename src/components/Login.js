@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { UserContext } from '../UserContext';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,8 +32,11 @@ function Copyright(props) {
 
 const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+
 export default function SignIn() {
   const navigate = useNavigate()
+  const { updateUser } = useContext(UserContext); 
   const [userConnected, setUserConnected] = useState({})
   const [isLoading, setIsLoading] = useState(true)
   
@@ -42,22 +47,25 @@ export default function SignIn() {
   
     try {
         const response = await axios.post(`${BASE_URL}/login`, {email: data.get('email'), password: data.get('password')})
-        const userLogged = response.data.user
+        const userLogged = response.data
       
         console.log("Handlesubmit token",response.data.token);
         if (response.data) {
           // localStorage.setItem("user", JSON.stringify(response.data))
-          localStorage.setItem('token', response.data.token);
+          // localStorage.setItem('token', response.data.token);
           setIsLoading(false)
 
-          setUserConnected(userLogged)
+          // setUserConnected(userLogged)
+          updateUser(userLogged)
 
-          console.log(userLogged.role, isLoading);
-        if (userLogged.role === 'volunteer') {
+          
+
+          console.log(userLogged, isLoading);
+        if (userLogged.user.role === 'volunteer') {
   
           navigate('/stepper', {state:{userLogged}})
         }
-        else if (userLogged.role === 'admin') {
+        else if (userLogged.user.role === 'admin') {
         
           navigate('/view-users', {state:{userLogged}})
         }

@@ -8,6 +8,8 @@ import Checkbox from '@mui/material/Checkbox';
 import DaySlotSkill from './DaySlotSkills';
 import TopicSkill from './TopicSkills';
 import LocationSkill from './LocationSkills';
+import DayTimeRangeComponent from './DayTimeRange';
+import TopicGradeComponent from './TopicGrade';
 
 const Skills = () => {
   return (
@@ -16,15 +18,15 @@ const Skills = () => {
       {/* <Typography variant="h6" gutterBottom>
         Skills
       </Typography> */}
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
-        <DaySlotSkill />
+        <DayTimeRangeComponent />
         </Grid>
         <Grid item xs={12} sm={4}>
-          <TopicSkill />
+          <TopicGradeComponent />
         </Grid>
         <Grid item xs={12} sm={4}>
-          <LocationSkill/>
+          {/* <LocationSkill/> */}
         </Grid>
         {/* <Grid item xs={12}>
           <TextField

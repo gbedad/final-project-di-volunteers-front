@@ -27,8 +27,8 @@ export default function Uploads() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileUploaded, setFileUploaded] = useState(false);
     const [filesUploaded, setFilesUploaded] = useState([])
-    console.log(location.state.userLogged.id);
-
+    console.log(location.state.userLogged.user.id);
+    const userId = location.state.userLogged.user.id;
 
     const checkFileType = (mime) => {
 
@@ -47,7 +47,7 @@ export default function Uploads() {
     
     useEffect(() => {
     const getFiles = async () => {
-        const response = await axios.get(`${BASE_URL}/user-by-id/${location.state.userLogged.id}`)
+        const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`)
         setFilesUploaded(response.data.file)
     }
     

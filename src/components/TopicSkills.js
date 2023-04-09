@@ -58,8 +58,8 @@ const TopicSkills = () => {
         return (
             <>  
               <List>
-                {topics.map((topic) => (
-                  <ListItem key={topic} dense button onClick={() => handleToggle(topic)}>
+                {topics.map((topic, index) => (
+                  <ListItem key={index} dense button onClick={() => handleToggle(topic)}>
                     <ListItemText primary={topic} />
                     <ListItemSecondaryAction>
                       <Checkbox
@@ -71,8 +71,8 @@ const TopicSkills = () => {
                   </ListItem>
                 ))}
               </List>
-              {selectedItems.map((topic) => (
-                <div key={topic}>
+              {selectedItems.map((topic, index) => (
+                <div key={index}>
                   <div>{topic} </div>
                 </div>
               ))}
@@ -91,7 +91,7 @@ const TopicSkills = () => {
  
                   <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                       {whichTopics.topics.map((item, index) => (
-                        <p>{item}</p>
+                        <span>{item}</span>
                       ))}
                   </Typography>
                 :

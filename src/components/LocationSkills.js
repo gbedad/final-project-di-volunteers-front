@@ -59,8 +59,8 @@ const LocationSkills = () => {
         return (
             <>  
               <List>
-                {locations.map((location) => (
-                  <ListItem key={location} dense button onClick={() => handleToggle(location)}>
+                {locations.map((location, index) => (
+                  <ListItem key={index} dense button onClick={() => handleToggle(location)}>
                     <ListItemText primary={location} />
                     <ListItemSecondaryAction>
                       <Checkbox
@@ -72,8 +72,8 @@ const LocationSkills = () => {
                   </ListItem>
                 ))}
               </List>
-              {selectedItems.map((location) => (
-                <div key={location}>
+              {selectedItems.map((location, index) => (
+                <div key={index}>
                   <div>{location} </div>
                 </div>
               ))}

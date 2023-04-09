@@ -50,10 +50,10 @@ const BasicTabs = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  let status = location.state.userLogged.status;
-  console.log(location.state.userLogged.status);
+  let status = location.state.userLogged.user.status;
+  console.log(location.state.userLogged.user.status);
   return (
-    <Container>
+    <Container maxWidth={false}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}

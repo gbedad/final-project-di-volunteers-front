@@ -1,4 +1,4 @@
-import  React, {useState, useEffect} from 'react';
+import  React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import {useLocation} from 'react-router-dom'
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
@@ -23,6 +23,8 @@ import { mainListItems, secondaryListItems } from './ListItems';
 import Users from './Users';
 import ActiveUsers from './ActiveUsers';
 import UsersByStatusGrid from './UsersByStatus';
+
+import { UserContext } from '../UserContext';
 
 
 
@@ -93,6 +95,7 @@ function DashboardContent() {
   const location = useLocation()
   const [open, setOpen] = React.useState(true);
   const token = localStorage.getItem('token');
+  const {user} = useContext(UserContext)
 
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -102,15 +105,14 @@ function DashboardContent() {
   const [dataActive, setDataActive] = useState([]);
   const [activeUsers, setActiveUsers] = useState(null)
   const [countUsersByStatus, setCountUsersByStatus] = useState({})
-
+console.log(user.token);
 
   useEffect(() => {
     const fetchUserList = async () => {
-      console.log(token);
         try {
           const response = await axios.get(`${BASE_URL}/all-users`, {
             headers:{
-            "x-access-token":token
+            "x-access-token":user.token
             }
           });
           console.log("Response",response)

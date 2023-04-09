@@ -19,10 +19,11 @@ import Uploads from './components/FileUploader';
 import DaySlotSkill from './components/DaySlotSkills';
 import TopicSkills from './components/TopicSkills';
 import CardList from './components/cards/Cards';
+import { UserProvider } from './UserContext';
 
 function App() {
   return (
-    <>
+    <UserProvider>
       <AppBarMenu />
 
       <Routes>
@@ -44,11 +45,7 @@ function App() {
         {/* <Route path="/" element={<CardList />} /> */}
         <Route exact path="/" element={<Home />} />
       </Routes>
-    </>
-    // <div >
-    //   <Title/>
-    //   <CardList/>
-    // </div>
+    </UserProvider>
   );
 }
 

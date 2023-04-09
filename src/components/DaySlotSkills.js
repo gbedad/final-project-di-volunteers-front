@@ -5,9 +5,11 @@ import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from 
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+// import { TimeField } from '@mui/x-date-pickers/TimeField';
+// import { TimeClock } from '@mui/x-date-pickers/TimeClock';
 import moment from 'moment';
-
+import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Card from '@mui/material/Card';
@@ -17,7 +19,10 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
+import TimePicker from 'react-time-picker';
 
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
 
 
 const DaySlotSkill = () => {
@@ -43,7 +48,7 @@ const DaySlotSkill = () => {
     setSelectedEndTime(newTime);
   };
   const getTimeString = (time) => {
-    if (!time) {
+    if (!time || !time.$H || !time.$m) {
       return '';
     }
     const hours = time.$H.toString().padStart(2, '0');
@@ -113,35 +118,31 @@ useEffect(() => {
 
   return (
     <>
-    <LocalizationProvider dateAdapter={AdapterDayjs} >
+   
 
       <TimePicker
             sx={{
                 border: 'none'
             }}
-            label="Time From"
-            size="sm"
-            ampm={false}
-            maxTime='22:00'
-            minTime='09:00'
+            nativeInputAriaLabel="Time From"
+            maxTime='22:00:00'
+            minTime='09:00:00'
             inputVariant="outlined"
-            value={selectedStartTime}
+            value='10:00'
             onChange={handleStartTimeChange}
-            renderInput={(params) => <TextField size='sm' variant="standard" {...params} />}
+           
           /> 
         <TimePicker
             label="Time To"
-            size='small'
-            ampm={false}
             inputVariant="outlined"
             value={selectedEndTime}
             onChange={handleEndTimeChange}
-            renderInput={(params) => <TextField size='small' variant="standard" {...params} />}
+            
           />  
       
       <List>
-        {days.map((day) => (
-          <ListItem key={day} dense button onClick={() => handleToggle(day)}>
+        {days.map((day, index) => (
+          <ListItem key={index} dense button onClick={() => handleToggle(day)}>
             <ListItemText primary={day} />
             <ListItemSecondaryAction>
               <Checkbox
@@ -153,13 +154,13 @@ useEffect(() => {
           </ListItem>
         ))}
       </List>
-      {selectedItems.map((day) => (
-        <div key={day}>
+      {selectedItems.map((day, index) => (
+        <div key={index}>
           <div>{day.day} {selectedStartTime ? getTimeString(selectedStartTime) : ''} to {selectedEndTime ? getTimeString(selectedEndTime) : ''}</div>
         </div>
       ))}
       <Button onClick={handleDaysSubmit}>Submit</Button>
-    </LocalizationProvider>
+   
 
     <Card sx={{ minWidth: 275, mt:6, p:4}}>
                   <Typography variant="h5" component="div">
