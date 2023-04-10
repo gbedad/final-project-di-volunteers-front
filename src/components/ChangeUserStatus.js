@@ -149,8 +149,6 @@ const ChangeUserStatus = () => {
       !user ? (
     <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
       <CircularProgress color="secondary" />
-      <CircularProgress color="success" />
-      <CircularProgress color="inherit" />
     </Stack>
       )
       :
@@ -271,8 +269,10 @@ const ChangeUserStatus = () => {
                   TOPICS
                   </Typography>
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  {user.skill.topics.map((topic, i) =>  (
-                  <div key={i}>{topic}</div>
+                  {user.skill && user.skill.topics.map((topic, i) =>  (
+                  <div key={i}>
+                    {JSON.parse(topic).subject} from {JSON.parse(topic).startClass} to {JSON.parse(topic).endClass}
+                  </div>
                 )
                 )}
                   </Typography>
