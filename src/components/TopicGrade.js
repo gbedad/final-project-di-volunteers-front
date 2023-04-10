@@ -9,7 +9,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField
+  TextField,
+  Box,
+  LinearProgress
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -18,6 +20,7 @@ import { UserContext } from '../UserContext';
 const SubjectClassRangeComponent = () => {
   const location = useLocation()
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
   const { userLogged } = location.state;
   const {token} = useContext(UserContext)
  const subjectClassesRanges = userLogged.user.skill.topics
@@ -30,6 +33,7 @@ const SubjectClassRangeComponent = () => {
       console.log(response.data);
       const parsed_array = response.data.skill.topics.map(string => JSON.parse(string));
       setSubjectClassRanges(parsed_array)
+      setIsLoading(false)
   }
   
       getSubjects()
@@ -99,7 +103,12 @@ const SubjectClassRangeComponent = () => {
       >
         Add Subject and Class Range
       </Button>
-      {subjectClassRanges.map((subjectClassRange, index) => (
+      {isLoading ? 
+      <Box sx={{ width: '100%' }}>
+        <LinearProgress />
+      </Box>
+      :
+      subjectClassRanges.map((subjectClassRange, index) => (
         <Grid container spacing={2} key={index} style={{ marginTop: "16px" }}>
           <Grid item xs={3}>
             <TextField
@@ -113,6 +122,8 @@ const SubjectClassRangeComponent = () => {
               <MenuItem value="Math">Math</MenuItem>
               <MenuItem value="Science">Science</MenuItem>
               <MenuItem value="History">History</MenuItem>
+              <MenuItem value="Physics">Physics</MenuItem>
+              <MenuItem value="Geography">Geography</MenuItem>
               {/* Add more subjects as needed */}
             </TextField>
           </Grid>

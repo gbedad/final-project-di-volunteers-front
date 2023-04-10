@@ -9,7 +9,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField
+  TextField,
+  Box,
+  LinearProgress
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -18,6 +20,7 @@ import { UserContext } from '../UserContext';
 const LocationsPossibleComponent = () => {
   const location = useLocation()
   const [locationsPossible, setLocationsPossible] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
   const { userLogged } = location.state;
   const {token} = useContext(UserContext)
 //  const subjectClassesRanges = userLogged.user.skill.topics
@@ -30,6 +33,7 @@ const LocationsPossibleComponent = () => {
       console.log(response.data);
     //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       setLocationsPossible(response.data.skill.where_location)
+      setIsLoading(false)
   }
   
       getLocations()
@@ -88,7 +92,11 @@ const LocationsPossibleComponent = () => {
       >
         Add Location
       </Button>
-      {locationsPossible.map((locationPossible, index) => (
+      {isLoading ? 
+      <Box sx={{ width: '100%' }}>
+        <LinearProgress />
+      </Box> :
+      locationsPossible.map((locationPossible, index) => (
         <Grid container spacing={2} key={index} style={{ marginTop: "16px" }}>
           <Grid item xs={8}>
             <TextField

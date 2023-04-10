@@ -12,6 +12,8 @@ import Stack from '@mui/material/Stack';
 import Title from './Title';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 
@@ -92,13 +94,6 @@ console.log(users);
     
 console.log(rows);
   return (
-    !rows ? (
-      <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
-        <CircularProgress color="secondary" />
-      </Stack>
-    ) :(
-
-   
     <React.Fragment>
       <Title>Recent Users</Title>
       <Table size="small">
@@ -115,7 +110,7 @@ console.log(rows);
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows ? rows.map((row) => (
+          {rows.length !== 0 ? rows.map((row) => (
             <TableRow key={row.id} onClick={() => handleRowClick(row.userid)} selected={selectedUser === row.userid}>
                 <TableCell>{row.userid}</TableCell >
                 <TableCell>{row.first_name}</TableCell>
@@ -128,7 +123,9 @@ console.log(rows);
             </TableRow>
           )) :
           (
-            <CircularProgress color="secondary" />
+            <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
           )}
         </TableBody>
       </Table>
@@ -137,5 +134,5 @@ console.log(rows);
       </Link>
     </React.Fragment>
      )
-  );
+  
 }

@@ -36,6 +36,8 @@ import Paper from '@mui/material/Paper';
 
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+
+import LinearProgress from '@mui/material/LinearProgress';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
@@ -148,13 +150,15 @@ const ChangeUserStatus = () => {
   return (
       !user ? (
     <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
-      <CircularProgress color="secondary" />
+       <Box sx={{ width: '100%' }}>
+      <LinearProgress />
+    </Box>
     </Stack>
       )
       :
       (
         <ThemeProvider theme={lightTheme}>
-        <Container>
+        <Container maxWidth="l">
         <Grid container spacing={2}>
           <Grid item xs={5}>
           <h2>Change Status</h2>

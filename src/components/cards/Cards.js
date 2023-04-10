@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack'
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 
@@ -40,6 +41,7 @@ import Stack from '@mui/material/Stack'
 // fetch(`${BASE_URL}/users`)
 const CardList = () => {
     const [cardsData, setCardsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true)
     const BASE_URL = process.env.REACT_APP_BASE_URL;
     useEffect(() => {
       
@@ -49,6 +51,7 @@ const CardList = () => {
               const data = await response.json()
               console.log(data)
               setCardsData(data);
+              setIsLoading(false)
             } catch (error) {
               console.error(error);
             }
@@ -77,10 +80,10 @@ useEffect(()=> {
 console.log(cardsData);
   return (
     
-    !cardsData ? (
-      <Stack sx={{ display: 'flex', alignItems:"center", justifyContent:"center" }}>
-        <CircularProgress />
-      </Stack>
+    isLoading ? (
+      <Box sx={{ width: '100%' }}>
+      <LinearProgress />
+    </Box>
     ): 
     (
     <Container className='card-list' sx={{display:"flex", justifyContent:"center"}}>

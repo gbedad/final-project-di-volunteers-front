@@ -26,12 +26,12 @@ function ResponsiveAppBar() {
     const location = useLocation()
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    console.log(location);
+    
     let userLogged = ''
     if (location.state) {
       userLogged = location.state.userLogged
     }
-    
+    console.log(userLogged);
 
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -72,7 +72,7 @@ function ResponsiveAppBar() {
     }
 
     const handleViewUsers = () => {
-      if (userLogged.role === 'admin') {
+      if (userLogged.user.role === 'admin') {
         navigate(`/view-users`, {state:{userLogged}})
       }
     }

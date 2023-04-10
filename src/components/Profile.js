@@ -132,7 +132,7 @@ const ProfilePage = () => {
         type="submit"
         onClick={handleCancelRegistration}
         fullWidth
-        disabled = {user.skill ? 'true': 'false'} 
+        disabled = {user.skill ? "true": "false"} 
         variant="contained"
         sx={{ backgroundColor:'red', mt: 3, mb: 2 }}
       >

@@ -112,6 +112,10 @@ console.log(user.token);
         try {
           const response = await axios.get(`${BASE_URL}/all-users`, {
             headers:{
+            /* `"x-access-token":user.token` is setting the `x-access-token` header in the HTTP request
+            to the `user.token` value. This is commonly used for authentication and authorization
+            purposes, where the server expects a token to be included in the request headers to
+            identify and validate the user making the request. */
             "x-access-token":user.token
             }
           });

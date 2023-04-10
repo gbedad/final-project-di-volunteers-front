@@ -9,15 +9,19 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
+  Box,
+  LinearProgress
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 
 import { UserContext } from '../UserContext';
 
 const DayTimeRangeComponent = () => {
   const location = useLocation()
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
   const { userLogged } = location.state;
   const {token} = useContext(UserContext)
 //  const dayTimesRanges = userLogged.user.skill.when_day_slot
@@ -31,6 +35,7 @@ const DayTimeRangeComponent = () => {
       console.log(response.data);
       const parsed_array = response.data.skill.when_day_slot.map(string => JSON.parse(string));
       setDayTimeRanges(parsed_array)
+      setIsLoading(false)
   }
   
       getDays()
@@ -98,7 +103,12 @@ const handleRemoveDayTimeRange = (index) => {
     <div>
       <Typography variant="h5">Day and Time Range</Typography>
       <Button variant="contained" color="primary" onClick={handleAddDayTimeRange} sx={{mr:2}}>Add Day and Time Range</Button>
-      {dayTimeRanges.map((dayTimeRange, index) => (
+      {isLoading ? 
+      <Box sx={{ width: '100%' }}>
+        <LinearProgress />
+      </Box>
+      :
+      dayTimeRanges.map((dayTimeRange, index) => (
         <Grid container spacing={2} key={index} style={{ marginTop: "16px" }}>
           <Grid item xs={3}>
             <FormControl fullWidth variant="outlined">
@@ -160,6 +170,7 @@ const handleRemoveDayTimeRange = (index) => {
           </Grid>
         </Grid>
       ))}
+      
       <Button variant="contained" color="primary" onClick={handleSaveDayTimeRanges}>Save</Button>
     </div>
     )
