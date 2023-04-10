@@ -20,11 +20,11 @@ const DayTimeRangeComponent = () => {
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const { userLogged } = location.state;
   const {token} = useContext(UserContext)
- const dayTimesRanges = userLogged.user.skill.when_day_slot
+//  const dayTimesRanges = userLogged.user.skill.when_day_slot
  
  const userId = location.state.userLogged.user.id;
  
- const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
+//  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
  useEffect(() => {
   const getDays = async () => {
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`)

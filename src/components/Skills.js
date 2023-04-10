@@ -10,6 +10,7 @@ import TopicSkill from './TopicSkills';
 import LocationSkill from './LocationSkills';
 import DayTimeRangeComponent from './DayTimeRange';
 import TopicGradeComponent from './TopicGrade';
+import LocationsPossibleComponent from './LocationsPossible';
 
 const Skills = () => {
   return (
@@ -27,6 +28,7 @@ const Skills = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           {/* <LocationSkill/> */}
+          <LocationsPossibleComponent /> 
         </Grid>
         {/* <Grid item xs={12}>
           <TextField
