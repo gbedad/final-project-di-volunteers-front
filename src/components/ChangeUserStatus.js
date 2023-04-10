@@ -271,7 +271,7 @@ const ChangeUserStatus = () => {
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
                   {user.skill && user.skill.topics.map((topic, i) =>  (
                   <div key={i}>
-                    {JSON.parse(topic).subject} from {JSON.parse(topic).startClass} to {JSON.parse(topic).endClass}
+                    {JSON.parse(topic).subject} from {JSON.parse(topic).classStart} to {JSON.parse(topic).classEnd}
                   </div>
                 )
                 )}
