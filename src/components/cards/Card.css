@@ -9,12 +9,12 @@
     max-width: 350px;
   }
 
-  .MuiCard-root {
+  /* .MuiCard-root {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
+  } */
 
   .MuiCardActions-root{
      display: flex;
