@@ -20,6 +20,8 @@ import DaySlotSkill from './components/DaySlotSkills';
 import TopicSkills from './components/TopicSkills';
 import CardList from './components/cards/Cards';
 import { UserProvider } from './UserContext';
+import MissionList from './components/missions/MissionList';
+import AdminPanel from './components/AdminPanel';
 
 function App() {
   return (
@@ -41,8 +43,10 @@ function App() {
           element={<AlertCancelRegistration />}
         />
         <Route path="/view-users" element={<AllUsers />} />
+        {/* <Route path="/view-users" element={<AdminPanel />} /> */}
         <Route path="/change-status" element={<ChangeUserStatus />} />
         {/* <Route path="/" element={<CardList />} /> */}
+        <Route path="/missions" element={<MissionList />} />
         <Route exact path="/" element={<Home />} />
       </Routes>
     </UserProvider>

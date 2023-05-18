@@ -135,12 +135,12 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))} */}
-              {!location.state ?
+              {/* {!location.state ?
 
               <MenuItem>
                 <Typography textAlign="center">Login</Typography>
               </MenuItem>: <span></span>
-            }
+            } */}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -148,7 +148,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -164,18 +164,31 @@ function ResponsiveAppBar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {!location.state ?
-            <Button onClick={handleLogin} sx={{ my: 2, color: 'white', display: 'block' }}>Login</Button> : <span></span>
+            <Button onClick={handleLogin} sx={{ my: 2, color: 'white', display: 'block' }}></Button> : <span></span>
             }
           </Box>
          
           <Box sx={{ flexGrow: 0 }}>
-          {location.state && location.state.userLogged ?
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>{location.state.userLogged.user.first_name.charAt(0).toUpperCase()}{location.state.userLogged.user.last_name.charAt(0).toUpperCase()}</Avatar>
-              </IconButton>
-            </Tooltip> : <span></span>
-}
+            {!location.state ?
+
+            <MenuItem>
+              {/* <Typography textAlign="center">Login</Typography> */}
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            
+                <Button onClick={handleLogin} sx={{ my: 2, color: 'white', display: 'block' }}>Login</Button> : <span></span>
+            
+              </Box>
+            </MenuItem> : 
+            <span></span>
+            }
+
+            {location.state && location.state.userLogged ?
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar>{location.state.userLogged.user.first_name.charAt(0).toUpperCase()}{location.state.userLogged.user.last_name.charAt(0).toUpperCase()}</Avatar>
+                </IconButton>
+              </Tooltip> : <span></span>
+            }
             {location.state !== null ?
             <Menu
               sx={{ mt: '45px' }}

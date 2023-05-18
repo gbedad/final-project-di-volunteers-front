@@ -1,6 +1,6 @@
 import  React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
-import {useLocation, useNavigate} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -23,16 +23,6 @@ import { mainListItems, secondaryListItems } from './ListItems';
 import Users from './Users';
 import ActiveUsers from './ActiveUsers';
 import UsersByStatusGrid from './UsersByStatus';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import { UserContext } from '../UserContext';
 
@@ -103,7 +93,6 @@ const mdTheme = createTheme();
 
 function DashboardContent() {
   const location = useLocation()
-  const navigate = useNavigate()
   const [open, setOpen] = React.useState(true);
   const token = localStorage.getItem('token');
   const {user} = useContext(UserContext)
@@ -117,7 +106,7 @@ function DashboardContent() {
   const [activeUsers, setActiveUsers] = useState(null)
   const [countUsersByStatus, setCountUsersByStatus] = useState({})
 // console.log(location.state);
-const userLogged = location.state.userLogged
+const userLogged = location.state.userLogged.user
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -158,16 +147,7 @@ const userLogged = location.state.userLogged
     console.log("By Status", countUsersByStatus)
    
     console.log(users);
-    const handleViewUsers = () => {
-      if (userLogged.user.role === 'admin') {
-        navigate(`/view-users`, {state:{userLogged}})
-      }
-    }
-    const handleViewMissions = () => {
-      if (userLogged.user.role === 'admin') {
-        navigate(`/missions`, {state:{userLogged}})
-      }
-    }
+
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -177,7 +157,7 @@ const userLogged = location.state.userLogged
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        {userLogged.user.role === 'admin' ?
+        {userLogged.role === 'admin' ?
         
         <Drawer variant="permanent" open={!open}>
           <Toolbar
@@ -194,30 +174,7 @@ const userLogged = location.state.userLogged
           </Toolbar>
           <Divider />
           <List component="nav">
-          <ListItemButton >
-      <ListItemIcon onClick={handleViewUsers}>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton >
-    <ListItemButton onClick={handleViewMissions} >
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Missions" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Volunteers" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItemButton>
+            {mainListItems}
             <Divider sx={{ my: 1 }} />
             {/* {secondaryListItems} */}
           </List>

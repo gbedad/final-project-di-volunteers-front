@@ -1,12 +1,17 @@
-import React, {useState, useEffect} from 'react';
-import {useNavigate, useLocation} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
+import TableFooter from '@mui/material/TableFooter';
+import TablePagination from '@mui/material/TablePagination';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Title from './Title';
@@ -14,88 +19,192 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
-
-
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import LastPageIcon from '@mui/icons-material/LastPage';
 
 function preventDefault(event) {
   event.preventDefault();
 }
-function createData(userid, first_name, last_name, email, mission, created_at, status, is_active) {
-    return { userid, first_name, last_name, email, mission, created_at, status, is_active };
-  }
-export default function Users(props) {
+function createData(
+  userid,
+  first_name,
+  last_name,
+  email,
+  mission,
+  created_at,
+  status,
+  is_active
+) {
+  return {
+    userid,
+    first_name,
+    last_name,
+    email,
+    mission,
+    created_at,
+    status,
+    is_active,
+  };
+}
+//Pagination
+function TablePaginationActions(props) {
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onPageChange } = props;
 
-  console.log(props.data)
-  const navigate = useNavigate()
-  const location = useLocation()
+  const handleFirstPageButtonClick = (event) => {
+    onPageChange(event, 0);
+  };
 
-  const users = props.data
-    // const [users, setUsers] = useState([])
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [dataActive, setDataActive] = useState([]);
-    const [activeUsers, setActiveUsers] = useState(null)
-    const [countUsersByStatus, setCountUsersByStatus] = useState({})
-  
-    console.log("location====>>>", location);
-// Generate Order Data
-const handleRowClick = (userId) => {
-  setSelectedUser(userId);
-  navigate('/change-status', {state: {userId, userLogged: location.state.userLogged}})
-};
-console.log(selectedUser);
+  const handleBackButtonClick = (event) => {
+    onPageChange(event, page - 1);
+  };
 
-console.log(users);
+  const handleNextButtonClick = (event) => {
+    onPageChange(event, page + 1);
+  };
 
-// useEffect(() => {
-//     const fetchUserList = async () => {
-//         try {
-//           const response = await axios.post('/all-users');
-//           console.log(response)
+  const handleLastPageButtonClick = (event) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
 
-          
-//           const filteredData = response.data.filter(item => item.is_active === true);
-//           const rowCounts = response.data.reduce((acc, item) => {
-//             const { status } = item;
-//             acc[status] = (acc[status] || 0) + 1;
-//             return acc;
-//           }, {});
-//           setUsers(response.data)
-//           setDataActive(filteredData);
-//           setActiveUsers(filteredData.length);
-//           setCountUsersByStatus(rowCounts)
+  TablePaginationActions.propTypes = {
+    count: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
+  };
 
-//         //   return response.data;
-//         } catch (error) {
-//           console.error(error);
-//         }
-      
-//       };
-     
-//         fetchUserList()
-//       }, [])
-
-//     console.log("Active Users", activeUsers)
-//     console.log("By Status", countUsersByStatus)
-   
-    console.log(users);
-
-    const rows = users.map((item, key=item.id) => {
-     return   createData(
-    item.id,
-    item.first_name,
-    item.last_name,
-    item.email,
-    item.mission.title,
-    item.created_at,
-    item.status,
-    item.is_active
-        )
-    })
-    
-console.log(rows);
   return (
-    <React.Fragment>
-      <Title>Recent Users</Title>
+    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page">
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page">
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page">
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page">
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Box>
+  );
+}
+
+export default function Users(props) {
+  // console.log(props.data)
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const users = props.data;
+  // const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [dataActive, setDataActive] = useState([]);
+  const [activeUsers, setActiveUsers] = useState(null);
+  const [countUsersByStatus, setCountUsersByStatus] = useState({});
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  // console.log("location====>>>", location);
+  // Generate Order Data
+  const handleRowClick = (userId) => {
+    setSelectedUser(userId);
+    navigate('/change-status', {
+      state: { userId, userLogged: location.state.userLogged },
+    });
+  };
+  // console.log(selectedUser);
+
+  // console.log(users);
+
+  // useEffect(() => {
+  //     const fetchUserList = async () => {
+  //         try {
+  //           const response = await axios.post('/all-users');
+  //           console.log(response)
+
+  //           const filteredData = response.data.filter(item => item.is_active === true);
+  //           const rowCounts = response.data.reduce((acc, item) => {
+  //             const { status } = item;
+  //             acc[status] = (acc[status] || 0) + 1;
+  //             return acc;
+  //           }, {});
+  //           setUsers(response.data)
+  //           setDataActive(filteredData);
+  //           setActiveUsers(filteredData.length);
+  //           setCountUsersByStatus(rowCounts)
+
+  //         //   return response.data;
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+
+  //       };
+
+  //         fetchUserList()
+  //       }, [])
+
+  //     console.log("Active Users", activeUsers)
+  //     console.log("By Status", countUsersByStatus)
+
+  console.log(users);
+
+  const rows = users.map((item, key = item.id) => {
+    return createData(
+      item.id,
+      item.first_name,
+      item.last_name,
+      item.email,
+      item.mission.title,
+      item.created_at,
+      item.status,
+      item.is_active
+    );
+  });
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  console.log(rows);
+  return (
+    <TableContainer component={Paper}>
+      <Title>All Users</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -109,30 +218,99 @@ console.log(rows);
             <TableCell align="right">IS ACTIVE</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {rows.length !== 0 ? rows.map((row) => (
-            <TableRow key={row.id} onClick={() => handleRowClick(row.userid)} selected={selectedUser === row.userid}>
-                <TableCell>{row.userid}</TableCell >
+        {/* <TableBody>
+          {rows.length !== 0 ? (
+            rows.map((row) => (
+              <TableRow
+                key={row.id}
+                onClick={() => handleRowClick(row.userid)}
+                selected={selectedUser === row.userid}>
+                <TableCell>{row.userid}</TableCell>
                 <TableCell>{row.first_name}</TableCell>
                 <TableCell>{row.last_name}</TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>{row.mission}</TableCell>
-                <TableCell>{row.created_at}</TableCell>
-                <TableCell >{row.status}</TableCell>
-                <TableCell align="right">{row.is_active ? <VerifiedIcon color="success"/> : ""}</TableCell>
+                <TableCell>
+                  {new Date(row.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{row.status}</TableCell>
+                <TableCell align="right">
+                  {row.is_active ? <VerifiedIcon color="success" /> : ''}
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow sx={{ width: '100%' }}>
+              <LinearProgress />
             </TableRow>
-          )) :
-          (
-            <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
+          )}
+        </TableBody> */}
+        <TableBody>
+          {(rowsPerPage > 0
+            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : rows
+          ).map((row) => (
+            <TableRow
+              key={row.userid}
+              onClick={() => handleRowClick(row.userid)}
+              selected={selectedUser === row.userid}>
+              <TableCell style={{ width: 60 }} align="left">
+                {row.userid}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.first_name}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.last_name}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.email}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.mission}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {new Date(row.created_at).toLocaleDateString()}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.status}
+              </TableCell>
+              <TableCell style={{ width: 80 }} align="right">
+                {row.is_active ? <VerifiedIcon color="success" /> : ''}
+              </TableCell>
+            </TableRow>
+          ))}
+
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 60 * emptyRows }}>
+              <TableCell colSpan={6} />
+            </TableRow>
           )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={4}
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: {
+                  'aria-label': 'rows per page',
+                },
+                native: true,
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
       <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
         {/* See more orders */}
       </Link>
-    </React.Fragment>
-     )
-  
+    </TableContainer>
+  );
 }
