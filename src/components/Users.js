@@ -129,7 +129,7 @@ export default function Users(props) {
   const [countUsersByStatus, setCountUsersByStatus] = useState({});
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   // console.log("location====>>>", location);
   // Generate Order Data
@@ -251,6 +251,7 @@ export default function Users(props) {
             : rows
           ).map((row) => (
             <TableRow
+              style={{ height: 40 }}
               key={row.userid}
               onClick={() => handleRowClick(row.userid)}
               selected={selectedUser === row.userid}>
@@ -290,7 +291,7 @@ export default function Users(props) {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              rowsPerPageOptions={[10, 15, 20, { label: 'All', value: -1 }]}
               colSpan={4}
               count={rows.length}
               rowsPerPage={rowsPerPage}
