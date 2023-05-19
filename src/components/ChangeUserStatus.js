@@ -275,7 +275,7 @@ const ChangeUserStatus = () => {
                       <CustomWidthTooltip
                         placement="right"
                         title={
-                          <Typography sx={{ fontSize: '16px' }}>
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
                             {longDescription('compte créé')}
                           </Typography>
                         }
@@ -287,7 +287,7 @@ const ChangeUserStatus = () => {
                       <CustomWidthTooltip
                         placement="right"
                         title={
-                          <Typography sx={{ fontSize: '16px' }}>
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
                             {longDescription('à renseigner')}
                           </Typography>
                         }
@@ -299,7 +299,7 @@ const ChangeUserStatus = () => {
                       <CustomWidthTooltip
                         placement="right"
                         title={
-                          <Typography sx={{ fontSize: '16px' }}>
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
                             {longDescription('à interviewer')}
                           </Typography>
                         }
@@ -311,7 +311,7 @@ const ChangeUserStatus = () => {
                       <CustomWidthTooltip
                         placement="right"
                         title={
-                          <Typography sx={{ fontSize: '16px' }}>
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
                             {longDescription('à finaliser')}
                           </Typography>
                         }
@@ -323,12 +323,24 @@ const ChangeUserStatus = () => {
                       <CustomWidthTooltip
                         placement="right"
                         title={
-                          <Typography sx={{ fontSize: '16px' }}>
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
                             {longDescription('validé')}
                           </Typography>
                         }
                         arrow>
                         <span>Validé</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'déclinée'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('déclinée')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>Déclinée</span>
                       </CustomWidthTooltip>
                     </MenuItem>
                     {/* <MenuItem value={'validé'}>Validé</MenuItem>

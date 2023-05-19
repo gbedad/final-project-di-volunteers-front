@@ -10,6 +10,8 @@ export function shortDescription(key) {
       return 'Nous aimerions en savoir plus';
     case 'validé':
       return 'Votre candidature est validée';
+    case 'déclinée':
+      return `Malheureusement, votre candidature est déclinée`;
     default:
       return 'Votre compte est créé';
   }
@@ -29,7 +31,26 @@ export function longDescription(key) {
     case 'validé':
       return `L’administrateur passe le dossier de « A finaliser » en « Validé » lorsque tous les documents sont chargés et complétés le cas échéant : pièce d’identité, extrait de casier judiciaire, CV et/ou diplômes, convention signée.
         Une candidature peut être validée sans le bénévole soit actif (il est alors soit en attente de l’allocation d’un élève, soit inactif pour d’autres raisons).`;
+    case 'déclinée':
+      return `Malheureusement, votre candidature est déclinée.`;
     default:
       break;
+  }
+}
+
+export function setStatusStep(key) {
+  switch (key) {
+    case 'compte créé':
+      return '1/5';
+    case 'à renseigner':
+      return '2/5';
+    case 'à interviewer':
+      return '3/5';
+    case 'à finaliser':
+      return '4/5';
+    case 'validé':
+      return '5/5';
+    default:
+      return '1/5';
   }
 }

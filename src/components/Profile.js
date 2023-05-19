@@ -31,10 +31,15 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TrafficIcon from '@mui/icons-material/Traffic';
+import Badge from '@mui/material/Badge';
 
 import { UserContext } from '../UserContext';
 
-import { shortDescription, longDescription } from '../js/statusDescription';
+import {
+  shortDescription,
+  longDescription,
+  setStatusStep,
+} from '../js/statusDescription';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
@@ -131,10 +136,14 @@ const ProfilePage = () => {
                   <TrafficIcon />
                 </Avatar>
               </ListItemAvatar>
+
               <ListItemText
                 primary={shortDescription(user.status)}
                 secondary="Your status will change when we have checked information."
               />
+              <Badge
+                color="primary"
+                badgeContent={setStatusStep(user.status)}></Badge>
             </ListItem>
           </List>
         ) : (
