@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useLocation} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,93 +23,102 @@ import Typography from '@mui/material/Typography';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Uploads() {
-    const location = useLocation()
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [fileUploaded, setFileUploaded] = useState(false);
-    const [filesUploaded, setFilesUploaded] = useState([])
-    console.log(location.state.userLogged.user.id);
-    const userId = location.state.userLogged.user.id;
+  const location = useLocation();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [filesUploaded, setFilesUploaded] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  console.log(location.state.userLogged.user.id);
+  const userId = location.state.userLogged.user.id;
 
-    const checkFileType = (mime) => {
+  const checkFileType = (mime) => {
+    switch (mime) {
+      case 'image/png':
+        return <ImageIcon />;
 
-      switch (mime) {
-        case 'image/png':
-          return <ImageIcon/>
-          
-        case 'application/pdf':
-          return <PictureAsPdfIcon/>
-        case 'image/jpeg':
-            return <ImageIcon/>
-        default:
-          return <ImageIcon/>
-      }
+      case 'application/pdf':
+        return <PictureAsPdfIcon />;
+      case 'image/jpeg':
+        return <ImageIcon />;
+      default:
+        return <ImageIcon />;
     }
-    
-    useEffect(() => {
+  };
+
+  useEffect(() => {
     const getFiles = async () => {
-        const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`)
-        setFilesUploaded(response.data.file)
+      const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
+      if (response.data.file) {
+        setFilesUploaded(response.data.file);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    getFiles();
+  }, []);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/upload/${location.state.userLogged.id}`,
+        formData
+      );
+      console.log(response.data);
+      setFileUploaded(true);
+    } catch (error) {
+      console.error(error);
     }
-    
-        getFiles()
-    }, [])
-    
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
-      };
-    
-      const handleFileUpload = async () => {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        try {
-          const response = await axios.post(`${BASE_URL}/upload/${location.state.userLogged.id}`, formData);
-          console.log(response.data);
-          setFileUploaded(true);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      console.log(filesUploaded);
+  };
+  console.log(filesUploaded);
   return (
     <>
-    <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={2}>
         <Button
-            onClick={handleFileUpload}
-            variant="contained" component="label" startIcon={<UploadIcon />}>
-            UPLOAD
-            <input hidden type="file" onChange={handleFileChange} />
+          onClick={handleFileUpload}
+          variant="contained"
+          component="label"
+          startIcon={<UploadIcon />}>
+          UPLOAD
+          <input hidden type="file" onChange={handleFileChange} />
         </Button>
-    </Stack>
-    {fileUploaded && <p>File Uploaded!</p>}
+      </Stack>
+      {fileUploaded && <p>File Uploaded!</p>}
 
-            <Paper>
-                {filesUploaded.length === 0 ? (
-                <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
-                  <CircularProgress color="secondary" />
-                </Stack>
-                ):( 
-                filesUploaded.map((f, i) => (
- 
-              <List key={i} sx={{
-                    width: '100%',
-                    maxWidth: 360,
-                    bgcolor: 'background.paper',
-                    position: 'relative',
-                    overflow: 'auto',
-                    maxHeight: 300,
-                  }}>
-                   <ListItem>
-                     <ListItemAvatar>
-                       <Avatar>
-                         {checkFileType(f.mimetype)}
-                         
-                       </Avatar>
-                     </ListItemAvatar>
-                     <ListItemText primary={f.filename} secondary={f.mimetype}/>
-                   </ListItem>
-                </List>
-                )))}
-            </Paper>
+      <Paper>
+        {isLoading ? (
+          <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+            <CircularProgress color="secondary" />
+          </Stack>
+        ) : (
+          filesUploaded.map((f, i) => (
+            <List
+              key={i}
+              sx={{
+                width: '100%',
+                maxWidth: 360,
+                bgcolor: 'background.paper',
+                position: 'relative',
+                overflow: 'auto',
+                maxHeight: 300,
+              }}>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>{checkFileType(f.mimetype)}</Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={f.filename} secondary={f.mimetype} />
+              </ListItem>
+            </List>
+          ))
+        )}
+      </Paper>
     </>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
   Typography,
@@ -11,38 +11,45 @@ import {
   MenuItem,
   TextField,
   Box,
-  LinearProgress
+  LinearProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { UserContext } from '../UserContext';
 
 const SubjectClassRangeComponent = () => {
-  const location = useLocation()
+  const location = useLocation();
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const { userLogged } = location.state;
-  const {token} = useContext(UserContext)
- const subjectClassesRanges = userLogged.user.skill.topics
+  const { token } = useContext(UserContext);
+  // const subjectClassesRanges = userLogged.user.skill.topics
 
- const userId = location.state.userLogged.user.id;
+  const userId = location.state.userLogged.user.id;
 
- useEffect(() => {
-  const getSubjects = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`)
+  useEffect(() => {
+    const getSubjects = async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+      );
       console.log(response.data);
-      const parsed_array = response.data.skill.topics.map(string => JSON.parse(string));
-      setSubjectClassRanges(parsed_array)
-      setIsLoading(false)
-  }
-  
-      getSubjects()
-  }, [])
+      if (response.data.skill) {
+        const parsed_array = response.data.skill.topics.map((string) =>
+          JSON.parse(string)
+        );
+        setSubjectClassRanges(parsed_array);
+        setIsLoading(false);
+      }
+      setIsLoading(false);
+    };
+
+    getSubjects();
+  }, []);
 
   const handleAddSubjectClassRange = () => {
     setSubjectClassRanges([
       ...subjectClassRanges,
-      { subject: "", classStart: "K3", classEnd: "K10" }
+      { subject: '', classStart: 'K3', classEnd: 'K10' },
     ]);
   };
 
@@ -72,14 +79,16 @@ const SubjectClassRangeComponent = () => {
 
   const handleSaveSubjectClassRanges = async () => {
     try {
-      
-      const response =  await axios.post(`${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`, {topics : JSON.stringify(subjectClassRanges)}, {
-    
-        headers: {
-         "Content-Type": "application/json",
-          "x-access-token":userLogged.token
-        },   
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
+        { topics: JSON.stringify(subjectClassRanges) },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': userLogged.token,
+          },
+        }
+      );
       console.log(response.data.message);
       if (response.data.message) {
         console.log('Day and time ranges saved successfully');
@@ -89,7 +98,7 @@ const SubjectClassRangeComponent = () => {
     } catch (error) {
       console.error('Failed to save day and time ranges', error);
     }
-    console.log("Saving subject and class ranges: ", subjectClassRanges);
+    console.log('Saving subject and class ranges: ', subjectClassRanges);
   };
 
   return (
@@ -99,87 +108,80 @@ const SubjectClassRangeComponent = () => {
         variant="contained"
         color="primary"
         onClick={handleAddSubjectClassRange}
-        sx={{mr:2}}
-      >
+        sx={{ mr: 2 }}>
         Add Subject and Class Range
       </Button>
-      {isLoading ? 
-      <Box sx={{ width: '100%' }}>
-        <LinearProgress />
-      </Box>
-      :
-      subjectClassRanges.map((subjectClassRange, index) => (
-        <Grid container spacing={2} key={index} style={{ marginTop: "16px" }}>
-          <Grid item xs={3}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Subject"
-              select
-              value={subjectClassRange.subject}
-              onChange={(e) => handleSubjectChange(e.target.value, index)}
-            >
-              <MenuItem value="Math">Math</MenuItem>
-              <MenuItem value="Science">Science</MenuItem>
-              <MenuItem value="History">History</MenuItem>
-              <MenuItem value="Physics">Physics</MenuItem>
-              <MenuItem value="Geography">Geography</MenuItem>
-              {/* Add more subjects as needed */}
-            </TextField>
+      {isLoading ? (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      ) : (
+        subjectClassRanges.map((subjectClassRange, index) => (
+          <Grid container spacing={2} key={index} style={{ marginTop: '16px' }}>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Subject"
+                select
+                value={subjectClassRange.subject}
+                onChange={(e) => handleSubjectChange(e.target.value, index)}>
+                <MenuItem value="Math">Math</MenuItem>
+                <MenuItem value="Science">Science</MenuItem>
+                <MenuItem value="History">History</MenuItem>
+                <MenuItem value="Physics">Physics</MenuItem>
+                <MenuItem value="Geography">Geography</MenuItem>
+                {/* Add more subjects as needed */}
+              </TextField>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Class Start"
+                select
+                value={subjectClassRange.classStart}
+                onChange={(e) => handleClassStartChange(e.target.value, index)}>
+                <MenuItem value="K3">K3</MenuItem>
+                <MenuItem value="K4">K4</MenuItem>
+                <MenuItem value="K5">K5</MenuItem>
+                <MenuItem value="K6">K6</MenuItem>
+                <MenuItem value="K7">K7</MenuItem>
+                <MenuItem value="K8">K8</MenuItem>
+                <MenuItem value="K9">K9</MenuItem>
+                <MenuItem value="K10">K10</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Class End"
+                select
+                value={subjectClassRange.classEnd}
+                onChange={(e) => handleClassEndChange(e.target.value, index)}>
+                <MenuItem value="K3">K3</MenuItem>
+                <MenuItem value="K4">K4</MenuItem>
+                <MenuItem value="K5">K5</MenuItem>
+                <MenuItem value="K6">K6</MenuItem>
+                <MenuItem value="K7">K7</MenuItem>
+                <MenuItem value="K8">K8</MenuItem>
+                <MenuItem value="K9">K9</MenuItem>
+                <MenuItem value="K10">K10</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={3}>
+              <Button onClick={() => handleRemoveSubjectClassRange(index)}>
+                <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={3}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Class Start"
-              select
-              value={subjectClassRange.classStart}
-              onChange={(e) => handleClassStartChange(e.target.value, index)}
-            >
-              <MenuItem value="K3">K3</MenuItem>
-              <MenuItem value="K4">K4</MenuItem>
-              <MenuItem value="K5">K5</MenuItem>
-              <MenuItem value="K6">K6</MenuItem>
-              <MenuItem value="K7">K7</MenuItem>
-              <MenuItem value="K8">K8</MenuItem>
-              <MenuItem value="K9">K9</MenuItem>
-              <MenuItem value="K10">K10</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Class End"
-              select
-              value={subjectClassRange.classEnd}
-              onChange={(e) => handleClassEndChange(e.target.value, index)}
-            >
-              <MenuItem value="K3">K3</MenuItem>
-              <MenuItem value="K4">K4</MenuItem>
-              <MenuItem value="K5">K5</MenuItem>
-              <MenuItem value="K6">K6</MenuItem>
-              <MenuItem value="K7">K7</MenuItem>
-              <MenuItem value="K8">K8</MenuItem>
-              <MenuItem value="K9">K9</MenuItem>
-              <MenuItem value="K10">K10</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={3}>
-            <Button
-              onClick={() => handleRemoveSubjectClassRange(index)}
-            >
-              <DeleteIcon sx={{ fontSize: 40 }} color="secondary"/>
-            </Button>
-          </Grid>
-        </Grid>
-      ))}
+        ))
+      )}
       <Button
         variant="contained"
         color="primary"
-        onClick={handleSaveSubjectClassRanges}
-        
-      >
+        onClick={handleSaveSubjectClassRanges}>
         Save
       </Button>
     </div>
