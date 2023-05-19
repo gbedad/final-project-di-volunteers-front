@@ -25,6 +25,17 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { Button } from '@mui/material';
+
+import { shortDescription, longDescription } from '../js/statusDescription';
+
+const longText = `
+Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
+Praesent non nunc mollis, fermentum neque at, semper arcu.
+Nullam eget est sed sem iaculis gravida eget vitae justo.
+`;
 
 function preventDefault(event) {
   event.preventDefault();
@@ -273,9 +284,11 @@ export default function Users(props) {
               <TableCell style={{ width: 160 }} align="left">
                 {new Date(row.created_at).toLocaleDateString()}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.status}
-              </TableCell>
+              <Tooltip title={longDescription(row.status)}>
+                <TableCell style={{ width: 160 }} align="left">
+                  {row.status}
+                </TableCell>
+              </Tooltip>
               <TableCell style={{ width: 80 }} align="right">
                 {row.is_active ? <VerifiedIcon color="success" /> : ''}
               </TableCell>

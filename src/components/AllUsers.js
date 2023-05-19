@@ -238,7 +238,6 @@ function DashboardContent() {
           }}>
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <SearchBar />
             <Grid container spacing={3}>
               <Grid item xs={4} md={8} lg={9}>
                 <Paper
@@ -266,6 +265,7 @@ function DashboardContent() {
 
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <SearchBar />
                   <Users data={users} />
                 </Paper>
               </Grid>

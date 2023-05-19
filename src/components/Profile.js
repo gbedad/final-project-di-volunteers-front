@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { Card, CardContent, Typography } from '@mui/material';
@@ -34,113 +34,125 @@ import TrafficIcon from '@mui/icons-material/Traffic';
 
 import { UserContext } from '../UserContext';
 
+import { shortDescription, longDescription } from '../js/statusDescription';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
-    const location = useLocation();
-    const navigate = useNavigate()
-    const [isRegistered, setIsRegistered] = useState(true);
-    const [resp, setResp] = useState(null)
-    
-    console.log("from location", location.state.userLogged);
-    // const user = location.state.userLogged
-    const { user } = location.state.userLogged;
-    console.log(user);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isRegistered, setIsRegistered] = useState(true);
+  const [resp, setResp] = useState(null);
 
-    const handleCancelRegistration = () => {
-        axios.delete(`${BASE_URL}/delete-registration/${user.id}`)
-          .then(response => {
-            setIsRegistered(false);
-            console.log(response.data)
-            console.log('Registration cancelled successfully');
-            setResp(response.data.msg)
-            navigate('/cancel-registration', {state:{message: "You cancelled your Registration.", user}})
-          })
-          .catch(error => {
-            console.error('Failed to cancel registration: ', error);
-          });
-      }
-      
+  console.log('from location', location.state.userLogged);
+  // const user = location.state.userLogged
+  const { user } = location.state.userLogged;
+  console.log(user);
+
+  const handleCancelRegistration = () => {
+    axios
+      .delete(`${BASE_URL}/delete-registration/${user.id}`)
+      .then((response) => {
+        setIsRegistered(false);
+        console.log(response.data);
+        console.log('Registration cancelled successfully');
+        setResp(response.data.msg);
+        navigate('/cancel-registration', {
+          state: { message: 'You cancelled your Registration.', user },
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to cancel registration: ', error);
+      });
+  };
 
   return (
     <>
-    {!isRegistered && <Stack sx={{ width: '100%' }} spacing={2}>
-    <Alert onClose={() => {}}>This is a success alert — check it out!</Alert>
-      <Alert
-        action={
-          <Button color="inherit" size="small">
-            UNDO
-          </Button>
-        }
-      >
-        This is a success alert — check it out!
-      </Alert>
-    </Stack> }
-    <Box>
+      {!isRegistered && (
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          <Alert onClose={() => {}}>
+            This is a success alert — check it out!
+          </Alert>
+          <Alert
+            action={
+              <Button color="inherit" size="small">
+                UNDO
+              </Button>
+            }>
+            This is a success alert — check it out!
+          </Alert>
+        </Stack>
+      )}
+      <Box></Box>
+      <Box sx={{ display: 'flex' }}>
+        {user.mission ? (
+          <List
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <CategoryIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={user.mission.title}
+                secondary={user.mission.description}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <MapIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={user.mission.location} secondary="" />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <AlternateEmailIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={user.email} secondary={user.phone} />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <BadgeIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={user.last_name}
+                secondary={user.first_name}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <TrafficIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={shortDescription(user.status)}
+                secondary="Your status will change when we have checked information."
+              />
+            </ListItem>
+          </List>
+        ) : (
+          <p>Please log in to view your profile.</p>
+        )}
+      </Box>
 
-    </Box>
-          <Box sx={{ display: 'flex' }}>
-            {user.mission ? (
-              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <CategoryIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.mission.title} secondary={user.mission.description} />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <MapIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.mission.location} secondary="" />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <AlternateEmailIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.email} secondary={user.phone} />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <BadgeIcon/>
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.last_name} secondary={user.first_name} />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <TrafficIcon/>
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.status} secondary="Your status will change when we have checked information." />
-              </ListItem>
-            </List>
-            ): (
-              <p>Please log in to view your profile.</p>
-            )}
-            
-          </Box>
-
-    <Button
+      <Button
         type="submit"
         onClick={handleCancelRegistration}
         fullWidth
-        disabled = {user.skill ? "true": "false"} 
+        disabled={user.skill ? 'true' : 'false'}
         variant="contained"
-        sx={{ backgroundColor:'red', mt: 3, mb: 2 }}
-      >
+        sx={{ backgroundColor: 'red', mt: 3, mb: 2 }}>
         Cancel registration
-    </Button>
-
-  </>
+      </Button>
+    </>
   );
-}
+};
 
 export default ProfilePage;
