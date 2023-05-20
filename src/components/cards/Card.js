@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
+
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -37,7 +37,7 @@ const MissionCard = (props) => {
       <div className="card-body">
         <h2 className="card-title">{props.title}</h2>
         <p className="card-text">{props.description}</p>
-        <CardActions className="">
+        <CardActions sx={{ justifyContent: 'space-between' }}>
           <Button size="small" onClick={handleOpen}>
             En savoir plus
           </Button>

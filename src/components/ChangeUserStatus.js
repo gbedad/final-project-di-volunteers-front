@@ -30,7 +30,9 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import BadgeIcon from '@mui/icons-material/Badge';
+import Person2Icon from '@mui/icons-material/Person2';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -46,7 +48,7 @@ import { lightBlue } from '@mui/material/colors';
 
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
-import { longDescription } from '../js/statusDescription';
+import { longDescription, nextStepStatus } from '../js/statusDescription';
 
 const longText = `
 Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
@@ -218,7 +220,7 @@ const ChangeUserStatus = () => {
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
-                      <BadgeIcon />
+                      <Person2Icon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
@@ -238,20 +240,22 @@ const ChangeUserStatus = () => {
               }}>
               <List component="nav" aria-label="main mailbox folders">
                 <ListItemButton>
-                  <ListItemIcon>
-                    <DraftsIcon />
-                  </ListItemIcon>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <DraftsIcon />
+                    </Avatar>
+                  </ListItemAvatar>
                   <ListItemText primary={user.message} />
                 </ListItemButton>
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
-                      <BadgeIcon />
+                      <FormatListNumberedIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     primary={user.status}
-                    secondary="Define a new status if necessary"
+                    secondary={nextStepStatus(user.status)}
                   />
                 </ListItem>
               </List>
@@ -295,7 +299,7 @@ const ChangeUserStatus = () => {
                         <span>A renseigner</span>
                       </CustomWidthTooltip>
                     </MenuItem>
-                    <MenuItem value={'interviewer'}>
+                    <MenuItem value={'à interviewer'}>
                       <CustomWidthTooltip
                         placement="right"
                         title={

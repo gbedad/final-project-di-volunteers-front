@@ -35,6 +35,8 @@ import Badge from '@mui/material/Badge';
 
 import { UserContext } from '../UserContext';
 
+import { shortDescriptionForSupervisor } from '../js/statusDescription';
+
 import {
   shortDescription,
   longDescription,
@@ -133,17 +135,16 @@ const ProfilePage = () => {
             <ListItem>
               <ListItemAvatar>
                 <Avatar>
-                  <TrafficIcon />
+                  <Badge
+                    color="grey"
+                    badgeContent={setStatusStep(user.status)}></Badge>
                 </Avatar>
               </ListItemAvatar>
 
               <ListItemText
                 primary={shortDescription(user.status)}
-                secondary="Your status will change when we have checked information."
+                secondary={shortDescriptionForSupervisor(user.status)}
               />
-              <Badge
-                color="primary"
-                badgeContent={setStatusStep(user.status)}></Badge>
             </ListItem>
           </List>
         ) : (

@@ -103,13 +103,13 @@ const SubjectClassRangeComponent = () => {
 
   return (
     <div>
-      <Typography variant="h5">Subject and Class Range</Typography>
+      <Typography variant="h5">Subject and Grade Range</Typography>
       <Button
         variant="contained"
         color="primary"
         onClick={handleAddSubjectClassRange}
         sx={{ mr: 2 }}>
-        Add Subject and Class Range
+        Add Subject and Grade Range
       </Button>
       {isLoading ? (
         <Box sx={{ width: '100%' }}>
@@ -179,6 +179,7 @@ const SubjectClassRangeComponent = () => {
         ))
       )}
       <Button
+        sx={{ marginTop: '10px' }}
         variant="contained"
         color="primary"
         onClick={handleSaveSubjectClassRanges}>

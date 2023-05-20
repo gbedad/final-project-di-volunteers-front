@@ -17,6 +17,7 @@ import Stack from '@mui/material/Stack';
 import Title from './Title';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
@@ -30,12 +31,6 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { Button } from '@mui/material';
 
 import { shortDescription, longDescription } from '../js/statusDescription';
-
-const longText = `
-Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
-Praesent non nunc mollis, fermentum neque at, semper arcu.
-Nullam eget est sed sem iaculis gravida eget vitae justo.
-`;
 
 function preventDefault(event) {
   event.preventDefault();
@@ -184,7 +179,7 @@ export default function Users(props) {
   //     console.log("Active Users", activeUsers)
   //     console.log("By Status", countUsersByStatus)
 
-  console.log(users);
+  // console.log(users);
 
   const rows = users.map((item, key = item.id) => {
     return createData(
@@ -226,7 +221,7 @@ export default function Users(props) {
             <TableCell>MISSION</TableCell>
             <TableCell>CREATED</TableCell>
             <TableCell>STATUS</TableCell>
-            <TableCell align="right">IS ACTIVE</TableCell>
+            <TableCell align="right">ACTIVE</TableCell>
           </TableRow>
         </TableHead>
         {/* <TableBody>
@@ -290,13 +285,17 @@ export default function Users(props) {
                 </TableCell>
               </Tooltip>
               <TableCell style={{ width: 80 }} align="right">
-                {row.is_active ? <VerifiedIcon color="success" /> : ''}
+                {row.is_active ? (
+                  <VerifiedUserIcon fontSize="small" color="success" />
+                ) : (
+                  ''
+                )}
               </TableCell>
             </TableRow>
           ))}
 
           {emptyRows > 0 && (
-            <TableRow style={{ height: 60 * emptyRows }}>
+            <TableRow style={{ height: 40 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )}

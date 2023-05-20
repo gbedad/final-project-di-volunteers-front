@@ -3,13 +3,11 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Title from './Title';
 
-
 export default function ActiveUsers(props) {
-
-    const activeUsers = props.data
+  const activeUsers = props.data;
   return (
     <React.Fragment>
-      <Title>Active Users</Title>
+      <Title>Utilsateurs actifs</Title>
       <Typography component="p" variant="h4">
         {activeUsers}
       </Typography>

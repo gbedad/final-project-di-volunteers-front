@@ -182,6 +182,7 @@ const DayTimeRangeComponent = () => {
       )}
 
       <Button
+        sx={{ marginTop: '10px' }}
         variant="contained"
         color="primary"
         onClick={handleSaveDayTimeRanges}>

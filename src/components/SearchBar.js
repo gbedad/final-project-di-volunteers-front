@@ -26,18 +26,21 @@ const SearchBar = ({ onSearch }) => {
   return (
     <Box display="flex" alignItems="center" maxWidth={700}>
       <TextField
+        size="small"
         label="Search by topic"
         value={topic}
         onChange={handleTopicChange}
         sx={{ marginRight: '1rem' }}
       />
       <TextField
+        size="small"
         label="Search by location"
         value={location}
         onChange={handleLocationChange}
         sx={{ marginRight: '1rem' }}
       />
       <TextField
+        size="small"
         label="Search by status"
         value={status}
         onChange={handleStatusChange}

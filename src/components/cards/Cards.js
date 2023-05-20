@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Grid from '@mui/material/Grid';
 import Card from './Card'; // Import the Card component;
 import './Card.css';
 
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack'
+import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
-
-
 
 // const cardsData = [
 //   {
@@ -40,67 +39,76 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 // fetch(`${BASE_URL}/users`)
 const CardList = () => {
-    const [cardsData, setCardsData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true)
-    const BASE_URL = process.env.REACT_APP_BASE_URL;
-    useEffect(() => {
-      
-          const fetchMissionsList = async () => {
-            try {
-              const response = await fetch(`${BASE_URL}/`)
-              const data = await response.json()
-              console.log(data)
-              setCardsData(data);
-              setIsLoading(false)
-            } catch (error) {
-              console.error(error);
-            }
-          
-          };
-       
-       fetchMissionsList();
-      }, []);
+  const [cardsData, setCardsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  useEffect(() => {
+    const fetchMissionsList = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/`);
+        const data = await response.json();
+        console.log(data);
+        setCardsData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-useEffect(()=> {
+    fetchMissionsList();
+  }, []);
 
-}, [])
-    
-      // axios.interceptors.response.use(
-      //     response => {
-      //         return response
-      //     },
-      //     error => {
-      //         if (!error.response) {
-      //             console.log("Please check your internet connection.");
-      //         }
-      
-      //         return Promise.reject(error)
-      //     }
-      // )
-console.log(cardsData);
-  return (
-    
-    isLoading ? (
-      <Box sx={{ width: '100%' }}>
+  useEffect(() => {}, []);
+
+  // axios.interceptors.response.use(
+  //     response => {
+  //         return response
+  //     },
+  //     error => {
+  //         if (!error.response) {
+  //             console.log("Please check your internet connection.");
+  //         }
+
+  //         return Promise.reject(error)
+  //     }
+  // )
+  console.log(cardsData);
+  return isLoading ? (
+    <Box sx={{ width: '100%' }}>
       <LinearProgress />
     </Box>
-    ): 
-    (
-    <Container className='card-list' sx={{display:"flex", justifyContent:"center"}}>
- 
+  ) : (
+    <>
+      <Grid container spacing={3}>
         {cardsData.map((card) => (
-        <Card
-            key={card.id}
-            image={card.image}
-            id={card.id}
-            title={card.title}
-            description={card.description}
-            link={card.link}
-        />
+          <Grid item xs={12} md={6} lg={3}>
+            <Card
+              sx={{ maxWidth: 345 }}
+              key={card.id}
+              image={card.image}
+              id={card.id}
+              title={card.title}
+              description={card.description}
+              link={card.link}
+            />
+          </Grid>
         ))}
-       
-    </Container>
-    )
+      </Grid>
+    </>
+    // <Container
+    //   className="card-list"
+    //   sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+    //   {cardsData.map((card) => (
+    //     <Card
+    //       key={card.id}
+    //       image={card.image}
+    //       id={card.id}
+    //       title={card.title}
+    //       description={card.description}
+    //       link={card.link}
+    //     />
+    //   ))}
+    // </Container>
   );
 };
 
