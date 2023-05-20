@@ -57,8 +57,7 @@ function ResponsiveAppBar() {
     }
   };
 
-  const handleLogin = async (req, res, event) => {
-    // event.stopPropagation();
+  const handleLogin = async (req, res) => {
     try {
       navigate('/login');
     } catch (err) {
@@ -117,7 +116,7 @@ function ResponsiveAppBar() {
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'bottom',
+                vertical: 'top',
                 horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
@@ -144,7 +143,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="/home"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -155,17 +154,8 @@ function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}>
-            LOGO
+            MISSION
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {!location.state ? (
-              <Button
-                onClick={handleLogin}
-                sx={{ my: 2, color: 'white', display: 'block' }}></Button>
-            ) : (
-              <span></span>
-            )}
-          </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             {!location.state ? (
