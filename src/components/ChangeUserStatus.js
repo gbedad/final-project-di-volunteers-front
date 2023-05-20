@@ -167,7 +167,7 @@ const ChangeUserStatus = () => {
     <ThemeProvider theme={lightTheme}>
       <Container maxWidth="l">
         <Grid container spacing={2}>
-          <Grid item xs={5}>
+          <Grid item xs={12} md={4} lg={4}>
             <h2>Change Status</h2>
             <FormControlLabel
               control={
@@ -357,7 +357,7 @@ const ChangeUserStatus = () => {
               <Button onClick={handleConfirmClick}>Confirm Status</Button>
             </div>
           </Grid>
-          <Grid item xs={4} sx={{ mt: 3 }}>
+          <Grid item xs={12} md={4} lg={4} sx={{ mt: 3 }}>
             <Typography variant="h5" sx={{ minWidth: 275, mt: 6 }}>
               Skills
             </Typography>
@@ -437,7 +437,7 @@ const ChangeUserStatus = () => {
               </Typography>
             )}
           </Grid>
-          <Grid item xs={3} sx={{ mt: 3 }}>
+          <Grid item xs={12} md={4} lg={4} sx={{ mt: 3 }}>
             <Typography
               variant="h5"
               component="div"
