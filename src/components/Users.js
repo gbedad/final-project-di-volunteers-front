@@ -130,7 +130,7 @@ export default function Users(props) {
   const location = useLocation();
 
   const users = props.data;
-  console.log(users);
+  // console.log(users);
   // const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
   const [dataActive, setDataActive] = useState([]);
@@ -194,8 +194,7 @@ export default function Users(props) {
       item.mission.title,
       item.created_at,
       item.status,
-      item.is_active,
-      item.id_received
+      item.is_active
     );
   });
 
@@ -212,7 +211,7 @@ export default function Users(props) {
     setPage(0);
   };
 
-  console.log(rows);
+  // console.log(rows);
   return (
     <TableContainer component={Paper}>
       <Title>All Users</Title>

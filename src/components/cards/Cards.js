@@ -47,7 +47,7 @@ const CardList = () => {
       try {
         const response = await fetch(`${BASE_URL}/`);
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setCardsData(data);
         setIsLoading(false);
       } catch (error) {
@@ -72,7 +72,7 @@ const CardList = () => {
   //         return Promise.reject(error)
   //     }
   // )
-  console.log(cardsData);
+  // console.log(cardsData);
   return isLoading ? (
     <Box sx={{ width: '100%' }}>
       <LinearProgress />

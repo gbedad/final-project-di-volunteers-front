@@ -22,6 +22,7 @@ import FileDisplay from './FileDisplay';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import InstructionComponent from './files/Instructions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -32,7 +33,7 @@ export default function Uploads() {
   const [filesUploaded, setFilesUploaded] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  console.log(location.state.userLogged.user.id);
+  // console.log(location.state.userLogged.user.id);
   const userId = location.state.userLogged.user.id;
 
   const checkFileType = (mime) => {
@@ -75,7 +76,7 @@ export default function Uploads() {
         `${BASE_URL}/upload/${location.state.userLogged.id}`,
         formData
       );
-      console.log(response.data);
+      // console.log(response.data);
       setFileUploaded(true);
     } catch (error) {
       console.error(error);
@@ -90,9 +91,10 @@ export default function Uploads() {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(filesUploaded);
+  // console.log(filesUploaded);
   return (
     <>
+      <InstructionComponent />
       <Stack direction="row" spacing={2}>
         <Button
           onClick={handleFileUpload}

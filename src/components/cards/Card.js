@@ -13,7 +13,7 @@ import image from '../../assets/hands.jpeg';
 import './Card.css';
 
 const MissionCard = (props) => {
-  console.log('Mission ID', props);
+  // console.log('Mission ID', props);
 
   const style = {
     position: 'absolute',

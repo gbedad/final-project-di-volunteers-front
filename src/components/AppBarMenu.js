@@ -31,7 +31,7 @@ function ResponsiveAppBar() {
   if (location.state) {
     userLogged = location.state.userLogged;
   }
-  console.log(userLogged);
+  // console.log(userLogged);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -66,7 +66,7 @@ function ResponsiveAppBar() {
   };
 
   const handleProfile = () => {
-    console.log('Go to profile page');
+    // console.log('Go to profile page');
   };
 
   const handleViewUsers = () => {

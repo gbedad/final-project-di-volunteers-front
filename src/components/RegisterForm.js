@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -24,14 +24,16 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-
-
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        DI Final Project Gerald Berrebi
+        Association Séphora Berrebi by Gerald Berrebi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -50,13 +52,13 @@ const RegisterForm = ({ mission }) => {
   const [password, setPassword] = useState('');
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
-  const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Going to handlesubmit")
+    console.log('Going to handlesubmit');
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
         email,
@@ -69,7 +71,7 @@ const RegisterForm = ({ mission }) => {
         mission_id: propsData,
       });
       console.log(response.data); // Handle successful response here
-      navigate('/login'); 
+      navigate('/login');
     } catch (error) {
       console.error(error); // Handle error here
     }
@@ -114,52 +116,52 @@ const RegisterForm = ({ mission }) => {
     //   <br />
     //   <button type="submit">Register</button>
     // </form>
-  //   <form onSubmit={handleSubmit}>
-  //   <TextField
-  //     label="Email"
-  //     type="email"
-  //     variant="outlined"
-  //     value={email}
-  //     onChange={(e) => setEmail(e.target.value)}
-  //     required
-  //   />
-  //   <br />
-  //   <TextField
-  //     label="Password"
-  //     type="password"
-  //     variant="outlined"
-  //     value={password}
-  //     onChange={(e) => setPassword(e.target.value)}
-  //     required
-  //   />
-  //   <br />
-  //   <TextField
-  //     label="Birth Date"
-  //     type="date"
-  //     variant="outlined"
-  //     value={birthDate}
-  //     onChange={(e) => setBirthDate(e.target.value)}
-  //     required
-  //     InputLabelProps={{
-  //       shrink: true,
-  //     }}
-  //   />
-  //   <br />
-  //   <TextField
-  //     label="Message"
-  //     multiline
-  //     rows={4}
-  //     variant="outlined"
-  //     value={message}
-  //     onChange={(e) => setMessage(e.target.value)}
-  //     required
-  //   />
-  //   <br />
-  //   <Button type="submit" variant="contained" color="primary">
-  //     Register
-  //   </Button>
-  // </form>
-  <ThemeProvider theme={theme}>
+    //   <form onSubmit={handleSubmit}>
+    //   <TextField
+    //     label="Email"
+    //     type="email"
+    //     variant="outlined"
+    //     value={email}
+    //     onChange={(e) => setEmail(e.target.value)}
+    //     required
+    //   />
+    //   <br />
+    //   <TextField
+    //     label="Password"
+    //     type="password"
+    //     variant="outlined"
+    //     value={password}
+    //     onChange={(e) => setPassword(e.target.value)}
+    //     required
+    //   />
+    //   <br />
+    //   <TextField
+    //     label="Birth Date"
+    //     type="date"
+    //     variant="outlined"
+    //     value={birthDate}
+    //     onChange={(e) => setBirthDate(e.target.value)}
+    //     required
+    //     InputLabelProps={{
+    //       shrink: true,
+    //     }}
+    //   />
+    //   <br />
+    //   <TextField
+    //     label="Message"
+    //     multiline
+    //     rows={4}
+    //     variant="outlined"
+    //     value={message}
+    //     onChange={(e) => setMessage(e.target.value)}
+    //     required
+    //   />
+    //   <br />
+    //   <Button type="submit" variant="contained" color="primary">
+    //     Register
+    //   </Button>
+    // </form>
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -168,17 +170,20 @@ const RegisterForm = ({ mission }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up to mission {propsData}
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -230,16 +235,16 @@ const RegisterForm = ({ mission }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker 
-                value={birthDate} 
-                onChange={(newValue) => setBirthDate(newValue)}
-                required
-                id="birthdate"
-                label="Birth Date"
-                />
-              </LocalizationProvider>
+                  <DatePicker
+                    value={birthDate}
+                    onChange={(newValue) => setBirthDate(newValue)}
+                    required
+                    id="birthdate"
+                    label="Birth Date"
+                  />
+                </LocalizationProvider>
               </Grid>
-              
+
               <Grid item xs={12}>
                 <TextField
                   required
@@ -269,18 +274,19 @@ const RegisterForm = ({ mission }) => {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
+                  control={
+                    <Checkbox value="allowExtraEmails" color="primary" />
+                  }
                   label="Click here to indicate that you have read and agree to the terms presented in the Terms and Conditions agreement."
                 />
               </Grid>
             </Grid>
-            
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">

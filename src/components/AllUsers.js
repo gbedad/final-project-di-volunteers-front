@@ -134,7 +134,7 @@ function DashboardContent() {
           },
         });
         // console.log("Response",response)
-        console.log(response.data);
+        // console.log(response.data);
         const filteredData = response.data.filter(
           (item) => item.is_active === true
         );
@@ -157,10 +157,10 @@ function DashboardContent() {
     fetchUserList();
   }, []);
 
-  console.log('Active Users', activeUsers);
-  console.log('By Status', countUsersByStatus);
+  // console.log('Active Users', activeUsers);
+  // console.log('By Status', countUsersByStatus);
 
-  console.log(users);
+  // console.log(users);
   const handleViewUsers = () => {
     if (userLogged.user.role === 'admin') {
       navigate(`/view-users`, { state: { userLogged } });
