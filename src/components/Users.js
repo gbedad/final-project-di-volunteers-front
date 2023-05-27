@@ -29,6 +29,9 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { Button } from '@mui/material';
+import Badge from '@mui/material/Badge';
+
+import ArticleIcon from '@mui/icons-material/Article';
 
 import { shortDescription, longDescription } from '../js/statusDescription';
 
@@ -44,7 +47,8 @@ function createData(
   mission,
   created_at,
   status,
-  is_active
+  is_active,
+  trueValuesCount
 ) {
   return {
     userid,
@@ -56,6 +60,7 @@ function createData(
     created_at,
     status,
     is_active,
+    trueValuesCount,
   };
 }
 //Pagination
@@ -183,8 +188,22 @@ export default function Users(props) {
   //     console.log("By Status", countUsersByStatus)
 
   // console.log(users);
+  const calculateTrueValues = (users) => {
+    return users.map((user) => {
+      const trueValues = [
+        user.id_received,
+        user.cv_received,
+        user.b3_received,
+        user.convention_received,
+      ].filter((value) => value === true);
+      return { ...user, trueValuesCount: trueValues.length };
+    });
+  };
+  const usersWithTrueValuesCount = calculateTrueValues(users);
 
-  const rows = users.map((item, key = item.id) => {
+  console.log(usersWithTrueValuesCount);
+
+  const rows = usersWithTrueValuesCount.map((item, key = item.id) => {
     return createData(
       item.id,
       item.first_name,
@@ -194,7 +213,8 @@ export default function Users(props) {
       item.mission.title,
       item.created_at,
       item.status,
-      item.is_active
+      item.is_active,
+      item.trueValuesCount
     );
   });
 
@@ -225,6 +245,7 @@ export default function Users(props) {
             <TableCell>MISSION</TableCell>
             <TableCell>CREATED</TableCell>
             <TableCell>STATUS</TableCell>
+            <TableCell>DOCS.</TableCell>
             <TableCell align="right">ACTIVE</TableCell>
           </TableRow>
         </TableHead>
@@ -288,6 +309,13 @@ export default function Users(props) {
                   {row.status}
                 </TableCell>
               </Tooltip>
+              <TableCell style={{ width: 60 }} align="left">
+                <Badge
+                  badgeContent={`${row.trueValuesCount}/4`}
+                  color="secondary">
+                  <ArticleIcon />
+                </Badge>
+              </TableCell>
               <TableCell style={{ width: 80 }} align="right">
                 {row.is_active ? (
                   <VerifiedUserIcon fontSize="small" color="success" />

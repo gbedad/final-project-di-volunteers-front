@@ -180,52 +180,7 @@ function DashboardContent() {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        {userLogged.user.role === 'admin' ? (
-          <Drawer variant="permanent" open={!open}>
-            <Toolbar
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                px: [1],
-              }}>
-              <IconButton onClick={toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Toolbar>
-            <Divider />
-            <List component="nav">
-              <ListItemButton>
-                <ListItemIcon onClick={handleViewUsers}>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItemButton>
-              <ListItemButton onClick={handleViewMissions}>
-                <ListItemIcon>
-                  <ShoppingCartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Missions" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Volunteers" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <BarChartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Reports" />
-              </ListItemButton>
-              <Divider sx={{ my: 1 }} />
-              {/* {secondaryListItems} */}
-            </List>
-          </Drawer>
-        ) : (
-          <></>
-        )}
+
         <Box
           component="main"
           sx={{
