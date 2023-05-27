@@ -14,6 +14,7 @@ import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
@@ -23,7 +24,6 @@ import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import Typography from '@mui/material/Typography';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -49,6 +49,9 @@ import { lightBlue } from '@mui/material/colors';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 import { longDescription, nextStepStatus } from '../js/statusDescription';
+
+import FileDisplay from './FileDisplay';
+import DocumentCheckbox from './files/filesSaved';
 
 const longText = `
 Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
@@ -82,6 +85,8 @@ const ChangeUserStatus = () => {
   const [status, setStatus] = useState('');
   const [newStatus, setNewStatus] = useState('');
   const [checked, setChecked] = React.useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [open, setOpen] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
 
   const handleActiveChange = async (event) => {
@@ -155,6 +160,14 @@ const ChangeUserStatus = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+  const handleOpen = (file) => {
+    setSelectedFile(file);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return !user ? (
@@ -444,6 +457,7 @@ const ChangeUserStatus = () => {
               sx={{ minWidth: 275, mt: 6 }}>
               Files Uploaded
             </Typography>
+            <DocumentCheckbox user={user} />
             {user.file.length !== 0 ? (
               <Card sx={{ minWidth: 275, mt: 3 }}>
                 <CardContent>
@@ -459,13 +473,17 @@ const ChangeUserStatus = () => {
                         bgcolor: 'background.paper',
                       }}>
                       <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>{checkFileType(f.mimetype)}</Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={f.filename}
-                          secondary={f.mimetype}
-                        />
+                        <ListItemButton
+                          component="a"
+                          onClick={() => handleOpen(f.path)}>
+                          <ListItemAvatar>
+                            <Avatar>{checkFileType(f.mimetype)}</Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={f.filename}
+                            secondary={f.mimetype}
+                          />
+                        </ListItemButton>
                       </ListItem>
                     </List>
                   ))}
@@ -478,6 +496,13 @@ const ChangeUserStatus = () => {
             )}
           </Grid>
         </Grid>
+        {selectedFile && (
+          <FileDisplay
+            s3FilePath={selectedFile}
+            open={open}
+            handleClose={handleClose}
+          />
+        )}
       </Container>
     </ThemeProvider>
   );

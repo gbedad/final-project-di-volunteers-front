@@ -21,6 +21,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './ListItems';
 import Users from './Users';
+import Users2 from './Users2';
 import ActiveUsers from './ActiveUsers';
 import UsersByStatusGrid from './UsersByStatus';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -47,7 +48,7 @@ function Copyright(props) {
       {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        DI Final Project Gerald Berrebi
+        Association Séphora Berrebi by Gerald Berrebi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -133,7 +134,7 @@ function DashboardContent() {
           },
         });
         // console.log("Response",response)
-
+        console.log(response.data);
         const filteredData = response.data.filter(
           (item) => item.is_active === true
         );
@@ -265,8 +266,9 @@ function DashboardContent() {
 
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <SearchBar />
+                  {/* <SearchBar /> */}
                   <Users data={users} />
+                  {/* <Users2 /> */}
                 </Paper>
               </Grid>
             </Grid>

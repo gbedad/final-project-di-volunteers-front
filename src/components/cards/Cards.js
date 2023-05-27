@@ -81,7 +81,7 @@ const CardList = () => {
     <>
       <Grid container spacing={3}>
         {cardsData.map((card) => (
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={5} lg={4}>
             <Card
               sx={{ maxWidth: 345 }}
               key={card.id}

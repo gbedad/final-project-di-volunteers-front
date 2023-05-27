@@ -22,6 +22,7 @@ import CardList from './components/cards/Cards';
 import { UserProvider } from './UserContext';
 import MissionList from './components/missions/MissionList';
 import AdminPanel from './components/AdminPanel';
+import DocumentCheckbox from './components/files/filesSaved';
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function App() {
         <Route path="/create-skill" element={<DaySlotSkill />} />
         <Route path="/create-skill" element={<TopicSkills />} />
         <Route path="/upload" element={<Uploads />} />
-        
+
         <Route
           path="/cancel-registration"
           element={<AlertCancelRegistration />}
@@ -45,6 +46,7 @@ function App() {
         <Route path="/view-users" element={<AllUsers />} />
         {/* <Route path="/view-users" element={<AdminPanel />} /> */}
         <Route path="/change-status" element={<ChangeUserStatus />} />
+        <Route path="/update-files-received" element={<DocumentCheckbox />} />
         {/* <Route path="/" element={<CardList />} /> */}
         <Route path="/missions" element={<MissionList />} />
         <Route exact path="/" element={<Home />} />

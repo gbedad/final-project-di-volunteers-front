@@ -40,6 +40,7 @@ function createData(
   first_name,
   last_name,
   email,
+  phone,
   mission,
   created_at,
   status,
@@ -50,6 +51,7 @@ function createData(
     first_name,
     last_name,
     email,
+    phone,
     mission,
     created_at,
     status,
@@ -128,6 +130,7 @@ export default function Users(props) {
   const location = useLocation();
 
   const users = props.data;
+  console.log(users);
   // const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
   const [dataActive, setDataActive] = useState([]);
@@ -187,10 +190,12 @@ export default function Users(props) {
       item.first_name,
       item.last_name,
       item.email,
+      item.phone,
       item.mission.title,
       item.created_at,
       item.status,
-      item.is_active
+      item.is_active,
+      item.id_received
     );
   });
 
@@ -214,10 +219,10 @@ export default function Users(props) {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
             <TableCell>FIRST NAME</TableCell>
             <TableCell>LAST NAME</TableCell>
             <TableCell>EMAIL</TableCell>
+            <TableCell>PHONE</TableCell>
             <TableCell>MISSION</TableCell>
             <TableCell>CREATED</TableCell>
             <TableCell>STATUS</TableCell>
@@ -261,9 +266,6 @@ export default function Users(props) {
               key={row.userid}
               onClick={() => handleRowClick(row.userid)}
               selected={selectedUser === row.userid}>
-              <TableCell style={{ width: 60 }} align="left">
-                {row.userid}
-              </TableCell>
               <TableCell style={{ width: 160 }} align="left">
                 {row.first_name}
               </TableCell>
@@ -272,6 +274,9 @@ export default function Users(props) {
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
                 {row.email}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.phone}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
                 {row.mission}

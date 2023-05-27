@@ -15,20 +15,19 @@ import LocationsPossibleComponent from './LocationsPossible';
 const Skills = () => {
   return (
     <React.Fragment>
-      
       {/* <Typography variant="h6" gutterBottom>
         Skills
       </Typography> */}
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-        <DayTimeRangeComponent />
+        <Grid item xs={12} sm={12}>
+          <DayTimeRangeComponent />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12}>
           <TopicGradeComponent />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12}>
           {/* <LocationSkill/> */}
-          <LocationsPossibleComponent /> 
+          <LocationsPossibleComponent />
         </Grid>
         {/* <Grid item xs={12}>
           <TextField
@@ -89,9 +88,8 @@ const Skills = () => {
           />
         </Grid> */}
       </Grid>
-      
     </React.Fragment>
   );
-}
+};
 
-export default Skills
+export default Skills;

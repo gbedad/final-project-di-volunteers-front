@@ -11,11 +11,14 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { FixedSizeList } from 'react-window';
 import Fade from '@mui/material/Fade';
+
+import FileDisplay from './FileDisplay';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -28,6 +31,7 @@ export default function Uploads() {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [filesUploaded, setFilesUploaded] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
   console.log(location.state.userLogged.user.id);
   const userId = location.state.userLogged.user.id;
 
@@ -77,6 +81,15 @@ export default function Uploads() {
       console.error(error);
     }
   };
+
+  const handleOpen = (file) => {
+    setSelectedFile(file);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   console.log(filesUploaded);
   return (
     <>
@@ -110,15 +123,26 @@ export default function Uploads() {
                 maxHeight: 300,
               }}>
               <ListItem>
-                <ListItemAvatar>
-                  <Avatar>{checkFileType(f.mimetype)}</Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={f.filename} secondary={f.mimetype} />
+                <ListItemButton
+                  component="a"
+                  onClick={() => handleOpen(f.path)}>
+                  <ListItemAvatar>
+                    <Avatar>{checkFileType(f.mimetype)}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={f.filename} secondary={f.mimetype} />
+                </ListItemButton>
               </ListItem>
             </List>
           ))
         )}
       </Paper>
+      {selectedFile && (
+        <FileDisplay
+          s3FilePath={selectedFile}
+          open={open}
+          handleClose={handleClose}
+        />
+      )}
     </>
   );
 }
