@@ -134,7 +134,7 @@ function DashboardContent() {
           },
         });
         // console.log("Response",response)
-        // console.log(response.data);
+        console.log(response.data);
         const filteredData = response.data.filter(
           (item) => item.is_active === true
         );

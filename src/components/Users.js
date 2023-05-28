@@ -26,6 +26,7 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { Button } from '@mui/material';
@@ -48,7 +49,8 @@ function createData(
   created_at,
   status,
   is_active,
-  trueValuesCount
+  trueValuesCount,
+  test_voltaire_passed
 ) {
   return {
     userid,
@@ -61,6 +63,7 @@ function createData(
     status,
     is_active,
     trueValuesCount,
+    test_voltaire_passed,
   };
 }
 //Pagination
@@ -214,7 +217,8 @@ export default function Users(props) {
       item.created_at,
       item.status,
       item.is_active,
-      item.trueValuesCount
+      item.trueValuesCount,
+      item.test_voltaire_passed
     );
   });
 
@@ -312,13 +316,15 @@ export default function Users(props) {
               <TableCell style={{ width: 60 }} align="left">
                 <Badge
                   badgeContent={`${row.trueValuesCount}/4`}
-                  color="secondary">
+                  color={row.test_voltaire_passed ? 'success' : 'secondary'}>
                   <ArticleIcon />
                 </Badge>
               </TableCell>
               <TableCell style={{ width: 80 }} align="right">
                 {row.is_active ? (
                   <VerifiedUserIcon fontSize="small" color="success" />
+                ) : row.test_voltaire_passed === true ? (
+                  <AssignmentTurnedInIcon />
                 ) : (
                   ''
                 )}

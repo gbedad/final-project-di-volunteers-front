@@ -13,6 +13,7 @@ const DocumentCheckbox = ({ user }) => {
   const [idReceived, setIdReceived] = useState(false);
   const [b3Received, setB3Received] = useState(false);
   const [conventionReceived, setConventionReceived] = useState(false);
+  const [testVoltairePassed, setTestVoltairePassed] = useState(false);
 
   const handleCvReceived = (event) => {
     setCvReceived(event.target.checked);
@@ -26,6 +27,9 @@ const DocumentCheckbox = ({ user }) => {
 
   const handleConventionReceived = (event) => {
     setConventionReceived(event.target.checked);
+  };
+  const handleTestVoltaire = (event) => {
+    setTestVoltairePassed(event.target.checked);
   };
 
   const handleReceivedChange = async () => {
@@ -41,6 +45,7 @@ const DocumentCheckbox = ({ user }) => {
           idReceived,
           b3Received,
           conventionReceived,
+          testVoltairePassed,
         }),
       });
       console.log(`Document status updated for "${user.id}"`);
@@ -53,6 +58,7 @@ const DocumentCheckbox = ({ user }) => {
     setIdReceived(user.id_received);
     setB3Received(user.b3_received);
     setConventionReceived(user.convention_received);
+    setTestVoltairePassed(user.test_voltaire_passed);
   }, []);
 
   return (
@@ -79,7 +85,7 @@ const DocumentCheckbox = ({ user }) => {
               checked={idReceived}
               onChange={handleIdReceived}
               inputProps={{ 'aria-label': 'controlled' }}
-              color="primary"
+              color="secondary"
             />
           }
           label="id"
@@ -91,7 +97,7 @@ const DocumentCheckbox = ({ user }) => {
               checked={b3Received}
               onChange={handleB3Received}
               inputProps={{ 'aria-label': 'controlled' }}
-              color="secondary"
+              color="warning"
             />
           }
           label="b3"
@@ -100,13 +106,25 @@ const DocumentCheckbox = ({ user }) => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={conventionReceived}
-              onChange={handleConventionReceived}
+              checked={testVoltairePassed}
+              onChange={handleTestVoltaire}
               inputProps={{ 'aria-label': 'controlled' }}
               color="success"
             />
           }
-          label="conv"
+          label="Voltaire"
+          labelPlacement="top"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={conventionReceived}
+              onChange={handleConventionReceived}
+              inputProps={{ 'aria-label': 'controlled' }}
+              color="info"
+            />
+          }
+          label="Convention"
           labelPlacement="top"
         />
         <FormControlLabel

@@ -37,6 +37,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 
 const FileDisplay = ({ s3FilePath, open, handleClose }) => {
   const renderFileContent = () => {
+    s3FilePath = s3FilePath.toString();
     const fileExtension = s3FilePath.split('.').pop();
 
     if (

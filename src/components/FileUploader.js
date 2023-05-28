@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import ImageIcon from '@mui/icons-material/Image';
+import IconButton from '@mui/material/IconButton';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Stack from '@mui/material/Stack';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -17,12 +18,17 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { FixedSizeList } from 'react-window';
 import Fade from '@mui/material/Fade';
-
+import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
 import FileDisplay from './FileDisplay';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import InstructionComponent from './files/Instructions';
+
+import './fileInputStyle.css';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -33,8 +39,14 @@ export default function Uploads() {
   const [filesUploaded, setFilesUploaded] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [changeFileList, setChangeFileList] = useState(false);
   // console.log(location.state.userLogged.user.id);
   const userId = location.state.userLogged.user.id;
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   const checkFileType = (mime) => {
     switch (mime) {
@@ -60,9 +72,9 @@ export default function Uploads() {
         setIsLoading(false);
       }
     };
-
+    setChangeFileList(false);
     getFiles();
-  }, []);
+  }, [changeFileList]);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -71,13 +83,17 @@ export default function Uploads() {
   const handleFileUpload = async () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
+    console.log(formData);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/upload/${location.state.userLogged.id}`,
-        formData
-      );
+      await axios.post(`${BASE_URL}/upload/${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       // console.log(response.data);
       setFileUploaded(true);
+      setChangeFileList(true);
+      setOpenAlert(true);
     } catch (error) {
       console.error(error);
     }
@@ -91,6 +107,26 @@ export default function Uploads() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
+  const handleDeleteFile = async (fileId) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/files/cancel/${fileId}`);
+      console.log(response.data); // Optional: Log the response if needed
+      // Add any additional logic or state updates upon successful file deletion
+      setChangeFileList(true);
+    } catch (error) {
+      console.error(error);
+      // Handle any error cases, such as displaying an error message
+    }
+  };
   // console.log(filesUploaded);
   return (
     <>
@@ -102,10 +138,32 @@ export default function Uploads() {
           component="label"
           startIcon={<UploadIcon />}>
           UPLOAD
-          <input hidden type="file" onChange={handleFileChange} />
         </Button>
+
+        <input
+          hidden
+          id="file-upload"
+          type="file"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
+        <label htmlFor="file-upload" className="custom-file-button">
+          Select File
+        </label>
       </Stack>
-      {fileUploaded && <p>File Uploaded!</p>}
+      {fileUploaded && (
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}>
+          <Alert
+            onClose={handleAlertClose}
+            severity="success"
+            sx={{ width: '100%' }}>
+            FileUploaded!
+          </Alert>
+        </Snackbar>
+      )}
 
       <Paper>
         {isLoading ? (
@@ -124,7 +182,15 @@ export default function Uploads() {
                 overflow: 'auto',
                 maxHeight: 300,
               }}>
-              <ListItem>
+              <ListItem
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDeleteFile(f.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                }>
                 <ListItemButton
                   component="a"
                   onClick={() => handleOpen(f.path)}>
