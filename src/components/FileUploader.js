@@ -41,6 +41,8 @@ export default function Uploads() {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [changeFileList, setChangeFileList] = useState(false);
+  const [showUploadButton, setShowUploadButton] = useState(false);
+
   // console.log(location.state.userLogged.user.id);
   const userId = location.state.userLogged.user.id;
 
@@ -68,6 +70,7 @@ export default function Uploads() {
       if (response.data.file) {
         setFilesUploaded(response.data.file);
         setIsLoading(false);
+        setShowUploadButton(false);
       } else {
         setIsLoading(false);
       }
@@ -78,6 +81,7 @@ export default function Uploads() {
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    setShowUploadButton(event.target.files[0] !== null);
   };
 
   const handleFileUpload = async () => {
@@ -85,15 +89,25 @@ export default function Uploads() {
     formData.append('file', selectedFile);
     console.log(formData);
     try {
-      await axios.post(`${BASE_URL}/upload/${userId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        `${BASE_URL}/upload/${userId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       // console.log(response.data);
-      setFileUploaded(true);
-      setChangeFileList(true);
-      setOpenAlert(true);
+      if (response.status === 200) {
+        console.log('File uploaded successfully');
+        setFileUploaded(true);
+        setChangeFileList(true);
+        setOpenAlert(true);
+        setSelectedFile(null);
+      } else {
+        console.log('Error uploading file:', response.status);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -132,24 +146,21 @@ export default function Uploads() {
     <>
       <InstructionComponent />
       <Stack direction="row" spacing={2}>
-        <Button
-          onClick={handleFileUpload}
-          variant="contained"
-          component="label"
-          startIcon={<UploadIcon />}>
-          UPLOAD
-        </Button>
-
         <input
-          hidden
           id="file-upload"
           type="file"
+          defaultValue=""
           onChange={handleFileChange}
-          style={{ display: 'none' }}
         />
-        <label htmlFor="file-upload" className="custom-file-button">
-          Select File
-        </label>
+        {showUploadButton && (
+          <Button
+            onClick={handleFileUpload}
+            variant="contained"
+            component="label"
+            startIcon={<UploadIcon />}>
+            UPLOAD
+          </Button>
+        )}
       </Stack>
       {fileUploaded && (
         <Snackbar

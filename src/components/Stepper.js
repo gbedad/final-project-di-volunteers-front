@@ -60,20 +60,20 @@ const BasicTabs = () => {
           onChange={handleChange}
           aria-label="basic tabs example"
           centered>
-          <Tab label="PROFILE" {...a11yProps(0)} />
+          <Tab label="MON PROFIL" {...a11yProps(0)} />
           <Tab
-            label="SKILLS"
+            label="JE PEUX AIDER"
             {...a11yProps(1)}
             disabled={status === 'created'}
           />
           <Tab
-            label="UPLOADS"
+            label="MES DOCUMENTS"
             {...a11yProps(2)}
             disabled={status === 'created' || status === 'proposed'}
           />
         </Tabs>
       </Box>
-     
+
       <TabPanel value={value} index={0}>
         <Profile />
       </TabPanel>

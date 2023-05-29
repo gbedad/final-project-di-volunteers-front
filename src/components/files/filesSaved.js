@@ -5,6 +5,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import BorderedBoxWithLabel from '../borderedBox';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -62,78 +66,91 @@ const DocumentCheckbox = ({ user }) => {
   }, []);
 
   return (
-    <FormControl component="fieldset">
-      {/* <FormLabel component="legend">Documents vérifiés</FormLabel> */}
-      <FormGroup aria-label="position" row>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={cvReceived}
-              onChange={handleCvReceived}
-              inputProps={{ 'aria-label': 'controlled' }}
-              color="primary"
-            />
-          }
-          label="cv"
-          labelPlacement="top"
-          value="true"
-        />
-        <FormControlLabel
-          value={user.id_received}
-          control={
-            <Checkbox
-              checked={idReceived}
-              onChange={handleIdReceived}
-              inputProps={{ 'aria-label': 'controlled' }}
-              color="secondary"
-            />
-          }
-          label="id"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={b3Received}
-              onChange={handleB3Received}
-              inputProps={{ 'aria-label': 'controlled' }}
-              color="warning"
-            />
-          }
-          label="b3"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={testVoltairePassed}
-              onChange={handleTestVoltaire}
-              inputProps={{ 'aria-label': 'controlled' }}
-              color="success"
-            />
-          }
-          label="Voltaire"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={conventionReceived}
-              onChange={handleConventionReceived}
-              inputProps={{ 'aria-label': 'controlled' }}
-              color="info"
-            />
-          }
-          label="Convention"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          control={<Button onClick={handleReceivedChange}>SAVE</Button>}
-          label=""
-          labelPlacement="top"
-        />
-      </FormGroup>
-    </FormControl>
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={8}>
+          <FormControl component="fieldset">
+            <FormGroup aria-label="position" row>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={cvReceived}
+                    onChange={handleCvReceived}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="CV"
+                labelPlacement="right"
+              />
+              <FormControlLabel
+                value={user.id_received}
+                control={
+                  <Checkbox
+                    checked={idReceived}
+                    onChange={handleIdReceived}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="ID"
+                labelPlacement="right"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={b3Received}
+                    onChange={handleB3Received}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="B3"
+                labelPlacement="right"
+              />
+            </FormGroup>
+            <FormGroup aria-label="position" row>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={testVoltairePassed}
+                    onChange={handleTestVoltaire}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="Français *"
+                labelPlacement="right"
+              />
+            </FormGroup>
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={conventionReceived}
+                    onChange={handleConventionReceived}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="Convention"
+                labelPlacement="right"
+              />
+            </FormGroup>
+          </FormControl>
+        </Grid>
+        <Grid item xs={4}>
+          <FormControlLabel
+            control={<Button onClick={handleReceivedChange}>CONFIRMER</Button>}
+            label=""
+            labelPlacement="top"
+          />
+          <Typography mt={6} color="info" variant="p" sx={{ fontSize: '14px' }}>
+            *Test voltaire ou autre test.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

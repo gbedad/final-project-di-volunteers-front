@@ -52,12 +52,7 @@ import { longDescription, nextStepStatus } from '../js/statusDescription';
 
 import FileDisplay from './FileDisplay';
 import DocumentCheckbox from './files/filesSaved';
-
-const longText = `
-Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
-Praesent non nunc mollis, fermentum neque at, semper arcu.
-Nullam eget est sed sem iaculis gravida eget vitae justo.
-`;
+import BorderedBoxWithLabel from './borderedBox';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const Item = styled(Paper)(({ theme }) => ({
@@ -116,7 +111,8 @@ const ChangeUserStatus = () => {
     switch (mime) {
       case 'image/png':
         return <ImageIcon />;
-
+      case 'image/jpeg':
+        return <ImageIcon />;
       case 'application/pdf':
         return <PictureAsPdfIcon />;
       default:
@@ -179,78 +175,77 @@ const ChangeUserStatus = () => {
   ) : (
     <ThemeProvider theme={lightTheme}>
       <Container maxWidth="l">
+        <Box mb={2}>
+          <h3>Activer/désactiver</h3>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={checked}
+                onChange={handleActiveChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label="Actif"
+          />
+          <Button onClick={handleSubmitActiveChange}>Valider</Button>
+        </Box>
+
         <Grid container spacing={2}>
           <Grid item xs={12} md={4} lg={4}>
-            <h2>Change Status</h2>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={checked}
-                  onChange={handleActiveChange}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              }
-              label="Is Active"
-            />
-            <Button onClick={handleSubmitActiveChange}>
-              Validate is active
-            </Button>
+            <BorderedBoxWithLabel label="Profil" sx={{ display: 'flex' }}>
+              {user.mission ? (
+                <List
+                  sx={{
+                    width: '100%',
+                    maxWidth: 360,
+                    bgcolor: 'background.paper',
+                  }}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <CategoryIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={user.mission.title}
+                      secondary={user.mission.description}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <MapIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={user.mission.location}
+                      secondary=""
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <AlternateEmailIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={user.email} secondary={user.phone} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <Person2Icon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={user.last_name}
+                      secondary={user.first_name}
+                    />
+                  </ListItem>
+                </List>
+              ) : (
+                <li></li>
+              )}
 
-            {user.mission ? (
-              <List
-                sx={{
-                  width: '100%',
-                  maxWidth: 360,
-                  bgcolor: 'background.paper',
-                }}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <CategoryIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user.mission.title}
-                    secondary={user.mission.description}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <MapIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={user.mission.location} secondary="" />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <AlternateEmailIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={user.email} secondary={user.phone} />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Person2Icon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user.last_name}
-                    secondary={user.first_name}
-                  />
-                </ListItem>
-              </List>
-            ) : (
-              <li></li>
-            )}
-            <Box
-              sx={{
-                width: '100%',
-                maxWidth: 560,
-                bgcolor: 'background.paper',
-              }}>
               <List component="nav" aria-label="main mailbox folders">
                 <ListItemButton>
                   <ListItemAvatar>
@@ -272,121 +267,117 @@ const ChangeUserStatus = () => {
                   />
                 </ListItem>
               </List>
-              <Divider />
-            </Box>
-
-            <div>
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl variant="standard" sx={{ m: 1, width: 300 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    Change Status
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={newStatus}
-                    defaultValue={status}
-                    label="Change Status"
-                    onChange={handleStatusChange}>
-                    <MenuItem value={'compte créé'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('compte créé')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Compte créé</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'à renseigner'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('à renseigner')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A renseigner</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'à interviewer'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('à interviewer')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A interviewer</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'à finaliser'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('à finaliser')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A finaliser</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'validé'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('validé')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Validé</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'déclinée'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('déclinée')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Déclinée</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    {/* <MenuItem value={'validé'}>Validé</MenuItem>
+              <div>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl variant="standard" sx={{ m: 1, width: 300 }}>
+                    <InputLabel id="demo-simple-select-label">
+                      Changer le statut
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={newStatus}
+                      defaultValue={status}
+                      label="Change Status"
+                      onChange={handleStatusChange}>
+                      <MenuItem value={'compte créé'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('compte créé')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Compte créé</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'à renseigner'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('à renseigner')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A renseigner</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'à interviewer'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('à interviewer')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A interviewer</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'à finaliser'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('à finaliser')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A finaliser</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'validé'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('validé')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Validé</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'déclinée'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('déclinée')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Déclinée</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      {/* <MenuItem value={'validé'}>Validé</MenuItem>
                     <MenuItem value={'created'}>Created</MenuItem>
                     <MenuItem value={'proposed'}>Proposed</MenuItem>
                     <MenuItem value={'selected'}>Selected</MenuItem> */}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Button onClick={handleConfirmClick}>Confirm Status</Button>
-            </div>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Button onClick={handleConfirmClick}>Confirmer</Button>
+              </div>
+            </BorderedBoxWithLabel>
           </Grid>
-          <Grid item xs={12} md={4} lg={4} sx={{ mt: 3 }}>
-            <Typography variant="h5" sx={{ minWidth: 275, mt: 6 }}>
-              Skills
-            </Typography>
-            {user.skill ? (
-              <>
-                <Card sx={{ minWidth: 275, mt: 3, mb: 3 }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom>
-                      Fields of competences
-                    </Typography>
+          <Grid item xs={12} md={4} lg={4}>
+            <BorderedBoxWithLabel label="Quoi & quand" sx={{ display: 'flex' }}>
+              {user.skill ? (
+                <>
+                  <Box mt={3}>
                     <Typography variant="h6" component="div">
-                      TOPICS
+                      Matières
                     </Typography>
+
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
                         user.skill.topics.map((topic, i) => (
@@ -397,19 +388,12 @@ const ChangeUserStatus = () => {
                           </div>
                         ))}
                     </Typography>
-                  </CardContent>
-                </Card>
-                <Card sx={{ minWidth: 275, mt: 3, mb: 3 }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom>
-                      Availabilities
+                  </Box>
+                  <Box mt={2}>
+                    <Typography variant="h6" gutterBottom component="div">
+                      Disponibilités
                     </Typography>
-                    <Typography variant="h6" component="div">
-                      DAYS AND TIME SLOTS
-                    </Typography>
+
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
                         user.skill.when_day_slot.map((slot, i) => (
@@ -420,47 +404,33 @@ const ChangeUserStatus = () => {
                           </div>
                         ))}
                     </Typography>
-                  </CardContent>
-                </Card>
-                <Card sx={{ minWidth: 275, mt: 3, mb: 3 }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom>
-                      Where I can act
-                    </Typography>
+                  </Box>
+                  <Box mt={2}>
                     <Typography variant="h6" component="div">
-                      LOCATION
+                      Où je peux aider
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill.where_location.map((location, i) => (
                         <div key={i}>{location}</div>
                       ))}
                     </Typography>
-                  </CardContent>
-                </Card>
+                  </Box>
 
-                <Card></Card>
-                <Card></Card>
-              </>
-            ) : (
-              <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                No Skill have been inserted
-              </Typography>
-            )}
+                  <Card></Card>
+                  <Card></Card>
+                </>
+              ) : (
+                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
+                  No Skill have been inserted
+                </Typography>
+              )}
+            </BorderedBoxWithLabel>
           </Grid>
-          <Grid item xs={12} md={4} lg={4} sx={{ mt: 3 }}>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ minWidth: 275, mt: 6 }}>
-              Files Uploaded
-            </Typography>
-            <DocumentCheckbox user={user} />
-            {user.file.length !== 0 ? (
-              <Card sx={{ minWidth: 275, mt: 3 }}>
-                <CardContent>
+          <Grid item xs={12} md={4} lg={4}>
+            <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
+              <DocumentCheckbox user={user} />
+              {user.file.length !== 0 ? (
+                <Box>
                   {user.file.map((f, i) => (
                     <List
                       key={i}
@@ -487,13 +457,13 @@ const ChangeUserStatus = () => {
                       </ListItem>
                     </List>
                   ))}
-                </CardContent>
-              </Card>
-            ) : (
-              <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                No file have been uploaded
-              </Typography>
-            )}
+                </Box>
+              ) : (
+                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
+                  No file have been uploaded
+                </Typography>
+              )}
+            </BorderedBoxWithLabel>
           </Grid>
         </Grid>
         {selectedFile && (
