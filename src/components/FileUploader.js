@@ -23,9 +23,10 @@ import Alert from '@mui/material/Alert';
 import FileDisplay from './FileDisplay';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 
 import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+
 import InstructionComponent from './files/Instructions';
 
 import './fileInputStyle.css';
@@ -171,7 +172,7 @@ export default function Uploads() {
             onClose={handleAlertClose}
             severity="success"
             sx={{ width: '100%' }}>
-            FileUploaded!
+            File Uploaded!
           </Alert>
         </Snackbar>
       )}

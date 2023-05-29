@@ -53,8 +53,13 @@ const BasicTabs = () => {
   let status = location.state.userLogged.user.status;
   console.log(location.state.userLogged.user.status);
   return (
-    <Container maxWidth={false}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <div sx={{ mt: 0, mb: 4 }}>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+          justifyContent: 'center',
+        }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -83,7 +88,7 @@ const BasicTabs = () => {
       <TabPanel value={value} index={2}>
         <Uploads />
       </TabPanel>
-    </Container>
+    </div>
   );
 };
 

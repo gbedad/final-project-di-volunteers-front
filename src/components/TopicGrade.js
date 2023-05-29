@@ -117,8 +117,8 @@ const SubjectClassRangeComponent = () => {
         </Box>
       ) : (
         subjectClassRanges.map((subjectClassRange, index) => (
-          <Grid container spacing={2} key={index} style={{ marginTop: '16px' }}>
-            <Grid item xs={3}>
+          <Grid container spacing={1} key={index} style={{ marginTop: '16px' }}>
+            <Grid item xs={4}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -170,7 +170,7 @@ const SubjectClassRangeComponent = () => {
                 <MenuItem value="K10">K10</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <Button onClick={() => handleRemoveSubjectClassRange(index)}>
                 <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
               </Button>

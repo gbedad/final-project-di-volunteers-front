@@ -101,8 +101,8 @@ const LocationsPossibleComponent = () => {
         </Box>
       ) : (
         locationsPossible.map((locationPossible, index) => (
-          <Grid container spacing={2} key={index} style={{ marginTop: '16px' }}>
-            <Grid item xs={8}>
+          <Grid container spacing={1} key={index} style={{ marginTop: '16px' }}>
+            <Grid item xs={10}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -121,7 +121,7 @@ const LocationsPossibleComponent = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <Button onClick={() => handleRemoveLocation(index)}>
                 <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
               </Button>

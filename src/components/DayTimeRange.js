@@ -121,8 +121,8 @@ const DayTimeRangeComponent = () => {
         </Box>
       ) : (
         dayTimeRanges.map((dayTimeRange, index) => (
-          <Grid container spacing={2} key={index} style={{ marginTop: '16px' }}>
-            <Grid item xs={3}>
+          <Grid container spacing={1} key={index} style={{ marginTop: '16px' }}>
+            <Grid item xs={4}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Day</InputLabel>
                 <Select
@@ -172,7 +172,7 @@ const DayTimeRangeComponent = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <Button onClick={() => handleRemoveDayTimeRange(index)}>
                 <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
               </Button>

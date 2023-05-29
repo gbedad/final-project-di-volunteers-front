@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 import BorderedBoxWithLabel from '../borderedBox';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -145,9 +146,6 @@ const DocumentCheckbox = ({ user }) => {
             label=""
             labelPlacement="top"
           />
-          <Typography mt={6} color="info" variant="p" sx={{ fontSize: '14px' }}>
-            *Test voltaire ou autre test.
-          </Typography>
         </Grid>
       </Grid>
     </Box>

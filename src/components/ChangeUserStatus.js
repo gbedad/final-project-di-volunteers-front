@@ -38,6 +38,7 @@ import Paper from '@mui/material/Paper';
 
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import CakeIcon from '@mui/icons-material/Cake';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import Switch from '@mui/material/Switch';
@@ -53,8 +54,10 @@ import { longDescription, nextStepStatus } from '../js/statusDescription';
 import FileDisplay from './FileDisplay';
 import DocumentCheckbox from './files/filesSaved';
 import BorderedBoxWithLabel from './borderedBox';
+import { parsePhoneNumber } from 'awesome-phonenumber';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   textAlign: 'center',
@@ -187,7 +190,7 @@ const ChangeUserStatus = () => {
             }
             label="Actif"
           />
-          <Button onClick={handleSubmitActiveChange}>Valider</Button>
+          <Button onClick={handleSubmitActiveChange}>CONFIRMER</Button>
         </Box>
 
         <Grid container spacing={2}>
@@ -203,23 +206,11 @@ const ChangeUserStatus = () => {
                   <ListItem>
                     <ListItemAvatar>
                       <Avatar>
-                        <CategoryIcon />
+                        <Person2Icon />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={user.mission.title}
-                      secondary={user.mission.description}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <MapIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={user.mission.location}
-                      secondary=""
+                      primary={`${user.first_name} ${user.last_name}`}
                     />
                   </ListItem>
                   <ListItem>
@@ -228,18 +219,20 @@ const ChangeUserStatus = () => {
                         <AlternateEmailIcon />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={user.email} secondary={user.phone} />
+                    <ListItemText
+                      primary={user.email}
+                      secondary={
+                        parsePhoneNumber(user.phone).number.international
+                      }
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemAvatar>
                       <Avatar>
-                        <Person2Icon />
+                        <CakeIcon />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText
-                      primary={user.last_name}
-                      secondary={user.first_name}
-                    />
+                    <ListItemText primary={user.birth_date} secondary="" />
                   </ListItem>
                 </List>
               ) : (
@@ -255,6 +248,25 @@ const ChangeUserStatus = () => {
                   </ListItemAvatar>
                   <ListItemText primary={user.message} />
                 </ListItemButton>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <CategoryIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={user.mission.title}
+                    secondary={user.mission.description}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <MapIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={user.mission.location} secondary="" />
+                </ListItem>
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
@@ -420,8 +432,12 @@ const ChangeUserStatus = () => {
                   <Card></Card>
                 </>
               ) : (
-                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                  No Skill have been inserted
+                <Typography
+                  component="div"
+                  variant="p"
+                  color="grey"
+                  sx={{ minWidth: 275, mt: 2 }}>
+                  Aucune information n'a été saisie.
                 </Typography>
               )}
             </BorderedBoxWithLabel>
@@ -429,6 +445,10 @@ const ChangeUserStatus = () => {
           <Grid item xs={12} md={4} lg={4}>
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <DocumentCheckbox user={user} />
+              <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>
+                *Test voltaire ou autre test.
+              </Typography>
+              <Divider />
               {user.file.length !== 0 ? (
                 <Box>
                   {user.file.map((f, i) => (
@@ -460,7 +480,7 @@ const ChangeUserStatus = () => {
                 </Box>
               ) : (
                 <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                  No file have been uploaded
+                  Aucun fichier n'a été téléchargé.
                 </Typography>
               )}
             </BorderedBoxWithLabel>
