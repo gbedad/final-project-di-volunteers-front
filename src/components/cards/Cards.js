@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
 import Grid from '@mui/material/Grid';
 import Card from './Card'; // Import the Card component;
 import './Card.css';
 
-import Container from '@mui/material/Container';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
+
 import LinearProgress from '@mui/material/LinearProgress';
 
 // const cardsData = [
@@ -37,7 +35,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 //   },
 // ];
 
-// fetch(`${BASE_URL}/users`)
 const CardList = () => {
   const [cardsData, setCardsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

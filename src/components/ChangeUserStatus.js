@@ -5,8 +5,7 @@ import { useLocation } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -19,25 +18,23 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ImageIcon from '@mui/icons-material/Image';
-import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+
 import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import Typography from '@mui/material/Typography';
-import ListItemIcon from '@mui/material/ListItemIcon';
+
 import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
+
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import BadgeIcon from '@mui/icons-material/Badge';
+
 import Person2Icon from '@mui/icons-material/Person2';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 
 import Stack from '@mui/material/Stack';
-import CircularProgress from '@mui/material/CircularProgress';
+
 import CakeIcon from '@mui/icons-material/Cake';
 
 import LinearProgress from '@mui/material/LinearProgress';
@@ -58,15 +55,15 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  height: 60,
-  lineHeight: '60px',
-}));
+// const Item = styled(Paper)(({ theme }) => ({
+//   ...theme.typography.body2,
+//   textAlign: 'center',
+//   color: theme.palette.text.secondary,
+//   height: 60,
+//   lineHeight: '60px',
+// }));
 
-const darkTheme = createTheme({ palette: { mode: 'dark' } });
+// const darkTheme = createTheme({ palette: { mode: 'dark' } });
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 const CustomWidthTooltip = styled(({ className, ...props }) => (
@@ -108,7 +105,7 @@ const ChangeUserStatus = () => {
   };
 
   // console.log(state);
-  let userLogged = state.userLogged;
+  // let userLogged = state.userLogged;
 
   const checkFileType = (mime) => {
     switch (mime) {
