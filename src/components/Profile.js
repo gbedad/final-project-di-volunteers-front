@@ -49,6 +49,8 @@ import {
   longDescription,
   setStatusStep,
 } from '../js/statusDescription';
+import AddressAutocomplete from './AddressAutocomplete';
+import AutofillCheckoutDemo from './AddressAutocomplete2';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
@@ -109,7 +111,7 @@ const ProfilePage = () => {
               <List
                 sx={{
                   width: '100%',
-                  maxWidth: 360,
+
                   bgcolor: 'background.paper',
                 }}>
                 {/* <ListItem>
@@ -199,11 +201,7 @@ const ProfilePage = () => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-
-                  <ListItemText
-                    primary=" 75012 Paris"
-                    secondary="68, avenue Ledru Rollin"
-                  />
+                  <AddressAutocomplete />
                 </ListItem>
                 <ListItem>
                   <ListItemText
