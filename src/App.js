@@ -23,6 +23,8 @@ import { UserProvider } from './UserContext';
 import MissionList from './components/missions/MissionList';
 import AdminPanel from './components/AdminPanel';
 import DocumentCheckbox from './components/files/filesSaved';
+import SelectFormActivity from './components/SelectActivity';
+import AddressAutocomplete from './components/AddressAutocomplete';
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
         {/* <Route path="/view-users" element={<AdminPanel />} /> */}
         <Route path="/change-status" element={<ChangeUserStatus />} />
         <Route path="/update-files-received" element={<DocumentCheckbox />} />
+        <Route path="/add-activity" element={<SelectFormActivity />} />
+        <Route path="update-address" element={<AddressAutocomplete />} />
         {/* <Route path="/" element={<CardList />} /> */}
         <Route path="/missions" element={<MissionList />} />
         <Route exact path="/" element={<Home />} />

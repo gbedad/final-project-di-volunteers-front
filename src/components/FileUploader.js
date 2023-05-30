@@ -156,10 +156,9 @@ export default function Uploads() {
         {showUploadButton && (
           <Button
             onClick={handleFileUpload}
-            variant="contained"
             component="label"
             startIcon={<UploadIcon />}>
-            UPLOAD
+            CONFIRMER
           </Button>
         )}
       </Stack>

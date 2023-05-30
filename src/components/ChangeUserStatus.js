@@ -18,7 +18,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ImageIcon from '@mui/icons-material/Image';
-
+import WorkIcon from '@mui/icons-material/Work';
+import HomeIcon from '@mui/icons-material/Home';
 import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import Typography from '@mui/material/Typography';
@@ -226,10 +227,33 @@ const ChangeUserStatus = () => {
                   <ListItem>
                     <ListItemAvatar>
                       <Avatar>
+                        <WorkIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={user.activity} secondary="" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
                         <CakeIcon />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={user.birth_date} secondary="" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <HomeIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        user.zipcode && user.city
+                          ? `${user.zipcode} ${user.city}`
+                          : ''
+                      }
+                      secondary={user.street}
+                    />
                   </ListItem>
                 </List>
               ) : (

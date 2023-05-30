@@ -11,6 +11,7 @@ import {
   LinearProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import BorderedBoxWithLabel from './borderedBox';
 
 import { UserContext } from '../UserContext';
 
@@ -30,9 +31,10 @@ const LocationsPossibleComponent = () => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       console.log(response.data);
+      const skill = response.data;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-      if (response.data.skill) {
-        setLocationsPossible(response.data.skill.where_location);
+      if (skill.where_location) {
+        setLocationsPossible(skill.where_location);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -84,55 +86,63 @@ const LocationsPossibleComponent = () => {
 
   return (
     <div>
-      <Typography variant="h5">Locations</Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddLocation}
-        sx={{ mr: 2 }}>
-        Add Location
-      </Button>
-      {isLoading ? (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        locationsPossible.map((locationPossible, index) => (
-          <Grid container spacing={1} key={index} style={{ marginTop: '16px' }}>
-            <Grid item xs={10}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Location"
-                select
-                value={locationPossible}
-                onChange={(e) => handleLocationChange(e.target.value, index)}>
-                <MenuItem value="Maison des Associations">
-                  Maison des Associations
-                </MenuItem>
-                <MenuItem value="Gabriel Lamé">Gabriel Lamé</MenuItem>
-                <MenuItem value="Kiosque Paris 12">Kiosque Paris 12</MenuItem>
-                <MenuItem value="Aubervilliers">Aubervilliers</MenuItem>
-                <MenuItem value="Bercy">Bercy</MenuItem>
-                {/* Add more subjects as needed */}
-              </TextField>
-            </Grid>
+      <BorderedBoxWithLabel label="Lieux" sx={{ display: 'flex' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddLocation}
+          sx={{ mr: 2 }}>
+          Add Location
+        </Button>
+        {isLoading ? (
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          locationsPossible &&
+          locationsPossible.map((locationPossible, index) => (
+            <Grid
+              container
+              spacing={1}
+              key={index}
+              style={{ marginTop: '16px' }}>
+              <Grid item xs={10}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Location"
+                  select
+                  value={locationPossible}
+                  onChange={(e) => handleLocationChange(e.target.value, index)}>
+                  <MenuItem value="Maison des Associations">
+                    Maison des Associations
+                  </MenuItem>
+                  <MenuItem value="Gabriel Lamé">Gabriel Lamé</MenuItem>
+                  <MenuItem value="Kiosque Paris 12">Kiosque Paris 12</MenuItem>
+                  <MenuItem value="Aubervilliers">Aubervilliers</MenuItem>
+                  <MenuItem value="Bercy">Bercy</MenuItem>
+                  {/* Add more subjects as needed */}
+                </TextField>
+              </Grid>
 
-            <Grid item xs={2}>
-              <Button onClick={() => handleRemoveLocation(index)}>
-                <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
-              </Button>
+              <Grid item xs={2}>
+                <Button onClick={() => handleRemoveLocation(index)}>
+                  <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        ))
-      )}
-      <Button
-        sx={{ marginTop: '10px' }}
-        variant="contained"
-        color="primary"
-        onClick={handleSaveLocationsPossible}>
-        Save
-      </Button>
+          ))
+        )}
+        {locationsPossible && (
+          <Button
+            sx={{ marginTop: '10px' }}
+            variant="contained"
+            color="primary"
+            onClick={handleSaveLocationsPossible}>
+            Save
+          </Button>
+        )}
+      </BorderedBoxWithLabel>
     </div>
   );
 };

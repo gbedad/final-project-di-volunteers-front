@@ -51,6 +51,8 @@ import {
 } from '../js/statusDescription';
 import AddressAutocomplete from './AddressAutocomplete';
 import AutofillCheckoutDemo from './AddressAutocomplete2';
+import SelectFormActivity from './SelectActivity';
+import ImageDisplay from './ImageDisplay';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const ProfilePage = () => {
@@ -103,7 +105,7 @@ const ProfilePage = () => {
       )}
       <Box></Box>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel
             label="Vos données personnelles"
             sx={{ display: 'flex' }}>
@@ -171,7 +173,7 @@ const ProfilePage = () => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  {/* <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                     <InputLabel id="demo-simple-select-standard-label">
                       Activité
                     </InputLabel>
@@ -189,7 +191,11 @@ const ProfilePage = () => {
                       <MenuItem value={'retraite'}>Retraité(e)</MenuItem>
                       <MenuItem value={'sans'}>Sans activité</MenuItem>
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
+                  <SelectFormActivity
+                    activity={user.activity}
+                    userId={user.id}
+                  />
 
                   {/* <ListItemText primary="Salarié" /> */}
                 </ListItem>
@@ -201,7 +207,13 @@ const ProfilePage = () => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  <AddressAutocomplete />
+                  <AddressAutocomplete
+                    userId={user.id}
+                    street={user.street}
+                    city={user.city}
+                    zipcode={user.zipcode}
+                    country={user.country}
+                  />
                 </ListItem>
                 <ListItem>
                   <ListItemText
@@ -220,7 +232,7 @@ const ProfilePage = () => {
             )}
           </BorderedBoxWithLabel>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="La mission">
             {/* Content for Box 2 */}
             <List>
@@ -246,7 +258,7 @@ const ProfilePage = () => {
             </List>
           </BorderedBoxWithLabel>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="Votre statut">
             {/* Content for Box 3 */}
             <List>
@@ -268,6 +280,7 @@ const ProfilePage = () => {
                 />
               </ListItem>
             </List>
+            <ImageDisplay />
           </BorderedBoxWithLabel>
         </Grid>
       </Grid>

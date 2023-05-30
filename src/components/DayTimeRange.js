@@ -14,6 +14,7 @@ import {
   LinearProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import BorderedBoxWithLabel from './borderedBox';
 
 import { UserContext } from '../UserContext';
 
@@ -34,7 +35,7 @@ const DayTimeRangeComponent = () => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       console.log(response.data);
-      if (response.data.skill) {
+      if (response.data.skill.when_day_slot) {
         const parsed_array = response.data.skill.when_day_slot.map((string) =>
           JSON.parse(string)
         );
@@ -107,87 +108,97 @@ const DayTimeRangeComponent = () => {
 
   return (
     <div>
-      <Typography variant="h5">Day and Time Range</Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddDayTimeRange}
-        sx={{ mr: 2 }}>
-        Add Day and Time Range
-      </Button>
-      {isLoading ? (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        dayTimeRanges.map((dayTimeRange, index) => (
-          <Grid container spacing={1} key={index} style={{ marginTop: '16px' }}>
-            <Grid item xs={4}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Day</InputLabel>
-                <Select
-                  label="Day"
-                  value={dayTimeRange.day}
-                  onChange={(e) => handleDayChange(e.target.value, index)}>
-                  <MenuItem value="">Select a day</MenuItem>
-                  <MenuItem value="Monday">Monday</MenuItem>
-                  <MenuItem value="Tuesday">Tuesday</MenuItem>
-                  <MenuItem value="Wednesday">Wednesday</MenuItem>
-                  <MenuItem value="Thursday">Thursday</MenuItem>
-                  <MenuItem value="Friday">Friday</MenuItem>
-                  <MenuItem value="Saturday">Saturday</MenuItem>
-                  <MenuItem value="Sunday">Sunday</MenuItem>
-                </Select>
-              </FormControl>
+      <BorderedBoxWithLabel label="Jours et heures" sx={{ display: 'flex' }}>
+        {/* <Typography variant="h5">Day and Time Range</Typography> */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddDayTimeRange}
+          sx={{ mr: 2 }}>
+          Add Day and Time Range
+        </Button>
+        {isLoading ? (
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          dayTimeRanges &&
+          dayTimeRanges.map((dayTimeRange, index) => (
+            <Grid
+              container
+              spacing={1}
+              key={index}
+              style={{ marginTop: '16px' }}>
+              <Grid item xs={4}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Day</InputLabel>
+                  <Select
+                    label="Day"
+                    value={dayTimeRange.day}
+                    onChange={(e) => handleDayChange(e.target.value, index)}>
+                    <MenuItem value="">Select a day</MenuItem>
+                    <MenuItem value="Monday">Monday</MenuItem>
+                    <MenuItem value="Tuesday">Tuesday</MenuItem>
+                    <MenuItem value="Wednesday">Wednesday</MenuItem>
+                    <MenuItem value="Thursday">Thursday</MenuItem>
+                    <MenuItem value="Friday">Friday</MenuItem>
+                    <MenuItem value="Saturday">Saturday</MenuItem>
+                    <MenuItem value="Sunday">Sunday</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Start Time"
+                  type="time"
+                  value={dayTimeRange.startTime}
+                  onChange={(e) => handleStartTimeChange(e.target.value, index)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    step: 300,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="End Time"
+                  type="time"
+                  value={dayTimeRange.endTime}
+                  onChange={(e) => handleEndTimeChange(e.target.value, index)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    step: 300,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button onClick={() => handleRemoveDayTimeRange(index)}>
+                  <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={3}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Start Time"
-                type="time"
-                value={dayTimeRange.startTime}
-                onChange={(e) => handleStartTimeChange(e.target.value, index)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300,
-                }}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="End Time"
-                type="time"
-                value={dayTimeRange.endTime}
-                onChange={(e) => handleEndTimeChange(e.target.value, index)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300,
-                }}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <Button onClick={() => handleRemoveDayTimeRange(index)}>
-                <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
-              </Button>
-            </Grid>
-          </Grid>
-        ))
-      )}
-
-      <Button
-        sx={{ marginTop: '10px' }}
-        variant="contained"
-        color="primary"
-        onClick={handleSaveDayTimeRanges}>
-        Save
-      </Button>
+          ))
+        )}
+        {dayTimeRanges.length > 0 ? (
+          <Button
+            sx={{ marginTop: '10px' }}
+            variant="contained"
+            color="primary"
+            onClick={handleSaveDayTimeRanges}>
+            Save
+          </Button>
+        ) : (
+          ''
+        )}
+      </BorderedBoxWithLabel>
     </div>
   );
 };
