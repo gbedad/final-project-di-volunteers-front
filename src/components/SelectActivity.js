@@ -71,7 +71,7 @@ const SelectFormActivity = (props) => {
             <em>None</em>
           </MenuItem>
           <MenuItem value={'Indépendant(e)'}>Indépendant(e)</MenuItem>
-          <MenuItem value={'sSalarié(e)'}>Salarié(e)</MenuItem>
+          <MenuItem value={'Salarié(e)'}>Salarié(e)</MenuItem>
           <MenuItem value={'Etudiant(e)'}>Etudiant(e)</MenuItem>
           <MenuItem value={'Retraité(e)'}>Retraité(e)</MenuItem>
           <MenuItem value={'Sans activité'}>Sans activité</MenuItem>

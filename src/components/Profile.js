@@ -35,6 +35,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TrafficIcon from '@mui/icons-material/Traffic';
 import Badge from '@mui/material/Badge';
+import { deepOrange, deepPurple, purple } from '@mui/material/colors';
 
 import BorderedBoxWithLabel from './borderedBox';
 
@@ -60,6 +61,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [resp, setResp] = useState(null);
+  const [invisible, setInvisible] = useState(false);
 
   const [activity, setActivity] = useState('');
 
@@ -85,6 +87,16 @@ const ProfilePage = () => {
         console.error('Failed to cancel registration: ', error);
       });
   };
+  const handleActivityBadgeVisibility = () => {
+    setInvisible(!invisible);
+  };
+  const handleAddressBadgeVisibility = () => {
+    setInvisible(!invisible);
+  };
+  useEffect(() => {
+    if (user.activity !== null) handleActivityBadgeVisibility();
+    if (user.street !== null) handleAddressBadgeVisibility();
+  }, []);
 
   return (
     <>
@@ -167,31 +179,16 @@ const ProfilePage = () => {
 
                 <ListItem>
                   <ListItemAvatar>
-                    <Badge badgeContent="" color="warning" variant="dot">
+                    <Badge
+                      badgeContent=""
+                      color="warning"
+                      variant="dot"
+                      invisible={invisible}>
                       <Avatar>
                         <WorkIcon />
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  {/* <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
-                    <InputLabel id="demo-simple-select-standard-label">
-                      Activité
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      value={activity}
-                      // onChange={handleChange}
-                      label="Activité">
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      <MenuItem value={'independant'}>Indépendant(e)</MenuItem>
-                      <MenuItem value={'etudiant'}>Etudiant(e)</MenuItem>
-                      <MenuItem value={'retraite'}>Retraité(e)</MenuItem>
-                      <MenuItem value={'sans'}>Sans activité</MenuItem>
-                    </Select>
-                  </FormControl> */}
                   <SelectFormActivity
                     activity={user.activity}
                     userId={user.id}
@@ -201,7 +198,11 @@ const ProfilePage = () => {
                 </ListItem>
                 <ListItem>
                   <ListItemAvatar>
-                    <Badge badgeContent="" color="warning" variant="dot">
+                    <Badge
+                      badgeContent=""
+                      color="warning"
+                      variant="dot"
+                      invisible={invisible}>
                       <Avatar>
                         <HomeIcon />
                       </Avatar>
@@ -264,21 +265,19 @@ const ProfilePage = () => {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar>
-                    <Badge
-                      color="grey"
-                      badgeContent={setStatusStep(user.status)}></Badge>
+                  <Avatar sx={{ bgcolor: purple[300] }}>
+                    {setStatusStep(user.status)}
                   </Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={shortDescription(user.status)} />
               </ListItem>
-              <ListItem>
+              {/* <ListItem>
                 <ListItemText
                   sx={{ ml: 2 }}
                   secondary={shortDescriptionForSupervisor(user.status)}
                 />
-              </ListItem>
+              </ListItem> */}
             </List>
             <ImageDisplay />
           </BorderedBoxWithLabel>

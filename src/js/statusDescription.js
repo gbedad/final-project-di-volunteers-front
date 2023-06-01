@@ -7,7 +7,7 @@ export function shortDescription(key) {
     case 'à interviewer':
       return 'Le moment est venu de s’entretenir';
     case 'à finaliser':
-      return 'Nous aimerions en savoir plus';
+      return 'Il reste à compléter votre dossier';
     case 'validé':
       return 'Votre candidature est validée';
     case 'déclinée':

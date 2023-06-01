@@ -31,8 +31,7 @@ const InstructionComponent = () => {
             <Grid item xs={12}>
               <Box p={3}>
                 <Typography variant="body2" sx={{}}>
-                  1- Merci de bien vouloir télécharger ici les documents
-                  suivants :
+                  Merci de bien vouloir télécharger ici les documents suivants :
                 </Typography>
                 <Typography variant="body2">
                   <List>
@@ -50,10 +49,10 @@ const InstructionComponent = () => {
                   </List>
                 </Typography>
                 <Typography variant="body2">
-                  2- Vous pouvez télécharger jusqu’à x documents en format pdf,
-                  jpg ou png. Merci de bien vouloir les nommer selon la
-                  nomenclature suivante : <i>nom_prénom_cv_1</i>,
-                  <i>nom_prénom_cv_2</i> (si vous avez plusieurs versions),
+                  Vous pouvez télécharger jusqu’à x documents en format pdf, jpg
+                  ou png. Merci de bien vouloir les nommer selon la nomenclature
+                  suivante : <i>nom_prénom_cv_1</i>,<i>nom_prénom_cv_2</i> (si
+                  vous avez plusieurs versions),
                   <i>nom_prénom_b3</i> (un seul document pour l’extrait de
                   casier judiciaire), <i>nom_prénom_id_1</i>,{' '}
                   <i>nom_prénom_id_2</i> (si pièce d’identité en plusieurs
@@ -64,7 +63,7 @@ const InstructionComponent = () => {
                   d’attestation de travail en l’absence de cv).
                 </Typography>
                 <Typography variant="body2">
-                  3- Vous pouvez ajouter tout document utile à l’examen de votre
+                  Vous pouvez ajouter tout document utile à l’examen de votre
                   candidature.
                 </Typography>
               </Box>

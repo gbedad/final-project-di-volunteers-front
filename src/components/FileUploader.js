@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Stack from '@mui/material/Stack';
 import UploadIcon from '@mui/icons-material/Upload';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -157,8 +158,8 @@ export default function Uploads() {
           <Button
             onClick={handleFileUpload}
             component="label"
-            startIcon={<UploadIcon />}>
-            CONFIRMER
+            startIcon={<AddCircleIcon />}>
+            AJOUTER
           </Button>
         )}
       </Stack>
@@ -192,6 +193,7 @@ export default function Uploads() {
                 position: 'relative',
                 overflow: 'auto',
                 maxHeight: 300,
+                display: 'inline-block',
               }}>
               <ListItem
                 secondaryAction={
@@ -199,7 +201,7 @@ export default function Uploads() {
                     edge="end"
                     aria-label="delete"
                     onClick={() => handleDeleteFile(f.id)}>
-                    <DeleteIcon />
+                    <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
                   </IconButton>
                 }>
                 <ListItemButton

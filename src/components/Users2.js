@@ -1,26 +1,69 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import {
+  Box,
+  Stack,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+  AlertTitle,
+  Autocomplete,
+  TextField,
+} from '@mui/material';
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+  GRID_CHECKBOX_SELECTION_COL_DEF,
+} from '@mui/x-data-grid';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+
+import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
+
+import Rating from '@mui/material/Rating';
+import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
+import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
+
+const StyledRating = styled(Rating)({
+  '& .MuiRating-iconFilled': {
+    color: '#ff6d75',
+  },
+  '& .MuiRating-iconHover': {
+    color: '#ff3d47',
+  },
+});
+const subjects = [
+  '',
+  'Mathématiques',
+  'Physique-Chimie',
+  'Histoire-Géographie',
+  'Français',
+  'Anglais',
+  'Sciences',
+  'Philosophie',
+  'Codage',
+];
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'firstName',
+    ...GRID_CHECKBOX_SELECTION_COL_DEF,
+    hideable: true,
+  },
+  { field: 'id', headerName: 'ID', width: 90, hideable: true },
+  {
+    field: 'first_name',
     headerName: 'First name',
     width: 150,
     editable: true,
   },
   {
-    field: 'lastName',
+    field: 'last_name',
     headerName: 'Last name',
     width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
     editable: true,
   },
   {
@@ -30,39 +73,334 @@ const columns = [
     sortable: false,
     width: 160,
     valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      `${params.row.first_name || ''} ${params.row.last_name || ''}`,
+  },
+  {
+    field: 'email',
+    headerName: 'Email',
+
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'phone',
+    headerName: 'Phone',
+
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'mission',
+    headerName: 'Mission',
+
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'mission_location',
+    headerName: 'Lieu',
+
+    width: 150,
+    editable: true,
+  },
+  // {
+  //   field: 'skill',
+  //   headerName: 'Matières',
+  //   width: 300,
+  //   type: 'singleSelect',
+  //   // valueOptions: [...new Set(rows.map((o) => o.skill).flat())],
+  //   renderCell: (params) => (
+  //     <Stack direction="row" spacing={0.25}>
+  //       {params.value.skill.map((topic) => (
+  //         <Chip label={topic.subject} />
+  //       ))}
+  //     </Stack>
+  //   ),
+  // },
+
+  {
+    field: 'status',
+    headerName: 'Statut',
+
+    width: 110,
+    editable: true,
+  },
+  {
+    field: 'trueValuesCount',
+    headerName: 'Checks',
+
+    width: 130,
+    editable: true,
+    renderCell: renderRating,
+  },
+  {
+    field: 'test_voltaire_passed',
+    headerName: 'Test',
+
+    width: 90,
+    editable: true,
+    renderCell: (params) => {
+      return params.value ? (
+        <TypeSpecimenRoundedIcon
+          style={{
+            color: 'yellowgreen',
+          }}
+        />
+      ) : (
+        ''
+      );
+    },
+  },
+  {
+    field: 'is_active',
+    headerName: 'Actif',
+
+    width: 90,
+    editable: true,
+    renderCell: (params) => {
+      return params.value ? (
+        <VerifiedUserIcon
+          style={{
+            color: 'green',
+          }}
+        />
+      ) : (
+        ''
+      );
+    },
   },
 ];
-
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
-
-export default function DataGridDemo() {
+function CustomToolbar() {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
+function renderRating(params) {
+  return (
+    <StyledRating
+      readOnly
+      value={params.value}
+      getLabelText={(value) => `${value} ArticleIcon${value !== 1 ? 's' : ''}`}
+      icon={<FilePresentRoundedIcon fontSize="10" />}
+      emptyIcon={<FilePresentOutlinedIcon />}
+      max={4}
+    />
+  );
+}
+function createData(
+  id,
+  first_name,
+  last_name,
+  email,
+  phone,
+  mission,
+  mission_location,
+  skill,
+  created_at,
+  status,
+  is_active,
+  trueValuesCount,
+  test_voltaire_passed
+) {
+  return {
+    id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    mission,
+    mission_location,
+    skill,
+    created_at,
+    status,
+    is_active,
+    trueValuesCount,
+    test_voltaire_passed,
+  };
+}
+
+export default function DataGridDemo(props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const users = props.data;
+  // console.log(users);
+  // const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [dataActive, setDataActive] = useState([]);
+  const [activeUsers, setActiveUsers] = useState(null);
+  const [countUsersByStatus, setCountUsersByStatus] = useState({});
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  const [value, setValue] = React.useState(subjects[0]);
+  const [inputValue, setInputValue] = React.useState('');
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleSubjectChange = (event) => {
+    setSelectedSubject(event.target.value);
+  };
+  console.log(selectedSubject);
+
+  function filterBySubject(users, subject) {
+    return users.filter((user) => {
+      const topics = user.skill?.topics || []; // Access the topics array and handle the case when it is undefined or null
+
+      return topics.some((topic) =>
+        JSON.parse(topic).subject.includes(subject)
+      );
+    });
+  }
+  const handleSearch = () => {
+    const filteredResults = filterBySubject(cleanedArray, selectedSubject);
+    if (filteredResults.length > 0) {
+      setFilteredData(filteredResults);
+    } else {
+      setFilteredData([]);
+    }
+  };
+  if (document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]) {
+    const close = document.getElementsByClassName(
+      'MuiAutocomplete-clearIndicator'
+    )[0];
+    close.addEventListener('click', () => {
+      handleResetFilter();
+    });
+  }
+
+  const handleResetFilter = () => {
+    setFilteredData(cleanedArray);
+  };
+
+  useEffect(() => {
+    handleResetFilter();
+  }, [users]);
+  // console.log("location====>>>", location);
+  // Generate Order Data
+  const handleRowClick = (params) => {
+    setSelectedUser(params.row.id);
+    navigate('/change-status', {
+      state: { userId: params.row.id, userLogged: location.state.userLogged },
+    });
+  };
+
+  const calculateTrueValues = (users) => {
+    return users.map((user) => {
+      const trueValues = [
+        user.id_received,
+        user.cv_received,
+        user.b3_received,
+        user.convention_received,
+      ].filter((value) => value === true);
+      return { ...user, trueValuesCount: trueValues.length };
+    });
+  };
+  const usersWithTrueValuesCount = calculateTrueValues(users);
+
+  const updateTopicsToEmptyArray = (data) => {
+    return data.map((item) => {
+      if (item.skill === null) {
+        return { ...item, skill: [] };
+      }
+      return item;
+    });
+  };
+  let cleanedArray = updateTopicsToEmptyArray(usersWithTrueValuesCount);
+  console.log(usersWithTrueValuesCount);
+  // cleanedArray = filteredData;
+  // if (filteredData.length > 0) {
+  //   cleanedArray = filteredData;
+  // }
+  console.log(filteredData);
+
+  const rows = filteredData.map((item, key = item.id) => {
+    return createData(
+      item.id,
+      item.first_name,
+      item.last_name,
+      item.email,
+      item.phone,
+      item.mission.title,
+      item.mission.location,
+      item.skill,
+      item.created_at,
+      item.status,
+      item.is_active,
+      item.trueValuesCount,
+      item.test_voltaire_passed
+    );
+  });
+  return (
+    <>
+      <Stack spacing={2} sx={{ width: 600, marginBottom: 2 }} direction="row">
+        {/* <FormControl sx={{ minWidth: 200 }} size="small"> */}
+        {/* <InputLabel id="subject-select-label">Select Subject</InputLabel> */}
+        {/* <Select
+            labelId="subject-select-label"
+            id="subject-select"
+            value={selectedSubject}
+            onChange={handleSubjectChange}
+            label="Select Subject">
+            <MenuItem value="Mathématiques">Mathématiques</MenuItem>
+            <MenuItem value="Physique-Chimie">Physique-Chimie</MenuItem>
+            <MenuItem value="Science">Sciences</MenuItem>
+            <MenuItem value="Histoire-Géographie">Histoire-Géographie</MenuItem>
+            <MenuItem value="Français">Français</MenuItem>
+            <MenuItem value="Anglais">Anglais</MenuItem>
+            <MenuItem value="Sciences">Sciences</MenuItem>
+            <MenuItem value="Codage">Codage</MenuItem>
+            {/* Add more subjects as needed 
+          </Select> */}
+        <Autocomplete
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={subjects}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Saisir un sujet" size="small" />
+          )}
+        />
+        {/* </FormControl> */}
+
+        <Button variant="contained" onClick={handleSearch} color="success">
+          Search
+        </Button>
+        {/* <Button variant="contained" onClick={handleResetFilter} color="warning">
+          Reset
+        </Button> */}
+      </Stack>
+      <Box sx={{ height: 600, width: '100%' }}>
+        <DataGrid
+          onRowClick={handleRowClick}
+          {...rows}
+          slots={{
+            toolbar: CustomToolbar,
+          }}
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 9,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
+          }}
+          pageSizeOptions={[9]}
+          disableRowSelectionOnClick
+        />
+      </Box>
+    </>
   );
 }

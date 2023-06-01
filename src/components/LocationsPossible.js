@@ -30,11 +30,11 @@ const LocationsPossibleComponent = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data);
-      const skill = response.data;
+      console.log(response.data.skill.where_location);
+      const skills = response.data.skill;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-      if (skill.where_location) {
-        setLocationsPossible(skill.where_location);
+      if (skills.where_location) {
+        setLocationsPossible(skills.where_location);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -74,14 +74,14 @@ const LocationsPossibleComponent = () => {
       );
       console.log(response.data.message);
       if (response.data.message) {
-        console.log('Day and time ranges saved successfully');
+        console.log('Locations saved successfully');
       } else {
-        console.error('Failed to save day and time ranges');
+        console.error('Failed to save locations');
       }
     } catch (error) {
-      console.error('Failed to save day and time ranges', error);
+      console.error('Failed to save locations', error);
     }
-    console.log('Saving subject and class ranges: ', locationsPossible);
+    console.log('Saving locations: ', locationsPossible);
   };
 
   return (
@@ -100,7 +100,7 @@ const LocationsPossibleComponent = () => {
           </Box>
         ) : (
           locationsPossible &&
-          locationsPossible.map((locationPossible, index) => (
+          locationsPossible.map((loc, index) => (
             <Grid
               container
               spacing={1}
@@ -112,7 +112,7 @@ const LocationsPossibleComponent = () => {
                   variant="outlined"
                   label="Location"
                   select
-                  value={locationPossible}
+                  value={loc}
                   onChange={(e) => handleLocationChange(e.target.value, index)}>
                   <MenuItem value="Maison des Associations">
                     Maison des Associations
@@ -133,7 +133,7 @@ const LocationsPossibleComponent = () => {
             </Grid>
           ))
         )}
-        {locationsPossible && (
+        {locationsPossible.length > 0 && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="contained"

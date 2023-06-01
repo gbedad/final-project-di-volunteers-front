@@ -37,7 +37,7 @@ const DocumentCheckbox = ({ user }) => {
     setTestVoltairePassed(event.target.checked);
   };
 
-  const handleReceivedChange = async () => {
+  const handleReceivedChange = async (event) => {
     try {
       await fetch(`${BASE_URL}/update-files-received/${user.id}`, {
         method: 'POST',
@@ -75,7 +75,7 @@ const DocumentCheckbox = ({ user }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={cvReceived}
+                    checked={cvReceived || false}
                     onChange={handleCvReceived}
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="primary"
@@ -85,10 +85,9 @@ const DocumentCheckbox = ({ user }) => {
                 labelPlacement="right"
               />
               <FormControlLabel
-                value={user.id_received}
                 control={
                   <Checkbox
-                    checked={idReceived}
+                    checked={idReceived || false}
                     onChange={handleIdReceived}
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="primary"
@@ -100,7 +99,7 @@ const DocumentCheckbox = ({ user }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={b3Received}
+                    checked={b3Received || false}
                     onChange={handleB3Received}
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="primary"
@@ -114,21 +113,21 @@ const DocumentCheckbox = ({ user }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={testVoltairePassed}
+                    checked={testVoltairePassed || false}
                     onChange={handleTestVoltaire}
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="primary"
                   />
                 }
-                label="Français *"
+                label="Test de français *"
                 labelPlacement="right"
               />
             </FormGroup>
-            <FormGroup row>
+            <FormGroup row aria-label="position">
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={conventionReceived}
+                    checked={conventionReceived || false}
                     onChange={handleConventionReceived}
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="primary"
@@ -138,14 +137,16 @@ const DocumentCheckbox = ({ user }) => {
                 labelPlacement="right"
               />
             </FormGroup>
+            <Grid item xs={4}>
+              <FormControlLabel
+                control={
+                  <Button onClick={handleReceivedChange}>CONFIRMER</Button>
+                }
+                label=""
+                labelPlacement="top"
+              />
+            </Grid>
           </FormControl>
-        </Grid>
-        <Grid item xs={4}>
-          <FormControlLabel
-            control={<Button onClick={handleReceivedChange}>CONFIRMER</Button>}
-            label=""
-            labelPlacement="top"
-          />
         </Grid>
       </Grid>
     </Box>

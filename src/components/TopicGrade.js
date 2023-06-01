@@ -131,11 +131,16 @@ const SubjectClassRangeComponent = () => {
                   select
                   value={subjectClassRange.subject}
                   onChange={(e) => handleSubjectChange(e.target.value, index)}>
-                  <MenuItem value="Math">Math</MenuItem>
-                  <MenuItem value="Science">Science</MenuItem>
-                  <MenuItem value="History">History</MenuItem>
-                  <MenuItem value="Physics">Physics</MenuItem>
-                  <MenuItem value="Geography">Geography</MenuItem>
+                  <MenuItem value="Mathématiques">Mathématiques</MenuItem>
+                  <MenuItem value="Physique-Chimie">Physique-Chimie</MenuItem>
+                  <MenuItem value="Sciences">Sciences</MenuItem>
+                  <MenuItem value="Histoire-Géographie">
+                    Histoire-Géographie
+                  </MenuItem>
+                  <MenuItem value="Français">Français</MenuItem>
+                  <MenuItem value="Anglais">Anglais</MenuItem>
+                  <MenuItem value="Sciences">Sciences</MenuItem>
+                  <MenuItem value="Codage">Codage</MenuItem>
                   {/* Add more subjects as needed */}
                 </TextField>
               </Grid>

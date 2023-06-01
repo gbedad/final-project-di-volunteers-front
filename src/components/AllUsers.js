@@ -143,6 +143,7 @@ function DashboardContent() {
           acc[status] = (acc[status] || 0) + 1;
           return acc;
         }, {});
+
         setUsers(response.data);
         setDataActive(filteredData);
         setActiveUsers(filteredData.length);
@@ -201,7 +202,7 @@ function DashboardContent() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 140,
+                    height: 100,
                   }}>
                   <UsersByStatusGrid data={countUsersByStatus} />
                 </Paper>
@@ -213,7 +214,7 @@ function DashboardContent() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 140,
+                    height: 100,
                   }}>
                   <ActiveUsers data={activeUsers} />
                 </Paper>
@@ -221,9 +222,8 @@ function DashboardContent() {
 
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* <SearchBar /> */}
-                  <Users data={users} />
-                  {/* <Users2 /> */}
+                  {/* <Users data={users} /> */}
+                  <Users2 data={users} />
                 </Paper>
               </Grid>
             </Grid>

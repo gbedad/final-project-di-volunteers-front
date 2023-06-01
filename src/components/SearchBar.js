@@ -1,31 +1,53 @@
-import React from 'react';
-import { TextField, Box, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Box, Button, Autocomplete, Stack } from '@mui/material';
 
-const SearchBar = ({ onSearch }) => {
-  const [topic, setTopic] = React.useState('');
-  const [location, setLocation] = React.useState('');
-  const [status, setStatus] = React.useState('');
+const subjects = [
+  { title: 'Mathématiques' },
+  { title: 'Physique' },
+  { title: 'Histoire-Géographie' },
+  { title: 'Français' },
+  { title: 'Anglais' },
+  { title: 'Sciences' },
+  { title: 'Philosophie' },
+  { title: 'Codage' },
+  { title: 'Chinois' },
+];
 
-  const handleTopicChange = (event) => {
-    setTopic(event.target.value);
+const SearchBar = ({ onSearchSubject }) => {
+  const [selectedSubject, setSelectedSubject] = useState('');
+  // const [filteredData, setFilteredData] = useState([]);
+
+  const handleSubjectChange = (event) => {
+    setSelectedSubject(event.target.value);
   };
 
-  const handleLocationChange = (event) => {
-    setLocation(event.target.value);
-  };
-
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
-  };
-
-  const handleSearch = () => {
-    // Call the onSearch prop and pass the topic and location values
-    onSearch(topic, location, status);
-  };
+  // const handleSearch = () => {
+  //   // Call the onSearch prop and pass the topic and location values
+  //   onSearch(topic, location, status);
+  // };
 
   return (
-    <Box display="flex" alignItems="center" maxWidth={700}>
-      <TextField
+    <Stack spacing={2} sx={{ width: 400 }} direction="row">
+      <Autocomplete
+        sx={{ width: 300 }}
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        options={subjects.map((option) => option.title)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search input"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+            value={selectedSubject}
+            onChange={handleSubjectChange}
+          />
+        )}
+      />
+      {/* <TextField
         size="small"
         label="Search by topic"
         value={topic}
@@ -45,11 +67,9 @@ const SearchBar = ({ onSearch }) => {
         value={status}
         onChange={handleStatusChange}
         sx={{ marginRight: '1rem' }}
-      />
-      <Button variant="contained" onClick={handleSearch}>
-        Search
-      </Button>
-    </Box>
+      /> */}
+      <Button variant="contained">Search</Button>
+    </Stack>
   );
 };
 
