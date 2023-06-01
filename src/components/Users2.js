@@ -357,9 +357,9 @@ export default function DataGridDemo(props) {
             {/* Add more subjects as needed 
           </Select> */}
         <Autocomplete
-          value={value}
+          value={selectedSubject}
           onChange={(event, newValue) => {
-            setValue(newValue);
+            setSelectedSubject(newValue);
           }}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => {
