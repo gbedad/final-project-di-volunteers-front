@@ -142,6 +142,7 @@ const SubjectClassRangeComponent = () => {
             <LinearProgress />
           </Box>
         ) : (
+          subjectClassRanges &&
           subjectClassRanges.map((subjectClassRange, index) => (
             <Grid
               mb={2}
