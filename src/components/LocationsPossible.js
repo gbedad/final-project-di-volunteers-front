@@ -11,9 +11,17 @@ import {
   LinearProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
 import { UserContext } from '../UserContext';
+
+const fabStyle = {
+  position: 'absolute',
+  bottom: 16,
+  right: 16,
+};
 
 const LocationsPossibleComponent = () => {
   const location = useLocation();
@@ -84,16 +92,33 @@ const LocationsPossibleComponent = () => {
     console.log('Saving locations: ', locationsPossible);
   };
 
+  const fab = {
+    color: 'primary',
+    sx: fabStyle,
+    icon: <AddIcon />,
+    label: 'Add',
+  };
+
   return (
     <div>
       <BorderedBoxWithLabel label="Lieux" sx={{ display: 'flex' }}>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           onClick={handleAddLocation}
           sx={{ mr: 2 }}>
           Add Location
-        </Button>
+        </Button> */}
+        <label>
+          <Fab
+            sx={fab.sx}
+            aria-label={fab.label}
+            color={fab.color}
+            onClick={() => handleAddLocation()}
+            component="button">
+            {fab.icon}
+          </Fab>
+        </label>
         {isLoading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -102,6 +127,7 @@ const LocationsPossibleComponent = () => {
           locationsPossible &&
           locationsPossible.map((loc, index) => (
             <Grid
+              mb={2}
               container
               spacing={1}
               key={index}
@@ -136,10 +162,10 @@ const LocationsPossibleComponent = () => {
         {locationsPossible.length > 0 && (
           <Button
             sx={{ marginTop: '10px' }}
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleSaveLocationsPossible}>
-            Save
+            CONFIRMER
           </Button>
         )}
       </BorderedBoxWithLabel>

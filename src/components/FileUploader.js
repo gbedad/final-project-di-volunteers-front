@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import UploadIcon from '@mui/icons-material/Upload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -25,12 +26,20 @@ import FileDisplay from './FileDisplay';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
 import InstructionComponent from './files/Instructions';
 
 import './fileInputStyle.css';
+
+const fabStyle = {
+  position: 'absolute',
+  bottom: -10,
+  left: 300,
+};
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -144,25 +153,45 @@ export default function Uploads() {
     }
   };
   // console.log(filesUploaded);
+
+  const fab = {
+    color: 'primary',
+    sx: fabStyle,
+    icon: <AddIcon />,
+    label: 'Add',
+  };
+
   return (
     <>
       <InstructionComponent />
-      <Stack direction="row" spacing={2}>
-        <input
-          id="file-upload"
-          type="file"
-          defaultValue=""
-          onChange={handleFileChange}
-        />
-        {showUploadButton && (
-          <Button
-            onClick={handleFileUpload}
-            component="label"
-            startIcon={<AddCircleIcon />}>
-            AJOUTER
-          </Button>
-        )}
-      </Stack>
+      <Box style={{ position: 'relative' }}>
+        <Stack direction="row" spacing={2}>
+          <input
+            id="file-upload"
+            type="file"
+            defaultValue=""
+            onChange={handleFileChange}
+          />
+          {showUploadButton && (
+            // <Button
+            //   onClick={handleFileUpload}
+            //   component="label"
+            //   startIcon={<AddCircleIcon />}>
+            //   AJOUTER
+            // </Button>
+            <label>
+              <Fab
+                sx={fab.sx}
+                aria-label={fab.label}
+                color={fab.color}
+                onClick={() => handleFileUpload()}
+                component="button">
+                {fab.icon}
+              </Fab>
+            </label>
+          )}
+        </Stack>
+      </Box>
       {fileUploaded && (
         <Snackbar
           open={openAlert}
@@ -176,47 +205,48 @@ export default function Uploads() {
           </Alert>
         </Snackbar>
       )}
-
-      <Paper>
-        {isLoading ? (
-          <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
-            <CircularProgress color="secondary" />
-          </Stack>
-        ) : (
-          filesUploaded.map((f, i) => (
-            <List
-              key={i}
-              sx={{
-                width: '100%',
-                maxWidth: 360,
-                bgcolor: 'background.paper',
-                position: 'relative',
-                overflow: 'auto',
-                maxHeight: 300,
-                display: 'inline-block',
-              }}>
-              <ListItem
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDeleteFile(f.id)}>
-                    <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
-                  </IconButton>
-                }>
-                <ListItemButton
-                  component="a"
-                  onClick={() => handleOpen(f.path)}>
-                  <ListItemAvatar>
-                    <Avatar>{checkFileType(f.mimetype)}</Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={f.filename} secondary={f.mimetype} />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          ))
-        )}
-      </Paper>
+      <Box>
+        <Paper>
+          {isLoading ? (
+            <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+              <CircularProgress color="secondary" />
+            </Stack>
+          ) : (
+            filesUploaded.map((f, i) => (
+              <List
+                key={i}
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper',
+                  position: 'relative',
+                  overflow: 'auto',
+                  maxHeight: 300,
+                  display: 'inline-block',
+                }}>
+                <ListItem
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleDeleteFile(f.id)}>
+                      <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                    </IconButton>
+                  }>
+                  <ListItemButton
+                    component="a"
+                    onClick={() => handleOpen(f.path)}>
+                    <ListItemAvatar>
+                      <Avatar>{checkFileType(f.mimetype)}</Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={f.filename} secondary={f.mimetype} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            ))
+          )}
+        </Paper>
+      </Box>
       {selectedFile && (
         <FileDisplay
           s3FilePath={selectedFile}

@@ -25,6 +25,7 @@ import AdminPanel from './components/AdminPanel';
 import DocumentCheckbox from './components/files/filesSaved';
 import SelectFormActivity from './components/SelectActivity';
 import AddressAutocomplete from './components/AddressAutocomplete';
+import FormInterviewComponent from './components/interviews/Interview';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/update-files-received" element={<DocumentCheckbox />} />
         <Route path="/add-activity" element={<SelectFormActivity />} />
         <Route path="update-address" element={<AddressAutocomplete />} />
+        <Route path="add-interviews" element={<FormInterviewComponent />} />
         {/* <Route path="/" element={<CardList />} /> */}
         <Route path="/missions" element={<MissionList />} />
         <Route exact path="/" element={<Home />} />

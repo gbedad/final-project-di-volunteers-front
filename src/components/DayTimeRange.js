@@ -15,8 +15,16 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderedBoxWithLabel from './borderedBox';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 import { UserContext } from '../UserContext';
+
+const fabStyle = {
+  position: 'absolute',
+  bottom: 16,
+  right: 16,
+};
 
 const DayTimeRangeComponent = () => {
   const location = useLocation();
@@ -105,18 +113,34 @@ const DayTimeRangeComponent = () => {
       console.error('Failed to save day and time ranges', error);
     }
   };
+  const fab = {
+    color: 'primary',
+    sx: fabStyle,
+    icon: <AddIcon />,
+    label: 'Add',
+  };
 
   return (
     <div>
       <BorderedBoxWithLabel label="Jours et heures" sx={{ display: 'flex' }}>
         {/* <Typography variant="h5">Day and Time Range</Typography> */}
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           onClick={handleAddDayTimeRange}
           sx={{ mr: 2 }}>
           Add Day and Time Range
-        </Button>
+        </Button> */}
+        <label>
+          <Fab
+            sx={fab.sx}
+            aria-label={fab.label}
+            color={fab.color}
+            onClick={() => handleAddDayTimeRange()}
+            component="button">
+            {fab.icon}
+          </Fab>
+        </label>
         {isLoading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -125,6 +149,7 @@ const DayTimeRangeComponent = () => {
           dayTimeRanges &&
           dayTimeRanges.map((dayTimeRange, index) => (
             <Grid
+              mb={2}
               container
               spacing={1}
               key={index}
@@ -190,10 +215,10 @@ const DayTimeRangeComponent = () => {
         {dayTimeRanges.length > 0 ? (
           <Button
             sx={{ marginTop: '10px' }}
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleSaveDayTimeRanges}>
-            Save
+            CONFIRMER
           </Button>
         ) : (
           ''

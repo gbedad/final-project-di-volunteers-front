@@ -53,6 +53,7 @@ import FileDisplay from './FileDisplay';
 import DocumentCheckbox from './files/filesSaved';
 import BorderedBoxWithLabel from './borderedBox';
 import { parsePhoneNumber } from 'awesome-phonenumber';
+import FormInterviewComponent from './interviews/Interview';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -192,7 +193,7 @@ const ChangeUserStatus = () => {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4} lg={4}>
+          <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Profil" sx={{ display: 'flex' }}>
               {user.mission ? (
                 <List
@@ -402,7 +403,7 @@ const ChangeUserStatus = () => {
               </div>
             </BorderedBoxWithLabel>
           </Grid>
-          <Grid item xs={12} md={4} lg={4}>
+          <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Quoi & quand" sx={{ display: 'flex' }}>
               {user.skill ? (
                 <>
@@ -463,7 +464,51 @@ const ChangeUserStatus = () => {
               )}
             </BorderedBoxWithLabel>
           </Grid>
-          <Grid item xs={12} md={4} lg={4}>
+
+          <Grid item xs={12} md={4} lg={3}>
+            <BorderedBoxWithLabel label="Entretiens" sx={{ display: 'flex' }}>
+              <FormInterviewComponent userId={user.id} />
+              {/* <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>
+                *Test voltaire ou autre test.
+              </Typography>
+              <Divider />
+              {user.file.length !== 0 ? (
+                <Box>
+                  {user.file.map((f, i) => (
+                    <List
+                      key={i}
+                      sx={{
+                        width: '100%',
+                        maxWidth: 360,
+                        overflow: '',
+                        maxHeight: 300,
+                        position: 'relative',
+                        bgcolor: 'background.paper',
+                      }}>
+                      <ListItem>
+                        <ListItemButton
+                          component="a"
+                          onClick={() => handleOpen(f.path)}>
+                          <ListItemAvatar>
+                            <Avatar>{checkFileType(f.mimetype)}</Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={f.filename}
+                            secondary={f.mimetype}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    </List>
+                  ))}
+                </Box>
+              ) : (
+                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
+                  Aucun fichier n'a été téléchargé.
+                </Typography>
+              )} */}
+            </BorderedBoxWithLabel>
+          </Grid>
+          <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <DocumentCheckbox user={user} />
               <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>

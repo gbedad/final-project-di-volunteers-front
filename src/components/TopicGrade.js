@@ -11,9 +11,17 @@ import {
   LinearProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
 import { UserContext } from '../UserContext';
+
+const fabStyle = {
+  position: 'absolute',
+  bottom: 16,
+  right: 16,
+};
 
 const SubjectClassRangeComponent = () => {
   const location = useLocation();
@@ -99,19 +107,36 @@ const SubjectClassRangeComponent = () => {
     console.log('Saving subject and class ranges: ', subjectClassRanges);
   };
 
+  const fab = {
+    color: 'primary',
+    sx: fabStyle,
+    icon: <AddIcon />,
+    label: 'Add',
+  };
+
   return (
     <div>
       <BorderedBoxWithLabel
         label="Matières et classes"
         sx={{ display: 'flex' }}>
         {/* <Typography variant="h5">Subject and Grade Range</Typography> */}
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           onClick={handleAddSubjectClassRange}
           sx={{ mr: 2 }}>
           Add Subject and Grade Range
-        </Button>
+        </Button> */}
+        <label>
+          <Fab
+            sx={fab.sx}
+            aria-label={fab.label}
+            color={fab.color}
+            onClick={() => handleAddSubjectClassRange()}
+            component="button">
+            {fab.icon}
+          </Fab>
+        </label>
         {isLoading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -119,6 +144,7 @@ const SubjectClassRangeComponent = () => {
         ) : (
           subjectClassRanges.map((subjectClassRange, index) => (
             <Grid
+              mb={2}
               container
               spacing={1}
               key={index}
@@ -193,10 +219,10 @@ const SubjectClassRangeComponent = () => {
         {subjectClassRanges && (
           <Button
             sx={{ marginTop: '10px' }}
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleSaveSubjectClassRanges}>
-            Save
+            CONFIRMER
           </Button>
         )}
       </BorderedBoxWithLabel>

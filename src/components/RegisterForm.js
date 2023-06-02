@@ -18,11 +18,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Input from 'react-phone-number-input/input';
+import CustomPhoneNumber from '../components/phone-numbers/PhoneNumber';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import 'react-phone-number-input/style.css';
 
 function Copyright(props) {
   return (
@@ -221,7 +224,7 @@ const RegisterForm = ({ mission }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+                {/* <TextField
                   autoComplete="phone-number"
                   name="phone"
                   required
@@ -231,6 +234,16 @@ const RegisterForm = ({ mission }) => {
                   autoFocus
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                /> */}
+                <Input
+                  international
+                  withCountryCallingCode
+                  defaultCountry="FR"
+                  placeholder="Phone number"
+                  value={phone}
+                  onChange={setPhone}
+                  style={{ innerHeight: '40px' }}
+                  inputComponent={CustomPhoneNumber}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>

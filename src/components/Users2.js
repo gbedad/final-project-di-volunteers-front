@@ -203,7 +203,8 @@ function createData(
   status,
   is_active,
   trueValuesCount,
-  test_voltaire_passed
+  test_voltaire_passed,
+  interviews
 ) {
   return {
     id,
@@ -219,6 +220,7 @@ function createData(
     is_active,
     trueValuesCount,
     test_voltaire_passed,
+    interviews,
   };
 }
 
