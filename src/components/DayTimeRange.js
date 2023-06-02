@@ -43,15 +43,14 @@ const DayTimeRangeComponent = () => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       console.log(response.data);
-      if (response.data.skill.when_day_slot) {
+      if (response.data.skill) {
         const parsed_array = response.data.skill.when_day_slot.map((string) =>
           JSON.parse(string)
         );
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
-      } else {
-        setIsLoading(false);
       }
+      if (response.data.skill === null) setIsLoading(false);
     };
 
     getDays();
@@ -212,7 +211,7 @@ const DayTimeRangeComponent = () => {
             </Grid>
           ))
         )}
-        {dayTimeRanges.length > 0 ? (
+        {dayTimeRanges && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="outlined"
@@ -220,8 +219,6 @@ const DayTimeRangeComponent = () => {
             onClick={handleSaveDayTimeRanges}>
             CONFIRMER
           </Button>
-        ) : (
-          ''
         )}
       </BorderedBoxWithLabel>
     </div>

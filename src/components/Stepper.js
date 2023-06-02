@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Profile from './Profile';
 import Skills from './Skills';
 import Uploads from './FileUploader';
+import ConventionComponent from './ConventionReciproqueComponent';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -68,12 +69,21 @@ const BasicTabs = () => {
           <Tab
             label="JE PEUX AIDER"
             {...a11yProps(1)}
-            disabled={status === 'created'}
+            disabled={status === 'compte créé'}
           />
           <Tab
             label="MES DOCUMENTS"
             {...a11yProps(2)}
-            disabled={status === 'created' || status === 'proposed'}
+            disabled={status === 'compte créé' || status === 'déclinée'}
+          />
+          <Tab
+            label="MA CONVENTION"
+            {...a11yProps(2)}
+            // disabled={
+            //   status === 'compte créé' ||
+            //   status === 'à renseigner' ||
+            //   'à interviewer'
+            // }
           />
         </Tabs>
       </Box>
@@ -86,6 +96,9 @@ const BasicTabs = () => {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Uploads />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <ConventionComponent />
       </TabPanel>
     </div>
   );

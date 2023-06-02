@@ -38,15 +38,14 @@ const LocationsPossibleComponent = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data.skill.where_location);
+      // console.log(response.data.skill.where_location);
       const skills = response.data.skill;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-      if (skills.where_location) {
+      if (skills && skills.where_location) {
         setLocationsPossible(skills.where_location);
         setIsLoading(false);
-      } else {
-        setIsLoading(false);
       }
+      if (response.data.skill === null) setIsLoading(false);
     };
 
     getLocations();
@@ -159,15 +158,14 @@ const LocationsPossibleComponent = () => {
             </Grid>
           ))
         )}
-        {locationsPossible.length > 0 && (
-          <Button
-            sx={{ marginTop: '10px' }}
-            variant="outlined"
-            color="primary"
-            onClick={handleSaveLocationsPossible}>
-            CONFIRMER
-          </Button>
-        )}
+
+        <Button
+          sx={{ marginTop: '10px' }}
+          variant="outlined"
+          color="primary"
+          onClick={handleSaveLocationsPossible}>
+          CONFIRMER
+        </Button>
       </BorderedBoxWithLabel>
     </div>
   );

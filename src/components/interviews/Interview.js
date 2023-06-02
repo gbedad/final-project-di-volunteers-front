@@ -10,12 +10,15 @@ import {
   MenuItem,
   Stack,
   Box,
+  Chip,
   FormControl,
   InputLabel,
 } from '@mui/material';
 import Zoom from '@mui/material/Zoom';
 import Fab from '@mui/material/Fab';
+import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
 import dayjs, { Dayjs } from 'dayjs';
@@ -104,6 +107,7 @@ const FormInterviewComponent = ({ userId }) => {
   const [date, setDate] = React.useState(dayjs(Date.now()));
   const [interviews, setInterviews] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
+  const [countInterviews, setCountInterviews] = useState(0);
 
   const userToken = location.state.userLogged.token;
   //   const handleTitleChange = (event) => {
@@ -128,6 +132,10 @@ const FormInterviewComponent = ({ userId }) => {
         setIsLoading(false);
       }
       setIsLoading(false);
+      if (response.data.interviews.length > 0) {
+        setCountInterviews(response.data.interviews.length);
+        setConfirmed(true);
+      }
     };
 
     getInterviews();
@@ -254,8 +262,16 @@ const FormInterviewComponent = ({ userId }) => {
 
   return (
     <div>
-      <Typography variant="h6" component="h6" align="center" mb={2}>
-        Saisir un entretien
+      <Typography
+        variant="h6"
+        component="h6"
+        align="center"
+        mb={2}
+        sx={{ fontWeight: 400 }}>
+        Saisir un entretien{' '}
+        {countInterviews > 0 && (
+          <Chip label={`${countInterviews} déjà réalisé(s)`} size="normal" />
+        )}
       </Typography>
 
       <label>
@@ -329,10 +345,11 @@ const FormInterviewComponent = ({ userId }) => {
           </Grid>
         ))}
       <Button
+        startIcon={confirmed ? <SaveIcon /> : ''}
         variant="outlined"
         color={confirmed ? 'success' : 'primary'}
         onClick={handleSaveInterviews}>
-        {confirmed ? 'CONFIRMÉ' : 'CONFIRMER'}
+        {confirmed ? 'RÉALISÉ(S)' : 'CONFIRMER'}
       </Button>
     </div>
   );
