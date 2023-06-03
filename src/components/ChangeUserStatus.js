@@ -219,7 +219,7 @@ const ChangeUserStatus = () => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={user.email}
+                      primary={user.email2 ? user.email2 : user.email}
                       secondary={
                         parsePhoneNumber(user.phone).number.international
                       }
@@ -512,7 +512,7 @@ const ChangeUserStatus = () => {
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <DocumentCheckbox user={user} />
               <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>
-                *Test voltaire ou autre test.
+                *Test Voltaire ou autre.
               </Typography>
               <Divider />
               {user.file.length !== 0 ? (

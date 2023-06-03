@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page } from 'react-pdf';
-import { Button, Container } from '@mui/material';
+import { Button, Container, Box, Paper, Typography } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 import pdfFile from '../assets/presentationtuteurs.pdf';
@@ -38,17 +38,40 @@ const ConventionComponent = () => {
     <Container sx={{ height: '600px' }}>
       <center>
         <div style={containerStyle}>
-          <h1>Bienvenue dans l'Association Séphora Berrebi</h1>
-          <h3>
-            Vous pouvez cliquer sur le lien ci-dessous pour télécharger la
-            convention réciproque
-          </h3>
-          <Button
-            variant="outlined"
-            onClick={handleDownload}
-            startIcon={<CloudDownloadIcon />}>
-            Télécharger la convention
-          </Button>
+          <Box
+            container
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              '& > :not(style)': {
+                m: 1,
+                width: 600,
+                height: 300,
+                padding: 10,
+                backgroundColor: 'rgb(250, 255, 252)',
+                borderRadius: 5,
+              },
+            }}>
+            <Paper elevation={1}>
+              <Typography variant="h4" mb={1}>
+                Le moment est venu de signer la convention avec l'Association
+                Séphora Berrebi
+              </Typography>
+
+              <Typography variant="body1" mb={5}>
+                Vous pouvez cliquer sur le lien ci-dessous pour télécharger la
+                convention d'engagement réciproque
+              </Typography>
+
+              <Button
+                variant="outlined"
+                onClick={handleDownload}
+                startIcon={<CloudDownloadIcon />}>
+                Télécharger la convention
+              </Button>
+            </Paper>
+          </Box>
 
           {/* <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
             {Array.from(new Array(numPages), (el, index) => (

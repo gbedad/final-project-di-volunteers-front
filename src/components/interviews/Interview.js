@@ -268,9 +268,15 @@ const FormInterviewComponent = ({ userId }) => {
         align="center"
         mb={2}
         sx={{ fontWeight: 400 }}>
-        Saisir un entretien{' '}
         {countInterviews > 0 && (
-          <Chip label={`${countInterviews} déjà réalisé(s)`} size="normal" />
+          <Chip
+            label={
+              countInterviews === 1
+                ? `${countInterviews} entretien réalisé`
+                : `${countInterviews} entretiens réalisés`
+            }
+            size="normal"
+          />
         )}
       </Typography>
 

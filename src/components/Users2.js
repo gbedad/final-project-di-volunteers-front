@@ -383,7 +383,7 @@ export default function DataGridDemo(props) {
           Reset
         </Button> */}
       </Stack>
-      <Box sx={{ height: 600, width: '100%' }}>
+      <Box sx={{ height: 670, width: '100%' }}>
         <DataGrid
           onRowClick={handleRowClick}
           {...rows}

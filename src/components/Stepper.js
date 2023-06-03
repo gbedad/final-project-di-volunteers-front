@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Profile from './Profile';
 import Skills from './Skills';
 import Uploads from './FileUploader';
+import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
 
 function TabPanel(props) {
@@ -95,7 +96,10 @@ const BasicTabs = () => {
         <Skills />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Uploads />
+        <div>
+          <InstructionComponent />
+          <Uploads />
+        </div>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <ConventionComponent />

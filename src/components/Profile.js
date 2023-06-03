@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -30,11 +31,25 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import CakeIcon from '@mui/icons-material/Cake';
-
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TrafficIcon from '@mui/icons-material/Traffic';
 import Badge from '@mui/material/Badge';
+import FormHelperText from '@mui/material/FormHelperText';
+import CallIcon from '@mui/icons-material/Call';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+
+import Fab from '@mui/material/Fab';
+import LoadingButton from '@mui/lab/LoadingButton';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+
 import { deepOrange, deepPurple, purple } from '@mui/material/colors';
 
 import BorderedBoxWithLabel from './borderedBox';
@@ -44,6 +59,7 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 import { UserContext } from '../UserContext';
 
 import { shortDescriptionForSupervisor } from '../js/statusDescription';
+import EditProfile from './EditProfile';
 
 import {
   shortDescription,
@@ -55,13 +71,25 @@ import AutofillCheckoutDemo from './AddressAutocomplete2';
 import SelectFormActivity from './SelectActivity';
 import ImageDisplay from './ImageDisplay';
 
+const fabStyle = {
+  position: 'absolute',
+  top: 16,
+  right: 16,
+};
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const ProfilePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [resp, setResp] = useState(null);
   const [invisible, setInvisible] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email2, setEmail2] = useState('');
 
   const [activity, setActivity] = useState('');
 
@@ -98,6 +126,102 @@ const ProfilePage = () => {
     if (user.street !== null) handleAddressBadgeVisibility();
   }, []);
 
+  const handleEditClick = () => {
+    setEditing(true);
+  };
+
+  const handleSaveClick = async () => {
+    // Perform any necessary validation or data processing before saving
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/update-user-profile/${user.id}`,
+        {
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          email2: email2,
+        }
+      );
+      console.log(response.data.message);
+
+      // Perform any desired actions after successful submission
+    } catch (error) {
+      console.error(error);
+      // Handle any errors
+    }
+    setEditing(false);
+  };
+
+  const handleFirstNameChange = (event) => {
+    const selectedValue = event.target.value;
+    setFirstName(selectedValue);
+  };
+
+  const handleLastNameChange = (event) => {
+    const selectedValue = event.target.value;
+    setLastName(selectedValue);
+  };
+
+  const handlePhoneChange = (event) => {
+    const selectedValue = event.target.value;
+    setPhone(selectedValue);
+  };
+  const handleEmail2Change = (event) => {
+    const selectedValue = event.target.value;
+    setEmail2(selectedValue);
+  };
+
+  const getUserById = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user-by-id/${user.id}`);
+      if (response.data) {
+        const userData = response.data;
+        setFirstName(userData.first_name);
+        setLastName(userData.last_name);
+        setPhone(userData.phone);
+        setEmail2(userData.email2);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserById();
+  }, []);
+  const fabEdit = {
+    color: 'secondary',
+    sx: fabStyle,
+    icon: <EditIcon />,
+    label: 'Edit',
+  };
+  const fabSave = {
+    color: 'primary',
+    sx: fabStyle,
+    icon: <SaveIcon />,
+    label: 'Save',
+  };
+
+  const actions = [
+    {
+      icon: <EditIcon />,
+      name: 'Modifier',
+      operation: 'edit',
+    },
+    { icon: <SaveIcon />, name: 'Sauvegarder', operation: 'save' },
+  ];
+
+  //handler function
+  const handleClick = (operation) => {
+    if (operation === 'edit') {
+      console.log('Edit mode');
+      setEditing(true);
+    } else if (operation === 'save') {
+      // setEditing(false);
+      console.log('Save mode');
+      handleSaveClick();
+    }
+  };
   return (
     <>
       {!isRegistered && (
@@ -147,26 +271,126 @@ const ProfilePage = () => {
                   </ListItemAvatar>
                   <ListItemText primary={user.mission.location} secondary="" />
                 </ListItem> */}
+                {/* {editing ? (
+                  <label>
+                    <Fab
+                      sx={fabSave.sx}
+                      aria-label={fabSave.label}
+                      color={fabSave.color}
+                      onClick={() => handleSaveClick()}
+                      component="button">
+                      {fabSave.icon}
+                    </Fab>
+                  </label>
+                ) : (
+                  <label>
+                    <Fab
+                      sx={fabEdit.sx}
+                      aria-label={fabEdit.label}
+                      color={fabEdit.color}
+                      onClick={() => handleEditClick()}
+                      component="button">
+                      {fabEdit.icon}
+                    </Fab>
+                  </label>
+                )} */}
+                <SpeedDial
+                  // onClick={() => handleClick()}
+                  direction={'down'}
+                  ariaLabel="SpeedDial basic example"
+                  sx={{ position: 'absolute', top: 16, right: 16 }}
+                  icon={<SpeedDialIcon openIcon={<ManageAccountsIcon />} />}>
+                  {actions.map((action) => (
+                    <SpeedDialAction
+                      key={action.name}
+                      icon={action.icon}
+                      tooltipTitle={action.name}
+                      operation={action.operation}
+                      onClick={() => handleClick(action.operation)}
+                    />
+                  ))}
+                </SpeedDial>
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
-                      <BadgeIcon />
+                      <PermIdentityIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  {/* <ListItemText
+                    primary={`${user.first_name} ${user.last_name}`}
+                  /> */}
+                  <Stack spacing={2} direction="row">
+                    <TextField
+                      label="Prénom"
+                      value={firstName}
+                      onChange={handleFirstNameChange}
+                      disabled={!editing}
+                      variant="standard"
+                      color="warning"
+                      focused
+                    />
+                    <TextField
+                      label="Nom"
+                      value={lastName}
+                      onChange={handleLastNameChange}
+                      disabled={!editing}
+                      variant="standard"
+                      color="warning"
+                      focused
+                    />
+                  </Stack>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ContactMailIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={`${user.first_name} ${user.last_name}`}
+                    primary={user.email}
+                    secondary="Nom d'utilisateur"
                   />
                 </ListItem>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <CallIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <FormControl sx={{ width: '50%' }}>
+                    <TextField
+                      label="Téléphone"
+                      value={parsePhoneNumber(phone).number.international}
+                      onChange={handlePhoneChange}
+                      disabled={!editing}
+                      variant="standard"
+                      color="warning"
+                      focused
+                    />
+                  </FormControl>
+                </ListItem>
+
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
                       <AlternateEmailIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText
-                    primary={user.email}
-                    secondary={formattedPhoneNumber}
-                  />
+                  <FormControl sx={{ width: '50%' }}>
+                    <TextField
+                      label="Email"
+                      value={email2}
+                      onChange={handleEmail2Change}
+                      disabled={!editing}
+                      variant="standard"
+                      color="warning"
+                      focused
+                    />
+                    <FormHelperText>
+                      Email de correspondance si différente du nom d'utilsateur
+                    </FormHelperText>
+                  </FormControl>
                 </ListItem>
                 <ListItem>
                   <ListItemAvatar>

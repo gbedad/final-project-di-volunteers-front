@@ -163,7 +163,7 @@ export default function Uploads() {
 
   return (
     <>
-      <InstructionComponent />
+      {/* <InstructionComponent /> */}
       <Box style={{ position: 'relative' }}>
         <Stack direction="row" spacing={2}>
           <input
