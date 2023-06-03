@@ -110,6 +110,7 @@ const FormInterviewComponent = ({ userId }) => {
   const [countInterviews, setCountInterviews] = useState(0);
 
   const userToken = location.state.userLogged.token;
+  const userLogged = location.state.userLogged.user.first_name;
   //   const handleTitleChange = (event) => {
   //     setTitle(event.target.value);
   //   };
@@ -170,6 +171,7 @@ const FormInterviewComponent = ({ userId }) => {
         title,
         date,
         content,
+        by: { userLogged },
       };
     });
     return parsedData;
@@ -225,6 +227,7 @@ const FormInterviewComponent = ({ userId }) => {
         title: `Entretien ${count}`,
         date: '',
         content: '',
+        by: userLogged,
       },
     ]);
     setConfirmed(false);
@@ -346,7 +349,9 @@ const FormInterviewComponent = ({ userId }) => {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <Typography>Entretien réalisé par {interview.by}</Typography>
+            </Grid>
             <Grid item xs={12}></Grid>
           </Grid>
         ))}
