@@ -71,6 +71,7 @@ import AddressAutocomplete from './AddressAutocomplete';
 import AutofillCheckoutDemo from './AddressAutocomplete2';
 import SelectFormActivity from './SelectActivity';
 import ImageDisplay from './ImageDisplay';
+import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
 
 const fabStyle = {
   position: 'absolute',
@@ -241,6 +242,7 @@ const ProfilePage = () => {
   useEffect(() => {
     getUserById();
   }, []);
+
   const fabEdit = {
     color: 'secondary',
     sx: fabStyle,
@@ -470,8 +472,25 @@ const ProfilePage = () => {
                   </ListItemAvatar>
                   <ListItemText primary={user.birth_date} secondary="" />
                 </ListItem>
-
                 <ListItem>
+                  <ListItemAvatar>
+                    <Badge
+                      badgeContent=""
+                      color="warning"
+                      variant="dot"
+                      invisible={invisible}>
+                      <Avatar>
+                        <WorkIcon />
+                      </Avatar>
+                    </Badge>
+                  </ListItemAvatar>
+                  <SelectFormActivity
+                    userId={user.id}
+                    onHandleChangeActivity={handleActivityChange}
+                    editing={editing}
+                  />
+                </ListItem>
+                {/* <ListItem>
                   <ListItemAvatar>
                     <Badge
                       badgeContent=""
@@ -507,9 +526,7 @@ const ProfilePage = () => {
                       <MenuItem value={'Sans activité'}>Sans activité</MenuItem>
                     </Select>
                   </FormControl>
-
-                  {/* <ListItemText primary="Salarié" /> */}
-                </ListItem>
+                </ListItem> */}
                 <ListItem>
                   <ListItemAvatar>
                     <Badge
@@ -584,7 +601,7 @@ const ProfilePage = () => {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: purple[300] }}>
+                  <Avatar sx={{ bgcolor: purple[500] }}>
                     {setStatusStep(user.status)}
                   </Avatar>
                 </ListItemAvatar>
@@ -598,7 +615,8 @@ const ProfilePage = () => {
                 />
               </ListItem> */}
             </List>
-            <ImageDisplay />
+            {/* <ImageDisplay /> */}
+            <StatusTimelineComponent />
           </BorderedBoxWithLabel>
         </Grid>
       </Grid>

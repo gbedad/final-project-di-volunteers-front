@@ -56,7 +56,7 @@ const RegisterForm = ({ mission }) => {
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
   const [phone, setPhone] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
@@ -69,7 +69,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birthDate,
+        birth_date,
         message,
         mission_id: propsData,
       });
@@ -249,7 +249,7 @@ const RegisterForm = ({ mission }) => {
               <Grid item xs={12} sm={6}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                    value={birthDate}
+                    value={birth_date}
                     onChange={(newValue) => setBirthDate(newValue)}
                     required
                     id="birthdate"

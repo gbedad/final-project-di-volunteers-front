@@ -39,73 +39,72 @@ const AddressAutocomplete = (props) => {
     onCountryChange,
     editing,
   } = props;
-  const [streetSelected, setStreetSelected] = React.useState('');
-  const [citySelected, setCitySelected] = React.useState('');
-  const [zipcodeSelected, setZipcodeSelected] = React.useState('');
-  const [countrySelected, setCountrySelected] = React.useState('');
-  const [addressSaved, setAddressSaved] = React.useState(false);
-  console.log(street);
-  const [open, setOpen] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
+  // const [streetSelected, setStreetSelected] = React.useState('');
+  // const [citySelected, setCitySelected] = React.useState('');
+  // const [zipcodeSelected, setZipcodeSelected] = React.useState('');
+  // const [countrySelected, setCountrySelected] = React.useState('');
+  // const [addressSaved, setAddressSaved] = React.useState(false);
+  // console.log(street);
+  // const [open, setOpen] = useState(false);
+  // const [openAlert, setOpenAlert] = useState(false);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post(`${BASE_URL}/update-address`, {
-        userId,
-        streetSelected,
-        citySelected,
-        zipcodeSelected,
-        countrySelected,
-      });
-      console.log(response.data.message);
-      if (response.status === 200) {
-        setAddressSaved(true);
-        setOpenAlert(true);
-      } else {
-        console.log('Error uploading file:', response.status);
-      }
-      // Perform any desired actions after successful submission
-    } catch (error) {
-      console.error(error);
-      // Handle any errors
-    }
-  };
+  // const handleSubmit = async () => {
+  //   try {
+  //     const response = await axios.post(`${BASE_URL}/update-address`, {
+  //       userId,
+  //       streetSelected,
+  //       citySelected,
+  //       zipcodeSelected,
+  //       countrySelected,
+  //     });
+  //     console.log(response.data.message);
+  //     if (response.status === 200) {
+  //       setAddressSaved(true);
+  //       setOpenAlert(true);
+  //     } else {
+  //       console.log('Error uploading file:', response.status);
+  //     }
+  //     // Perform any desired actions after successful submission
+  //   } catch (error) {
+  //     console.error(error);
+  //     // Handle any errors
+  //   }
+  // };
 
-  const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  // const handleAlertClose = (event, reason) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
 
-    setOpenAlert(false);
-  };
+  //   setOpenAlert(false);
+  // };
 
-  const getUserById = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
-      if (response.data) {
-        const user = response.data;
-        setStreetSelected(user.street);
-        setCitySelected(user.city);
-        setZipcodeSelected(user.zipcode);
-        setCountrySelected(user.country);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getUserById = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
+  //     if (response.data) {
+  //       const user = response.data;
+  //       setStreetSelected(user.street);
+  //       setCitySelected(user.city);
+  //       setZipcodeSelected(user.zipcode);
+  //       setCountrySelected(user.country);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getUserById();
-  }, []);
+  // useEffect(() => {
+  //   getUserById();
+  // }, []);
 
-  function resetForm() {
-    setStreetSelected('');
-    setCitySelected('');
-    setZipcodeSelected('');
-    setCountrySelected('');
-  }
+  // function resetForm() {
+  //   setStreetSelected('');
+  //   setCitySelected('');
+  //   setZipcodeSelected('');
+  //   setCountrySelected('');
+  // }
 
-  console.log(streetSelected);
   return (
     <div>
       <Accordion disabled={!editing}>
@@ -181,7 +180,7 @@ const AddressAutocomplete = (props) => {
           </form>
         </AccordionDetails>
       </Accordion>
-      {addressSaved && (
+      {/* {addressSaved && (
         <Snackbar
           open={openAlert}
           autoHideDuration={3000}
@@ -193,7 +192,7 @@ const AddressAutocomplete = (props) => {
             Address saved!
           </Alert>
         </Snackbar>
-      )}
+      )} */}
     </div>
   );
 };
