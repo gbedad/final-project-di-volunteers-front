@@ -26,25 +26,13 @@ import Stack from '@mui/material/Stack';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const AddressAutocomplete = (props) => {
-  // const { userId, street, city, zipcode, country } = props;
-  const {
-    userId,
-    street,
-    country,
-    city,
-    zipcode,
-    onStreetChange,
-    onCityChange,
-    onZipcodeChange,
-    onCountryChange,
-    editing,
-  } = props;
+  const { userId, street, city, zipcode, country } = props;
   const [streetSelected, setStreetSelected] = React.useState('');
   const [citySelected, setCitySelected] = React.useState('');
   const [zipcodeSelected, setZipcodeSelected] = React.useState('');
   const [countrySelected, setCountrySelected] = React.useState('');
   const [addressSaved, setAddressSaved] = React.useState(false);
-  console.log(street);
+
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -108,7 +96,7 @@ const AddressAutocomplete = (props) => {
   console.log(streetSelected);
   return (
     <div>
-      <Accordion disabled={!editing}>
+      <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
@@ -132,8 +120,8 @@ const AddressAutocomplete = (props) => {
                 placeholder="Commencer à indiquer le nom de votre voie..."
                 name="address"
                 autoComplete="address-line1"
-                value={street}
-                onChange={onStreetChange}
+                value={streetSelected}
+                onChange={(e) => setStreetSelected(e.target.value)}
                 fullWidth
                 required
                 sx={{ marginBottom: 4 }}
@@ -147,8 +135,8 @@ const AddressAutocomplete = (props) => {
               label="Ville"
               name="city"
               autoComplete="address-level2"
-              value={city}
-              onChange={onCityChange}
+              value={citySelected}
+              onChange={(e) => setCitySelected(e.target.value)}
               fullWidth
             />
             <Stack
@@ -163,8 +151,8 @@ const AddressAutocomplete = (props) => {
                 label="Code postal"
                 name="postcode"
                 autoComplete="postal-code"
-                value={zipcode}
-                onChange={onZipcodeChange}
+                value={zipcodeSelected}
+                onChange={(e) => setZipcodeSelected(e.target.value)}
               />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -174,10 +162,22 @@ const AddressAutocomplete = (props) => {
                 label="Pays"
                 name="country"
                 autoComplete="country-name"
-                value={country}
-                onChange={onCountryChange}
+                value={countrySelected}
+                onChange={(e) => setCountrySelected(e.target.value)}
               />
             </Stack>
+            <Button
+              sx={{ marginBottom: 1 }}
+              color="info"
+              onClick={handleSubmit}>
+              CONFIRMER
+            </Button>
+            <Button
+              sx={{ marginBottom: 1 }}
+              color="warning"
+              onClick={resetForm}>
+              RESET
+            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

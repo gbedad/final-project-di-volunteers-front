@@ -49,6 +49,7 @@ import Fab from '@mui/material/Fab';
 import LoadingButton from '@mui/lab/LoadingButton';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import { styled } from '@mui/material/styles';
 
 import { deepOrange, deepPurple, purple } from '@mui/material/colors';
 
@@ -77,6 +78,19 @@ const fabStyle = {
   right: 16,
 };
 
+// Stylred TextField
+const options = {
+  shouldForwardProp: (prop) => prop !== 'fontColor',
+};
+const StyledTextField = styled(
+  TextField,
+  options
+)(({ fontColor }) => ({
+  input: {
+    color: fontColor,
+  },
+}));
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ProfilePage = () => {
@@ -92,6 +106,10 @@ const ProfilePage = () => {
   const [email2, setEmail2] = useState('');
 
   const [activity, setActivity] = useState('');
+  const [streetSelected, setStreetSelected] = React.useState('');
+  const [citySelected, setCitySelected] = React.useState('');
+  const [zipcodeSelected, setZipcodeSelected] = React.useState('');
+  const [countrySelected, setCountrySelected] = React.useState('');
 
   console.log('from location', location.state.userLogged);
   // const user = location.state.userLogged
@@ -140,6 +158,11 @@ const ProfilePage = () => {
           last_name: lastName,
           phone: phone,
           email2: email2,
+          activity: activity,
+          street: streetSelected,
+          city: citySelected,
+          zipcode: zipcodeSelected,
+          country: countrySelected,
         }
       );
       console.log(response.data.message);
@@ -171,6 +194,30 @@ const ProfilePage = () => {
     setEmail2(selectedValue);
   };
 
+  const handleActivityChange = (event) => {
+    const selectedValue = event.target.value;
+    setActivity(selectedValue);
+  };
+
+  const handleStreetChange = (event) => {
+    const selectedValue = event.target.value;
+    setStreetSelected(selectedValue);
+  };
+
+  const handleCityChange = (event) => {
+    const selectedValue = event.target.value;
+    setCitySelected(selectedValue);
+  };
+  const handleZipcodeChange = (event) => {
+    const selectedValue = event.target.value;
+    setZipcodeSelected(selectedValue);
+  };
+
+  const handleCountryChange = (event) => {
+    const selectedValue = event.target.value;
+    setCountrySelected(selectedValue);
+  };
+
   const getUserById = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/user-by-id/${user.id}`);
@@ -180,6 +227,11 @@ const ProfilePage = () => {
         setLastName(userData.last_name);
         setPhone(userData.phone);
         setEmail2(userData.email2);
+        setActivity(userData.activity);
+        setCitySelected(userData.city);
+        setStreetSelected(userData.street);
+        setZipcodeSelected(userData.zipcode);
+        setCountrySelected(userData.country);
       }
     } catch (error) {
       console.log(error);
@@ -222,6 +274,7 @@ const ProfilePage = () => {
       handleSaveClick();
     }
   };
+
   return (
     <>
       {!isRegistered && (
@@ -341,16 +394,33 @@ const ProfilePage = () => {
                   </Stack>
                 </ListItem>
 
-                <ListItem>
+                {/* <ListItem>
                   <ListItemAvatar>
                     <Avatar>
                       <ContactMailIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
+                    sx={{ color: 'grey' }}
                     primary={user.email}
                     secondary="Nom d'utilisateur"
                   />
+                </ListItem> */}
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ContactMailIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <FormControl sx={{ width: '50%' }}>
+                    <TextField
+                      label="Nom d'utilsateur"
+                      value={user.email}
+                      disabled
+                      variant="standard"
+                      focused
+                    />
+                  </FormControl>
                 </ListItem>
                 <ListItem>
                   <ListItemAvatar>
@@ -387,8 +457,8 @@ const ProfilePage = () => {
                       color="warning"
                       focused
                     />
-                    <FormHelperText>
-                      Email de correspondance si différente du nom d'utilsateur
+                    <FormHelperText sx={{ marginLeft: 0 }}>
+                      Email à privilégier pour les échanges
                     </FormHelperText>
                   </FormControl>
                 </ListItem>
@@ -413,10 +483,30 @@ const ProfilePage = () => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  <SelectFormActivity
-                    activity={user.activity}
-                    userId={user.id}
-                  />
+                  <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
+                    <InputLabel id="demo-simple-select-standard-label">
+                      Activité
+                    </InputLabel>
+                    <Select
+                      color="warning"
+                      disabled={!editing}
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={activity}
+                      onChange={handleActivityChange}
+                      label="Activité">
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      <MenuItem value={'Indépendant(e)'}>
+                        Indépendant(e)
+                      </MenuItem>
+                      <MenuItem value={'Salarié(e)'}>Salarié(e)</MenuItem>
+                      <MenuItem value={'Etudiant(e)'}>Etudiant(e)</MenuItem>
+                      <MenuItem value={'Retraité(e)'}>Retraité(e)</MenuItem>
+                      <MenuItem value={'Sans activité'}>Sans activité</MenuItem>
+                    </Select>
+                  </FormControl>
 
                   {/* <ListItemText primary="Salarié" /> */}
                 </ListItem>
@@ -433,11 +523,16 @@ const ProfilePage = () => {
                     </Badge>
                   </ListItemAvatar>
                   <AddressAutocomplete
+                    editing={editing}
                     userId={user.id}
-                    street={user.street}
-                    city={user.city}
-                    zipcode={user.zipcode}
-                    country={user.country}
+                    street={streetSelected}
+                    city={citySelected}
+                    zipcode={zipcodeSelected}
+                    country={countrySelected}
+                    onStreetChange={handleStreetChange}
+                    onCityChange={handleCityChange}
+                    onZipcodeChange={handleZipcodeChange}
+                    onCountryChange={handleCountryChange}
                   />
                 </ListItem>
                 <ListItem>
