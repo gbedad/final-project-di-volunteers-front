@@ -26,6 +26,9 @@ import DocumentCheckbox from './components/files/filesSaved';
 import SelectFormActivity from './components/SelectActivity';
 import AddressAutocomplete from './components/AddressAutocomplete';
 import FormInterviewComponent from './components/interviews/Interview';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
+import ResetPasswordForm from './components/ResetPasswordForm';
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
+
         <Route path="/logout" />
         <Route path="/stepper" element={<Stepper />} />
         <Route path="/profile" element={<ProfilePage />} />
