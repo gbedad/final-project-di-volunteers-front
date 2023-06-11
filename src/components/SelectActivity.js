@@ -14,8 +14,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const SelectFormActivity = (props) => {
   const [selectedOption, setSelectedOption] = useState('');
   const [showSubmit, setShowSubmit] = useState(false);
-  const { userId, onHandleChangeActivity, editing } = props;
-
+  const { userId, onHandleChangeActivity, editing, activity } = props;
+  console.log(activity);
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedOption(selectedValue);
@@ -66,7 +66,7 @@ const SelectFormActivity = (props) => {
           disabled={!editing}
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
-          value={selectedOption}
+          value={activity}
           onChange={onHandleChangeActivity}>
           <MenuItem value="">
             <em>None</em>

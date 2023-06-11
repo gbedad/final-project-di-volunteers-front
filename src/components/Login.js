@@ -29,10 +29,12 @@ function Copyright(props) {
       {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Association Séphora Berrebi by Gerald Berrebi
+        Association Séphora Berrebi
       </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
+      <p>
+        by Gerald Berrebi {new Date().getFullYear()}
+        {'.'}
+      </p>
     </Typography>
   );
 }
@@ -46,6 +48,8 @@ export default function SignIn() {
   const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
+  const user = updateUser(userConnected);
+  console.log(user);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardContent, Typography, Grid } from '@mui/material';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -52,6 +53,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import { styled } from '@mui/material/styles';
 
 import { deepOrange, deepPurple, purple } from '@mui/material/colors';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
 import BorderedBoxWithLabel from './borderedBox';
 
@@ -92,6 +100,13 @@ const StyledTextField = styled(
   },
 }));
 
+const Transition = function (props) {
+  return React.createElement(
+    Slide,
+    Object.assign({ direction: 'up', ref: props.ref }, props)
+  );
+};
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ProfilePage = () => {
@@ -111,12 +126,23 @@ const ProfilePage = () => {
   const [citySelected, setCitySelected] = React.useState('');
   const [zipcodeSelected, setZipcodeSelected] = React.useState('');
   const [countrySelected, setCountrySelected] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   console.log('from location', location.state.userLogged);
   // const user = location.state.userLogged
   const { user } = location.state.userLogged;
   const formattedPhoneNumber = parsePhoneNumber(user.phone).number
     .international;
+
+  console.log(user);
 
   const handleCancelRegistration = () => {
     axios
@@ -125,20 +151,26 @@ const ProfilePage = () => {
         setIsRegistered(false);
         // console.log(response.data);
         console.log('Registration cancelled successfully');
+        toast.success(
+          `${user.first_name}, vous êtes bien retiré de la mission et vos données ont été effacées`,
+          {
+            position: 'top-center',
+          }
+        );
         setResp(response.data.msg);
-        navigate('/cancel-registration', {
-          state: { message: 'You cancelled your Registration.', user },
-        });
+        setTimeout(() => {
+          navigate('/');
+        }, 2500);
       })
       .catch((error) => {
         console.error('Failed to cancel registration: ', error);
       });
   };
   const handleActivityBadgeVisibility = () => {
-    setInvisible(!invisible);
+    setInvisible(invisible);
   };
   const handleAddressBadgeVisibility = () => {
-    setInvisible(!invisible);
+    setInvisible(invisible);
   };
   useEffect(() => {
     if (user.activity !== null) handleActivityBadgeVisibility();
@@ -242,7 +274,7 @@ const ProfilePage = () => {
   useEffect(() => {
     getUserById();
   }, []);
-
+  console.log(activity);
   const fabEdit = {
     color: 'secondary',
     sx: fabStyle,
@@ -295,6 +327,7 @@ const ProfilePage = () => {
         </Stack>
       )}
       <Box></Box>
+      <ToastContainer />
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel
@@ -470,9 +503,17 @@ const ProfilePage = () => {
                       <CakeIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={user.birth_date} secondary="" />
+                  <FormControl sx={{ width: '50%' }}>
+                    <TextField
+                      label="Nom d'utilsateur"
+                      value={user.birth_date}
+                      disabled
+                      variant="standard"
+                      focused
+                    />
+                  </FormControl>
                 </ListItem>
-                <ListItem>
+                {/* <ListItem>
                   <ListItemAvatar>
                     <Badge
                       badgeContent=""
@@ -484,19 +525,20 @@ const ProfilePage = () => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  <SelectFormActivity
+                   <SelectFormActivity
                     userId={user.id}
+                    activivity={activity}
                     onHandleChangeActivity={handleActivityChange}
                     editing={editing}
-                  />
-                </ListItem>
-                {/* <ListItem>
+                  /> 
+                </ListItem>*/}
+                <ListItem>
                   <ListItemAvatar>
                     <Badge
                       badgeContent=""
                       color="warning"
                       variant="dot"
-                      invisible={invisible}>
+                      invisible={user.activity !== null ? true : false}>
                       <Avatar>
                         <WorkIcon />
                       </Avatar>
@@ -526,14 +568,14 @@ const ProfilePage = () => {
                       <MenuItem value={'Sans activité'}>Sans activité</MenuItem>
                     </Select>
                   </FormControl>
-                </ListItem> */}
+                </ListItem>
                 <ListItem>
                   <ListItemAvatar>
                     <Badge
                       badgeContent=""
                       color="warning"
                       variant="dot"
-                      invisible={invisible}>
+                      invisible={user.street !== null ? true : false}>
                       <Avatar>
                         <HomeIcon />
                       </Avatar>
@@ -552,17 +594,21 @@ const ProfilePage = () => {
                     onCountryChange={handleCountryChange}
                   />
                 </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary={
-                      <Badge
-                        badgeContent=""
-                        color="warning"
-                        variant="dot"></Badge>
-                    }
-                    secondary="Merci de renseigner ces données quand vous le souhaitez d'ici l'étape 4."
-                  />
-                </ListItem>
+                {user.activity === null || user.street === null ? (
+                  <ListItem>
+                    <ListItemText
+                      primary={
+                        <Badge
+                          badgeContent=""
+                          color="warning"
+                          variant="dot"></Badge>
+                      }
+                      secondary="Merci de renseigner ces données quand vous le souhaitez d'ici l'étape 4."
+                    />
+                  </ListItem>
+                ) : (
+                  ''
+                )}
               </List>
             ) : (
               <p>Please log in to view your profile.</p>
@@ -616,19 +662,44 @@ const ProfilePage = () => {
               </ListItem> */}
             </List>
             {/* <ImageDisplay /> */}
-            <StatusTimelineComponent />
+            <StatusTimelineComponent
+              userStatusStep={setStatusStep(user.status)}
+            />
           </BorderedBoxWithLabel>
         </Grid>
       </Grid>
-      <Button
-        type="submit"
-        onClick={handleCancelRegistration}
-        fullWidth
-        disabled={user.skill ? 'true' : 'false'}
-        variant="contained"
-        sx={{ backgroundColor: 'red', mt: 3, mb: 2 }}>
-        Cancel registration
-      </Button>
+
+      <Box>
+        <Typography variant="body2">
+          Votre compte est créé, vous avez encore la possibilité d'annuler votre
+          candidature.
+        </Typography>
+        <Button
+          type="submit"
+          onClick={handleClickOpen}
+          variant="contained"
+          sx={{ backgroundColor: 'red', mt: 3, mb: 2 }}>
+          Retirer ma candidature
+        </Button>
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description">
+          <DialogTitle>{'Retirer ma candidature ?'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Je confirme vouloir annuler ma candidature pour la mission
+              proposée par l'Association Séphora Berrebi.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Annuler</Button>
+            <Button onClick={handleCancelRegistration}>Confirmer</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
     </>
   );
 };

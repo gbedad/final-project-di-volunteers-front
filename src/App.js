@@ -29,6 +29,7 @@ import FormInterviewComponent from './components/interviews/Interview';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ResetPasswordForm from './components/ResetPasswordForm';
+import MissionsPage from './components/missions/MissionsPage';
 
 function App() {
   return (
@@ -60,7 +61,7 @@ function App() {
         <Route path="update-address" element={<AddressAutocomplete />} />
         <Route path="add-interviews" element={<FormInterviewComponent />} />
         {/* <Route path="/" element={<CardList />} /> */}
-        <Route path="/missions" element={<MissionList />} />
+        <Route path="/missions" element={<MissionsPage />} />
         <Route exact path="/" element={<Home />} />
       </Routes>
     </UserProvider>

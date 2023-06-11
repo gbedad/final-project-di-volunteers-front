@@ -8,9 +8,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+
 import image from '../../assets/hands.jpeg';
 
-import './Card.css';
+import '../cards/Card.css';
 
 const MissionCard = (props) => {
   function isBase64Image(imageString) {
@@ -51,12 +54,14 @@ const MissionCard = (props) => {
         <h2 className="card-title">{props.title}</h2>
         <p className="card-text">{props.location}</p>
         <CardActions sx={{ justifyContent: 'space-between' }}>
+          <FormControlLabel control={<Switch />} label="Activer" />
           <Button size="small" onClick={handleOpen}>
-            En savoir plus
+            Editer
           </Button>
-          <Link to="/register" className="card-link" state={props.id}>
-            Register
-          </Link>
+
+          {/* <Link to="/register" className="card-link" state={props.id}>
+            Modifier
+          </Link> */}
         </CardActions>
       </div>
       <Modal

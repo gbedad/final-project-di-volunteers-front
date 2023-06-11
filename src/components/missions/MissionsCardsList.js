@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import Grid from '@mui/material/Grid';
-import Card from './Card'; // Import the Card component;
-import './Card.css';
+import Card from './MissionCard'; // Import the Card component;
+import '../cards/Card.css';
 
 import Box from '@mui/material/Box';
 
