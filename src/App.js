@@ -30,10 +30,12 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ResetPasswordForm from './components/ResetPasswordForm';
 import MissionsPage from './components/missions/MissionsPage';
+import MissionCard from './components/missions/MissionCard';
+import { AuthProvider } from './AuthContext';
 
 function App() {
   return (
-    <UserProvider>
+    <AuthProvider>
       <AppBarMenu />
 
       <Routes>
@@ -61,10 +63,11 @@ function App() {
         <Route path="update-address" element={<AddressAutocomplete />} />
         <Route path="add-interviews" element={<FormInterviewComponent />} />
         {/* <Route path="/" element={<CardList />} /> */}
-        <Route path="/missions" element={<MissionsPage />} />
+        <Route path="/all-missions" element={<MissionsPage />} />
+        <Route path="/missions/update/:id" element={<MissionCard />} />
         <Route exact path="/" element={<Home />} />
       </Routes>
-    </UserProvider>
+    </AuthProvider>
   );
 }
 

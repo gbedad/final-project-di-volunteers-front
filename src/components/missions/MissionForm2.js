@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { MissionsContext } from './MissionsContext';
 
@@ -24,6 +25,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 import Draggable from 'react-draggable';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -52,6 +55,8 @@ const MissionForm = () => {
   const [image, setImage] = useState(null);
   const { dispatch } = useContext(MissionsContext);
 
+  const navigate = useNavigate();
+
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -72,17 +77,26 @@ const MissionForm = () => {
     formData.append('image', image);
 
     try {
-      await axios.post(`${BASE_URL}/missions/create`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      // Mission created successfully
-      // Reset the form fields
+      const response = await axios.post(
+        `${BASE_URL}/missions/create`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      const newMission = response.data.data;
       setTitle('');
       setLocation('');
       setDescription('');
       setImage(null);
+      handleClose();
+      navigate('/all-missions');
+      dispatch({ type: 'ADD_MISSION', payload: newMission });
+      // Mission created successfully
+      // Reset the form fields
     } catch (error) {
       console.error('Error creating mission:', error);
       // Handle error
@@ -91,9 +105,12 @@ const MissionForm = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      {/* <Button variant="outlined" onClick={handleClickOpen}>
         Créer une mission
-      </Button>
+      </Button> */}
+      <Fab color="primary" aria-label="add" onClick={handleClickOpen}>
+        <AddIcon />
+      </Fab>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -165,6 +182,7 @@ const MissionForm = () => {
               Confirmer
             </Button>
           </DialogActions>
+          <Navigate to="/missions" />
         </form>
         {/* </Box> */}
         {/* </Container> */}

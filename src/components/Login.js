@@ -18,7 +18,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
 
 function Copyright(props) {
   return (
@@ -44,12 +44,12 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { updateUser } = useContext(UserContext);
+  const { updateToken } = useContext(AuthContext);
   const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const user = updateUser(userConnected);
-  console.log(user);
+  // const user = updateUser(userConnected);
+  // console.log(user);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -65,9 +65,11 @@ export default function SignIn() {
         });
       }
       const userLogged = response.data;
-      console.log(userLogged);
+
+      const token = response.data.token;
 
       console.log('Handlesubmit token', response.data.token);
+      updateToken(token);
 
       if (response.data) {
         // localStorage.setItem("user", JSON.stringify(response.data))
@@ -75,7 +77,7 @@ export default function SignIn() {
         setIsLoading(false);
 
         // setUserConnected(userLogged)
-        updateUser(userLogged);
+        // updateUser(userLogged);
         toast.success(`Bon retour  ${userLogged.first_name}`, {
           position: 'top-center',
         });

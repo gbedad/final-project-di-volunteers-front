@@ -16,18 +16,10 @@ const MissionPage = () => {
           alignContent: 'center',
         }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6} lg={3}>
-            <BorderedBoxWithLabel
-              label="Créer une mission"
-              sx={{ display: 'flex', flexDirection: 'row' }}>
-              <MissionForm />
-            </BorderedBoxWithLabel>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={9}>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
             <BorderedBoxWithLabel
               label="Liste des missions"
               sx={{ display: 'flex' }}>
-              {/* <MissionList /> */}
               <CardList />
             </BorderedBoxWithLabel>
           </Grid>

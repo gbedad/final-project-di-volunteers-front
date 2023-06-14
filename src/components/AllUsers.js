@@ -35,7 +35,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
 
 import SearchBar from './SearchBar';
 
@@ -108,8 +108,9 @@ function DashboardContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
-  const token = localStorage.getItem('token');
-  const { user } = useContext(UserContext);
+  // const token = localStorage.getItem('token');
+  // const { user } = useContext(UserContext);
+  const { token } = useContext(AuthContext);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -121,16 +122,13 @@ function DashboardContent() {
   // console.log(location.state);
   const userLogged = location.state.userLogged;
 
+  console.log(token);
   useEffect(() => {
     const fetchUserList = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/all-users`, {
           headers: {
-            /* `"x-access-token":user.token` is setting the `x-access-token` header in the HTTP request
-            to the `user.token` value. This is commonly used for authentication and authorization
-            purposes, where the server expects a token to be included in the request headers to
-            identify and validate the user making the request. */
-            'x-access-token': user.token,
+            Authorization: `Bearer ${token}`,
           },
         });
         // console.log("Response",response)

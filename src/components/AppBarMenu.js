@@ -75,6 +75,12 @@ function ResponsiveAppBar() {
     }
   };
 
+  const handleEditMissions = () => {
+    if (userLogged.user.role === 'admin') {
+      navigate(`/all-missions`, { state: { userLogged } });
+    }
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -211,6 +217,9 @@ function ResponsiveAppBar() {
                   <div>
                     <MenuItem onClick={handleViewUsers}>
                       <Typography textAlign="center">Dashboard</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleEditMissions}>
+                      <Typography textAlign="center">Missions</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleLogout}>
                       <Typography textAlign="center">Logout</Typography>
