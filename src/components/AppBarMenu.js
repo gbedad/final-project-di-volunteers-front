@@ -239,7 +239,7 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}>
                 {(location.pathname !== '/register' ||
                   location.pathname === '/view-users') &&
-                location.state &&
+                location.state.userLogged &&
                 location.state.userLogged.user.role === 'admin' ? (
                   <div>
                     <MenuItem onClick={handleViewUsers}>
