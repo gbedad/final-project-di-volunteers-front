@@ -258,7 +258,7 @@ function ResponsiveAppBar() {
                 ) : location.pathname !== '/profile' &&
                   location.pathname !== '/register' &&
                   location.state &&
-                  location.state.userLogged.user.role &&
+                  location.state.userLogged.user &&
                   location.state.userLogged.user.role === 'volunteer' ? (
                   <div>
                     {/* <MenuItem onClick={handleProfile}>
