@@ -193,20 +193,16 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {!location.state ? (
-              <MenuItem>
-                {/* <Typography textAlign="center">Login</Typography> */}
-                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                  <Button
-                    onClick={handleLogin}
-                    sx={{ my: 2, color: 'white', display: 'block' }}>
-                    Login
-                  </Button>
-                </Box>
-              </MenuItem>
-            ) : (
-              <span></span>
-            )}
+            <MenuItem>
+              {/* <Typography textAlign="center">Login</Typography> */}
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                <Button
+                  onClick={handleLogin}
+                  sx={{ my: 2, color: 'white', display: 'block' }}>
+                  Login
+                </Button>
+              </Box>
+            </MenuItem>
 
             {location.state && location.state.userLogged ? (
               <Tooltip title="Open settings">
