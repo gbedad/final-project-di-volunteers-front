@@ -157,7 +157,9 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">Login</Typography>
                 </MenuItem>
               ) : (
-                <span></span>
+                <MenuItem onClick={handleLogin}>
+                  <Typography textAlign="center">Login</Typography>
+                </MenuItem>
               )}
             </Menu>
           </Box>
