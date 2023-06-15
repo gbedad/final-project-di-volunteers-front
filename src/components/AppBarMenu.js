@@ -69,10 +69,7 @@ function ResponsiveAppBar() {
     try {
       if (page === "L'association") {
         navigate('/', { state: { userLogged } });
-      } else if (
-        page === 'Missions bénévoles' &&
-        userLogged.user.role === 'volunteer'
-      ) {
+      } else if (page === 'Missions bénévoles') {
         navigate('/missions', { state: { userLogged } });
       } else if (
         page === 'Missions bénévoles' &&
