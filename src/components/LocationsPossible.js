@@ -15,7 +15,9 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
-import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
+
+import { existingLocations } from '../options/locationOptions';
 
 const fabStyle = {
   position: 'absolute',
@@ -28,7 +30,7 @@ const LocationsPossibleComponent = () => {
   const [locationsPossible, setLocationsPossible] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { userLogged } = location.state;
-  const { token } = useContext(UserContext);
+  const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
 
   const userId = location.state.userLogged.user.id;
@@ -139,13 +141,16 @@ const LocationsPossibleComponent = () => {
                   select
                   value={loc}
                   onChange={(e) => handleLocationChange(e.target.value, index)}>
-                  <MenuItem value="Maison des Associations">
+                  {existingLocations.map((location) => (
+                    <MenuItem value={location}>{location}</MenuItem>
+                  ))}
+                  {/* <MenuItem value="Maison des Associations">
                     Maison des Associations
                   </MenuItem>
                   <MenuItem value="Gabriel Lamé">Gabriel Lamé</MenuItem>
                   <MenuItem value="Kiosque Paris 12">Kiosque Paris 12</MenuItem>
                   <MenuItem value="Aubervilliers">Aubervilliers</MenuItem>
-                  <MenuItem value="Bercy">Bercy</MenuItem>
+                  <MenuItem value="Bercy">Bercy</MenuItem> */}
                   {/* Add more subjects as needed */}
                 </TextField>
               </Grid>

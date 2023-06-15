@@ -18,7 +18,7 @@ import BorderedBoxWithLabel from './borderedBox';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
-import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
 
 const fabStyle = {
   position: 'absolute',
@@ -31,7 +31,7 @@ const DayTimeRangeComponent = () => {
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { userLogged } = location.state;
-  const { token } = useContext(UserContext);
+  const { token } = useContext(AuthContext);
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
 
   const userId = location.state.userLogged.user.id;

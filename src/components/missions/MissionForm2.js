@@ -27,12 +27,20 @@ import Paper from '@mui/material/Paper';
 import Draggable from 'react-draggable';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
+
+import { existingLocations } from '../../options/locationOptions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -108,7 +116,11 @@ const MissionForm = () => {
       {/* <Button variant="outlined" onClick={handleClickOpen}>
         Créer une mission
       </Button> */}
-      <Fab color="primary" aria-label="add" onClick={handleClickOpen}>
+      <Fab
+        color="primary"
+        sx={{ position: 'sticky', top: 16, right: 16 }}
+        aria-label="add"
+        onClick={handleClickOpen}>
         <AddIcon />
       </Fab>
       <Dialog
@@ -141,7 +153,7 @@ const MissionForm = () => {
               margin="normal"
             />
 
-            <TextField
+            {/* <TextField
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -149,8 +161,24 @@ const MissionForm = () => {
               required
               fullWidth
               margin="normal"
-            />
-
+            /> */}
+            <FormControl fullWidth>
+              <InputLabel id="demo-multiple-checkbox-label">
+                Lieu de la mission
+              </InputLabel>
+              <Select
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                input={<OutlinedInput label="Lieu de la mission" />}
+                fullWidth
+                label="Lieu de la mission">
+                {existingLocations.map((location) => (
+                  <MenuItem key={location} value={location} fullWidth>
+                    <ListItemText primary={location} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextareaAutosize
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -178,11 +206,16 @@ const MissionForm = () => {
             />
           </DialogContent>
           <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
+              sx={{ mt: 3, mb: 2 }}>
+              Annuler
+            </Button>
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               Confirmer
             </Button>
           </DialogActions>
-          <Navigate to="/missions" />
         </form>
         {/* </Box> */}
         {/* </Container> */}

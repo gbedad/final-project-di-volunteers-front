@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = ["L'association", 'Missions bénévoles', 'Focus sur le tutorat'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const handleLogout = async (req, res) => {
+  const handleLogout = async () => {
     try {
       await axios.get(`${BASE_URL}/logout`);
       navigate('/');
@@ -57,9 +57,31 @@ function ResponsiveAppBar() {
     }
   };
 
-  const handleLogin = async (req, res) => {
+  const handleLogin = async () => {
     try {
       navigate('/login');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleGoToPage = async (page) => {
+    try {
+      if (page === "L'association") {
+        navigate('/', { state: { userLogged } });
+      } else if (
+        page === 'Missions bénévoles' &&
+        userLogged.user.role === 'volunteer'
+      ) {
+        navigate('/missions', { state: { userLogged } });
+      } else if (
+        page === 'Missions bénévoles' &&
+        userLogged.user.role === 'admin'
+      ) {
+        navigate('/all-missions', { state: { userLogged } });
+      } else if (page === 'Focus sur le tutorat') {
+        navigate('/tutorat', { state: { userLogged } });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -99,9 +121,7 @@ function ResponsiveAppBar() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-            }}>
-            MISSION...POSSIBLE
-          </Typography>
+            }}></Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -130,12 +150,12 @@ function ResponsiveAppBar() {
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}>
-              {/* {pages.map((page) => (
+              {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-              ))} */}
-              {!location.state ? (
+              ))}
+              {!location.state || !location.state.userLogged ? (
                 <MenuItem onClick={handleLogin}>
                   <Typography textAlign="center">Login</Typography>
                 </MenuItem>
@@ -162,6 +182,16 @@ function ResponsiveAppBar() {
             }}>
             MISSION
           </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={() => handleGoToPage(page)}
+                sx={{ my: 2, color: 'white', display: 'block' }}>
+                {page}
+              </Button>
+            ))}
+          </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             {!location.state ? (

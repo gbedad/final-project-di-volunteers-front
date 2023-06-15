@@ -321,14 +321,17 @@ export default function DataGridDemo(props) {
   console.log(filteredData);
 
   const rows = filteredData.map((item, key = item.id) => {
+    if (item.mission === null) {
+      return [];
+    }
     return createData(
       item.id,
       item.first_name,
       item.last_name,
       item.email,
       item.phone,
-      item.mission.title,
-      item.mission.location,
+      item.mission.title || null,
+      item.mission.location || null,
       item.skill,
       item.created_at,
       item.status,

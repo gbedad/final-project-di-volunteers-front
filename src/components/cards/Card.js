@@ -7,6 +7,15 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 import image from '../../assets/hands.jpeg';
 
@@ -59,7 +68,7 @@ const MissionCard = (props) => {
           </Link>
         </CardActions>
       </div>
-      <Modal
+      {/* <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -72,7 +81,62 @@ const MissionCard = (props) => {
             {props.description}
           </Typography>
         </Box>
-      </Modal>
+      </Modal> */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle id="draggable-dialog-title">
+          Détails de la mission
+        </DialogTitle>
+
+        <CssBaseline />
+
+        <DialogContent>
+          <TextField
+            type="text"
+            label="Titre de la mission"
+            required
+            fullWidth
+            margin="normal"
+            value={props.title}
+            disabled
+          />
+
+          <TextField
+            type="text"
+            label="Lieu de la mission"
+            required
+            fullWidth
+            margin="normal"
+            value={props.location}
+            disabled
+          />
+
+          <TextareaAutosize
+            minRows={10}
+            label="Description de la mission"
+            placeholder="Description de la mission"
+            value={props.description}
+            disabled
+            style={{
+              width: '100%',
+              maxWidth: '100%',
+              minWidth: '100%',
+              marginTop: 15,
+              marginBottom: 15,
+              fontFamily: 'roboto',
+              fontSize: 16,
+            }}
+            required
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            sx={{ mt: 3, mb: 2 }}>
+            Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
     //     <React.Fragment>
     //     <CardContent>

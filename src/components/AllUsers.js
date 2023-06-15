@@ -110,9 +110,11 @@ function DashboardContent() {
   const [open, setOpen] = React.useState(true);
   // const token = localStorage.getItem('token');
   // const { user } = useContext(UserContext);
-  const { token } = useContext(AuthContext);
+  const { token, isLoggedIn, logout } = useContext(AuthContext);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  console.log(token, isLoggedIn);
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);

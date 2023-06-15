@@ -6,7 +6,7 @@ import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-import Home from './components/Home';
+import Home from './pages/HomePage';
 import Register from './components/RegisterForm';
 import Login from './components/Login';
 import ProfilePage from './components/Profile';
@@ -18,7 +18,7 @@ import Stepper from './components/Stepper';
 import Uploads from './components/FileUploader';
 import DaySlotSkill from './components/DaySlotSkills';
 import TopicSkills from './components/TopicSkills';
-import CardList from './components/cards/Cards';
+
 import { UserProvider } from './UserContext';
 import MissionList from './components/missions/MissionList';
 import AdminPanel from './components/AdminPanel';
@@ -32,6 +32,10 @@ import ResetPasswordForm from './components/ResetPasswordForm';
 import MissionsPage from './components/missions/MissionsPage';
 import MissionCard from './components/missions/MissionCard';
 import { AuthProvider } from './AuthContext';
+import CardList from './components/cards/Cards';
+import Lassociation from './pages/lassociation';
+import Tutorat from './pages/focusTutorat';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -65,7 +69,9 @@ function App() {
         {/* <Route path="/" element={<CardList />} /> */}
         <Route path="/all-missions" element={<MissionsPage />} />
         <Route path="/missions/update/:id" element={<MissionCard />} />
-        <Route exact path="/" element={<Home />} />
+        <Route exact path="/tutorat" element={<Tutorat />} />
+        <Route exact path="/missions" element={<CardList />} />
+        <Route exact path="/" element={<HomePage />} />
       </Routes>
     </AuthProvider>
   );

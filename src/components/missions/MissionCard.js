@@ -127,7 +127,7 @@ const MissionCard = ({ mission }) => {
       const updatedMission = response.data.data;
       setImageSrc(updatedMission.image_data);
       handleClose();
-      navigate('/missions');
+      navigate('/all-missions');
       dispatch({ type: 'UPDATE_MISSION', payload: updatedMission });
     } catch (error) {
       console.error('Error creating mission:', error);
