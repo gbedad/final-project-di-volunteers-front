@@ -152,7 +152,7 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-              {location.state || !location.state.userLogged ? (
+              {!location.state || !location.state.userLogged ? (
                 <MenuItem onClick={handleLogin}>
                   <Typography textAlign="center">Login</Typography>
                 </MenuItem>
