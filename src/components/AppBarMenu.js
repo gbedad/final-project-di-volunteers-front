@@ -100,6 +100,186 @@ function ResponsiveAppBar() {
     }
   };
 
+  // return (
+  //   <AppBar position="static">
+  //     <Container maxWidth="xl">
+  //       <Toolbar disableGutters>
+  //         <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+  //         <Typography
+  //           variant="h6"
+  //           noWrap
+  //           component="a"
+  //           href="/"
+  //           sx={{
+  //             mr: 2,
+  //             display: { xs: 'none', md: 'flex' },
+  //             fontFamily: 'monospace',
+  //             fontWeight: 700,
+  //             letterSpacing: '.3rem',
+  //             color: 'inherit',
+  //             textDecoration: 'none',
+  //           }}></Typography>
+
+  //         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+  //           <IconButton
+  //             size="large"
+  //             aria-label="account of current user"
+  //             aria-controls="menu-appbar"
+  //             aria-haspopup="true"
+  //             onClick={handleOpenNavMenu}
+  //             color="inherit">
+  //             <MenuIcon />
+  //           </IconButton>
+  //           <Menu
+  //             id="menu-appbar"
+  //             anchorEl={anchorElNav}
+  //             anchorOrigin={{
+  //               vertical: 'bottom',
+  //               horizontal: 'left',
+  //             }}
+  //             keepMounted
+  //             transformOrigin={{
+  //               vertical: 'top',
+  //               horizontal: 'left',
+  //             }}
+  //             open={Boolean(anchorElNav)}
+  //             onClose={handleCloseNavMenu}
+  //             sx={{
+  //               display: { xs: 'block', md: 'none' },
+  //             }}>
+  //             {pages.map((page) => (
+  //               <MenuItem key={page} onClick={handleCloseNavMenu}>
+  //                 <Typography textAlign="center">{page}</Typography>
+  //               </MenuItem>
+  //             ))}
+  //             {!location.state || !location.state.userLogged ? (
+  //               <MenuItem onClick={handleLogin}>
+  //                 <Typography textAlign="center">Login</Typography>
+  //               </MenuItem>
+  //             ) : (
+  //               <MenuItem onClick={handleLogin}>
+  //                 <Typography textAlign="center">Login</Typography>
+  //               </MenuItem>
+  //             )}
+  //           </Menu>
+  //         </Box>
+  //         <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+  //         <Typography
+  //           variant="h5"
+  //           noWrap
+  //           component="a"
+  //           href="/"
+  //           sx={{
+  //             mr: 2,
+  //             display: { xs: 'flex', md: 'none' },
+  //             flexGrow: 1,
+  //             fontFamily: 'monospace',
+  //             fontWeight: 700,
+  //             letterSpacing: '.3rem',
+  //             color: 'inherit',
+  //             textDecoration: 'none',
+  //           }}>
+  //           MISSION
+  //         </Typography>
+  //         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+  //           {pages.map((page) => (
+  //             <Button
+  //               key={page}
+  //               onClick={() => handleGoToPage(page)}
+  //               sx={{ my: 2, color: 'white', display: 'block' }}>
+  //               {page}
+  //             </Button>
+  //           ))}
+  //         </Box>
+
+  //         <Box sx={{ flexGrow: 0 }}>
+  //           {userLogged ? (
+  //             <span></span>
+  //           ) : (
+  //             <MenuItem>
+  //               {/* <Typography textAlign="center">Login</Typography> */}
+  //               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+  //                 <Button
+  //                   onClick={handleLogin}
+  //                   sx={{ my: 2, color: 'white', display: 'block' }}>
+  //                   Login
+  //                 </Button>
+  //               </Box>
+  //             </MenuItem>
+  //           )}
+  //           {location.state && location.state.userLogged ? (
+  //             <Tooltip title="Open settings">
+  //               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+  //                 <Avatar>
+  //                   {location.state.userLogged.user.first_name
+  //                     .charAt(0)
+  //                     .toUpperCase()}
+  //                   {location.state.userLogged.user.last_name
+  //                     .charAt(0)
+  //                     .toUpperCase()}
+  //                 </Avatar>
+  //               </IconButton>
+  //             </Tooltip>
+  //           ) : (
+  //             <span></span>
+  //           )}
+  //           {location.state !== null ? (
+  //             <Menu
+  //               sx={{ mt: '45px' }}
+  //               id="menu-appbar"
+  //               anchorEl={anchorElUser}
+  //               anchorOrigin={{
+  //                 vertical: 'top',
+  //                 horizontal: 'right',
+  //               }}
+  //               transformOrigin={{
+  //                 vertical: 'top',
+  //                 horizontal: 'right',
+  //               }}
+  //               open={Boolean(anchorElUser)}
+  //               onClose={handleCloseUserMenu}>
+  //               {(location.pathname !== '/register' ||
+  //                 location.pathname === '/view-users') &&
+  //               location.state.userLogged &&
+  //               location.state.userLogged.user.role === 'admin' ? (
+  //                 <div>
+  //                   <MenuItem onClick={handleViewUsers}>
+  //                     <Typography textAlign="center">Dashboard</Typography>
+  //                   </MenuItem>
+  //                   <MenuItem onClick={handleEditMissions}>
+  //                     <Typography textAlign="center">Missions</Typography>
+  //                   </MenuItem>
+  //                   <MenuItem onClick={handleLogout}>
+  //                     <Typography textAlign="center">Logout</Typography>
+  //                   </MenuItem>
+  //                 </div>
+  //               ) : location.pathname !== '/profile' &&
+  //                 location.pathname !== '/register' &&
+  //                 location.state &&
+  //                 location.state.userLogged.user &&
+  //                 location.state.userLogged.user.role === 'volunteer' ? (
+  //                 <div>
+  //                   {/* <MenuItem onClick={handleProfile}>
+  //                     <Typography textAlign="center">Profile</Typography>
+  //                   </MenuItem> */}
+  //                   <MenuItem onClick={handleLogout}>
+  //                     <Typography textAlign="center">Logout</Typography>
+  //                   </MenuItem>
+  //                 </div>
+  //               ) : (
+  //                 <MenuItem onClick={handleLogout}>
+  //                   <Typography textAlign="center">Logout</Typography>
+  //                 </MenuItem>
+  //               )}
+  //             </Menu>
+  //           ) : (
+  //             <span></span>
+  //           )}
+  //         </Box>
+  //       </Toolbar>
+  //     </Container>
+  //   </AppBar>
+  // );
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -156,13 +336,10 @@ function ResponsiveAppBar() {
                 <MenuItem onClick={handleLogin}>
                   <Typography textAlign="center">Login</Typography>
                 </MenuItem>
-              ) : (
-                <MenuItem onClick={handleLogin}>
-                  <Typography textAlign="center">Login</Typography>
-                </MenuItem>
-              )}
+              ) : null}
             </Menu>
           </Box>
+
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
@@ -181,6 +358,7 @@ function ResponsiveAppBar() {
             }}>
             MISSION
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
@@ -193,11 +371,8 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {userLogged ? (
-              <span></span>
-            ) : (
+            {!location.state || !location.state.userLogged ? (
               <MenuItem>
-                {/* <Typography textAlign="center">Login</Typography> */}
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                   <Button
                     onClick={handleLogin}
@@ -206,74 +381,55 @@ function ResponsiveAppBar() {
                   </Button>
                 </Box>
               </MenuItem>
-            )}
-            {location.state && location.state.userLogged ? (
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar>
-                    {location.state.userLogged.user.first_name
-                      .charAt(0)
-                      .toUpperCase()}
-                    {location.state.userLogged.user.last_name
-                      .charAt(0)
-                      .toUpperCase()}
-                  </Avatar>
-                </IconButton>
-              </Tooltip>
             ) : (
-              <span></span>
-            )}
-            {location.state !== null ? (
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}>
-                {(location.pathname !== '/register' ||
-                  location.pathname === '/view-users') &&
-                location.state.userLogged &&
-                location.state.userLogged.user.role === 'admin' ? (
-                  <div>
-                    <MenuItem onClick={handleViewUsers}>
-                      <Typography textAlign="center">Dashboard</Typography>
-                    </MenuItem>
-                    <MenuItem onClick={handleEditMissions}>
-                      <Typography textAlign="center">Missions</Typography>
-                    </MenuItem>
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar>
+                      {location.state.userLogged.user.first_name
+                        .charAt(0)
+                        .toUpperCase()}
+                      {location.state.userLogged.user.last_name
+                        .charAt(0)
+                        .toUpperCase()}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}>
+                  {(location.pathname !== '/register' ||
+                    location.pathname === '/view-users') &&
+                  location.state.userLogged.user.role === 'admin' ? (
+                    <div>
+                      <MenuItem onClick={handleViewUsers}>
+                        <Typography textAlign="center">Dashboard</Typography>
+                      </MenuItem>
+                      <MenuItem onClick={handleEditMissions}>
+                        <Typography textAlign="center">Missions</Typography>
+                      </MenuItem>
+                      <MenuItem onClick={handleLogout}>
+                        <Typography textAlign="center">Logout</Typography>
+                      </MenuItem>
+                    </div>
+                  ) : (
                     <MenuItem onClick={handleLogout}>
                       <Typography textAlign="center">Logout</Typography>
                     </MenuItem>
-                  </div>
-                ) : location.pathname !== '/profile' &&
-                  location.pathname !== '/register' &&
-                  location.state &&
-                  location.state.userLogged.user &&
-                  location.state.userLogged.user.role === 'volunteer' ? (
-                  <div>
-                    {/* <MenuItem onClick={handleProfile}>
-                      <Typography textAlign="center">Profile</Typography>
-                    </MenuItem> */}
-                    <MenuItem onClick={handleLogout}>
-                      <Typography textAlign="center">Logout</Typography>
-                    </MenuItem>
-                  </div>
-                ) : (
-                  <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center">Logout</Typography>
-                  </MenuItem>
-                )}
-              </Menu>
-            ) : (
-              <span></span>
+                  )}
+                </Menu>
+              </>
             )}
           </Box>
         </Toolbar>

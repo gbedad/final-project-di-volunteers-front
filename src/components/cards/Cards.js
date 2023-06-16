@@ -61,22 +61,28 @@ const CardList = () => {
     </Box>
   ) : (
     <>
-      <Grid container spacing={3}>
-        {cardsData.map((card) => (
-          <Grid item xs={12} md={4} lg={3} key={card.id}>
-            <Card
-              sx={{ maxWidth: 400 }}
-              image_data={card.image_data}
-              image_type={card.image_type}
-              id={card.id}
-              title={card.title}
-              location={card.location}
-              link={card.link}
-              description={card.description}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid
+          align="center"
+          container
+          spacing={{ xs: 2, md: 3, lg: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}>
+          {cardsData.map((card) => (
+            <Grid item xs={3} sm={4} md={4} key={card.id}>
+              <Card
+                sx={{ maxWidth: 400 }}
+                image_data={card.image_data}
+                image_type={card.image_type}
+                id={card.id}
+                title={card.title}
+                location={card.location}
+                link={card.link}
+                description={card.description}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </>
   );
 };
