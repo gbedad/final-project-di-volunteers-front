@@ -17,7 +17,7 @@ import BorderedBoxWithLabel from './borderedBox';
 
 import { AuthContext } from '../AuthContext';
 
-import { existingLocations } from '../options/locationOptions';
+import { existingLocations } from '../options/existingOptions';
 
 const fabStyle = {
   position: 'absolute',

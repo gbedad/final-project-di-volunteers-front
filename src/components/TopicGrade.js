@@ -17,6 +17,8 @@ import BorderedBoxWithLabel from './borderedBox';
 
 import { AuthContext } from '../AuthContext';
 
+import { existingSubjects, existingClasses } from '../options/existingOptions';
+
 const fabStyle = {
   position: 'absolute',
   bottom: 16,
@@ -158,7 +160,10 @@ const SubjectClassRangeComponent = () => {
                   select
                   value={subjectClassRange.subject}
                   onChange={(e) => handleSubjectChange(e.target.value, index)}>
-                  <MenuItem value="Mathématiques">Mathématiques</MenuItem>
+                  {existingSubjects.map((subject) => (
+                    <MenuItem value={subject}>{subject}</MenuItem>
+                  ))}
+                  {/* <MenuItem value="Mathématiques">Mathématiques</MenuItem>
                   <MenuItem value="Physique-Chimie">Physique-Chimie</MenuItem>
                   <MenuItem value="Sciences">Sciences</MenuItem>
                   <MenuItem value="Histoire-Géographie">
@@ -167,7 +172,7 @@ const SubjectClassRangeComponent = () => {
                   <MenuItem value="Français">Français</MenuItem>
                   <MenuItem value="Anglais">Anglais</MenuItem>
                   <MenuItem value="Sciences">Sciences</MenuItem>
-                  <MenuItem value="Codage">Codage</MenuItem>
+                  <MenuItem value="Codage">Codage</MenuItem> */}
                   {/* Add more subjects as needed */}
                 </TextField>
               </Grid>
@@ -181,14 +186,17 @@ const SubjectClassRangeComponent = () => {
                   onChange={(e) =>
                     handleClassStartChange(e.target.value, index)
                   }>
-                  <MenuItem value="K3">K3</MenuItem>
+                  {existingClasses.map((classe) => (
+                    <MenuItem value={classe}>{classe}</MenuItem>
+                  ))}
+                  {/* <MenuItem value="K3">K3</MenuItem>
                   <MenuItem value="K4">K4</MenuItem>
                   <MenuItem value="K5">K5</MenuItem>
                   <MenuItem value="K6">K6</MenuItem>
                   <MenuItem value="K7">K7</MenuItem>
                   <MenuItem value="K8">K8</MenuItem>
                   <MenuItem value="K9">K9</MenuItem>
-                  <MenuItem value="K10">K10</MenuItem>
+                  <MenuItem value="K10">K10</MenuItem> */}
                 </TextField>
               </Grid>
               <Grid item xs={3}>
@@ -199,14 +207,17 @@ const SubjectClassRangeComponent = () => {
                   select
                   value={subjectClassRange.classEnd}
                   onChange={(e) => handleClassEndChange(e.target.value, index)}>
-                  <MenuItem value="K3">K3</MenuItem>
+                  {existingClasses.map((classe) => (
+                    <MenuItem value={classe}>{classe}</MenuItem>
+                  ))}
+                  {/* <MenuItem value="K3">K3</MenuItem>
                   <MenuItem value="K4">K4</MenuItem>
                   <MenuItem value="K5">K5</MenuItem>
                   <MenuItem value="K6">K6</MenuItem>
                   <MenuItem value="K7">K7</MenuItem>
                   <MenuItem value="K8">K8</MenuItem>
                   <MenuItem value="K9">K9</MenuItem>
-                  <MenuItem value="K10">K10</MenuItem>
+                  <MenuItem value="K10">K10</MenuItem> */}
                 </TextField>
               </Grid>
               <Grid item xs={2}>

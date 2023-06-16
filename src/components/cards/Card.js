@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
-
+import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -17,9 +17,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 
+import MapComponent from '../maps/MapComponent';
+
+import { getCenter } from '../../options/locationCentersOptions';
+
 import image from '../../assets/hands.jpeg';
 
 import './Card.css';
+
+// const center = [48.834218481227296, 2.3869057718685927];
 
 const MissionCard = (props) => {
   function isBase64Image(imageString) {
@@ -54,11 +60,17 @@ const MissionCard = (props) => {
   const imageUrl = props.image_data;
 
   return (
-    <div className="card">
+    <Card className="card animated-card">
       <img src={imageUrl ? imageUrl : image} alt={props.title} />
       <div className="card-body">
-        <h2 className="card-title">{props.title}</h2>
-        <p className="card-text">{props.location}</p>
+        <CardContent>
+          <Typography variant="h5" mb={3} sx={{ fontWeight: 'bold' }}>
+            {props.title}
+          </Typography>
+          {/* <h2 className="card-title">{props.title}</h2> */}
+          {/* <p className="card-text">{props.location}</p> */}
+          <Typography variant="p">{props.location}</Typography>
+        </CardContent>
         <CardActions sx={{ justifyContent: 'space-between' }}>
           <Button size="small" onClick={handleOpen}>
             En savoir plus
@@ -68,6 +80,7 @@ const MissionCard = (props) => {
           </Link>
         </CardActions>
       </div>
+
       {/* <Modal
         open={open}
         onClose={handleClose}
@@ -127,6 +140,9 @@ const MissionCard = (props) => {
             }}
             required
           />
+          {getCenter(props.location) && (
+            <MapComponent center={getCenter(props.location)} />
+          )}
         </DialogContent>
         <DialogActions>
           <Button
@@ -137,7 +153,7 @@ const MissionCard = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Card>
     //     <React.Fragment>
     //     <CardContent>
     //       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

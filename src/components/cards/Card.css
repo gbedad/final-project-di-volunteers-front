@@ -11,6 +11,9 @@
     height: 450px;
   }
 
+  .animated-card {
+    transition: height 0.3s ease; /* Adjust the transition duration and easing as needed */
+  }
 
   /* .MuiCard-root {
     height: 100%;

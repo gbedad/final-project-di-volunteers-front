@@ -40,7 +40,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
 
-import { existingLocations } from '../../options/locationOptions';
+import { existingLocations } from '../../options/existingOptions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
