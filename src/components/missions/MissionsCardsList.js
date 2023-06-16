@@ -38,10 +38,15 @@ const CardList = () => {
   ) : (
     <>
       <MissionForm />
-      <Grid container spacing={1}>
-        {displayedMissions.map((mission) => (
-          <Grid item xs={12} md={4} lg={3} key={mission.id}>
-            {/* <Card
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid
+          align="center"
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}>
+          {displayedMissions.map((mission) => (
+            <Grid item xs={3} sm={4} md={4} key={mission.id}>
+              {/* <Card
               sx={{ maxWidth: 400 }}
               image_data={card.image_data}
               image_type={card.image_type}
@@ -52,10 +57,11 @@ const CardList = () => {
               link={card.link}
               description={card.description}
             /> */}
-            <MissionCard mission={mission} imageData={mission.image_data} />
-          </Grid>
-        ))}
-      </Grid>
+              <MissionCard mission={mission} imageData={mission.image_data} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </>
   );
 };

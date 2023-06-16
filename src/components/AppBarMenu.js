@@ -69,17 +69,14 @@ function ResponsiveAppBar() {
     try {
       if (page === "L'association") {
         navigate('/', { state: { userLogged } });
-      } else if (
-        page === 'Missions bénévoles' &&
-        userLogged.user.role !== 'admin'
-      ) {
+      }
+      if (page === 'Missions bénévoles' && !userLogged) {
         navigate('/missions', { state: { userLogged } });
-      } else if (
-        page === 'Missions bénévoles' &&
-        userLogged.user.role === 'admin'
-      ) {
+      }
+      if (page === 'Missions bénévoles' && userLogged.user.role === 'admin') {
         navigate('/all-missions', { state: { userLogged } });
-      } else if (page === 'Focus sur le tutorat') {
+      }
+      if (page === 'Focus sur le tutorat') {
         navigate('/tutorat', { state: { userLogged } });
       }
     } catch (err) {
