@@ -77,13 +77,13 @@ const locations = ['Location 1', 'Location 2', 'Location 3'];
 
 const tutor_users = JSON.parse(localStorage.getItem('users'));
 
-let tutors = [];
-tutor_users.map((item, index) => {
-  return tutors.push({
-    tutorId: item.id,
-    fullname: `${item.first_name} ${item.last_name}`,
-  });
-});
+// let tutors = [];
+// tutor_users.map((item, index) => {
+//   return tutors.push({
+//     tutorId: item.id,
+//     fullname: `${item.first_name} ${item.last_name}`,
+//   });
+// });
 
 // const options = tutor_users.map((item) => ({
 //   value: `${item.first_name} ${item.last_name}`,
@@ -91,12 +91,12 @@ tutor_users.map((item, index) => {
 //   key: item.id, // Assuming 'item.id' is a unique identifier for each tutor
 // }));
 
-const options = tutors.map((tutorUser) => ({
-  userid: tutorUser.tutorId,
-  label: tutorUser.fullname,
-}));
+// const options = tutors.map((tutorUser) => ({
+//   userid: tutorUser.tutorId,
+//   label: tutorUser.fullname,
+// }));
 
-console.log(options);
+// console.log(options);
 
 // const CreateCourseForm = ({ onCourseCreate }) => {
 //   const [day, setDay] = useState('');
