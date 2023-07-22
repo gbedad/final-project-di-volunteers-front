@@ -41,18 +41,18 @@ const days = [
 
 const tutor_users = JSON.parse(localStorage.getItem('users'));
 
-let tutors = [];
-tutor_users.map((item, index) => {
-  return tutors.push({
-    tutorId: item.id,
-    fullname: `${item.first_name} ${item.last_name}`,
-  });
-});
+// let tutors = [];
+// tutor_users.map((item, index) => {
+//   return tutors.push({
+//     tutorId: item.id,
+//     fullname: `${item.first_name} ${item.last_name}`,
+//   });
+// });
 
-const options = tutors.map((tutorUser) => ({
-  userid: tutorUser.tutorId,
-  label: tutorUser.fullname,
-}));
+// const options = tutors.map((tutorUser) => ({
+//   userid: tutorUser.tutorId,
+//   label: tutorUser.fullname,
+// }));
 
 const CreateCourseForm = ({ onCourseCreate }) => {
   const [day, setDay] = useState('');
@@ -112,7 +112,7 @@ const CreateCourseForm = ({ onCourseCreate }) => {
               setInputTutorValue(newInputValue);
             }}
             id="controllable-states"
-            options={options}
+            // options={options}
             isOptionEqualToValue={(option, value) =>
               option.label === value.label
             }
