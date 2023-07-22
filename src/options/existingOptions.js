@@ -38,3 +38,5 @@ export const existingSubjects = [
   'SES',
   'SVT',
 ];
+
+export const existingRooms = ['Salle 1', 'Salle 2', 'Salle 3', 'Salle 4'];

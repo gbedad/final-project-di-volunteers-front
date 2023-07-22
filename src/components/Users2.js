@@ -229,6 +229,7 @@ export default function DataGridDemo(props) {
   const location = useLocation();
 
   const users = props.data;
+  const userList = localStorage.setItem('users', JSON.stringify(users));
   // console.log(users);
   // const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);

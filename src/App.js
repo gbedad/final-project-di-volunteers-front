@@ -32,47 +32,59 @@ import ResetPasswordForm from './components/ResetPasswordForm';
 import MissionsPage from './components/missions/MissionsPage';
 import MissionCard from './components/missions/MissionCard';
 import { AuthProvider } from './AuthContext';
+import { CourseProvider } from './components/courses/CourseContext';
 import CardList from './components/cards/Cards';
 import Lassociation from './pages/lassociation';
 import Tutorat from './pages/focusTutorat';
 import HomePage from './pages/HomePage';
+import CoursePage from './components/courses/CoursePage';
+import VirtualizedTable from './components/courses/CoursePage2';
 
 function App() {
   return (
     <AuthProvider>
-      <AppBarMenu />
+      <CourseProvider>
+        <AppBarMenu />
 
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/reset-password/:id/:token"
+            element={<ResetPassword />}
+          />
 
-        <Route path="/logout" />
-        <Route path="/stepper" element={<Stepper />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/create-skill" element={<DaySlotSkill />} />
-        <Route path="/create-skill" element={<TopicSkills />} />
-        <Route path="/upload" element={<Uploads />} />
+          <Route path="/logout" />
+          <Route path="/stepper" element={<Stepper />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/create-skill" element={<DaySlotSkill />} />
+          <Route path="/create-skill" element={<TopicSkills />} />
+          <Route path="/upload" element={<Uploads />} />
 
-        <Route
-          path="/cancel-registration"
-          element={<AlertCancelRegistration />}
-        />
-        <Route path="/view-users" element={<AllUsers />} />
-        {/* <Route path="/view-users" element={<AdminPanel />} /> */}
-        <Route path="/change-status" element={<ChangeUserStatus />} />
-        <Route path="/update-files-received" element={<DocumentCheckbox />} />
-        <Route path="/add-activity" element={<SelectFormActivity />} />
-        <Route path="update-address" element={<AddressAutocomplete />} />
-        <Route path="add-interviews" element={<FormInterviewComponent />} />
-        {/* <Route path="/" element={<CardList />} /> */}
-        <Route path="/all-missions" element={<MissionsPage />} />
-        <Route path="/missions/update/:id" element={<MissionCard />} />
-        <Route exact path="/tutorat" element={<Tutorat />} />
-        <Route exact path="/missions" element={<CardList />} />
-        <Route exact path="/" element={<HomePage />} />
-      </Routes>
+          <Route
+            path="/cancel-registration"
+            element={<AlertCancelRegistration />}
+          />
+          <Route path="/view-users" element={<AllUsers />} />
+          {/* <Route path="/view-users" element={<AdminPanel />} /> */}
+          <Route path="/change-status" element={<ChangeUserStatus />} />
+          <Route path="/update-files-received" element={<DocumentCheckbox />} />
+          <Route path="/add-activity" element={<SelectFormActivity />} />
+          <Route path="update-address" element={<AddressAutocomplete />} />
+          <Route path="add-interviews" element={<FormInterviewComponent />} />
+          {/* <Route path="/" element={<CardList />} /> */}
+          <Route path="/all-missions" element={<MissionsPage />} />
+          <Route path="/missions/update/:id" element={<MissionCard />} />
+          <Route exact path="/tutorat" element={<Tutorat />} />
+          <Route exact path="/missions" element={<CardList />} />
+
+          <Route path="/courses" element={<CoursePage />} />
+          <Route path="/courses2" element={<VirtualizedTable />} />
+
+          <Route exact path="/" element={<HomePage />} />
+        </Routes>
+      </CourseProvider>
     </AuthProvider>
   );
 }

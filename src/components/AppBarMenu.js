@@ -70,7 +70,10 @@ function ResponsiveAppBar() {
       if (page === "L'association") {
         navigate('/', { state: { userLogged } });
       }
-      if (page === 'Missions bénévoles' && !userLogged) {
+      if (
+        page === 'Missions bénévoles' &&
+        (!userLogged || userLogged.user.role === 'volunteer')
+      ) {
         navigate('/missions', { state: { userLogged } });
       }
       if (page === 'Missions bénévoles' && userLogged.user.role === 'admin') {
@@ -85,7 +88,9 @@ function ResponsiveAppBar() {
   };
 
   const handleProfile = () => {
-    // console.log('Go to profile page');
+    if (userLogged.user.role === 'volunteer') {
+      navigate(`/stepper`, { state: { userLogged } });
+    }
   };
 
   const handleViewUsers = () => {
@@ -419,6 +424,17 @@ function ResponsiveAppBar() {
                       <MenuItem onClick={handleEditMissions}>
                         <Typography textAlign="center">Missions</Typography>
                       </MenuItem>
+                      <MenuItem onClick={handleLogout}>
+                        <Typography textAlign="center">Logout</Typography>
+                      </MenuItem>
+                    </div>
+                  ) : location.pathname !== '/register' &&
+                    location.state.userLogged.user.role === 'volunteer' ? (
+                    <div>
+                      <MenuItem onClick={handleProfile}>
+                        <Typography textAlign="center">Profile</Typography>
+                      </MenuItem>
+
                       <MenuItem onClick={handleLogout}>
                         <Typography textAlign="center">Logout</Typography>
                       </MenuItem>

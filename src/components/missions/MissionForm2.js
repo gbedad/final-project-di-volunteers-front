@@ -152,16 +152,6 @@ const MissionForm = () => {
               fullWidth
               margin="normal"
             />
-
-            {/* <TextField
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              label="Lieu de la mission"
-              required
-              fullWidth
-              margin="normal"
-            /> */}
             <FormControl fullWidth>
               <InputLabel id="demo-multiple-checkbox-label">
                 Lieu de la mission
