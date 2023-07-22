@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
@@ -76,8 +76,8 @@ function App() {
           {/* <Route path="/" element={<CardList />} /> */}
           <Route path="/all-missions" element={<MissionsPage />} />
           <Route path="/missions/update/:id" element={<MissionCard />} />
-          <Route exact path="/tutorat" element={<Tutorat />} />
-          <Route exact path="/missions" element={<CardList />} />
+          <Route path="/tutorat" element={<Tutorat />} />
+          <Route path="/missions" element={<CardList />} />
 
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses2" element={<VirtualizedTable />} />
