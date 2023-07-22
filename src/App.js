@@ -79,7 +79,7 @@ function App() {
           <Route path="/tutorat" element={<Tutorat />} />
           <Route path="/missions" element={<CardList />} />
 
-          <Route path="/courses" element={<CoursePage />} />
+          {/* <Route path="/courses" element={<CoursePage />} /> */}
           <Route path="/courses2" element={<VirtualizedTable />} />
 
           <Route exact path="/" element={<HomePage />} />
