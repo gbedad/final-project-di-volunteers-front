@@ -886,7 +886,7 @@ const CoursePage = () => {
 
   return (
     <div>
-      <CreateCourseForm onCourseCreate={handleCourseCreate} />
+      {/* <CreateCourseForm onCourseCreate={handleCourseCreate} /> */}
 
       <CourseList
         courses={courses}
