@@ -665,7 +665,7 @@ const ProfilePage = () => {
             </List>
             {/* <ImageDisplay /> */}
             <StatusTimelineComponent
-              userStatusStep={setStatusStep(user.status)}
+              userStatusStep={setStatusStep(userStatus.status)}
             />
           </BorderedBoxWithLabel>
         </Grid>
