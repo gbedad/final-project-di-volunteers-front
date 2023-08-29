@@ -87,23 +87,21 @@ const SubjectClassRangeComponent = () => {
 
   const handleSaveSubjectClassRanges = async () => {
     try {
-      if (subjectClassRanges) {
-        const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
-          { topics: JSON.stringify(subjectClassRanges) },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-access-token': userLogged.token,
-            },
-          }
-        );
-        console.log(response.data.message);
-        if (response.data.message) {
-          console.log('Day and time ranges saved successfully');
-        } else {
-          console.error('Failed to save day and time ranges');
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
+        { topics: JSON.stringify(subjectClassRanges) },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': userLogged.token,
+          },
         }
+      );
+      console.log(response.data.message);
+      if (response.data.message) {
+        console.log('Day and time ranges saved successfully');
+      } else {
+        console.error('Failed to save day and time ranges');
       }
     } catch (error) {
       console.error('Failed to save day and time ranges', error);
