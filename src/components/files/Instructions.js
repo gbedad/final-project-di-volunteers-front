@@ -15,7 +15,7 @@ const InstructionComponent = () => {
   return (
     <>
       <Grid container spacing={2} mb={3}>
-        <Accordion>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
