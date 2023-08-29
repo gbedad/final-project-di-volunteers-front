@@ -650,7 +650,7 @@ const ProfilePage = () => {
               <ListItem>
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: purple[500] }}>
-                    {setStatusStep(user.status)}
+                    {setStatusStep(userStatus)}
                   </Avatar>
                 </ListItemAvatar>
 
