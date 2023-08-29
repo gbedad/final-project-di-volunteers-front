@@ -112,6 +112,7 @@ const FormInterviewComponent = ({ userId }) => {
 
   const userToken = location.state.userLogged.token;
   const userLogged = location.state.userLogged.user.first_name;
+
   //   const handleTitleChange = (event) => {
   //     setTitle(event.target.value);
   //   };
@@ -326,6 +327,7 @@ const FormInterviewComponent = ({ userId }) => {
                     size="small"
                     label="Date de l'entretien"
                     type="date"
+                    defaultValue={new Date().toISOString()}
                     value={interview.date}
                     error={!isDateValid}
                     helperText={!isDateValid && 'Please select a valid date.'}
