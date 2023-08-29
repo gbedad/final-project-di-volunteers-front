@@ -31,7 +31,8 @@ const InstructionComponent = () => {
             <Grid item xs={12}>
               <Box p={3}>
                 <Typography variant="body2" sx={{}}>
-                  Merci de bien vouloir télécharger ici les documents suivants :
+                  Merci de bien vouloir télécharger ici les documents suivants
+                  uniquement dans les formats pdf, jpeg, jpg ou png :
                 </Typography>
                 <Typography variant="body2">
                   <List>
