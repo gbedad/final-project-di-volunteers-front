@@ -108,6 +108,7 @@ const FormInterviewComponent = ({ userId }) => {
   const [interviews, setInterviews] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
   const [countInterviews, setCountInterviews] = useState(0);
+  const [isDateValid, setIsDateValid] = useState(true);
 
   const userToken = location.state.userLogged.token;
   const userLogged = location.state.userLogged.user.first_name;
@@ -151,6 +152,7 @@ const FormInterviewComponent = ({ userId }) => {
   const handleDateChange = (value, index) => {
     const updatedInterviews = [...interviews];
     updatedInterviews[index].date = value;
+    setIsDateValid(value !== '');
     setInterviews(updatedInterviews);
   };
 
@@ -324,7 +326,9 @@ const FormInterviewComponent = ({ userId }) => {
                     size="small"
                     label="Date de l'entretien"
                     type="date"
-                    value={interview.date || new Date()}
+                    value={interview.date}
+                    error={!isDateValid}
+                    helperText={!isDateValid && 'Please select a valid date.'}
                     onChange={(e) => handleDateChange(e.target.value, index)}
                     InputLabelProps={{
                       shrink: true,
