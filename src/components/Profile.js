@@ -126,6 +126,7 @@ const ProfilePage = () => {
   const [citySelected, setCitySelected] = React.useState('');
   const [zipcodeSelected, setZipcodeSelected] = React.useState('');
   const [countrySelected, setCountrySelected] = React.useState('');
+  const [userStatus, setUserStatus] = useState('');
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -265,6 +266,7 @@ const ProfilePage = () => {
         setStreetSelected(userData.street);
         setZipcodeSelected(userData.zipcode);
         setCountrySelected(userData.country);
+        setUserStatus(userData.status);
       }
     } catch (error) {
       console.log(error);
