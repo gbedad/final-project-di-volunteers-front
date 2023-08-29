@@ -654,7 +654,7 @@ const ProfilePage = () => {
                   </Avatar>
                 </ListItemAvatar>
 
-                <ListItemText primary={shortDescription(user.status)} />
+                <ListItemText primary={shortDescription(userStatus)} />
               </ListItem>
               {/* <ListItem>
                 <ListItemText
