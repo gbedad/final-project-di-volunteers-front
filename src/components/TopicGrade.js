@@ -228,7 +228,7 @@ const SubjectClassRangeComponent = () => {
             </Grid>
           ))
         )}
-        {subjectClassRanges && (
+        {subjectClassRanges && subjectClassRanges.length > 0 && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="outlined"
