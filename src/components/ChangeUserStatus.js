@@ -262,14 +262,6 @@ const ChangeUserStatus = () => {
               )}
 
               <List component="nav" aria-label="main mailbox folders">
-                <ListItemButton>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <DraftsIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={user.message} />
-                </ListItemButton>
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
@@ -300,6 +292,14 @@ const ChangeUserStatus = () => {
                     secondary={nextStepStatus(user.status)}
                   />
                 </ListItem>
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <DraftsIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={user.message} />
+                </ListItemButton>
               </List>
               <div>
                 <Box sx={{ minWidth: 120 }}>
