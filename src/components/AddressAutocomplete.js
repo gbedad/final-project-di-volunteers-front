@@ -107,7 +107,7 @@ const AddressAutocomplete = (props) => {
 
   return (
     <div>
-      <Accordion disabled={!editing}>
+      <Accordion disabled={!editing} defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
