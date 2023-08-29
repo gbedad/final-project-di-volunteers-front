@@ -320,7 +320,7 @@ const FormInterviewComponent = ({ userId }) => {
                 <FormControl>
                   <InputLabel id="demo-simple-select-helper-label"></InputLabel>
                   <TextField
-                    required
+                    required={true}
                     size="small"
                     label="Date de l'entretien"
                     type="date"
@@ -336,7 +336,7 @@ const FormInterviewComponent = ({ userId }) => {
             <Grid item xs={12}>
               <FormControl sx={{ minWidth: '100%' }}>
                 <StyledTextarea
-                  required
+                  required={true}
                   aria-label="Textarea"
                   label="Contenu de l'entretien"
                   minRows={3}
