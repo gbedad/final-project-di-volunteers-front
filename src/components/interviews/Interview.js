@@ -324,8 +324,7 @@ const FormInterviewComponent = ({ userId }) => {
                     size="small"
                     label="Date de l'entretien"
                     type="date"
-                    defaultValue={date.now()}
-                    value={interview.date}
+                    value={interview.date || new Date()}
                     onChange={(e) => handleDateChange(e.target.value, index)}
                     InputLabelProps={{
                       shrink: true,
