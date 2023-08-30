@@ -48,7 +48,7 @@ const SubjectClassRangeComponent = () => {
         setSubjectClassRanges(parsed_array);
         setIsLoading(false);
       }
-      if (response.data.skill === null) setIsLoading(false);
+      // if (response.data.skill === null) setIsLoading(false);
     };
 
     getSubjects();

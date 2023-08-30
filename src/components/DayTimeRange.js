@@ -43,14 +43,14 @@ const DayTimeRangeComponent = () => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       console.log(response.data);
-      if (response.data.skill) {
+      if (response.data.skill && response.data.skill.when_day_slot) {
         const parsed_array = response.data.skill.when_day_slot.map((string) =>
           JSON.parse(string)
         );
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
       }
-      if (response.data.skill === null) setIsLoading(false);
+      // if (response.data.skill === null) setIsLoading(false);
     };
 
     getDays();
@@ -98,7 +98,7 @@ const DayTimeRangeComponent = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            // 'x-access-token': userLogged.token,
+            'x-access-token': userLogged.token,
           },
         }
       );
