@@ -98,7 +98,7 @@ const DayTimeRangeComponent = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-access-token': userLogged.token,
+            // 'x-access-token': userLogged.token,
           },
         }
       );
