@@ -21,7 +21,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import MuiAlert from '@mui/material/Alert';
 
-import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
 
 function Copyright(props) {
   return (
@@ -49,7 +49,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const { updateUser } = useContext(UserContext);
+  const { updateUser } = useContext(AuthContext);
   const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
