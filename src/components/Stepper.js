@@ -70,21 +70,21 @@ const BasicTabs = () => {
           <Tab
             label="JE PEUX AIDER"
             {...a11yProps(1)}
-            disabled={status === 'compte créé'}
+            disabled={status == 'compte créé'}
           />
           <Tab
             label="MES DOCUMENTS"
             {...a11yProps(2)}
-            disabled={status === 'compte créé' || status === 'déclinée'}
+            disabled={status == 'compte créé' || status == 'déclinée'}
           />
           <Tab
             label="L'ASSOCIATION"
             {...a11yProps(3)}
             disabled={
-              status === 'compte créé' ||
-              status === 'à renseigner' ||
-              status === 'à interviewer' ||
-              status === 'à finaliser'
+              status == 'compte créé' ||
+              status == 'à renseigner' ||
+              status == 'à interviewer' ||
+              status == 'à finaliser'
             }
           />
         </Tabs>

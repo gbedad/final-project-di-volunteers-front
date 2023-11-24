@@ -50,6 +50,7 @@ const DayTimeRangeComponent = () => {
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
       }
+      if (response.data.skill === null) setIsLoading(false);
       // if (response.data.skill === null) setIsLoading(false);
     };
 
