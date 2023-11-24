@@ -51,7 +51,6 @@ const DayTimeRangeComponent = () => {
         setIsLoading(false);
       }
       if (response.data.skill === null) setIsLoading(false);
-      // if (response.data.skill === null) setIsLoading(false);
     };
 
     getDays();
