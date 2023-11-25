@@ -15,7 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import MapComponent from '../maps/MapComponent';
 
