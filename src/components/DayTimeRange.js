@@ -30,7 +30,6 @@ const DayTimeRangeComponent = () => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [disableBtn, setDisableBtn] = useState(true);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
 
@@ -64,7 +63,6 @@ const DayTimeRangeComponent = () => {
   //  }, [])
 
   const handleAddDayTimeRange = () => {
-    setDisableBtn(false);
     setDayTimeRanges([
       ...dayTimeRanges,
       { day: '', startTime: '', endTime: '' },
@@ -221,7 +219,6 @@ const DayTimeRangeComponent = () => {
             sx={{ marginTop: '10px' }}
             variant="outlined"
             color="primary"
-            disabled={disableBtn}
             onClick={handleSaveDayTimeRanges}>
             CONFIRMER
           </Button>
