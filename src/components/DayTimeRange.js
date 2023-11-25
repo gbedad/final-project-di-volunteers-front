@@ -18,6 +18,9 @@ import BorderedBoxWithLabel from './borderedBox';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AuthContext } from '../AuthContext';
 
 const fabStyle = {
@@ -112,10 +115,19 @@ const DayTimeRangeComponent = () => {
       console.log(response.data.message);
       if (response.data.message) {
         console.log('Day and time ranges saved successfully');
+        toast.success('Day and time ranges saved successfully', {
+          position: 'top-center',
+        });
       } else {
+        toast.error('Failed to save Day and time ranges', {
+          position: 'top-center',
+        });
         console.error('Failed to save day and time ranges');
       }
     } catch (error) {
+      toast.error('Failed to save Day and time ranges', {
+        position: 'top-center',
+      });
       console.error('Failed to save day and time ranges', error);
     }
   };
@@ -128,6 +140,7 @@ const DayTimeRangeComponent = () => {
 
   return (
     <div>
+      <ToastContainer />
       <BorderedBoxWithLabel label="Jours et heures" sx={{ display: 'flex' }}>
         {/* <Typography variant="h5">Day and Time Range</Typography> */}
         {/* <Button

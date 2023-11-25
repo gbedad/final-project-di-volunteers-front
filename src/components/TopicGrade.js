@@ -15,6 +15,9 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AuthContext } from '../AuthContext';
 
 import { existingSubjects, existingClasses } from '../options/existingOptions';
@@ -103,12 +106,21 @@ const SubjectClassRangeComponent = () => {
       );
       console.log(response.data.message);
       if (response.data.message) {
-        console.log('Day and time ranges saved successfully');
+        console.log('Subject and class ranges saved successfully');
+        toast.success('Subject and class ranges saved successfully', {
+          position: 'top-center',
+        });
       } else {
-        console.error('Failed to save day and time ranges');
+        console.error('Failed to save subjects');
+        toast.error('Failed to save subjects', {
+          position: 'top-center',
+        });
       }
     } catch (error) {
-      console.error('Failed to save day and time ranges', error);
+      toast.error('Failed to save subjects', {
+        position: 'top-center',
+      });
+      console.error('Failed to save subject and class ranges', error);
     }
     console.log('Saving subject and class ranges: ', subjectClassRanges);
   };
@@ -122,6 +134,7 @@ const SubjectClassRangeComponent = () => {
 
   return (
     <div>
+      <ToastContainer />
       <BorderedBoxWithLabel
         label="Matières et classes"
         sx={{ display: 'flex' }}>

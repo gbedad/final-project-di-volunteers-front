@@ -15,6 +15,9 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AuthContext } from '../AuthContext';
 
 import { existingLocations } from '../options/existingOptions';
@@ -83,11 +86,20 @@ const LocationsPossibleComponent = () => {
       );
       console.log(response.data.message);
       if (response.data.message) {
+        toast.success('Location saved successfully', {
+          position: 'top-center',
+        });
         console.log('Locations saved successfully');
       } else {
         console.error('Failed to save locations');
+        toast.error('Failed to save location', {
+          position: 'top-center',
+        });
       }
     } catch (error) {
+      toast.error('Failed to save location', {
+        position: 'top-center',
+      });
       console.error('Failed to save locations', error);
     }
     console.log('Saving locations: ', locationsPossible);

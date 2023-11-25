@@ -536,6 +536,13 @@ const ChangeUserStatus = () => {
                             <Avatar>{checkFileType(f.mimetype)}</Avatar>
                           </ListItemAvatar>
                           <ListItemText
+                            sx={{
+                              maxWidth: '360px', // Set your desired maximum width
+                              width: '100%', // Ensure the width takes up the available space
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
                             primary={f.filename}
                             secondary={f.mimetype}
                           />

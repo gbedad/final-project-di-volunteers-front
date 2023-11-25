@@ -16,6 +16,9 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const LocationSkills = () => {
   const location = useLocation();
