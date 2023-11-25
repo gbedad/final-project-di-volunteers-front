@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,8 +12,6 @@ import Skills from './Skills';
 import Uploads from './FileUploader';
 import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
-
-import { AuthContext } from '../AuthContext';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,16 +48,26 @@ function a11yProps(index) {
 const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
-
-  const { user } = useContext(AuthContext);
-
-  console.log(user);
+  const [status, setStatus] = useState('');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  let status = location.state.userLogged.user.status;
-  console.log(location.state.userLogged.user.status);
+  let userId = location.state.userLogged.user.id;
+  console.log(location.state.userLogged.user.id);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+      );
+      // console.log(response.data.skill.where_location);
+      setStatus(response.data.status);
+      //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
+    };
+
+    getUser();
+  }, [handleChange]);
   return (
     <div sx={{ mt: 0, mb: 4 }}>
       <Box
@@ -76,21 +85,21 @@ const BasicTabs = () => {
           <Tab
             label="JE PEUX AIDER"
             {...a11yProps(1)}
-            disabled={status == 'compte créé'}
+            disabled={status === 'compte créé'}
           />
           <Tab
             label="MES DOCUMENTS"
             {...a11yProps(2)}
-            disabled={status == 'compte créé' || status == 'déclinée'}
+            disabled={status === 'compte créé' || status === 'déclinée'}
           />
           <Tab
             label="L'ASSOCIATION"
             {...a11yProps(3)}
             disabled={
-              status == 'compte créé' ||
-              status == 'à renseigner' ||
-              status == 'à interviewer' ||
-              status == 'à finaliser'
+              status === 'compte créé' ||
+              status === 'à renseigner' ||
+              status === 'à interviewer' ||
+              status === 'à finaliser'
             }
           />
         </Tabs>

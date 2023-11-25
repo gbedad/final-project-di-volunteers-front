@@ -153,8 +153,10 @@ const LocationsPossibleComponent = () => {
                   select
                   value={loc}
                   onChange={(e) => handleLocationChange(e.target.value, index)}>
-                  {existingLocations.map((location) => (
-                    <MenuItem value={location}>{location}</MenuItem>
+                  {existingLocations.map((location, idx) => (
+                    <MenuItem key={idx} value={location}>
+                      {location}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem value="Maison des Associations">
                     Maison des Associations
