@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -11,6 +11,8 @@ import Skills from './Skills';
 import Uploads from './FileUploader';
 import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
+
+import { AuthContext } from '../AuthContext';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,6 +49,10 @@ function a11yProps(index) {
 const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
+
+  const { user } = useContext(AuthContext);
+
+  console.log(user);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

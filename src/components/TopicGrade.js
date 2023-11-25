@@ -31,7 +31,7 @@ const fabStyle = {
 const SubjectClassRangeComponent = () => {
   const location = useLocation();
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
   // const subjectClassesRanges = userLogged.user.skill.topics
@@ -39,6 +39,7 @@ const SubjectClassRangeComponent = () => {
   const userId = location.state.userLogged.user.id;
 
   useEffect(() => {
+    setIsLoading(false);
     const getSubjects = async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
@@ -51,11 +52,6 @@ const SubjectClassRangeComponent = () => {
         setSubjectClassRanges(parsed_array);
         setIsLoading(false);
       }
-      if (
-        Object.keys(response.data.skill).length === 0 ||
-        !response.data.skill.topics
-      )
-        setIsLoading(false);
     };
 
     getSubjects();
@@ -64,7 +60,7 @@ const SubjectClassRangeComponent = () => {
   const handleAddSubjectClassRange = () => {
     setSubjectClassRanges([
       ...subjectClassRanges,
-      { subject: '', classStart: 'K3', classEnd: 'K10' },
+      { subject: '', classStart: '', classEnd: '' },
     ]);
   };
 
@@ -175,10 +171,14 @@ const SubjectClassRangeComponent = () => {
                   variant="outlined"
                   label="Subject"
                   select
-                  value={subjectClassRange.subject}
+                  value={
+                    subjectClassRange.length !== 0 && subjectClassRange.subject
+                  }
                   onChange={(e) => handleSubjectChange(e.target.value, index)}>
-                  {existingSubjects.map((subject) => (
-                    <MenuItem value={subject}>{subject}</MenuItem>
+                  {existingSubjects.map((subject, idx) => (
+                    <MenuItem key={idx} value={subject}>
+                      {subject}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem value="Mathématiques">Mathématiques</MenuItem>
                   <MenuItem value="Physique-Chimie">Physique-Chimie</MenuItem>
@@ -203,8 +203,10 @@ const SubjectClassRangeComponent = () => {
                   onChange={(e) =>
                     handleClassStartChange(e.target.value, index)
                   }>
-                  {existingClasses.map((classe) => (
-                    <MenuItem value={classe}>{classe}</MenuItem>
+                  {existingClasses.map((classe, idx) => (
+                    <MenuItem key={idx} value={classe}>
+                      {classe}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem value="K3">K3</MenuItem>
                   <MenuItem value="K4">K4</MenuItem>
@@ -224,8 +226,10 @@ const SubjectClassRangeComponent = () => {
                   select
                   value={subjectClassRange.classEnd}
                   onChange={(e) => handleClassEndChange(e.target.value, index)}>
-                  {existingClasses.map((classe) => (
-                    <MenuItem value={classe}>{classe}</MenuItem>
+                  {existingClasses.map((classe, idx) => (
+                    <MenuItem key={idx} value={classe}>
+                      {classe}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem value="K3">K3</MenuItem>
                   <MenuItem value="K4">K4</MenuItem>

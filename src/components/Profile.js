@@ -555,7 +555,7 @@ const ProfilePage = () => {
                       disabled={!editing}
                       labelId="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
-                      value={activity}
+                      value={activity || ''}
                       onChange={handleActivityChange}
                       label="Activité">
                       <MenuItem value="">

@@ -32,7 +32,7 @@ const fabStyle = {
 const DayTimeRangeComponent = () => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
 
@@ -42,6 +42,7 @@ const DayTimeRangeComponent = () => {
 
   //  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
   useEffect(() => {
+    setIsLoading(false);
     const getDays = async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
@@ -53,12 +54,6 @@ const DayTimeRangeComponent = () => {
           JSON.parse(string)
         );
         setDayTimeRanges(parsed_array);
-        setIsLoading(false);
-      }
-      if (
-        Object.keys(response.data.skill).lenght === 0 ||
-        !response.data.skill.when_day_slot
-      ) {
         setIsLoading(false);
       }
     };
