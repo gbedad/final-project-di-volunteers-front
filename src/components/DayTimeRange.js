@@ -30,8 +30,10 @@ const DayTimeRangeComponent = () => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [disableBtn, setDisableBtn] = useState(true);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
+
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
 
   const userId = location.state.userLogged.user.id;
@@ -43,6 +45,9 @@ const DayTimeRangeComponent = () => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       console.log(response.data);
+      if (response.data.skill === null) {
+        setIsLoading(false);
+      }
       if (response.data.skill && response.data.skill.when_day_slot) {
         const parsed_array = response.data.skill.when_day_slot.map((string) =>
           JSON.parse(string)
@@ -50,7 +55,6 @@ const DayTimeRangeComponent = () => {
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
       }
-      if (response.data.skill === null) setIsLoading(false);
     };
 
     getDays();
@@ -60,6 +64,7 @@ const DayTimeRangeComponent = () => {
   //  }, [])
 
   const handleAddDayTimeRange = () => {
+    setDisableBtn(false);
     setDayTimeRanges([
       ...dayTimeRanges,
       { day: '', startTime: '', endTime: '' },
@@ -216,6 +221,7 @@ const DayTimeRangeComponent = () => {
             sx={{ marginTop: '10px' }}
             variant="outlined"
             color="primary"
+            disabled={disableBtn}
             onClick={handleSaveDayTimeRanges}>
             CONFIRMER
           </Button>
