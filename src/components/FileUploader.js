@@ -165,7 +165,7 @@ export default function Uploads() {
     <>
       {/* <InstructionComponent /> */}
       <Box style={{ position: 'relative' }}>
-        <Stack direction="column" spacing={2}>
+        <Stack direction="row" spacing={2}>
           <input
             id="file-upload"
             type="file"
@@ -217,12 +217,12 @@ export default function Uploads() {
                 key={i}
                 sx={{
                   width: '100%',
-                  maxWidth: 360,
+                  maxWidth: 760,
                   bgcolor: 'background.paper',
                   position: 'relative',
                   overflow: 'auto',
                   maxHeight: 300,
-                  display: 'inline-block',
+                  // display: 'inline-block',
                 }}>
                 <ListItem
                   secondaryAction={

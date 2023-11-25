@@ -52,7 +52,10 @@ const DayTimeRangeComponent = () => {
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
       }
-      if (response.data.skill === null) {
+      if (
+        Object.keys(response.data.skill).lenght === 0 ||
+        !response.data.skill.when_day_slot
+      ) {
         setIsLoading(false);
       }
     };
@@ -164,14 +167,14 @@ const DayTimeRangeComponent = () => {
                     label="Day"
                     value={dayTimeRange.day}
                     onChange={(e) => handleDayChange(e.target.value, index)}>
-                    <MenuItem value="">Select a day</MenuItem>
-                    <MenuItem value="Monday">Monday</MenuItem>
-                    <MenuItem value="Tuesday">Tuesday</MenuItem>
-                    <MenuItem value="Wednesday">Wednesday</MenuItem>
-                    <MenuItem value="Thursday">Thursday</MenuItem>
-                    <MenuItem value="Friday">Friday</MenuItem>
-                    <MenuItem value="Saturday">Saturday</MenuItem>
-                    <MenuItem value="Sunday">Sunday</MenuItem>
+                    <MenuItem value="">Choisir un jour</MenuItem>
+                    <MenuItem value="Monday">Lundi</MenuItem>
+                    <MenuItem value="Tuesday">Mardi</MenuItem>
+                    <MenuItem value="Wednesday">Mercredi</MenuItem>
+                    <MenuItem value="Thursday">Jeudi</MenuItem>
+                    <MenuItem value="Friday">Vendredi</MenuItem>
+                    <MenuItem value="Saturday">Samedi</MenuItem>
+                    <MenuItem value="Sunday">Dimanche</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

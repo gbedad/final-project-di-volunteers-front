@@ -80,7 +80,7 @@ const RegisterForm = ({ mission }) => {
       navigate('/login');
     } catch (error) {
       console.error(error); // Handle error here
-      if (error.response && error.response.status === 409) {
+      if (error) {
         // Assuming 409 is the status code for email already existing
         toast.error('Email already exists. Please use a different email.', {
           position: 'top-center',
