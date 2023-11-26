@@ -134,6 +134,7 @@ const ChangeUserStatus = () => {
         setStatus(response.data.status);
         setChecked(response.data.is_active);
         // setNewIsActive(response.data.is_active)
+        localStorage.setItem('user-status', response.data.status);
       } catch (err) {
         console.log(err);
       }

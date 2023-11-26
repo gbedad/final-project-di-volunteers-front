@@ -110,7 +110,7 @@ const Transition = function (props) {
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const ProfilePage = () => {
+const ProfilePage = ({ status }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
@@ -657,12 +657,12 @@ const ProfilePage = () => {
                   <ListItem>
                     <ListItemAvatar>
                       <Avatar sx={{ bgcolor: purple[500] }}>
-                        {setStatusStep(userStatus)}
+                        {setStatusStep(status)}
                       </Avatar>
                     </ListItemAvatar>
 
-                    <ListItemText primary={shortDescription(userStatus)} />
-                    <RefreshButton getUser={getUserById} />
+                    <ListItemText primary={shortDescription(status)} />
+                    {/* <RefreshButton getUser={getUserById} /> */}
                   </ListItem>
                   {/* <ListItem>
                 <ListItemText
@@ -673,9 +673,7 @@ const ProfilePage = () => {
                 </List>
               </Box>
             </Box>
-            <StatusTimelineComponent
-              userStatusStep={setStatusStep(userStatus)}
-            />
+            <StatusTimelineComponent userStatusStep={setStatusStep(status)} />
           </BorderedBoxWithLabel>
         </Grid>
       </Grid>

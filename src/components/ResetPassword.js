@@ -114,7 +114,7 @@ const ResetPassword = () => {
           setPassword('');
           setConfirmPassword('');
           setMessage(true);
-          toast.success('Votre mot de passe a été renouvellé', {
+          toast.success('Votre mot de passe a été renouvelé', {
             position: 'top-center',
           });
           setTimeout(() => {
@@ -157,7 +157,7 @@ const ResetPassword = () => {
                   <LockOpenIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                  Renouveller mon mot de passe
+                  Renouveler mon mot de passe
                 </Typography>
                 <Typography>{email}</Typography>
                 <Box sx={{ mt: 1 }}>

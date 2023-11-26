@@ -12,6 +12,7 @@ import Skills from './Skills';
 import Uploads from './FileUploader';
 import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
+
 import RefreshButton from './refreshIcon';
 
 function TabPanel(props) {
@@ -49,9 +50,12 @@ function a11yProps(index) {
 const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(localStorage.getItem('user-status'));
 
   const handleChange = (event, newValue) => {
+    let userStatus = localStorage.getItem('user-status');
+    console.log(userStatus);
+    setStatus(userStatus);
     setValue(newValue);
   };
   let userId = location.state.userLogged.user.id;
@@ -106,12 +110,12 @@ const BasicTabs = () => {
               status === 'à finaliser'
             }
           />
+          <RefreshButton getUser={getUser} />
         </Tabs>
       </Box>
-      {/* <RefreshButton getUser={getUser} /> */}
 
       <TabPanel value={value} index={0}>
-        <Profile />
+        <Profile status={status} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Skills />
