@@ -12,6 +12,7 @@ import Skills from './Skills';
 import Uploads from './FileUploader';
 import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
+import RefreshButton from './refreshIcon';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,18 +57,21 @@ const BasicTabs = () => {
   let userId = location.state.userLogged.user.id;
   console.log(location.state.userLogged.user.id);
 
-  useEffect(() => {
-    const getUser = async () => {
+  const getUser = async () => {
+    try {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      // console.log(response.data.skill.where_location);
+      console.log(response.data.status);
       setStatus(response.data.status);
-      //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-    };
+    } catch (err) {
+      console.lor(err);
+    }
 
-    getUser();
-  }, [handleChange]);
+    //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
+    console.log(status);
+  };
+
   return (
     <div sx={{ mt: 0, mb: 4 }}>
       <Box
@@ -104,6 +108,7 @@ const BasicTabs = () => {
           />
         </Tabs>
       </Box>
+      {/* <RefreshButton getUser={getUser} /> */}
 
       <TabPanel value={value} index={0}>
         <Profile />

@@ -108,7 +108,7 @@ function DashboardContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
-  // const token = localStorage.getItem('token');
+  //
   // const { user } = useContext(UserContext);
   const { token, isLoggedIn, logout } = useContext(AuthContext);
 
@@ -126,6 +126,7 @@ function DashboardContent() {
 
   console.log(token);
   useEffect(() => {
+    const token = localStorage.getItem('token1');
     const fetchUserList = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/all-users`, {

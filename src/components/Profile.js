@@ -80,6 +80,7 @@ import AutofillCheckoutDemo from './AddressAutocomplete2';
 import SelectFormActivity from './SelectActivity';
 import ImageDisplay from './ImageDisplay';
 import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
+import RefreshButton from './refreshIcon';
 
 const fabStyle = {
   position: 'absolute',
@@ -276,7 +277,7 @@ const ProfilePage = () => {
   useEffect(() => {
     getUserById();
   }, []);
-  console.log(activity);
+  // console.log(activity);
   const fabEdit = {
     color: 'secondary',
     sx: fabStyle,
@@ -384,6 +385,7 @@ const ProfilePage = () => {
                     </Fab>
                   </label>
                 )} */}
+
                 <SpeedDial
                   // onClick={() => handleClick()}
                   direction={'down'}
@@ -400,6 +402,7 @@ const ProfilePage = () => {
                     />
                   ))}
                 </SpeedDial>
+
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
@@ -646,24 +649,30 @@ const ProfilePage = () => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="Votre statut">
             {/* Content for Box 3 */}
-            <List>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: purple[500] }}>
-                    {setStatusStep(userStatus)}
-                  </Avatar>
-                </ListItemAvatar>
 
-                <ListItemText primary={shortDescription(userStatus)} />
-              </ListItem>
-              {/* <ListItem>
+            {/* <ImageDisplay /> */}
+            <Box display="flex" flexDirection="column">
+              <Box>
+                <List>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar sx={{ bgcolor: purple[500] }}>
+                        {setStatusStep(userStatus)}
+                      </Avatar>
+                    </ListItemAvatar>
+
+                    <ListItemText primary={shortDescription(userStatus)} />
+                    <RefreshButton getUser={getUserById} />
+                  </ListItem>
+                  {/* <ListItem>
                 <ListItemText
                   sx={{ ml: 2 }}
                   secondary={shortDescriptionForSupervisor(user.status)}
                 />
               </ListItem> */}
-            </List>
-            {/* <ImageDisplay /> */}
+                </List>
+              </Box>
+            </Box>
             <StatusTimelineComponent
               userStatusStep={setStatusStep(userStatus)}
             />
