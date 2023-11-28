@@ -29,7 +29,14 @@ export default function StatusTimelineComponent(props) {
     <Timeline position="alternate">
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot variant="outlined" />
+          <TimelineDot
+            sx={{
+              bgcolor:
+                parseFloat(userStatusStep) > 1
+                  ? 'secondary.main'
+                  : 'standard.main',
+            }}
+          />
           <TimelineConnector
             sx={{
               bgcolor:
@@ -144,7 +151,7 @@ export default function StatusTimelineComponent(props) {
           <TimelineConnector
             sx={{
               bgcolor:
-                parseFloat(userStatusStep) > 2
+                parseFloat(userStatusStep) > 1
                   ? 'secondary.main'
                   : 'standard.main',
             }}
@@ -162,7 +169,7 @@ export default function StatusTimelineComponent(props) {
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot variant="outlined" />
+          {/* <TimelineDot variant="outlined" /> */}
           <TimelineConnector
             sx={{
               bgcolor:
@@ -223,11 +230,11 @@ export default function StatusTimelineComponent(props) {
 
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot variant="outlined" />
+          {/* <TimelineDot variant="outlined" /> */}
           <TimelineConnector
             sx={{
               bgcolor:
-                parseFloat(userStatusStep) > 3
+                parseFloat(userStatusStep) >= 3
                   ? 'secondary.main'
                   : 'standard.main',
             }}
@@ -285,7 +292,7 @@ export default function StatusTimelineComponent(props) {
 
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot variant="outlined" />
+          {/* <TimelineDot variant="outlined" /> */}
           <TimelineConnector
             sx={{
               bgcolor:
@@ -341,7 +348,14 @@ export default function StatusTimelineComponent(props) {
 
       <TimelineItem>
         <TimelineSeparator>
-          <TimelineDot />
+          <TimelineDot
+            sx={{
+              bgcolor:
+                parseFloat(userStatusStep) > 4
+                  ? 'success.main'
+                  : 'standard.main',
+            }}
+          />
           <TimelineConnector
             sx={{
               bgcolor:

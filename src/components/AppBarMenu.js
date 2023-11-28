@@ -14,7 +14,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Link from '@mui/material/Link';
 import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
+
+import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+import logo from '../assets/logo.png';
 
 const pages = ["L'association", 'Missions bénévoles', 'Focus sur le tutorat'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -289,7 +293,21 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <Link href="/">
+            <Box component="img" sx={{ height: 54 }} alt="Logo" src={logo} />
+          </Link> */}
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+          <CastForEducationIcon
+            sx={{
+              display: {
+                xs: 'none',
+                md: 'flex',
+                fontSize: 'large',
+                color: 'secondary',
+              },
+              mr: 1,
+            }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -328,6 +346,8 @@ function ResponsiveAppBar() {
                 horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
+              onBlur={handleCloseNavMenu}
+              onClick={handleCloseNavMenu}
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: 'block', md: 'none' },
@@ -413,6 +433,7 @@ function ResponsiveAppBar() {
                     horizontal: 'right',
                   }}
                   open={Boolean(anchorElUser)}
+                  onClick={handleCloseUserMenu}
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
                     location.pathname === '/view-users') &&

@@ -77,41 +77,53 @@ const BasicTabs = () => {
   };
 
   return (
-    <div sx={{ mt: 0, mb: 4 }}>
+    <div
+      sx={{
+        mt: 0,
+        mb: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'flex',
+      }}>
       <Box
         sx={{
           borderBottom: 1,
           borderColor: 'divider',
           justifyContent: 'center',
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
         }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          centered>
-          <Tab label="MON PROFIL" {...a11yProps(0)} />
-          <Tab
-            label="JE PEUX AIDER"
-            {...a11yProps(1)}
-            disabled={status === 'compte créé'}
-          />
-          <Tab
-            label="MES DOCUMENTS"
-            {...a11yProps(2)}
-            disabled={status === 'compte créé' || status === 'déclinée'}
-          />
-          <Tab
-            label="L'ASSOCIATION"
-            {...a11yProps(3)}
-            disabled={
-              status === 'compte créé' ||
-              status === 'à renseigner' ||
-              status === 'à interviewer' ||
-              status === 'à finaliser'
-            }
-          />
-          <RefreshButton getUser={getUser} />
-        </Tabs>
+        <Box>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            centered>
+            <Tab label="MON PROFIL" {...a11yProps(0)} />
+            <Tab
+              label="JE PEUX AIDER"
+              {...a11yProps(1)}
+              disabled={status === 'compte créé'}
+            />
+            <Tab
+              label="MES DOCUMENTS"
+              {...a11yProps(2)}
+              disabled={status === 'compte créé' || status === 'déclinée'}
+            />
+            <Tab
+              label="L'ASSOCIATION"
+              {...a11yProps(3)}
+              disabled={
+                status === 'compte créé' ||
+                status === 'à renseigner' ||
+                status === 'à interviewer' ||
+                status === 'à finaliser'
+              }
+            />
+            <RefreshButton getUser={getUser} />
+          </Tabs>
+        </Box>
       </Box>
 
       <TabPanel value={value} index={0}>

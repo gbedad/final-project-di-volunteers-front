@@ -130,6 +130,8 @@ const ProfilePage = ({ status }) => {
   const [userStatus, setUserStatus] = useState('');
   const [open, setOpen] = React.useState(false);
 
+  console.log('Status from props', status);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -549,7 +551,11 @@ const ProfilePage = ({ status }) => {
                       </Avatar>
                     </Badge>
                   </ListItemAvatar>
-                  <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
+                  <FormControl
+                    variant="standard"
+                    sx={{ m: 1 }}
+                    fullWidth
+                    required>
                     <InputLabel id="demo-simple-select-standard-label">
                       Activité
                     </InputLabel>
@@ -587,6 +593,7 @@ const ProfilePage = ({ status }) => {
                     </Badge>
                   </ListItemAvatar>
                   <AddressAutocomplete
+                    required
                     editing={editing}
                     userId={user.id}
                     street={streetSelected}

@@ -54,24 +54,24 @@ const columns = [
     hideable: true,
   },
   { field: 'id', headerName: 'ID', width: 90, hideable: true },
-  {
-    field: 'first_name',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'last_name',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
+  // {
+  //   field: 'first_name',
+  //   headerName: 'First name',
+  //   width: 150,
+  //   editable: true,
+  // },
+  // {
+  //   field: 'last_name',
+  //   headerName: 'Last name',
+  //   width: 150,
+  //   editable: true,
+  // },
   {
     field: 'fullName',
-    headerName: 'Full name',
+    headerName: 'Nom',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 160,
+    width: 220,
     valueGetter: (params) =>
       `${params.row.first_name || ''} ${params.row.last_name || ''}`,
   },
@@ -79,12 +79,12 @@ const columns = [
     field: 'email',
     headerName: 'Email',
 
-    width: 150,
+    width: 250,
     editable: true,
   },
   {
     field: 'phone',
-    headerName: 'Phone',
+    headerName: 'Téléphone',
 
     width: 150,
     editable: true,
@@ -399,11 +399,11 @@ export default function DataGridDemo(props) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 9,
+                pageSize: 10,
               },
             },
           }}
-          pageSizeOptions={[9]}
+          pageSizeOptions={[10]}
           disableRowSelectionOnClick
         />
       </Box>

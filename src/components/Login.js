@@ -73,8 +73,9 @@ export default function SignIn() {
       localStorage.setItem('token1', response.data.token);
 
       if (response.data) {
-        // localStorage.setItem("user", JSON.stringify(response.data))
-        // localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data));
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user-status', response.data.user.status);
         setIsLoading(false);
 
         // setUserConnected(userLogged)

@@ -296,7 +296,7 @@ export default function Users(props) {
               <TableCell style={{ width: 160 }} align="left">
                 {row.last_name}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 220 }} align="left">
                 {row.email}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
