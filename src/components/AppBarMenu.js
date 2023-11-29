@@ -290,7 +290,7 @@ function ResponsiveAppBar() {
   //   </AppBar>
   // );
   return (
-    <AppBar position="static">
+    <AppBar position="static" color="success">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <Link href="/">
@@ -302,8 +302,6 @@ function ResponsiveAppBar() {
               display: {
                 xs: 'none',
                 md: 'flex',
-                fontSize: 'large',
-                color: 'secondary',
               },
               mr: 1,
             }}

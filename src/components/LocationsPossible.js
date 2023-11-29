@@ -86,7 +86,7 @@ const LocationsPossibleComponent = () => {
       );
       console.log(response.data.message);
       if (response.data.message) {
-        toast.success('Location saved successfully', {
+        toast.success(response.data.message, {
           position: 'top-center',
         });
         console.log('Locations saved successfully');

@@ -110,7 +110,7 @@ const DayTimeRangeComponent = () => {
       console.log(response.data.message);
       if (response.data.message) {
         console.log('Day and time ranges saved successfully');
-        toast.success('Day and time ranges saved successfully', {
+        toast.success(response.data.message, {
           position: 'top-center',
         });
       } else {

@@ -103,7 +103,7 @@ const SubjectClassRangeComponent = () => {
       console.log(response.data.message);
       if (response.data.message) {
         console.log('Subject and class ranges saved successfully');
-        toast.success('Subject and class ranges saved successfully', {
+        toast.success(response.data.message, {
           position: 'top-center',
         });
       } else {
