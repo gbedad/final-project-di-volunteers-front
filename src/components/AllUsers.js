@@ -179,7 +179,8 @@ function DashboardContent() {
   };
   // console.log(location);
   return (
-    <ThemeProvider theme={mdTheme}>
+    // <ThemeProvider theme={mdTheme}>
+    <>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
 
@@ -232,7 +233,8 @@ function DashboardContent() {
           </Container>
         </Box>
       </Box>
-    </ThemeProvider>
+      {/* </ThemeProvider> */}
+    </>
   );
 }
 

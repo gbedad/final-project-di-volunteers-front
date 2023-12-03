@@ -104,7 +104,8 @@ export default function SignIn() {
   return (
     <>
       <ToastContainer />
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
+      <>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -151,6 +152,7 @@ export default function SignIn() {
                 label="Remember me"
               />
               <Button
+                color="primary"
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -173,7 +175,8 @@ export default function SignIn() {
           </Box>
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
-      </ThemeProvider>
+        {/* </ThemeProvider> */}
+      </>
     </>
   );
 }

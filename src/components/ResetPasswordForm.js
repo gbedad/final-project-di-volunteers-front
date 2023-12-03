@@ -39,7 +39,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const theme = createTheme();
+// const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ResetPasswordForm = async () => {
@@ -74,69 +74,65 @@ const ResetPasswordForm = async () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOpenIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Renouveller mon mot de passe
-          </Typography>
-          <Typography></Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  type="password"
-                  label="New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  type="password"
-                  label="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  fullWidth
-                />
-              </Grid>
+    // <ThemeProvider theme={theme}>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOpenIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Renouveller mon mot de passe
+        </Typography>
+        <Typography></Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                type="password"
+                label="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                fullWidth
+              />
             </Grid>
-            <Button
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              type="submit"
-              fullWidth>
-              Renouveller
-            </Button>
-          </Box>
-          <Snackbar
-            severity="success"
-            open={open}
-            onClose={handleCloseSnackbar}
-            autoHideDuration={5000}
-            message="An email has been sent to your account. Please check your inbox."></Snackbar>
+            <Grid item xs={12}>
+              <TextField
+                type="password"
+                label="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+          <Button
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            type="submit"
+            fullWidth>
+            Renouveller
+          </Button>
         </Box>
+        <Snackbar
+          severity="success"
+          open={open}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={5000}
+          message="An email has been sent to your account. Please check your inbox."></Snackbar>
+      </Box>
 
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
+    // </ThemeProvider>
   );
 };
 

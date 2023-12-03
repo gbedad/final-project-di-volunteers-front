@@ -50,7 +50,6 @@ const MissionList = () => {
 
   return (
     <div>
-      
       <Typography variant="h5">Mission List</Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -68,13 +67,14 @@ const MissionList = () => {
               <TableRow
                 key={mission.id}
                 onClick={() => handleMissionSelect(mission)}
-                style={{ cursor: 'pointer' }}
-              >
+                style={{ cursor: 'pointer' }}>
                 <TableCell>{mission.id}</TableCell>
                 <TableCell>{mission.title}</TableCell>
                 <TableCell>{mission.description}</TableCell>
                 <TableCell>{mission.location}</TableCell>
-                <TableCell>{mission.is_active ? 'Active' : 'Inactive'}</TableCell>
+                <TableCell>
+                  {mission.is_active ? 'Active' : 'Inactive'}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

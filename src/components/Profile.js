@@ -663,7 +663,7 @@ const ProfilePage = ({ status }) => {
                 <List>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar sx={{ bgcolor: purple[500] }}>
+                      <Avatar sx={{ bgcolor: 'secondary.main' }}>
                         {setStatusStep(status)}
                       </Avatar>
                     </ListItemAvatar>

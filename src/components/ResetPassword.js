@@ -39,7 +39,7 @@ function Copyright(props) {
     </Typography>
   );
 }
-const theme = createTheme();
+// const theme = createTheme();
 
 const ResetPassword = () => {
   const { id, token } = useParams();
@@ -143,7 +143,8 @@ const ResetPassword = () => {
       {!loading ? (
         <div>
           <ToastContainer />
-          <ThemeProvider theme={theme}>
+          <>
+            {/* <ThemeProvider theme={theme}> */}
             <Container component="main" maxWidth="xs">
               <CssBaseline />
               <Box
@@ -196,7 +197,9 @@ const ResetPassword = () => {
 
               <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
-          </ThemeProvider>
+            ,
+          </>
+          {/* </ThemeProvider> */}
         </div>
       ) : (
         <Box

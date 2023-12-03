@@ -380,12 +380,9 @@ export default function DataGridDemo(props) {
         />
         {/* </FormControl> */}
 
-        <Button variant="contained" onClick={handleSearch} color="success">
+        <Button variant="contained" onClick={handleSearch} color="primary">
           Search
         </Button>
-        {/* <Button variant="contained" onClick={handleResetFilter} color="warning">
-          Reset
-        </Button> */}
       </Stack>
       <Box sx={{ height: 670, width: '100%' }}>
         <DataGrid

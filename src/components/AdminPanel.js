@@ -1,6 +1,6 @@
-import  React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import {useLocation} from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -26,13 +26,13 @@ import UsersByStatusGrid from './UsersByStatus';
 
 import { UserContext } from '../UserContext';
 
-
-
-
-
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         DI Final Project Gerald Berrebi
@@ -63,123 +63,123 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 const mdTheme = createTheme();
 
 function DashboardContent() {
-  const location = useLocation()
+  const location = useLocation();
   const [open, setOpen] = React.useState(true);
   const token = localStorage.getItem('token');
-  const {user} = useContext(UserContext)
-
+  const { user } = useContext(UserContext);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [dataActive, setDataActive] = useState([]);
-  const [activeUsers, setActiveUsers] = useState(null)
-  const [countUsersByStatus, setCountUsersByStatus] = useState({})
-// console.log(location.state);
-const userLogged = location.state.userLogged.user
+  const [activeUsers, setActiveUsers] = useState(null);
+  const [countUsersByStatus, setCountUsersByStatus] = useState({});
+  // console.log(location.state);
+  const userLogged = location.state.userLogged.user;
 
   useEffect(() => {
     const fetchUserList = async () => {
-        try {
-          const response = await axios.get(`${BASE_URL}/all-users`, {
-            headers:{
+      try {
+        const response = await axios.get(`${BASE_URL}/all-users`, {
+          headers: {
             /* `"x-access-token":user.token` is setting the `x-access-token` header in the HTTP request
             to the `user.token` value. This is commonly used for authentication and authorization
             purposes, where the server expects a token to be included in the request headers to
             identify and validate the user making the request. */
-            "x-access-token":user.token
-            }
-          });
-          // console.log("Response",response)
+            'x-access-token': user.token,
+          },
+        });
+        // console.log("Response",response)
 
-          const filteredData = response.data.filter(item => item.is_active === true);
-          const rowCounts = response.data.reduce((acc, item) => {
-            const { status } = item;
-            acc[status] = (acc[status] || 0) + 1;
-            return acc;
-          }, {});
-          setUsers(response.data)
-          setDataActive(filteredData);
-          setActiveUsers(filteredData.length);
-          setCountUsersByStatus(rowCounts)
+        const filteredData = response.data.filter(
+          (item) => item.is_active === true
+        );
+        const rowCounts = response.data.reduce((acc, item) => {
+          const { status } = item;
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+        setUsers(response.data);
+        setDataActive(filteredData);
+        setActiveUsers(filteredData.length);
+        setCountUsersByStatus(rowCounts);
 
         //   return response.data;
-        } catch (error) {
-          console.error(error);
-        }
-      
-      };
-     
-        fetchUserList()
-      }, [])
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    console.log("Active Users", activeUsers)
-    console.log("By Status", countUsersByStatus)
-   
-    console.log(users);
+    fetchUserList();
+  }, []);
 
+  console.log('Active Users', activeUsers);
+  console.log('By Status', countUsersByStatus);
+
+  console.log(users);
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
-// console.log(location);
+  // console.log(location);
   return (
-    <ThemeProvider theme={mdTheme}>
+    // <ThemeProvider theme={mdTheme}>
+    <>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        {userLogged.role === 'admin' ?
-        
-        <Drawer variant="permanent" open={!open}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List component="nav">
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {/* {secondaryListItems} */}
-          </List>
-        </Drawer> : <></>
-        }
+        {userLogged.role === 'admin' ? (
+          <Drawer variant="permanent" open={!open}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                px: [1],
+              }}>
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List component="nav">
+              {mainListItems}
+              <Divider sx={{ my: 1 }} />
+              {/* {secondaryListItems} */}
+            </List>
+          </Drawer>
+        ) : (
+          <></>
+        )}
         <Box
           component="main"
           sx={{
@@ -190,12 +190,10 @@ const userLogged = location.state.userLogged.user
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
-          }}
-        >
+          }}>
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-       
               <Grid item xs={4} md={8} lg={9}>
                 <Paper
                   sx={{
@@ -203,12 +201,11 @@ const userLogged = location.state.userLogged.user
                     display: 'flex',
                     flexDirection: 'column',
                     height: 140,
-                  }}
-                >
-                  <UsersByStatusGrid data={countUsersByStatus}/>
+                  }}>
+                  <UsersByStatusGrid data={countUsersByStatus} />
                 </Paper>
               </Grid>
- 
+
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
@@ -216,15 +213,14 @@ const userLogged = location.state.userLogged.user
                     display: 'flex',
                     flexDirection: 'column',
                     height: 140,
-                  }}
-                >
-                    <ActiveUsers data={activeUsers}/>
+                  }}>
+                  <ActiveUsers data={activeUsers} />
                 </Paper>
               </Grid>
-     
+
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <Users data={users}/>
+                  <Users data={users} />
                 </Paper>
               </Grid>
             </Grid>
@@ -232,7 +228,8 @@ const userLogged = location.state.userLogged.user
           </Container>
         </Box>
       </Box>
-    </ThemeProvider>
+      {/* </ThemeProvider> */}
+    </>
   );
 }
 

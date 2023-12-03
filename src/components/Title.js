@@ -2,6 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { cyan } from '@mui/material/colors';
 
 const breakpoints = {
   values: {
@@ -13,7 +14,10 @@ const breakpoints = {
   },
 };
 
-const theme = createTheme({
+const title_theme = createTheme({
+  palette: {
+    primary: { main: cyan[800] },
+  },
   breakpoints,
   typography: {
     h2: {
@@ -29,7 +33,7 @@ const theme = createTheme({
 });
 function Title(props) {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={title_theme}>
       <Typography component="h2" variant="h2" color="primary" gutterBottom>
         {props.children}
       </Typography>

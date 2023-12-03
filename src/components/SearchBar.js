@@ -68,7 +68,9 @@ const SearchBar = ({ onSearchSubject }) => {
         onChange={handleStatusChange}
         sx={{ marginRight: '1rem' }}
       /> */}
-      <Button variant="contained">Search</Button>
+      <Button variant="contained" color="secondary">
+        Searcher
+      </Button>
     </Stack>
   );
 };

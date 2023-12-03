@@ -179,7 +179,8 @@ const RegisterForm = ({ mission }) => {
     // </form>
     <>
       <ToastContainer />
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
+      <>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -328,7 +329,8 @@ const RegisterForm = ({ mission }) => {
           </Box>
           <Copyright sx={{ mt: 5 }} />
         </Container>
-      </ThemeProvider>
+        {/* </ThemeProvider> */}
+      </>
     </>
   );
 };

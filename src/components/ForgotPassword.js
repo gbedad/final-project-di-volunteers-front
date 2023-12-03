@@ -44,7 +44,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const theme = createTheme();
+// const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function ForgotPassword() {
@@ -102,7 +102,8 @@ export default function ForgotPassword() {
   console.log(email);
 
   return (
-    <ThemeProvider theme={theme}>
+    // <ThemeProvider theme={theme}>
+    <>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -148,6 +149,7 @@ export default function ForgotPassword() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </ThemeProvider>
+      {/* </ThemeProvider> */}
+    </>
   );
 }

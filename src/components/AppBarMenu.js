@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,7 +19,7 @@ import Link from '@mui/material/Link';
 import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
-import logo from '../assets/logo.png';
+import logo from '../assets/mycogniverse3.gif';
 
 const pages = ["L'association", 'Missions bénévoles', 'Focus sur le tutorat'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -290,14 +291,10 @@ function ResponsiveAppBar() {
   //   </AppBar>
   // );
   return (
-    <AppBar position="static" color="success">
+    <AppBar position="static" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <Link href="/">
-            <Box component="img" sx={{ height: 54 }} alt="Logo" src={logo} />
-          </Link> */}
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <CastForEducationIcon
+          {/* <CastForEducationIcon
             sx={{
               display: {
                 xs: 'none',
@@ -305,7 +302,7 @@ function ResponsiveAppBar() {
               },
               mr: 1,
             }}
-          />
+          /> */}
           <Typography
             variant="h6"
             noWrap
@@ -319,7 +316,9 @@ function ResponsiveAppBar() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-            }}></Typography>
+            }}>
+            <Box component="img" sx={{ height: 54 }} alt="Logo" src={logo} />
+          </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -408,7 +407,7 @@ function ResponsiveAppBar() {
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar>
+                    <Avatar sx={{ backgroundColor: 'success.main' }}>
                       {location.state.userLogged.user.first_name
                         .charAt(0)
                         .toUpperCase()}

@@ -176,7 +176,8 @@ const ChangeUserStatus = () => {
       </Box>
     </Stack>
   ) : (
-    <ThemeProvider theme={lightTheme}>
+    // <ThemeProvider theme={lightTheme}>
+    <>
       <Container maxWidth="l">
         <Box mb={2}>
           <h3>Activer/désactiver</h3>
@@ -568,7 +569,7 @@ const ChangeUserStatus = () => {
           />
         )}
       </Container>
-    </ThemeProvider>
+    </>
   );
 };
 
