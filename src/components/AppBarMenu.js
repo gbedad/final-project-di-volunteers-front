@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
@@ -406,16 +407,27 @@ function ResponsiveAppBar() {
             ) : (
               <>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar sx={{ backgroundColor: 'success.main' }}>
-                      {location.state.userLogged.user.first_name
-                        .charAt(0)
-                        .toUpperCase()}
-                      {location.state.userLogged.user.last_name
-                        .charAt(0)
-                        .toUpperCase()}
-                    </Avatar>
-                  </IconButton>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar sx={{ backgroundColor: 'success.main' }}>
+                        {location.state.userLogged.user.first_name
+                          .charAt(0)
+                          .toUpperCase()}
+                        {location.state.userLogged.user.last_name
+                          .charAt(0)
+                          .toUpperCase()}
+                      </Avatar>
+                    </IconButton>
+
+                    <Typography sx={{ fontSize: '0.8rem', p: 1 }}>
+                      {location.state.userLogged.user.email}
+                    </Typography>
+                  </Box>
                 </Tooltip>
                 <Menu
                   sx={{ mt: '45px' }}
