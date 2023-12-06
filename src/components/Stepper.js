@@ -130,7 +130,7 @@ const BasicTabs = () => {
         <Profile status={status} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Skills />
+        <Skills userId={userId} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <div>

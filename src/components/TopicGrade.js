@@ -28,16 +28,19 @@ const fabStyle = {
   right: 16,
 };
 
-const SubjectClassRangeComponent = () => {
+const SubjectClassRangeComponent = ({ userSelected }) => {
   const location = useLocation();
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
   // const subjectClassesRanges = userLogged.user.skill.topics
-
-  const userId = location.state.userLogged.user.id;
-
+  console.log(userSelected);
+  const userId =
+    location.state.userLogged.user.id === userSelected
+      ? location.state.userLogged.user.id
+      : userSelected;
+  console.log('USERID', userId);
   useEffect(() => {
     setIsLoading(false);
     const getSubjects = async () => {
@@ -91,7 +94,7 @@ const SubjectClassRangeComponent = () => {
   const handleSaveSubjectClassRanges = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
+        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
         { topics: JSON.stringify(subjectClassRanges) },
         {
           headers: {

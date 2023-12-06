@@ -55,6 +55,8 @@ import BorderedBoxWithLabel from './borderedBox';
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import FormInterviewComponent from './interviews/Interview';
 
+import TopicGradeComponent from '../components/TopicGrade';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // const Item = styled(Paper)(({ theme }) => ({
@@ -411,15 +413,15 @@ const ChangeUserStatus = () => {
                 <>
                   <Box mt={3}>
                     <Typography variant="h6" component="div">
-                      Matières
+                      Matière(s)
                     </Typography>
 
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
                         user.skill.topics.map((topic, i) => (
                           <div key={i}>
-                            {JSON.parse(topic).subject} from{' '}
-                            {JSON.parse(topic).classStart} to{' '}
+                            {JSON.parse(topic).subject} de{' '}
+                            {JSON.parse(topic).classStart} à{' '}
                             {JSON.parse(topic).classEnd}
                           </div>
                         ))}
@@ -432,23 +434,34 @@ const ChangeUserStatus = () => {
 
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
-                        user.skill.when_day_slot.map((slot, i) => (
-                          <div key={i}>
-                            {JSON.parse(slot).day} from{' '}
-                            {JSON.parse(slot).startTime} to{' '}
-                            {JSON.parse(slot).endTime}
-                          </div>
-                        ))}
+                        user.skill.when_day_slot &&
+                        user.skill.when_day_slot.map((slot, i) => {
+                          const parsedSlot = JSON.parse(slot);
+
+                          // Check if parsedSlot is not null before accessing its properties
+                          if (parsedSlot) {
+                            return (
+                              <div key={i}>
+                                {parsedSlot.day} de {parsedSlot.startTime} à{' '}
+                                {parsedSlot.endTime}
+                              </div>
+                            );
+                          }
+
+                          return null; // or handle the case when parsedSlot is null
+                        })}
                     </Typography>
                   </Box>
                   <Box mt={2}>
                     <Typography variant="h6" component="div">
-                      Où je peux aider
+                      Lieu(x)
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      {user.skill.where_location.map((location, i) => (
-                        <div key={i}>{location}</div>
-                      ))}
+                      {user.skill &&
+                        user.skill.where_location &&
+                        user.skill.where_location.map((location, i) => (
+                          <div key={i}>{location}</div>
+                        ))}
                     </Typography>
                   </Box>
 
@@ -465,6 +478,7 @@ const ChangeUserStatus = () => {
                 </Typography>
               )}
             </BorderedBoxWithLabel>
+            <TopicGradeComponent userSelected={user.id} />
           </Grid>
 
           <Grid item xs={12} md={4} lg={3}>

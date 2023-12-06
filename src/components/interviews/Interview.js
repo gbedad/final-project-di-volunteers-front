@@ -19,6 +19,7 @@ import Fab from '@mui/material/Fab';
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import CheckIcon from '@mui/icons-material/Check';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/system';
 import dayjs, { Dayjs } from 'dayjs';
@@ -26,6 +27,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateField } from '@mui/x-date-pickers/DateField';
+import NativeSelect from '@mui/material/NativeSelect';
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const blue = {
   100: '#DAECFF',
@@ -229,6 +237,8 @@ const FormInterviewComponent = ({ userId }) => {
       {
         title: `Entretien ${count}`,
         date: '',
+        motivation: '',
+
         content: '',
         by: userLogged,
       },
@@ -339,7 +349,7 @@ const FormInterviewComponent = ({ userId }) => {
                 </FormControl>
               </Stack>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <FormControl sx={{ minWidth: '100%' }}>
                 <StyledTextarea
                   required={true}
@@ -354,15 +364,253 @@ const FormInterviewComponent = ({ userId }) => {
                   }}
                 />
               </FormControl>
+            </Grid> */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header">
+                <Typography>Détails (cliquer pour déplier ou plier)</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{
+                      minWidth: '100%',
+                      // mt: 2,
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '12px',
+                      fontWeight: '400',
+                    }}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Qu'est-ce qui motive le souhait d'être bénévole ? En particulier dans l'accompagnement aux apprentissages ?"
+                      multiline
+                      minRows={1}
+                      placeholder=""
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{
+                      minWidth: '100%',
+                      mt: 2,
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '0.4rem',
+                      fontWeight: '400',
+                      lineHeight: '1.5',
+                    }}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Quelle expérience de l'accompagnement aux apprentissages ?"
+                      multiline
+                      minRows={1}
+                      placeholder=""
+                      value={interview.motivation}
+                      onChange={(e) =>
+                        handleContentChange(e.target.value, index)
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{
+                      minWidth: '100%',
+                      mt: 2,
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '0.4rem',
+                      fontWeight: '400',
+                      lineHeight: '1.5',
+                    }}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Comment accompagner un enfant qui rencontre des difficultés ?"
+                      multiline
+                      minRows={1}
+                      placeholder=""
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{
+                      minWidth: '100%',
+                      mt: 2,
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '0.4rem',
+                      fontWeight: '400',
+                      lineHeight: '1.5',
+                    }}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Questions personnalisées (relatives au CV, à un point d'attention, etc.)"
+                      multiline
+                      minRows={1}
+                      placeholder=""
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{
+                      minWidth: '100%',
+                      mt: 2,
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '0.4rem',
+                      fontWeight: '400',
+                      lineHeight: '1.5',
+                    }}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Évaluation détaillée"
+                      multiline
+                      minRows={1}
+                      placeholder=""
+                      value={interview.content}
+                      onChange={(e) =>
+                        handleContentChange(e.target.value, index)
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Grid item={12}>
+              <Stack direction="row" spacing={2} mb={2} mt={2}>
+                <FormControl required sx={{ m: 1, width: 300 }}>
+                  <InputLabel shrink id="demo-simple-select-standard-label">
+                    Recommandation
+                  </InputLabel>
+                  <Select
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Recommandation *">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={'A recruter'}>A recruter</MenuItem>
+                    <MenuItem value={'A ne pas recruter'}>
+                      A ne pas recruter
+                    </MenuItem>
+                    <MenuItem value={'NSP'}>NSP</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl required sx={{ m: 1, width: 300 }}>
+                  <InputLabel shrink id="demo-simple-select-standard-label">
+                    Suivi d'élèves en grande difficulté
+                  </InputLabel>
+                  <Select
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Suivi d'élèves en grande difficulté *">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={'Oui'}>Oui</MenuItem>
+                    <MenuItem value={'Pourquoi pas'}>Pourquoi pas</MenuItem>
+                    <MenuItem value={'A éviter'}>A éviter</MenuItem>
+                    <MenuItem value={'Non'}>Non</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
             </Grid>
-            <Grid item xs={12}>
-              <Typography>Entretien réalisé par {interview.by}</Typography>
+            <Grid item={12}>
+              <Stack direction="row" spacing={2} mb={2}>
+                <FormControl required sx={{ m: 1, width: 300 }}>
+                  <InputLabel shrink id="demo-simple-select-standard-label">
+                    Test français
+                  </InputLabel>
+                  <Select
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Test français *">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={'Requis'}>Requis</MenuItem>
+                    <MenuItem value={'Pas nécessaire'}>Pas nécessaire</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl required sx={{ m: 1, width: 300 }}>
+                  <InputLabel shrink id="demo-simple-select-standard-label">
+                    Aptitudes pédagogiques
+                  </InputLabel>
+                  <Select
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Aptitudes pédagogiques *">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={'Avérées'}>Avérées</MenuItem>
+                    <MenuItem value={'Probables'}>Probables</MenuItem>
+                    <MenuItem value={'A observer'}>A observer</MenuItem>
+                    <MenuItem value={'Insuffisantes'}>Insuffisantes</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl required sx={{ m: 1, width: 300 }}>
+                  <InputLabel shrink id="demo-simple-select-standard-label">
+                    Formations
+                  </InputLabel>
+                  <Select
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Formations *">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={'Requises'}>Requises</MenuItem>
+                    <MenuItem value={'A proposer'}>A proposer</MenuItem>
+                    <MenuItem value={'Pas nécessaires'}>
+                      Pas nécessaires
+                    </MenuItem>
+                    <MenuItem value={'NSP'}>NSP</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} mt={2}>
+              <Typography
+                sx={{
+                  fontFamily: 'IBM Plex Sans, sans-serif',
+                  fontSize: '0.875rem',
+                  color: 'primary.main',
+                }}>
+                Entretien réalisé par {interview.by}
+              </Typography>
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>
         ))}
       <Button
-        startIcon={confirmed ? <SaveIcon /> : ''}
+        startIcon={confirmed ? <CheckIcon /> : ''}
         variant="outlined"
         color={confirmed ? 'success' : 'primary'}
         onClick={handleSaveInterviews}>

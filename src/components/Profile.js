@@ -512,7 +512,7 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl sx={{ width: '50%' }}>
                     <TextField
-                      label="Nom d'utilsateur"
+                      label="Date de naissance"
                       value={user.birth_date}
                       disabled
                       variant="standard"
@@ -575,6 +575,7 @@ const ProfilePage = ({ status }) => {
                       </MenuItem>
                       <MenuItem value={'Salarié(e)'}>Salarié(e)</MenuItem>
                       <MenuItem value={'Etudiant(e)'}>Etudiant(e)</MenuItem>
+                      <MenuItem value={'Lycéen(ne)'}>Lycéen(ne)</MenuItem>
                       <MenuItem value={'Retraité(e)'}>Retraité(e)</MenuItem>
                       <MenuItem value={'Sans activité'}>Sans activité</MenuItem>
                     </Select>

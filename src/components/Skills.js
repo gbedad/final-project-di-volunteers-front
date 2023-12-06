@@ -5,7 +5,7 @@ import DayTimeRangeComponent from './DayTimeRange';
 import TopicGradeComponent from './TopicGrade';
 import LocationsPossibleComponent from './LocationsPossible';
 
-const Skills = () => {
+const Skills = ({ userId }) => {
   return (
     <React.Fragment>
       <Grid container maxWidth="xxl" spacing={2}>
@@ -13,7 +13,7 @@ const Skills = () => {
           <DayTimeRangeComponent />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={5}>
-          <TopicGradeComponent />
+          <TopicGradeComponent userSelected={userId} />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={3}>
           {/* <LocationSkill/> */}

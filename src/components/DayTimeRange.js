@@ -33,7 +33,9 @@ const DayTimeRangeComponent = () => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { userLogged } = location.state;
+  const { userLogged } = location.state && location.state.userLogged;
+  // Check if location.state is not null before destructuring values
+
   const { token } = useContext(AuthContext);
 
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
@@ -175,7 +177,7 @@ const DayTimeRangeComponent = () => {
                       <InputLabel>Day</InputLabel>
                       <Select
                         label="Day"
-                        value={dayTimeRange.day}
+                        value={dayTimeRange ? dayTimeRange.day : ''}
                         onChange={(e) =>
                           handleDayChange(e.target.value, index)
                         }>
