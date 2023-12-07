@@ -211,7 +211,7 @@ const ChangeUserStatus = () => {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={6} lg={3}>
             <BorderedBoxWithLabel label="Profil" sx={{ display: 'flex' }}>
               {user.mission ? (
                 <List
@@ -318,21 +318,30 @@ const ChangeUserStatus = () => {
                     </Avatar>
                   </ListItemAvatar>
 
-                  <Box sx={{ width: 600 }}>
+                  <Box sx={{ minWidth: 600 }}>
                     <Popper
                       open={openPopper}
                       anchorEl={anchorEl}
                       placement="top-start"
-                      transition>
+                      transition
+                      keepMounted={true}>
                       {({ TransitionProps }) => (
-                        <Fade {...TransitionProps} timeout={350}>
+                        <Fade {...TransitionProps} timeout={950}>
                           <Paper
+                            elevation={3}
                             sx={{
-                              width: 450,
-                              backgroundColor: 'primary.main',
-                              color: '#fff',
+                              p: 2,
+                              minWidth: 420,
+                              backgroundColor: '#d6f6f6',
+                              color: 'primary.main',
                             }}>
-                            <Typography sx={{ p: 2 }}>
+                            <Typography variant="h6" component="div">
+                              Motivation
+                            </Typography>
+                            <Typography
+                              sx={{ fontStyle: 'italic' }}
+                              variant="body1"
+                              component="div">
                               <ListItemText primary={user.message} />
                             </Typography>
                           </Paper>
@@ -348,7 +357,7 @@ const ChangeUserStatus = () => {
               </List>
               <div>
                 <Box sx={{ minWidth: 120 }}>
-                  <FormControl variant="standard" sx={{ m: 1, width: 300 }}>
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
                     <InputLabel id="demo-simple-select-label">
                       Changer le statut
                     </InputLabel>
