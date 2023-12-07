@@ -28,6 +28,7 @@ import Divider from '@mui/material/Divider';
 
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DraftsIcon from '@mui/icons-material/Drafts';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 
@@ -41,6 +42,10 @@ import CakeIcon from '@mui/icons-material/Cake';
 import LinearProgress from '@mui/material/LinearProgress';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+
+import Popper from '@mui/material/Popper';
+import Fade from '@mui/material/Fade';
+import Paper from '@mui/material/Paper';
 
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { lightBlue } from '@mui/material/colors';
@@ -87,6 +92,15 @@ const ChangeUserStatus = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [openPopper, setOpenPopper] = React.useState(false);
+  // const [placement, setPlacement] = React.useState();
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const openPopper = Boolean(anchorEl);
 
   const handleActiveChange = async (event) => {
     console.log('Checked state', event.target.checked);
@@ -296,13 +310,40 @@ const ChangeUserStatus = () => {
                     secondary={nextStepStatus(user.status)}
                   />
                 </ListItem>
-                <ListItemButton>
+
+                <ListItemButton onClick={handleClick}>
                   <ListItemAvatar>
                     <Avatar>
-                      <DraftsIcon />
+                      <TextSnippetIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={user.message} />
+
+                  <Box sx={{ width: 600 }}>
+                    <Popper
+                      open={openPopper}
+                      anchorEl={anchorEl}
+                      placement="top-start"
+                      transition>
+                      {({ TransitionProps }) => (
+                        <Fade {...TransitionProps} timeout={350}>
+                          <Paper
+                            sx={{
+                              width: 450,
+                              backgroundColor: 'primary.main',
+                              color: '#fff',
+                            }}>
+                            <Typography sx={{ p: 2 }}>
+                              <ListItemText primary={user.message} />
+                            </Typography>
+                          </Paper>
+                        </Fade>
+                      )}
+                    </Popper>
+                    <Typography>
+                      Cliquer ici pour voir le texte de motivation
+                    </Typography>
+                    {/* <Button onClick={handleClick('top-start')}>top-end</Button> */}
+                  </Box>
                 </ListItemButton>
               </List>
               <div>
