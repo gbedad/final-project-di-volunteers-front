@@ -175,6 +175,14 @@ const FormInterviewComponent = ({ userId }) => {
     setInterviews(updatedInterviews);
   };
 
+  const handleInterviewChange = (key, value, index) => {
+    setInterviews((prevInterviews) => {
+      const updatedInterviews = [...prevInterviews];
+      updatedInterviews[index][key] = value;
+      return updatedInterviews;
+    });
+  };
+
   function parseInterviews(data) {
     const parsedData = data.map((interview) => {
       const { title, date, content } = JSON.parse(interview);
@@ -388,6 +396,14 @@ const FormInterviewComponent = ({ userId }) => {
                       multiline
                       minRows={1}
                       placeholder=""
+                      value={interview.motivation}
+                      onChange={(e) =>
+                        handleInterviewChange(
+                          'motivation',
+                          e.target.value,
+                          index
+                        )
+                      }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -410,10 +426,18 @@ const FormInterviewComponent = ({ userId }) => {
                       multiline
                       minRows={1}
                       placeholder=""
-                      value={interview.motivation}
+                      value={interview.experience}
                       onChange={(e) =>
-                        handleContentChange(e.target.value, index)
+                        handleInterviewChange(
+                          'experience',
+                          e.target.value,
+                          index
+                        )
                       }
+                      // value={interview.motivation}
+                      // onChange={(e) =>
+                      //   handleContentChange(e.target.value, index)
+                      // }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -436,6 +460,14 @@ const FormInterviewComponent = ({ userId }) => {
                       multiline
                       minRows={1}
                       placeholder=""
+                      value={interview.how_tutoring}
+                      onChange={(e) =>
+                        handleInterviewChange(
+                          'how_tutoring',
+                          e.target.value,
+                          index
+                        )
+                      }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -458,6 +490,14 @@ const FormInterviewComponent = ({ userId }) => {
                       multiline
                       minRows={1}
                       placeholder=""
+                      value={interview.personal_questions}
+                      onChange={(e) =>
+                        handleInterviewChange(
+                          'personal_questions',
+                          e.target.value,
+                          index
+                        )
+                      }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -481,8 +521,11 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.content}
+                      // onChange={(e) =>
+                      //   handleInterviewChange(e.target.value, index)
+                      // }
                       onChange={(e) =>
-                        handleContentChange(e.target.value, index)
+                        handleInterviewChange('content', e.target.value, index)
                       }
                       InputLabelProps={{
                         shrink: true,
@@ -503,7 +546,15 @@ const FormInterviewComponent = ({ userId }) => {
                     autoWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Recommandation *">
+                    label="Recommandation *"
+                    value={interview.recommendation}
+                    onChange={(e) =>
+                      handleInterviewChange(
+                        'recommendation',
+                        e.target.value,
+                        index
+                      )
+                    }>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -523,7 +574,11 @@ const FormInterviewComponent = ({ userId }) => {
                     autoWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Suivi d'élèves en grande difficulté *">
+                    label="Suivi d'élèves en grande difficulté *"
+                    value={interview.followup}
+                    onChange={(e) =>
+                      handleInterviewChange('followup', e.target.value, index)
+                    }>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -546,7 +601,11 @@ const FormInterviewComponent = ({ userId }) => {
                     autoWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Test français *">
+                    label="Test français *"
+                    value={interview.test}
+                    onChange={(e) =>
+                      handleInterviewChange('test', e.target.value, index)
+                    }>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -563,7 +622,11 @@ const FormInterviewComponent = ({ userId }) => {
                     autoWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Aptitudes pédagogiques *">
+                    label="Aptitudes pédagogiques *"
+                    value={interview.aptitudes}
+                    onChange={(e) =>
+                      handleInterviewChange('aptitudes', e.target.value, index)
+                    }>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -582,7 +645,11 @@ const FormInterviewComponent = ({ userId }) => {
                     autoWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Formations *">
+                    label="Formations *"
+                    value={interview.training}
+                    onChange={(e) =>
+                      handleInterviewChange('training', e.target.value, index)
+                    }>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
