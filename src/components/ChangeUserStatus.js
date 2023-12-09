@@ -237,6 +237,26 @@ const ChangeUserStatus = () => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
+                      style={{
+                        maxWidth: 300, // Set your desired max width
+                        maxHeight: 150,
+                        overflowY: 'auto',
+                        msOverflowStyle: 'none', // or 'hidden' for truncation
+                        whiteSpace: 'normal', // or 'nowrap' for truncation,
+                        scrollbarWidth: 'thin', // Firefox
+                        scrollbarColor: 'darkgray lightgray', // Firefox
+                        WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
+                        '&::-webkit-scrollbar': {
+                          width: '12px', // Width of vertical scrollbar
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          backgroundColor: 'darkgray', // Color of the thumb
+                          borderRadius: '6px', // Rounded corners
+                        },
+                        '&::-webkit-scrollbar-track': {
+                          backgroundColor: 'lightgray', // Color of the track
+                        },
+                      }}
                       primary={user.email2 ? user.email2 : user.email}
                       secondary={
                         parsePhoneNumber(user.phone).number.international
@@ -318,7 +338,14 @@ const ChangeUserStatus = () => {
                     </Avatar>
                   </ListItemAvatar>
 
-                  <Box sx={{ minWidth: 600 }}>
+                  <Box
+                    style={{
+                      maxWidth: 600, // Set your desired max width
+                      maxHeight: 150,
+                      overflowY: 'hidden',
+                      msOverflowStyle: 'none', // or 'hidden' for truncation
+                      whiteSpace: 'normal', // or 'nowrap' for truncation,
+                    }}>
                     <Popper
                       open={openPopper}
                       anchorEl={anchorEl}
@@ -332,6 +359,7 @@ const ChangeUserStatus = () => {
                             sx={{
                               p: 2,
                               minWidth: 420,
+                              maxWidth: 600,
                               backgroundColor: '#d6f6f6',
                               color: 'primary.main',
                             }}>

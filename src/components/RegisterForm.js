@@ -62,9 +62,27 @@ const RegisterForm = ({ mission }) => {
   const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
 
+  const isStrongPassword = () => {
+    // Define the criteria for a strong password
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+
+    // Check if the password meets all criteria
+    return (
+      password.length >= minLength &&
+      hasUppercase &&
+      hasLowercase &&
+      hasNumber &&
+      hasSpecialChar
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Going to handlesubmit');
+
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
         email,
@@ -76,6 +94,9 @@ const RegisterForm = ({ mission }) => {
         message,
         mission_id: propsData,
       });
+
+      if (!isStrongPassword)
+        return toast.error("Votre mot de passe n'est pas assez sécurisé.");
       console.log(response.data); // Handle successful response here
       navigate('/login');
     } catch (error) {
@@ -286,6 +307,11 @@ const RegisterForm = ({ mission }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <Typography color={isStrongPassword() ? 'success' : 'error'}>
+                    {isStrongPassword()
+                      ? 'Strong Password'
+                      : 'Password must be strong'}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <TextareaAutosize
