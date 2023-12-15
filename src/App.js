@@ -39,6 +39,9 @@ import Tutorat from './pages/focusTutorat';
 import HomePage from './pages/HomePage';
 import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
+import Error404 from './pages/404';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { cyan, purple, green } from '@mui/material/colors';
 
@@ -56,7 +59,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CourseProvider>
           <AppBarMenu />
-
+          <ToastContainer />
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -97,6 +100,7 @@ function App() {
             <Route path="/courses2" element={<VirtualizedTable />} />
 
             <Route exact path="/" element={<HomePage />} />
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </CourseProvider>
       </ThemeProvider>

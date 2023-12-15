@@ -36,11 +36,11 @@ const MissionCard = (props) => {
   }
   const imageString = `data:${props.image_type};base64,${props.image_data}`; // Example base64 image string
 
-  if (isBase64Image(imageString)) {
-    console.log('The string represents a base64-encoded image.');
-  } else {
-    console.log('The string is not a base64-encoded image.');
-  }
+  // if (isBase64Image(imageString)) {
+  //   console.log('The string represents a base64-encoded image.');
+  // } else {
+  //   console.log('The string is not a base64-encoded image.');
+  // }
 
   const style = {
     position: 'absolute',
@@ -58,6 +58,8 @@ const MissionCard = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const imageUrl = props.image_data;
+
+  console.log(imageUrl);
 
   return (
     <Card className="card animated-card">

@@ -38,6 +38,8 @@ const DayTimeRangeComponent = () => {
 
   const { token } = useContext(AuthContext);
 
+  console.log(token);
+
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
 
   const userId = location.state.userLogged.user.id;
@@ -100,12 +102,12 @@ const DayTimeRangeComponent = () => {
   const handleSaveDayTimeRanges = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
+        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
         { when_day_slot: JSON.stringify(dayTimeRanges) },
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-access-token': userLogged.token,
+            'x-access-token': token,
           },
         }
       );

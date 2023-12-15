@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-
+import { toast } from 'react-toastify';
 import Grid from '@mui/material/Grid';
 import Card from './Card'; // Import the Card component;
 import './Card.css';
@@ -34,13 +34,16 @@ const CardList = () => {
         setCardsData(filteredIsActive);
         setIsLoading(false);
       } catch (error) {
+        if (error.message === 'Failed to fetch') {
+          toast.error('Erreur de reseau');
+        }
         console.error(error);
       }
     };
     setIsLoading(false);
 
     fetchMissionsList();
-  }, [isLoading]);
+  }, []);
 
   // axios.interceptors.response.use(
   //     response => {
@@ -67,7 +70,7 @@ const CardList = () => {
           container
           spacing={{ xs: 2, md: 3, lg: 3 }}
           columns={{ xs: 4, sm: 8, md: 12 }}>
-          {cardsData.map((card) => (
+          {cardsData.map((card, index) => (
             <Grid item xs={3} sm={4} md={4} key={card.id}>
               <Card
                 sx={{ maxWidth: 400 }}
