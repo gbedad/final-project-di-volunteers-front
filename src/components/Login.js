@@ -80,7 +80,7 @@ export default function SignIn() {
 
         // setUserConnected(userLogged)
         // updateUser(userLogged);
-        toast.success(`Bon retour  ${userLogged.first_name}`, {
+        toast.success(`Bonjour  ${userLogged.user.first_name}`, {
           position: 'top-center',
         });
 

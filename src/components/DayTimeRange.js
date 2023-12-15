@@ -36,13 +36,12 @@ const DayTimeRangeComponent = () => {
   const { userLogged } = location.state && location.state.userLogged;
   // Check if location.state is not null before destructuring values
 
-  const { token } = useContext(AuthContext);
-
-  console.log(token);
+  // const { token } = useContext(AuthContext);
 
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
 
   const userId = location.state.userLogged.user.id;
+  const token = location.state.userLogged.token;
 
   //  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
   useEffect(() => {
