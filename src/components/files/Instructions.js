@@ -10,6 +10,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const InstructionComponent = () => {
   return (
@@ -28,46 +30,61 @@ const InstructionComponent = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid item xs={12}>
-              <Box p={3}>
-                <Typography variant="body2" sx={{}}>
-                  Merci de bien vouloir télécharger ici les documents suivants
-                  uniquement dans les formats pdf, jpeg, jpg ou png :
-                </Typography>
-                <Typography variant="body2">
-                  <List>
-                    <ListItem>
-                      Copie lisible de votre pièce d’identité recto-verso,
-                    </ListItem>
-                    <ListItem>
-                      CV et/ou copie de diplômes et justificatifs de travail
-                      attestant de votre parcours académique et/ou
-                      professionnel,
-                    </ListItem>
-                    <ListItem>
-                      Extrait de casier judiciaire (s’obtient en ligne).
-                    </ListItem>
-                  </List>
-                </Typography>
-                <Typography variant="body2">
-                  Vous pouvez télécharger jusqu’à x documents en format pdf, jpg
-                  ou png. Merci de bien vouloir les nommer selon la nomenclature
-                  suivante : <i>nom_prénom_cv_1</i>,<i>nom_prénom_cv_2</i> (si
-                  vous avez plusieurs versions),
-                  <i>nom_prénom_b3</i> (un seul document pour l’extrait de
-                  casier judiciaire), <i>nom_prénom_id_1</i>,{' '}
-                  <i>nom_prénom_id_2</i> (si pièce d’identité en plusieurs
-                  fichiers), <i>nom_prénom_diplômexx</i> (copie du diplôme xx en
-                  l’absence de cv), <i>nom_prénom_bulletin_1</i>
-                  (copie de bulletin en l’absence de cv si vous êtes en
-                  terminale), <i>nom_prénom_attestationyy</i> (copie
-                  d’attestation de travail en l’absence de cv).
-                </Typography>
-                <Typography variant="body2">
-                  Vous pouvez ajouter tout document utile à l’examen de votre
-                  candidature.
-                </Typography>
-              </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6} md={6}>
+                <Box p={3}>
+                  <Typography variant="body2" sx={{}}>
+                    Merci de bien vouloir télécharger ici les documents suivants
+                    uniquement dans les formats pdf, jpeg, jpg ou png :
+                  </Typography>
+                  <Typography variant="body2">
+                    <List>
+                      <ListItem>
+                        <ListItemIcon>
+                          <FiberManualRecordIcon sx={{ fontSize: '0.6rem' }} />
+                        </ListItemIcon>
+                        Copie lisible de votre pièce d’identité recto-verso,
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <FiberManualRecordIcon sx={{ fontSize: '0.6rem' }} />
+                        </ListItemIcon>
+                        CV et/ou copie de diplômes et justificatifs de travail
+                        attestant de votre parcours académique et/ou
+                        professionnel,
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <FiberManualRecordIcon sx={{ fontSize: '0.6rem' }} />
+                        </ListItemIcon>
+                        Extrait de casier judiciaire (s’obtient en ligne).
+                      </ListItem>
+                    </List>
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Box p={3}>
+                  <Typography variant="body2">
+                    Vous pouvez télécharger jusqu’à x documents en format pdf,
+                    jpg ou png. Merci de bien vouloir les nommer selon la
+                    nomenclature suivante : <i>nom_prénom_cv_1</i>,
+                    <i>nom_prénom_cv_2</i> (si vous avez plusieurs versions),
+                    <i>nom_prénom_b3</i> (un seul document pour l’extrait de
+                    casier judiciaire), <i>nom_prénom_id_1</i>,{' '}
+                    <i>nom_prénom_id_2</i> (si pièce d’identité en plusieurs
+                    fichiers), <i>nom_prénom_diplômexx</i> (copie du diplôme xx
+                    en l’absence de cv), <i>nom_prénom_bulletin_1</i>
+                    (copie de bulletin en l’absence de cv si vous êtes en
+                    terminale), <i>nom_prénom_attestationyy</i> (copie
+                    d’attestation de travail en l’absence de cv).
+                  </Typography>
+                  <Typography variant="body2">
+                    Vous pouvez ajouter tout document utile à l’examen de votre
+                    candidature.
+                  </Typography>
+                </Box>
+              </Grid>
             </Grid>
           </AccordionDetails>
         </Accordion>
