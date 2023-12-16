@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import AppBar from '@mui/material/AppBar';
@@ -16,13 +16,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 import logo from '../assets/mycogniverse3.gif';
 
-const pages = ["L'association", 'Missions bénévoles', 'Focus sur le tutorat'];
+const pages = ['Missions bénévoles', 'Focus sur le tutorat'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
   if (location.state) {
     userLogged = location.state.userLogged;
   }
-  // console.log(userLogged);
+  console.log(userLogged);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -57,6 +57,10 @@ function ResponsiveAppBar() {
   const handleLogout = async () => {
     try {
       await axios.get(`${BASE_URL}/logout`);
+      localStorage.removeItem('token');
+      localStorage.removeItem('token1');
+      localStorage.removeItem('users');
+      localStorage.removeItem('user');
       navigate('/');
     } catch (err) {
       console.log(err);
@@ -88,6 +92,14 @@ function ResponsiveAppBar() {
       if (page === 'Focus sur le tutorat') {
         navigate('/tutorat', { state: { userLogged } });
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleLogoClick = async () => {
+    try {
+      navigate('/', { state: { userLogged } });
     } catch (err) {
       console.log(err);
     }
@@ -291,24 +303,15 @@ function ResponsiveAppBar() {
   //     </Container>
   //   </AppBar>
   // );
+
   return (
     <AppBar position="static" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <CastForEducationIcon
-            sx={{
-              display: {
-                xs: 'none',
-                md: 'flex',
-              },
-              mr: 1,
-            }}
-          /> */}
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            onClick={handleLogoClick}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -364,23 +367,6 @@ function ResponsiveAppBar() {
           </Box>
 
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}>
-            MISSION
-          </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

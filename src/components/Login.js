@@ -82,6 +82,8 @@ export default function SignIn() {
         // updateUser(userLogged);
         toast.success(`Bonjour  ${userLogged.user.first_name}`, {
           position: 'top-center',
+          autoClose: 1000,
+          draggable: true,
         });
 
         console.log(userLogged, isLoading);
@@ -103,7 +105,7 @@ export default function SignIn() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={1000} />
       {/* <ThemeProvider theme={theme}> */}
       <>
         <Container component="main" maxWidth="xs">
