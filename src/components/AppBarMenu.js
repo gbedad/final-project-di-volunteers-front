@@ -22,7 +22,7 @@ import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 import logo from '../assets/mycogniverse3.gif';
 
-const pages = ['Missions bénévoles', 'Focus sur le tutorat'];
+const pages = ['Missions bénévoles', 'A propos'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
   if (location.state) {
     userLogged = location.state.userLogged;
   }
-  console.log(userLogged);
+  console.log('=======>', userLogged);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -89,7 +89,7 @@ function ResponsiveAppBar() {
       if (page === 'Missions bénévoles' && userLogged.user.role === 'admin') {
         navigate('/all-missions', { state: { userLogged } });
       }
-      if (page === 'Focus sur le tutorat') {
+      if (page === 'A propos') {
         navigate('/tutorat', { state: { userLogged } });
       }
     } catch (err) {
@@ -368,7 +368,11 @@ function ResponsiveAppBar() {
 
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'none', md: 'flex', justifyContent: 'center' },
+            }}>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -392,7 +396,9 @@ function ResponsiveAppBar() {
               </MenuItem>
             ) : (
               <>
-                <Tooltip title="Open settings">
+                <Tooltip
+                  title="Ouvrir le menu"
+                  sx={{ backgroundColor: 'secondary' }}>
                   <Box
                     sx={{
                       display: 'flex',

@@ -490,19 +490,24 @@ const ProfilePage = ({ status }) => {
                       <AlternateEmailIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <FormControl sx={{ width: '50%' }}>
+                  <FormControl sx={{ width: '60%' }}>
                     <TextField
                       label="Email"
-                      value={email2}
+                      value={
+                        email2
+                          ? email2
+                          : 'Email à privilégier pour les échanges'
+                      }
                       onChange={handleEmail2Change}
                       disabled={!editing}
                       variant="standard"
                       color="warning"
                       focused
+                      placeholder="Email à privilégier pour les échanges"
                     />
-                    <FormHelperText sx={{ marginLeft: 0 }}>
+                    {/* <FormHelperText sx={{ marginLeft: 0 }}>
                       Email à privilégier pour les échanges
-                    </FormHelperText>
+                    </FormHelperText> */}
                   </FormControl>
                 </ListItem>
                 <ListItem>
@@ -696,7 +701,7 @@ const ProfilePage = ({ status }) => {
           type="submit"
           onClick={handleClickOpen}
           variant="contained"
-          sx={{ backgroundColor: 'red', mt: 3, mb: 2 }}>
+          sx={{ backgroundColor: 'primary', mt: 3, mb: 2 }}>
           Retirer ma candidature
         </Button>
         <Dialog

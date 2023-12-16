@@ -112,7 +112,7 @@ const BasicTabs = () => {
               disabled={status === 'compte créé' || status === 'déclinée'}
             />
             <Tab
-              label="L'ASSOCIATION"
+              label="MA CONVENTION"
               {...a11yProps(3)}
               disabled={
                 status === 'compte créé' ||

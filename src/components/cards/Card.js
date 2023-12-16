@@ -78,7 +78,7 @@ const MissionCard = (props) => {
             En savoir plus
           </Button>
           <Link to="/register" className="card-link" state={props.id}>
-            Postuler
+            POSTULER
           </Link>
         </CardActions>
       </div>

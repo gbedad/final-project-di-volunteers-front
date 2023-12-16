@@ -149,7 +149,7 @@ const LocationsPossibleComponent = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Location"
+                  label="Site"
                   select
                   value={loc}
                   onChange={(e) => handleLocationChange(e.target.value, index)}>

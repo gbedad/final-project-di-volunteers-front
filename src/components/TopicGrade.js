@@ -172,12 +172,16 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Subject"
+                  label="Matière"
                   select
                   value={
                     subjectClassRange.length !== 0 && subjectClassRange.subject
                   }
-                  onChange={(e) => handleSubjectChange(e.target.value, index)}>
+                  onChange={(e) => handleSubjectChange(e.target.value, index)}
+                  error={!subjectClassRange.subject} // Add error prop
+                  helperText={
+                    !subjectClassRange.subject ? 'Ce champ est obligatoire' : ''
+                  }>
                   {existingSubjects.map((subject, idx) => (
                     <MenuItem key={idx} value={subject}>
                       {subject}
@@ -200,11 +204,17 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Class Start"
+                  label="Classe mini"
                   select
                   value={subjectClassRange.classStart}
                   onChange={(e) =>
                     handleClassStartChange(e.target.value, index)
+                  }
+                  error={!subjectClassRange.classStart} // Add error prop
+                  helperText={
+                    !subjectClassRange.classStart
+                      ? 'Ce champ est obligatoire'
+                      : ''
                   }>
                   {existingClasses.map((classe, idx) => (
                     <MenuItem key={idx} value={classe}>
@@ -225,10 +235,17 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Class End"
+                  label="Classe maxi"
                   select
+                  required
                   value={subjectClassRange.classEnd}
-                  onChange={(e) => handleClassEndChange(e.target.value, index)}>
+                  onChange={(e) => handleClassEndChange(e.target.value, index)}
+                  error={!subjectClassRange.classEnd} // Add error prop
+                  helperText={
+                    !subjectClassRange.classEnd
+                      ? 'Ce champ est obligatoire'
+                      : ''
+                  }>
                   {existingClasses.map((classe, idx) => (
                     <MenuItem key={idx} value={classe}>
                       {classe}
