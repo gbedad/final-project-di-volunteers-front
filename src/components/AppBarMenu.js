@@ -377,7 +377,7 @@ function ResponsiveAppBar() {
               <Button
                 key={page}
                 onClick={() => handleGoToPage(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}>
+                sx={{ my: 2, pl: 2, pr: 2, color: 'white', display: 'block' }}>
                 {page}
               </Button>
             ))}

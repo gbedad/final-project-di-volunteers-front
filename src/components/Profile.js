@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
+import Input from '@mui/material/Input';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -492,17 +493,17 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl sx={{ width: '60%' }}>
                     <TextField
+                      labelId="email2"
                       label="Email"
-                      value={
-                        email2
-                          ? email2
-                          : 'Email à privilégier pour les échanges'
-                      }
+                      value={email2}
                       onChange={handleEmail2Change}
                       disabled={!editing}
                       variant="standard"
                       color="warning"
                       focused
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                       placeholder="Email à privilégier pour les échanges"
                     />
                     {/* <FormHelperText sx={{ marginLeft: 0 }}>
