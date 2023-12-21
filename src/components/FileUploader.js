@@ -155,7 +155,8 @@ export default function Uploads() {
   // console.log(filesUploaded);
 
   const fab = {
-    color: 'primary',
+    color: 'primary.main',
+    backGroundColor: 'primary.main',
     sx: fabStyle,
     icon: <AddIcon />,
     label: 'Add',
@@ -183,7 +184,7 @@ export default function Uploads() {
               <Fab
                 sx={fab.sx}
                 aria-label={fab.label}
-                color={fab.color}
+                color="primary.main"
                 onClick={() => handleFileUpload()}
                 component="button">
                 {fab.icon}

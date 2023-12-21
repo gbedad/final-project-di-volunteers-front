@@ -35,7 +35,7 @@ const InstructionComponent = () => {
                 <Box p={3}>
                   <Typography variant="body2" sx={{}}>
                     Merci de bien vouloir télécharger ici les documents suivants
-                    uniquement dans les formats pdf, jpeg, jpg ou png :
+                    uniquement dans les formats pdf, jpeg, jpg ou png&nbsp;:
                   </Typography>
                   <Typography variant="body2">
                     <List>

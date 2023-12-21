@@ -13,6 +13,7 @@ import {
   AlertTitle,
   Autocomplete,
   TextField,
+  Tooltip,
 } from '@mui/material';
 import {
   DataGrid,
@@ -127,7 +128,7 @@ const columns = [
   },
   {
     field: 'trueValuesCount',
-    headerName: 'Checks',
+    headerName: 'Documents',
 
     width: 130,
     editable: true,
@@ -314,12 +315,12 @@ export default function DataGridDemo(props) {
     });
   };
   let cleanedArray = updateTopicsToEmptyArray(usersWithTrueValuesCount);
-  console.log(usersWithTrueValuesCount);
+  // console.log(usersWithTrueValuesCount);
   // cleanedArray = filteredData;
   // if (filteredData.length > 0) {
   //   cleanedArray = filteredData;
   // }
-  console.log(filteredData);
+  // console.log(filteredData);
 
   const rows = filteredData.map((item, key = item.id) => {
     if (item.mission === null) {
