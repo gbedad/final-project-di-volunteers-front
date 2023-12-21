@@ -1,43 +1,93 @@
 import React from 'react';
 import CardList from '../components/cards/Cards';
-import { Typography, Container, Grid } from '@mui/material';
+import { Typography, Container, Grid, Box } from '@mui/material';
 
 import siteimage from '../assets/neuropedagogie.png';
 import style_apprentissage_image from '../assets/styles-dapprentissage.png';
+import home_png from '../assets/home_image.png';
+import HomeGif from '../assets/MyCogniverseHome.gif';
+import ImageUrl from '../assets/MyCogniverseCentered.gif';
+
+const imageURL = '../assets/MyCogniverseCentered.gif';
+
+// const backgroundStyle = {
+//   position: 'relative',
+//   // width: '100%',
+//   height: '100%',
+//   backgroundImage: `url(${HomeGif})`,
+//   backgroundPosition: 'center',
+//   backgroundSize: 'cover',
+//   backgroundRepeat: 'no-repeat',
+// };
+
+const containerStyle = {
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'white',
+};
+
+const imageStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100vw',
+  height: 'auto',
+};
 
 const HomePage = () => {
   return (
-    <Container>
-      <Grid container spacing={2} alignItems="center" mt={3}>
-        <Grid item xs={12} md={8} lg={8}>
-          <img
-            src={siteimage}
-            alt="Description of the site"
-            style={{ width: '100%', height: 'auto' }}
-          />
-        </Grid>
-        <Grid item xs={12} md={4} lg={4}>
-          <Typography variant="h4" gutterBottom color="secondary.main">
-            Bienvenue à l'association Séphora Berrebi !
-          </Typography>
-          <Typography variant="body1" paragraph color="primary.main">
-            L'association Séphora Berrebi accompagne les enfants et adolescents
-            «empêchés» dans leurs apprentissages pour diverses raisons
-            (médicales, socio-culturelles, financières, linguistiques,
-            cognitives, médicales). Pour les aider, elle cherche des bénévoles
-            bienveillants, engagés, passionnés par la transmission et
-            l’éducation.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={8} lg={8}>
-          <img
-            src={style_apprentissage_image}
-            alt="Description of the site"
-            style={{ width: '100%', height: 'auto' }}
-          />
-        </Grid>
-      </Grid>
-    </Container>
+    <Box style={containerStyle}>
+      <img src={ImageUrl} alt="Tutoring" style={imageStyle} />
+    </Box>
+    // <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+    //   <img
+    //     src={HomeGif}
+    //     alt="Description of the site"
+    //     style={{
+    //       width: '100vw',
+    //       height: 'auto',
+
+    //       zIndex: -1,
+    //     }}
+    //   />
+
+    // <Container>
+    //   <Grid container spacing={2} alignItems="center" mt={3}>
+    //     <Grid item xs={12} md={8} lg={8}>
+    //       <img
+    //         src={home_png}
+    //         alt="Description of the site"
+    //         style={{ width: '100%', height: 'auto' }}
+    //       />
+    //     </Grid>
+
+    //     <Grid item xs={12} md={4} lg={4}>
+    //       <Typography variant="h4" gutterBottom color="secondary.main">
+    //         Bienvenue à l'association Séphora Berrebi !
+    //       </Typography>
+    //       <Typography variant="body1" paragraph color="primary.main">
+    //         L'association Séphora Berrebi accompagne les enfants et
+    //         adolescents «empêchés» dans leurs apprentissages pour diverses
+    //         raisons (médicales, socio-culturelles, financières, linguistiques,
+    //         cognitives, médicales). Pour les aider, elle cherche des bénévoles
+    //         bienveillants, engagés, passionnés par la transmission et
+    //         l’éducation.
+    //       </Typography>
+    //     </Grid>
+    //     <Grid item xs={12} md={8} lg={8}>
+    //       <img
+    //         src={style_apprentissage_image}
+    //         alt="Description of the site"
+    //         style={{ width: '100%', height: 'auto' }}
+    //       />
+    //     </Grid>
+    //   </Grid>
+    // </Container>
+    // </Container>*/}
   );
 };
 

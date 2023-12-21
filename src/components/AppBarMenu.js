@@ -320,6 +320,7 @@ function ResponsiveAppBar() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}>
             <Box component="img" sx={{ height: 54 }} alt="Logo" src={logo} />
           </Typography>
