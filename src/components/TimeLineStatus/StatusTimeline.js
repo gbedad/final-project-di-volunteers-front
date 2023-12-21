@@ -309,8 +309,8 @@ export default function StatusTimelineComponent(props) {
           <Typography variant="body2" style={{ textAlign: 'left' }}>
             <ul style={{ paddingLeft: '1em', marginLeft: 0 }}>
               <li>
-                Téléchargez vous pièces d'identité, extrait de casier
-                judiciaire, CV et/ou diplômes et/ou attestations.
+                Téléchargez vos pièces d'identité, extrait de casier judiciaire,
+                CV et/ou diplômes et/ou attestations.
               </li>
               <li> Complétez le cas échéant avec un test (niveau collège)</li>
               <li>Signez la convention d'engagement réciproque.</li>

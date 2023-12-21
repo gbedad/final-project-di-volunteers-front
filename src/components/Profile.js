@@ -521,9 +521,9 @@ const ProfilePage = ({ status }) => {
                     <TextField
                       label="Date de naissance"
                       value={user.birth_date}
-                      disabled
                       variant="standard"
                       focused
+                      disabled={!editing}
                     />
                   </FormControl>
                 </ListItem>
