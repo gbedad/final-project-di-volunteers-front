@@ -68,16 +68,42 @@ const InstructionComponent = () => {
                   <Typography variant="body2">
                     Vous pouvez télécharger jusqu’à x documents en format pdf,
                     jpg ou png. Merci de bien vouloir les nommer selon la
-                    nomenclature suivante : <i>nom_prénom_cv_1</i>,
-                    <i>nom_prénom_cv_2</i> (si vous avez plusieurs versions),
-                    <i>nom_prénom_b3</i> (un seul document pour l’extrait de
-                    casier judiciaire), <i>nom_prénom_id_1</i>,{' '}
-                    <i>nom_prénom_id_2</i> (si pièce d’identité en plusieurs
-                    fichiers), <i>nom_prénom_diplômexx</i> (copie du diplôme xx
-                    en l’absence de cv), <i>nom_prénom_bulletin_1</i>
-                    (copie de bulletin en l’absence de cv si vous êtes en
-                    terminale), <i>nom_prénom_attestationyy</i> (copie
-                    d’attestation de travail en l’absence de cv).
+                    nomenclature suivante :
+                    <List sx={{ padding: '0px 0' }}>
+                      <ListItem>
+                        <b>nom_prénom_cv_1</b>,{' '}
+                        <b style={{ margin: '0 3px' }}>nom_prénom_cv_2</b> (si
+                        vous avez plusieurs versions),
+                      </ListItem>
+                      <ListItem>
+                        <b style={{ marginRight: '3px' }}>nom_prénom_b3</b> (un
+                        seul document pour l’extrait de casier judiciaire),
+                      </ListItem>
+                      <ListItem>
+                        <b>nom_prénom_id_1</b>,{' '}
+                        <b style={{ margin: '0 3px' }}>nom_prénom_id_2</b> (si
+                        pièce d’identité en plusieurs fichiers),{' '}
+                      </ListItem>
+                      <ListItem>
+                        <b style={{ marginRight: '3px' }}>
+                          nom_prénom_diplômexx
+                        </b>{' '}
+                        (copie du diplôme xx en l’absence de cv),{' '}
+                      </ListItem>
+                      <ListItem>
+                        <b style={{ marginRight: '3px' }}>
+                          nom_prénom_bulletin_1
+                        </b>{' '}
+                        (copie de bulletin en l’absence de cv si vous êtes en
+                        terminale),{' '}
+                      </ListItem>
+                      <ListItem>
+                        <b style={{ marginRight: '3px' }}>
+                          nom_prénom_attestationyy
+                        </b>{' '}
+                        (copie d’attestation de travail en l’absence de cv).
+                      </ListItem>
+                    </List>
                   </Typography>
                   <Typography variant="body2">
                     Vous pouvez ajouter tout document utile à l’examen de votre
