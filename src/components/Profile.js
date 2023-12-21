@@ -43,6 +43,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 import CallIcon from '@mui/icons-material/Call';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
@@ -123,7 +129,7 @@ const ProfilePage = ({ status }) => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email2, setEmail2] = useState('');
-
+  const [birthDate, setBirthDate] = useState('');
   const [activity, setActivity] = useState('');
   const [streetSelected, setStreetSelected] = React.useState('');
   const [citySelected, setCitySelected] = React.useState('');
@@ -197,6 +203,7 @@ const ProfilePage = ({ status }) => {
           last_name: lastName,
           phone: phone,
           email2: email2,
+          birth_date: birthDate,
           activity: activity,
           street: streetSelected,
           city: citySelected,
@@ -262,10 +269,12 @@ const ProfilePage = ({ status }) => {
       const response = await axios.get(`${BASE_URL}/user-by-id/${user.id}`);
       if (response.data) {
         const userData = response.data;
+
         setFirstName(userData.first_name);
         setLastName(userData.last_name);
         setPhone(userData.phone);
         setEmail2(userData.email2);
+        setBirthDate(userData.birth_date);
         setActivity(userData.activity);
         setCitySelected(userData.city);
         setStreetSelected(userData.street);
@@ -517,14 +526,35 @@ const ProfilePage = ({ status }) => {
                       <CakeIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <FormControl sx={{ width: '50%' }}>
+                  {/* <FormControl sx={{ width: '50%' }}>
                     <TextField
                       label="Date de naissance"
-                      value={user.birth_date}
+                      value={user.birthDate}
+                      onChange={handleBirthDateChange}
                       variant="standard"
                       focused
                       disabled={!editing}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
+                  </FormControl> */}
+                  <FormControl>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDayjs}
+                      adapterLocale="fr">
+                      <DatePicker
+                        value={dayjs(birthDate)}
+                        onChange={(newValue) => setBirthDate(newValue)}
+                        disabled={!editing}
+                        variant="standard"
+                        id="birthdate"
+                        label="Birth Date"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </LocalizationProvider>
                   </FormControl>
                 </ListItem>
                 {/* <ListItem>
