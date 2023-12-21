@@ -183,13 +183,13 @@ const DayTimeRangeComponent = () => {
                           handleDayChange(e.target.value, index)
                         }>
                         <MenuItem value="">Choisir un jour</MenuItem>
-                        <MenuItem value="Monday">Lundi</MenuItem>
-                        <MenuItem value="Tuesday">Mardi</MenuItem>
-                        <MenuItem value="Wednesday">Mercredi</MenuItem>
-                        <MenuItem value="Thursday">Jeudi</MenuItem>
-                        <MenuItem value="Friday">Vendredi</MenuItem>
-                        <MenuItem value="Saturday">Samedi</MenuItem>
-                        <MenuItem value="Sunday">Dimanche</MenuItem>
+                        <MenuItem value="Lundi">Lundi</MenuItem>
+                        <MenuItem value="Mardi">Mardi</MenuItem>
+                        <MenuItem value="Mercredi">Mercredi</MenuItem>
+                        <MenuItem value="Jeudi">Jeudi</MenuItem>
+                        <MenuItem value="Vendredi">Vendredi</MenuItem>
+                        <MenuItem value="Samedi">Samedi</MenuItem>
+                        <MenuItem value="Dimanche">Dimanche</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>

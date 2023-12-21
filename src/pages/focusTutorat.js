@@ -27,7 +27,7 @@ const focusTutorat = () => {
                 <Typography variant="body1" paragraph>
                   ... êtes un étudiant en école d'ingénieur et souhaitez dédier
                   une ou deux heures de votre temps à un lycéen en risque de
-                  décrochage dans les matières scientifiques?
+                  décrochage dans les matières scientifiques ?
                 </Typography>
                 <Typography variant="body1" paragraph>
                   ... avez expérimenté l'aide aux devoirs avec vos enfants et
@@ -68,7 +68,7 @@ const focusTutorat = () => {
                 {/* Add more bullet points here */}
                 <Typography variant="body1" paragraph>
                   ... êtes disponible hors temps scolaire et, éventuellement,
-                  pendant les vacances?
+                  pendant les vacances ?
                 </Typography>
                 <Typography variant="body1" paragraph>
                   Rejoignez le réseau de "bénévolants" de l'association Séphora
@@ -84,7 +84,7 @@ const focusTutorat = () => {
                   pris en charge par ailleurs par des spécialistes, la plupart
                   sont issus de milieux peu favorisés, certains sont en risque
                   de décrochage scolaire, quelques-uns sont atteints d’une
-                  maladie grave. Tous sont motivés!
+                  maladie grave. Tous sont motivés !
                 </Typography>
                 <Typography variant="body1" color="#05A4D0">
                   <b>Comment se déroule le tutorat ?</b>
