@@ -549,7 +549,7 @@ const ProfilePage = ({ status }) => {
                         disabled={!editing}
                         variant="standard"
                         id="birthdate"
-                        label="Birth Date"
+                        label="Date de naissance"
                         InputLabelProps={{
                           shrink: true,
                         }}
