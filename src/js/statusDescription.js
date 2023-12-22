@@ -59,15 +59,15 @@ export function shortDescriptionForSupervisor(key) {
 
 export function setStatusStep(key) {
   switch (key) {
-    case 'compte créé':
+    case 'Compte créé':
       return '1/5';
-    case 'à renseigner':
+    case 'A renseigner':
       return '2/5';
-    case 'à interviewer':
+    case 'A interviewer':
       return '3/5';
-    case 'à finaliser':
+    case 'A finaliser':
       return '4/5';
-    case 'validé':
+    case 'Validé':
       return '5/5';
     default:
       return '1/5';
@@ -77,16 +77,16 @@ export function setStatusStep(key) {
 export function nextStepStatus(key) {
   switch (key) {
     case 'compte créé':
-      return 'Etape suivante : à renseigner (2/5)';
+      return 'Etape suivante : A renseigner (2/5)';
     case 'à renseigner':
-      return 'Etape suivante : à interviewer (3/5)';
+      return 'Etape suivante : A interviewer (3/5)';
     case 'à interviewer':
-      return 'Etape suivante : à finaliser (4/5)';
+      return 'Etape suivante : A finaliser (4/5)';
     case 'à finaliser':
-      return 'Etape suivante : à valider (5/5)';
+      return 'Etape suivante : A valider (5/5)';
     case 'validé':
-      return 'Etape suivante : activer';
+      return 'Etape suivante : Activer';
     default:
-      return 'Etape suivante : à renseigner';
+      return 'Etape suivante : A renseigner';
   }
 }

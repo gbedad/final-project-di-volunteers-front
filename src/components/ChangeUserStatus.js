@@ -398,52 +398,52 @@ const ChangeUserStatus = () => {
                       defaultValue={status}
                       label="Change Status"
                       onChange={handleStatusChange}>
-                      <MenuItem value={'compte créé'}>
+                      <MenuItem value={'Compte créé'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('compte créé')}
+                              {longDescription('Compte créé')}
                             </Typography>
                           }
                           arrow>
                           <span>Compte créé</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'à renseigner'}>
+                      <MenuItem value={'A renseigner'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('à renseigner')}
+                              {longDescription('A renseigner')}
                             </Typography>
                           }
                           arrow>
                           <span>A renseigner</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'À interviewer'}>
+                      <MenuItem value={'A interviewer'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('À interviewer')}
+                              {longDescription('A interviewer')}
                             </Typography>
                           }
                           arrow>
                           <span>A interviewer</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'À finaliser'}>
+                      <MenuItem value={'A finaliser'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('À finaliser')}
+                              {longDescription('A finaliser')}
                             </Typography>
                           }
                           arrow>

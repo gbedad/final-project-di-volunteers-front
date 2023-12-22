@@ -24,7 +24,7 @@ import { existingSubjects, existingClasses } from '../options/existingOptions';
 
 const fabStyle = {
   position: 'absolute',
-  bottom: 16,
+  bottom: -10,
   right: 16,
 };
 
@@ -34,6 +34,9 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
+
+  const [showButton, setShowButton] = useState(false);
+
   // const subjectClassesRanges = userLogged.user.skill.topics
   console.log(userSelected);
   const userId =
@@ -41,6 +44,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ? location.state.userLogged.user.id
       : userSelected;
   console.log('USERID', userId);
+
   useEffect(() => {
     setIsLoading(false);
     const getSubjects = async () => {
@@ -54,6 +58,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         );
         setSubjectClassRanges(parsed_array);
         setIsLoading(false);
+        setShowButton(false);
       }
     };
 
@@ -65,6 +70,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ...subjectClassRanges,
       { subject: '', classStart: '', classEnd: '' },
     ]);
+    setShowButton(true);
   };
 
   const handleSubjectChange = (value, index) => {
@@ -269,7 +275,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             </Grid>
           ))
         )}
-        {subjectClassRanges && (
+        {subjectClassRanges && showButton && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="contained"

@@ -13,37 +13,37 @@ export default function UsersByStatusGrid(props) {
         <Grid xs={2}>
           <Title>Compte créé</Title>
           <Typography component="p" variant="h4">
-            {allStatus['compte créé'] ? allStatus['compte créé'] : 0}
+            {allStatus['Compte créé'] ? allStatus['Compte créé'] : 0}
           </Typography>
         </Grid>
         <Grid xs={2}>
           <Title>A renseigner</Title>
           <Typography component="p" variant="h4">
-            {allStatus['à renseigner'] ? allStatus['à renseigner'] : 0}
+            {allStatus['A renseigner'] ? allStatus['A renseigner'] : 0}
           </Typography>
         </Grid>
         <Grid xs={2}>
           <Title>A interviewer</Title>
           <Typography component="p" variant="h4">
-            {allStatus['à interviewer'] ? allStatus['à interviewer'] : 0}
+            {allStatus['A interviewer'] ? allStatus['A interviewer'] : 0}
           </Typography>
         </Grid>
         <Grid xs={2}>
           <Title>A finaliser</Title>
           <Typography component="p" variant="h4">
-            {allStatus['à finaliser'] ? allStatus['à finaliser'] : 0}
+            {allStatus['A finaliser'] ? allStatus['A finaliser'] : 0}
           </Typography>
         </Grid>
         <Grid xs={2}>
           <Title>Validé</Title>
           <Typography component="p" variant="h4">
-            {allStatus['validé'] ? allStatus['validé'] : 0}
+            {allStatus['Validé'] ? allStatus['Validé'] : 0}
           </Typography>
         </Grid>
         <Grid xs={2}>
           <Title>Décliné</Title>
           <Typography component="p" variant="h4">
-            {allStatus['décliné'] ? allStatus['décliné'] : 0}
+            {allStatus['Décliné'] ? allStatus['Décliné'] : 0}
           </Typography>
         </Grid>
       </Grid>
