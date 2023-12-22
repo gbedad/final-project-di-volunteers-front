@@ -272,7 +272,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         {subjectClassRanges && (
           <Button
             sx={{ marginTop: '10px' }}
-            variant="outlined"
+            variant="contained"
             color="primary"
             onClick={handleSaveSubjectClassRanges}>
             CONFIRMER

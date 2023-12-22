@@ -678,7 +678,7 @@ const FormInterviewComponent = ({ userId }) => {
         ))}
       <Button
         startIcon={confirmed ? <CheckIcon /> : ''}
-        variant="outlined"
+        variant="contained"
         color={confirmed ? 'success' : 'primary'}
         onClick={handleSaveInterviews}>
         {confirmed ? 'RÉALISÉ(S)' : 'CONFIRMER'}

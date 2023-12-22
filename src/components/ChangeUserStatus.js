@@ -207,7 +207,9 @@ const ChangeUserStatus = () => {
             }
             label="Actif"
           />
-          <Button onClick={handleSubmitActiveChange}>CONFIRMER</Button>
+          <Button variant="contained" onClick={handleSubmitActiveChange}>
+            CONFIRMER
+          </Button>
         </Box>
 
         <Grid container spacing={2}>
@@ -422,52 +424,52 @@ const ChangeUserStatus = () => {
                           <span>A renseigner</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'à interviewer'}>
+                      <MenuItem value={'À interviewer'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('à interviewer')}
+                              {longDescription('À interviewer')}
                             </Typography>
                           }
                           arrow>
                           <span>A interviewer</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'à finaliser'}>
+                      <MenuItem value={'À finaliser'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('à finaliser')}
+                              {longDescription('À finaliser')}
                             </Typography>
                           }
                           arrow>
                           <span>A finaliser</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'validé'}>
+                      <MenuItem value={'Validé'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('validé')}
+                              {longDescription('Validé')}
                             </Typography>
                           }
                           arrow>
                           <span>Validé</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      <MenuItem value={'déclinée'}>
+                      <MenuItem value={'Déclinée'}>
                         <CustomWidthTooltip
                           placement="right"
                           title={
                             <Typography
                               sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('déclinée')}
+                              {longDescription('Déclinée')}
                             </Typography>
                           }
                           arrow>
@@ -481,7 +483,9 @@ const ChangeUserStatus = () => {
                     </Select>
                   </FormControl>
                 </Box>
-                <Button onClick={handleConfirmClick}>Confirmer</Button>
+                <Button variant="contained" onClick={handleConfirmClick}>
+                  Confirmer
+                </Button>
               </div>
             </BorderedBoxWithLabel>
           </Grid>

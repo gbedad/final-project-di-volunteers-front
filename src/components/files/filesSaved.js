@@ -140,7 +140,9 @@ const DocumentCheckbox = ({ user }) => {
             <Grid item xs={4}>
               <FormControlLabel
                 control={
-                  <Button onClick={handleReceivedChange}>CONFIRMER</Button>
+                  <Button variant="contained" onClick={handleReceivedChange}>
+                    CONFIRMER
+                  </Button>
                 }
                 label=""
                 labelPlacement="top"
