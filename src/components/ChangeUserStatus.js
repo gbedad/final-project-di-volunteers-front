@@ -565,7 +565,7 @@ const ChangeUserStatus = () => {
             <BorderedBoxWithLabel
               label="Premier contact"
               sx={{ display: 'flex' }}>
-              <PreInterviewComponent />
+              <PreInterviewComponent userId={user.id} />
             </BorderedBoxWithLabel>
           </Grid>
 
