@@ -99,124 +99,51 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const PreInterviewComponent = ({ userId }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-  const [title, setTitle] = useState('');
 
   const [content, setContent] = useState('');
-  const [records, setRecords] = useState([]);
   const [date, setDate] = React.useState(dayjs(Date.now()));
-  const [interviews, setInterviews] = useState([]);
+  const [preInterview, setPreInterview] = useState({
+    date: '',
+    by: '',
+    evaluation: '',
+    nextStep: '',
+  });
   const [confirmed, setConfirmed] = useState(false);
-  const [countInterviews, setCountInterviews] = useState(0);
   const [isDateValid, setIsDateValid] = useState(true);
 
   const userToken = location.state.userLogged.token;
   const userLogged = location.state.userLogged.user.first_name;
 
-  //   const handleTitleChange = (event) => {
-  //     setTitle(event.target.value);
-  //   };
-
-  //   const handleDateChange = (event) => {
-  //     setDate(event.target.value);
-  //   };
-
   useEffect(() => {
-    const getInterviews = async () => {
+    const getPreInterview = async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data);
-      if (response.data.interviews) {
-        const parsed_array = response.data.interviews.map((string) =>
-          JSON.parse(string)
-        );
-        setInterviews(parsed_array);
+      console.log('=====>', response.data);
+      if (response.data.pre_interview) {
+        const preInterviewdata = response.data.pre_interview;
+
+        setPreInterview(JSON.parse(preInterviewdata));
         setIsLoading(false);
       }
       setIsLoading(false);
-      if (response.data.interviews.length > 0) {
-        setCountInterviews(response.data.interviews.length);
-        setConfirmed(true);
-      }
     };
 
-    getInterviews();
+    getPreInterview();
   }, []);
 
-  const handleTitleChange = (value, index) => {
-    const updatedInterviews = [...interviews];
-    updatedInterviews[index].title = value;
-    setInterviews(updatedInterviews);
+  const updatePreInterview = (field, value) => {
+    setPreInterview((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
 
-  const handleDateChange = (value, index) => {
-    const updatedInterviews = [...interviews];
-    updatedInterviews[index].date = value;
-    setIsDateValid(value !== '');
-    setInterviews(updatedInterviews);
-  };
-
-  //   const handleDateChange = (value) => {
-  //     setInterviews((prevInterviews) => ({ ...prevInterviews, date: value }));
-  //   };
-
-  const handleContentChange = (value, index) => {
-    const updatedInterviews = [...interviews];
-    updatedInterviews[index].content = value;
-    setInterviews(updatedInterviews);
-  };
-
-  const handleInterviewChange = (key, value, index) => {
-    setInterviews((prevInterviews) => {
-      const updatedInterviews = [...prevInterviews];
-      updatedInterviews[index][key] = value;
-      return updatedInterviews;
-    });
-  };
-
-  function parseInterviews(data) {
-    const parsedData = data.map((interview) => {
-      const { title, date, content } = JSON.parse(interview);
-      return {
-        title,
-        date,
-        content,
-        by: { userLogged },
-      };
-    });
-    return parsedData;
-  }
-
-  console.log(interviews);
-
-  const handleAddInterview = () => {
-    let count = 1;
-    if (interviews.length > 0) {
-      count = interviews.length + 1;
-    }
-    console.log(count);
-    const dateToday = new Date().toLocaleDateString();
-    console.log(dateToday);
-
-    setInterviews([
-      ...interviews,
-      {
-        title: `Entretien ${count}`,
-        date: '',
-        motivation: '',
-
-        content: '',
-        by: userLogged,
-      },
-    ]);
-    setConfirmed(false);
-  };
-
-  const handleSaveInterviews = async () => {
+  const handleSavePreInterview = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/add-interviews/${userId}`,
-        { interviews },
+        `${process.env.REACT_APP_BASE_URL}/add-pre-interview/${userId}`,
+        { preInterview },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -227,7 +154,7 @@ const PreInterviewComponent = ({ userId }) => {
       console.log(response.data.message);
       if (response.data.message) {
         setConfirmed(true);
-        console.log('Interview saved successfully');
+        console.log('Pre Interview saved successfully');
       } else {
         console.error('Failed to save interview');
       }
@@ -241,17 +168,6 @@ const PreInterviewComponent = ({ userId }) => {
       <Grid spacing={2} pb={5} pt={2}>
         <Grid item xs={12}>
           <Stack direction="row" spacing={2} mb={2}>
-            {/* <TextField
-              size="small"
-              label="Title"
-              value={''}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              width={'50%'}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            /> */}
-
             <FormControl>
               <InputLabel id="demo-simple-select-helper-label"></InputLabel>
               <TextField
@@ -260,10 +176,10 @@ const PreInterviewComponent = ({ userId }) => {
                 label="Date de l'entretien"
                 type="date"
                 defaultValue={new Date().toISOString()}
-                value={''}
+                value={preInterview.date}
                 error={!isDateValid}
                 helperText={!isDateValid && 'Please select a valid date.'}
-                onChange={(e) => handleDateChange(e.target.value)}
+                onChange={(e) => updatePreInterview('date', e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -279,13 +195,8 @@ const PreInterviewComponent = ({ userId }) => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Réalisé par"
-                value={''}
-                onChange={(e) =>
-                  handleInterviewChange('recommendation', e.target.value)
-                }>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
+                value={preInterview.by}
+                onChange={(e) => updatePreInterview('by', e.target.value)}>
                 <MenuItem value={'Noemie Rolland'}>Noemie Rolland</MenuItem>
                 <MenuItem value={'Corinne Zuili'}>Corinne Zuili</MenuItem>
                 <MenuItem value={'Emmanuelle Berrebi'}>
@@ -312,11 +223,8 @@ const PreInterviewComponent = ({ userId }) => {
               multiline
               minRows={1}
               placeholder=""
-              value={''}
-              // onChange={(e) =>
-              //   handleInterviewChange(e.target.value, index)
-              // }
-              onChange={(e) => handleInterviewChange('content', e.target.value)}
+              value={preInterview.evaluation}
+              onChange={(e) => updatePreInterview('evaluation', e.target.value)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -336,9 +244,9 @@ const PreInterviewComponent = ({ userId }) => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Recommandation *"
-                value={''}
+                value={preInterview.nextStep}
                 onChange={(e) =>
-                  handleInterviewChange('recommendation', e.target.value)
+                  updatePreInterview('nextStep', e.target.value)
                 }>
                 <MenuItem value="">
                   <em>None</em>
@@ -359,7 +267,7 @@ const PreInterviewComponent = ({ userId }) => {
         startIcon={confirmed ? <CheckIcon /> : ''}
         variant="contained"
         color={confirmed ? 'primary' : 'primary'}
-        onClick={handleSaveInterviews}>
+        onClick={handleSavePreInterview}>
         {confirmed ? 'RÉALISÉ(S)' : 'CONFIRMER'}
       </Button>
     </div>
