@@ -114,14 +114,6 @@ const PreInterviewComponent = ({ userId }) => {
   const userToken = location.state.userLogged.token;
   const userLogged = location.state.userLogged.user.first_name;
 
-  //   const handleTitleChange = (event) => {
-  //     setTitle(event.target.value);
-  //   };
-
-  //   const handleDateChange = (event) => {
-  //     setDate(event.target.value);
-  //   };
-
   useEffect(() => {
     const getPreInterview = async () => {
       const response = await axios.get(
