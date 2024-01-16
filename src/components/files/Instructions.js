@@ -17,7 +17,7 @@ import BorderedBoxWithLabel from '../borderedBox';
 const InstructionComponent = () => {
   return (
     <>
-      <Grid container spacing={2} mb={3}>
+      <Grid>
         <Accordion defaultExpanded={true}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -31,8 +31,8 @@ const InstructionComponent = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid container spacing={2}>
-              <Grid item xs={6} md={6}>
+            <Grid container spacing={2} fluid>
+              <Grid item xs={12} md={6} lg={6}>
                 <BorderedBoxWithLabel
                   label="Documents à télécharger"
                   sx={{ display: 'flex' }}>
@@ -76,7 +76,7 @@ const InstructionComponent = () => {
                 </BorderedBoxWithLabel>
               </Grid>
 
-              <Grid item xs={6} md={6}>
+              <Grid item xs={12} md={6} lg={6}>
                 <BorderedBoxWithLabel
                   label="Nomenclature des fichiers"
                   sx={{ display: 'flex' }}>
