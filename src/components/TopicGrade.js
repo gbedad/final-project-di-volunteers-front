@@ -96,6 +96,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     const updatedSubjectClassRanges = [...subjectClassRanges];
     updatedSubjectClassRanges.splice(index, 1);
     setSubjectClassRanges(updatedSubjectClassRanges);
+    setShowButton(true);
   };
 
   const handleSaveSubjectClassRanges = async () => {

@@ -73,6 +73,7 @@ const LocationsPossibleComponent = () => {
     const updatedLocationsPossible = [...locationsPossible];
     updatedLocationsPossible.splice(index, 1);
     setLocationsPossible(updatedLocationsPossible);
+    setShowButton(true);
   };
 
   const handleSaveLocationsPossible = async () => {
@@ -119,13 +120,6 @@ const LocationsPossibleComponent = () => {
   return (
     <div>
       <BorderedBoxWithLabel label="Lieux" sx={{ display: 'flex' }}>
-        {/* <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddLocation}
-          sx={{ mr: 2 }}>
-          Add Location
-        </Button> */}
         <label>
           <Fab
             sx={fab.sx}

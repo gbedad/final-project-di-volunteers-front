@@ -96,6 +96,7 @@ const DayTimeRangeComponent = () => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges.splice(index, 1);
     setDayTimeRanges(updatedDayTimeRanges);
+    setShowButton(true);
   };
 
   const handleSaveDayTimeRanges = async () => {
