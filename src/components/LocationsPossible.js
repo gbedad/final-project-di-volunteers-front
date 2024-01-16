@@ -132,7 +132,8 @@ const LocationsPossibleComponent = () => {
             aria-label={fab.label}
             color={fab.color}
             onClick={() => handleAddLocation()}
-            component="button">
+            component="button"
+            disabled={showButton}>
             {fab.icon}
           </Fab>
         </label>
