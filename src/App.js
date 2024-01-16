@@ -26,6 +26,7 @@ import DocumentCheckbox from './components/files/filesSaved';
 import SelectFormActivity from './components/SelectActivity';
 import AddressAutocomplete from './components/AddressAutocomplete';
 import FormInterviewComponent from './components/interviews/Interview';
+import FormPreInterviewComponent from './components/interviews/PreInterview';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ResetPasswordForm from './components/ResetPasswordForm';
@@ -90,6 +91,10 @@ function App() {
             <Route path="/add-activity" element={<SelectFormActivity />} />
             <Route path="update-address" element={<AddressAutocomplete />} />
             <Route path="add-interviews" element={<FormInterviewComponent />} />
+            <Route
+              path="add-pre-interview"
+              element={<FormPreInterviewComponent />}
+            />
             {/* <Route path="/" element={<CardList />} /> */}
             <Route path="/all-missions" element={<MissionsPage />} />
             <Route path="/missions/update/:id" element={<MissionCard />} />
