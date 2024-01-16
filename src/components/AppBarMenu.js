@@ -23,7 +23,7 @@ import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 import logo from '../assets/mycogniverse3.gif';
 
 const pages = ['Missions bénévoles', 'A propos'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -455,7 +455,7 @@ function ResponsiveAppBar() {
                     location.state.userLogged.user.role === 'volunteer' ? (
                     <div>
                       <MenuItem onClick={handleProfile}>
-                        <Typography textAlign="center">Profile</Typography>
+                        <Typography textAlign="center">Profil</Typography>
                       </MenuItem>
 
                       <MenuItem onClick={handleLogout}>

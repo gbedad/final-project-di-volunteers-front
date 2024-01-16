@@ -25,7 +25,7 @@ import { AuthContext } from '../AuthContext';
 
 const fabStyle = {
   position: 'absolute',
-  bottom: 16,
+  bottom: 10,
   right: 16,
 };
 
@@ -33,6 +33,7 @@ const DayTimeRangeComponent = () => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showButton, setShowButton] = useState(false);
   const { userLogged } = location.state && location.state.userLogged;
   // Check if location.state is not null before destructuring values
 
@@ -58,6 +59,7 @@ const DayTimeRangeComponent = () => {
         );
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
+        setShowButton(false);
       }
     };
 
@@ -72,6 +74,7 @@ const DayTimeRangeComponent = () => {
       ...dayTimeRanges,
       { day: '', startTime: '', endTime: '' },
     ]);
+    setShowButton(true);
   };
 
   const handleDayChange = (value, index) => {
@@ -116,6 +119,7 @@ const DayTimeRangeComponent = () => {
         toast.success(response.data.message, {
           position: 'top-center',
         });
+        setShowButton(false);
       } else {
         toast.error('Failed to save Day and time ranges', {
           position: 'top-center',
@@ -154,7 +158,8 @@ const DayTimeRangeComponent = () => {
             aria-label={fab.label}
             color={fab.color}
             onClick={() => handleAddDayTimeRange()}
-            component="button">
+            component="button"
+            disabled={showButton}>
             {fab.icon}
           </Fab>
         </label>
@@ -241,10 +246,10 @@ const DayTimeRangeComponent = () => {
               )
           )
         )}
-        {dayTimeRanges && (
+        {dayTimeRanges && showButton && (
           <Button
             sx={{ marginTop: '10px' }}
-            variant="outlined"
+            variant="contained"
             color="primary"
             onClick={handleSaveDayTimeRanges}>
             CONFIRMER

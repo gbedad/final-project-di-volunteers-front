@@ -24,7 +24,7 @@ import { existingSubjects, existingClasses } from '../options/existingOptions';
 
 const fabStyle = {
   position: 'absolute',
-  bottom: -10,
+  bottom: 10,
   right: 16,
 };
 
@@ -32,6 +32,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const location = useLocation();
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
 
@@ -115,6 +116,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         toast.success(response.data.message, {
           position: 'top-center',
         });
+        setShowButton(false);
       } else {
         console.error('Failed to save subjects');
         toast.error('Failed to save subjects', {
@@ -143,21 +145,14 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       <BorderedBoxWithLabel
         label="Matières et classes"
         sx={{ display: 'flex' }}>
-        {/* <Typography variant="h5">Subject and Grade Range</Typography> */}
-        {/* <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddSubjectClassRange}
-          sx={{ mr: 2 }}>
-          Add Subject and Grade Range
-        </Button> */}
         <label>
           <Fab
             sx={fab.sx}
             aria-label={fab.label}
             color={fab.color}
             onClick={() => handleAddSubjectClassRange()}
-            component="button">
+            component="button"
+            disabled={showButton}>
             {fab.icon}
           </Fab>
         </label>
@@ -193,17 +188,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                       {subject}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem value="Mathématiques">Mathématiques</MenuItem>
-                  <MenuItem value="Physique-Chimie">Physique-Chimie</MenuItem>
-                  <MenuItem value="Sciences">Sciences</MenuItem>
-                  <MenuItem value="Histoire-Géographie">
-                    Histoire-Géographie
-                  </MenuItem>
-                  <MenuItem value="Français">Français</MenuItem>
-                  <MenuItem value="Anglais">Anglais</MenuItem>
-                  <MenuItem value="Sciences">Sciences</MenuItem>
-                  <MenuItem value="Codage">Codage</MenuItem> */}
-                  {/* Add more subjects as needed */}
                 </TextField>
               </Grid>
               <Grid item xs={3}>
@@ -227,14 +211,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                       {classe}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem value="K3">K3</MenuItem>
-                  <MenuItem value="K4">K4</MenuItem>
-                  <MenuItem value="K5">K5</MenuItem>
-                  <MenuItem value="K6">K6</MenuItem>
-                  <MenuItem value="K7">K7</MenuItem>
-                  <MenuItem value="K8">K8</MenuItem>
-                  <MenuItem value="K9">K9</MenuItem>
-                  <MenuItem value="K10">K10</MenuItem> */}
                 </TextField>
               </Grid>
               <Grid item xs={3}>
@@ -257,14 +233,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                       {classe}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem value="K3">K3</MenuItem>
-                  <MenuItem value="K4">K4</MenuItem>
-                  <MenuItem value="K5">K5</MenuItem>
-                  <MenuItem value="K6">K6</MenuItem>
-                  <MenuItem value="K7">K7</MenuItem>
-                  <MenuItem value="K8">K8</MenuItem>
-                  <MenuItem value="K9">K9</MenuItem>
-                  <MenuItem value="K10">K10</MenuItem> */}
                 </TextField>
               </Grid>
               <Grid item xs={2}>

@@ -24,7 +24,7 @@ import { existingLocations } from '../options/existingOptions';
 
 const fabStyle = {
   position: 'absolute',
-  bottom: 16,
+  bottom: 10,
   right: 16,
 };
 
@@ -32,6 +32,7 @@ const LocationsPossibleComponent = () => {
   const location = useLocation();
   const [locationsPossible, setLocationsPossible] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showButton, setShowButton] = useState(false);
   const { userLogged } = location.state;
   const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
@@ -49,6 +50,7 @@ const LocationsPossibleComponent = () => {
       if (skills && skills.where_location) {
         setLocationsPossible(skills.where_location);
         setIsLoading(false);
+        setShowButton(false);
       }
       if (response.data.skill === null) setIsLoading(false);
     };
@@ -58,6 +60,7 @@ const LocationsPossibleComponent = () => {
 
   const handleAddLocation = () => {
     setLocationsPossible([...locationsPossible, '']);
+    setShowButton(true);
   };
 
   const handleLocationChange = (value, index) => {
@@ -90,6 +93,7 @@ const LocationsPossibleComponent = () => {
           position: 'top-center',
         });
         console.log('Locations saved successfully');
+        setShowButton(false);
       } else {
         console.error('Failed to save locations');
         toast.error('Failed to save location', {
@@ -145,7 +149,7 @@ const LocationsPossibleComponent = () => {
               spacing={1}
               key={index}
               style={{ marginTop: '16px' }}>
-              <Grid item xs={10}>
+              <Grid item xs={9}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -177,14 +181,15 @@ const LocationsPossibleComponent = () => {
             </Grid>
           ))
         )}
-
-        <Button
-          sx={{ marginTop: '10px' }}
-          variant="outlined"
-          color="primary"
-          onClick={handleSaveLocationsPossible}>
-          CONFIRMER
-        </Button>
+        {locationsPossible && showButton && (
+          <Button
+            sx={{ marginTop: '10px' }}
+            variant="contained"
+            color="primary"
+            onClick={handleSaveLocationsPossible}>
+            CONFIRMER
+          </Button>
+        )}
       </BorderedBoxWithLabel>
     </div>
   );
