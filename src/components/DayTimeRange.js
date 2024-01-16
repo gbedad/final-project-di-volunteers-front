@@ -65,9 +65,6 @@ const DayTimeRangeComponent = () => {
 
     getDays();
   }, []);
-  //  useEffect(() => {
-  //   setDayTimeRanges(parsed_array)
-  //  }, [])
 
   const handleAddDayTimeRange = () => {
     setDayTimeRanges([
@@ -144,14 +141,6 @@ const DayTimeRangeComponent = () => {
     <div>
       <ToastContainer />
       <BorderedBoxWithLabel label="Jours et heures" sx={{ display: 'flex' }}>
-        {/* <Typography variant="h5">Day and Time Range</Typography> */}
-        {/* <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddDayTimeRange}
-          sx={{ mr: 2 }}>
-          Add Day and Time Range
-        </Button> */}
         <label>
           <Fab
             sx={fab.sx}
