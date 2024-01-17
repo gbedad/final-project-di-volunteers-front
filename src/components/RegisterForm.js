@@ -98,7 +98,9 @@ const RegisterForm = ({ mission }) => {
       });
 
       if (!isStrongPassword)
-        return toast.error("Votre mot de passe n'est pas assez sécurisé.");
+        return toast.error("Votre mot de passe n'est pas assez sécurisé.", {
+          position: 'top-center',
+        });
       console.log(response.data); // Handle successful response here
       navigate('/login');
     } catch (error) {

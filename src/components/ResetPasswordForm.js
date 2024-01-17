@@ -14,7 +14,6 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Avatar from '@mui/material/Avatar';
-import { isStrongPassword } from '../js/isStrongPassword';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -55,22 +54,33 @@ const ResetPasswordForm = async () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  const response = await fetch(`/${BASE_URL}/reset-password/${id}/${token}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      newPassword,
-    }),
-  });
-  if (!isStrongPassword(newPassword))
-    return toast.error("Votre mot de passe n'est pas assez sécurisé.");
-  const data = await response.json();
 
-  if (data.status === 201) {
-    setNewPassword('');
-    setConfirmPassword('');
+  try {
+    if (newPassword === confirmPassword) {
+      const response = await fetch(
+        `/${BASE_URL}/reset-password/${id}/${token}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({
+            newPassword,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.status === 201) {
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    }
+  } catch (error) {
+    toast.error('An error occurred. Please try again later.', {
+      position: 'top-center',
+    });
   }
 
   // Reset the form fields

@@ -20,6 +20,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Avatar from '@mui/material/Avatar';
 
+import { isStrongPassword } from '../js/isStrongPassword';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function Copyright(props) {
@@ -87,6 +89,8 @@ const ResetPassword = () => {
       toast.error('Password is required!', {
         position: 'top-center',
       });
+    } else if (!isStrongPassword(password)) {
+      return toast.error("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
       toast.error('Passwords must match', {
         position: 'top-center',
