@@ -68,12 +68,12 @@ const CardList = () => {
         <Grid
           align="center"
           container
-          spacing={{ xs: 2, md: 3, lg: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}>
+          spacing={{ xs: 1, md: 1, lg: 2 }}
+          columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
           {cardsData.map((card, index) => (
-            <Grid item xs={3} sm={4} md={4} key={card.id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id}>
               <Card
-                sx={{ maxWidth: 400 }}
+                sx={{ maxWidth: 450, minWidth: 300 }}
                 image_data={card.image_data}
                 image_type={card.image_type}
                 id={card.id}
