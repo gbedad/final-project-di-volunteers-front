@@ -244,12 +244,13 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             </Grid>
           ))
         )}
-        {subjectClassRanges && showButton && (
+        {subjectClassRanges && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="contained"
             color="primary"
-            onClick={handleSaveSubjectClassRanges}>
+            onClick={handleSaveSubjectClassRanges}
+            disabled={!showButton}>
             CONFIRMER
           </Button>
         )}

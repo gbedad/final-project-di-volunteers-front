@@ -151,7 +151,9 @@ const LocationsPossibleComponent = () => {
                   label="Site"
                   select
                   value={loc}
-                  onChange={(e) => handleLocationChange(e.target.value, index)}>
+                  onChange={(e) => handleLocationChange(e.target.value, index)}
+                  error={!loc} // Add error prop
+                  helperText={!loc ? 'Ce champ est obligatoire' : ''}>
                   {existingLocations.map((location, idx) => (
                     <MenuItem key={idx} value={location}>
                       {location}
@@ -176,12 +178,13 @@ const LocationsPossibleComponent = () => {
             </Grid>
           ))
         )}
-        {locationsPossible && showButton && (
+        {locationsPossible && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="contained"
             color="primary"
-            onClick={handleSaveLocationsPossible}>
+            onClick={handleSaveLocationsPossible}
+            disabled={!showButton}>
             CONFIRMER
           </Button>
         )}

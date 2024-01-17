@@ -174,8 +174,10 @@ const DayTimeRangeComponent = () => {
                       <Select
                         label="Jour"
                         value={dayTimeRange ? dayTimeRange.day : ''}
-                        onChange={(e) =>
-                          handleDayChange(e.target.value, index)
+                        onChange={(e) => handleDayChange(e.target.value, index)}
+                        error={!dayTimeRange.day} // Add error prop
+                        helperText={
+                          !dayTimeRange.day ? 'Ce champ est obligatoire' : ''
                         }>
                         <MenuItem value="">Choisir un jour</MenuItem>
                         <MenuItem value="Lundi">Lundi</MenuItem>
@@ -205,6 +207,12 @@ const DayTimeRangeComponent = () => {
                       inputProps={{
                         step: 300,
                       }}
+                      error={!dayTimeRange.startTime} // Add error prop
+                      helperText={
+                        !dayTimeRange.startTime
+                          ? 'Ce champ est obligatoire'
+                          : ''
+                      }
                     />
                   </Grid>
 
@@ -224,6 +232,10 @@ const DayTimeRangeComponent = () => {
                       inputProps={{
                         step: 300,
                       }}
+                      error={!dayTimeRange.endTime} // Add error prop
+                      helperText={
+                        !dayTimeRange.endTime ? 'Ce champ est obligatoire' : ''
+                      }
                     />
                   </Grid>
 
@@ -236,12 +248,13 @@ const DayTimeRangeComponent = () => {
               )
           )
         )}
-        {dayTimeRanges && showButton && (
+        {dayTimeRanges && (
           <Button
             sx={{ marginTop: '10px' }}
             variant="contained"
             color="primary"
-            onClick={handleSaveDayTimeRanges}>
+            onClick={handleSaveDayTimeRanges}
+            disabled={!showButton}>
             CONFIRMER
           </Button>
         )}
