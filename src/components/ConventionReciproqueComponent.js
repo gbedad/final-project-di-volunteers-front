@@ -3,6 +3,8 @@ import { Document, Page } from 'react-pdf';
 import { Button, Container, Box, Paper, Typography } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
+import InstructionCoventionComponent from './files/InstructionsConvention';
+
 import pdfFile from '../assets/presentationtuteurs.pdf';
 
 const ConventionComponent = () => {
@@ -35,58 +37,9 @@ const ConventionComponent = () => {
   };
 
   return (
-    <Container sx={{ height: '600px' }}>
-      <center>
-        <div style={containerStyle}>
-          <Box
-            container
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              '& > :not(style)': {
-                m: 1,
-                width: 600,
-                height: 300,
-                padding: 10,
-                backgroundColor: 'rgb(250, 255, 252)',
-                borderRadius: 5,
-              },
-            }}>
-            <Paper elevation={1}>
-              <Typography variant="h4" mb={1}>
-                Le moment est venu de signer la convention avec l'Association
-                Séphora Berrebi
-              </Typography>
-
-              <Typography variant="body1" mb={5}>
-                Vous pouvez cliquer sur le lien ci-dessous pour télécharger la
-                convention d'engagement réciproque
-              </Typography>
-
-              <Button
-                variant="outlined"
-                onClick={handleDownload}
-                startIcon={<CloudDownloadIcon />}>
-                Télécharger la convention
-              </Button>
-            </Paper>
-          </Box>
-
-          {/* <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-            {Array.from(new Array(numPages), (el, index) => (
-              <div key={`page_${index + 1}`} style={pageStyle}>
-                <Page
-                  pageNumber={index + 1}
-                  width={800}
-                  height={500} // Adjust the width as per your requirement
-                />
-              </div>
-            ))}
-          </Document> */}
-        </div>
-      </center>
-    </Container>
+    <>
+      <InstructionCoventionComponent />
+    </>
   );
 };
 
