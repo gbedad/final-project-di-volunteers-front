@@ -448,23 +448,25 @@ function ResponsiveAppBar() {
                         <Typography textAlign="center">Missions</Typography>
                       </MenuItem>
                       <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center">Logout</Typography>
+                        <Typography textAlign="center">Déconnexion</Typography>
                       </MenuItem>
                     </div>
                   ) : location.pathname !== '/register' &&
                     location.state.userLogged.user.role === 'volunteer' ? (
                     <div>
                       <MenuItem onClick={handleProfile}>
-                        <Typography textAlign="center">Profil</Typography>
+                        <Typography textAlign="center">
+                          Tableau de bord
+                        </Typography>
                       </MenuItem>
 
                       <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center">Logout</Typography>
+                        <Typography textAlign="center">Déconnexion</Typography>
                       </MenuItem>
                     </div>
                   ) : (
                     <MenuItem onClick={handleLogout}>
-                      <Typography textAlign="center">Logout</Typography>
+                      <Typography textAlign="center">Déconnexion</Typography>
                     </MenuItem>
                   )}
                 </Menu>

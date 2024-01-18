@@ -50,7 +50,7 @@ function a11yProps(index) {
 const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
-  const [status, setStatus] = useState(localStorage.getItem('user-status'));
+  const [status, setStatus] = useState('localStorage.getItem("user-status")');
 
   const handleChange = (event, newValue) => {
     let userStatus = localStorage.getItem('user-status');
@@ -60,6 +60,7 @@ const BasicTabs = () => {
   };
   let userId = location.state.userLogged.user.id;
   console.log(location.state.userLogged.user.id);
+  console.log(location.state.userLogged.user.status);
 
   const getUser = async () => {
     try {
@@ -75,6 +76,9 @@ const BasicTabs = () => {
     //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
     console.log(status);
   };
+  useEffect(() => {
+    getUser();
+  }, [value]);
 
   return (
     <div
@@ -109,7 +113,7 @@ const BasicTabs = () => {
             <Tab
               label="MES DOCUMENTS"
               {...a11yProps(2)}
-              disabled={status === 'Compte créé' || status === 'déclinée'}
+              disabled={status === 'Compte créé' || status === 'Déclinée'}
             />
             <Tab
               label="MA CONVENTION"
