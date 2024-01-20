@@ -35,10 +35,11 @@ const InstructionCoventionComponent = () => {
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id="panel1a-header">
+            id="panel1a-header"
+            sx={{ width: '100%' }}>
             <Typography
               variant="h5"
-              sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
+              sx={{ width: '100%', flexShrink: 0, fontWeight: 'bold' }}
               gutterBottom>
               Convention d'engagement
             </Typography>

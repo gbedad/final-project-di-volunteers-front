@@ -542,6 +542,7 @@ const FormInterviewComponent = ({ userId }) => {
                     Recommandation
                   </InputLabel>
                   <Select
+                    size="small"
                     notched
                     autoWidth
                     labelId="demo-simple-select-standard-label"
@@ -570,6 +571,7 @@ const FormInterviewComponent = ({ userId }) => {
                     Suivi d'élèves en grande difficulté
                   </InputLabel>
                   <Select
+                    size="small"
                     notched
                     autoWidth
                     labelId="demo-simple-select-standard-label"
@@ -597,6 +599,7 @@ const FormInterviewComponent = ({ userId }) => {
                     Test français
                   </InputLabel>
                   <Select
+                    size="small"
                     notched
                     autoWidth
                     labelId="demo-simple-select-standard-label"
@@ -618,6 +621,7 @@ const FormInterviewComponent = ({ userId }) => {
                     Aptitudes pédagogiques
                   </InputLabel>
                   <Select
+                    size="small"
                     notched
                     autoWidth
                     labelId="demo-simple-select-standard-label"
@@ -641,6 +645,7 @@ const FormInterviewComponent = ({ userId }) => {
                     Formations
                   </InputLabel>
                   <Select
+                    size="small"
                     notched
                     autoWidth
                     labelId="demo-simple-select-standard-label"

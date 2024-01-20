@@ -442,7 +442,9 @@ function ResponsiveAppBar() {
                   location.state.userLogged.user.role === 'admin' ? (
                     <div>
                       <MenuItem onClick={handleViewUsers}>
-                        <Typography textAlign="center">Dashboard</Typography>
+                        <Typography textAlign="center">
+                          Tableau de bord
+                        </Typography>
                       </MenuItem>
                       <MenuItem onClick={handleEditMissions}>
                         <Typography textAlign="center">Missions</Typography>

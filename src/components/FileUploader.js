@@ -43,7 +43,7 @@ const fabStyle = {
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export default function Uploads() {
+export default function Uploads({ userSelected }) {
   const location = useLocation();
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileUploaded, setFileUploaded] = useState(false);
@@ -55,7 +55,12 @@ export default function Uploads() {
   const [showUploadButton, setShowUploadButton] = useState(false);
 
   // console.log(location.state.userLogged.user.id);
-  const userId = location.state.userLogged.user.id;
+  // const userId = location.state.userLogged.user.id;
+  const userId =
+    location.state.userLogged.user.id === userSelected
+      ? location.state.userLogged.user.id
+      : userSelected;
+  console.log('USERID', userId);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -155,7 +160,7 @@ export default function Uploads() {
   // console.log(filesUploaded);
 
   const fab = {
-    color: 'primary.main',
+    color: '#fff',
     backGroundColor: 'primary.main',
     sx: fabStyle,
     icon: <AddIcon />,
@@ -173,23 +178,25 @@ export default function Uploads() {
             defaultValue=""
             onChange={handleFileChange}
           />
+
           {showUploadButton && (
-            // <Button
-            //   onClick={handleFileUpload}
-            //   component="label"
-            //   startIcon={<AddCircleIcon />}>
-            //   AJOUTER
-            // </Button>
-            <label>
-              <Fab
-                sx={fab.sx}
-                aria-label={fab.label}
-                color="primary.main"
-                onClick={() => handleFileUpload()}
-                component="button">
-                {fab.icon}
-              </Fab>
-            </label>
+            <Button
+              onClick={() => handleFileUpload()}
+              component="label"
+              // startIcon={<AddCircleIcon />}
+              variant="contained">
+              AJOUTER
+            </Button>
+            // <label>
+            //   <Fab
+            //     sx={fab.sx}
+            //     aria-label={fab.label}
+            //     // color="primary.main"
+            //     onClick={() => handleFileUpload()}
+            //     component="button">
+            //     {fab.icon}
+            //   </Fab>
+            // </label>
           )}
         </Stack>
       </Box>
@@ -215,6 +222,7 @@ export default function Uploads() {
           ) : (
             filesUploaded.map((f, i) => (
               <List
+                dense
                 key={i}
                 sx={{
                   width: '100%',
@@ -231,7 +239,7 @@ export default function Uploads() {
                       edge="end"
                       aria-label="delete"
                       onClick={() => handleDeleteFile(f.id)}>
-                      <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                      <DeleteIcon sx={{ fontSize: 30 }} color="secondary" />
                     </IconButton>
                   }>
                   <ListItemButton
@@ -240,7 +248,11 @@ export default function Uploads() {
                     <ListItemAvatar>
                       <Avatar>{checkFileType(f.mimetype)}</Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={f.filename} secondary={f.mimetype} />
+                    <ListItemText
+                      dense
+                      primary={f.filename}
+                      secondary={f.mimetype}
+                    />
                   </ListItemButton>
                 </ListItem>
               </List>

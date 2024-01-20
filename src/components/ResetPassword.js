@@ -90,7 +90,9 @@ const ResetPassword = () => {
         position: 'top-center',
       });
     } else if (!isStrongPassword(password)) {
-      return toast.error("Votre mot de passe n'est pas assez sécurisé.");
+      return toast.error("Votre mot de passe n'est pas assez sécurisé.", {
+        position: 'top-center',
+      });
     } else if (password !== confirmPassword) {
       toast.error('Passwords must match', {
         position: 'top-center',

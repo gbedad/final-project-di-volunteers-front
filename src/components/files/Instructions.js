@@ -25,7 +25,7 @@ const InstructionComponent = () => {
             id="panel1a-header">
             <Typography
               variant="h5"
-              sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
+              sx={{ width: '100%', flexShrink: 0, fontWeight: 'bold' }}
               gutterBottom>
               Comment télécharger mes documents
             </Typography>

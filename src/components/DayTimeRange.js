@@ -172,6 +172,7 @@ const DayTimeRangeComponent = () => {
                     <FormControl fullWidth variant="outlined">
                       <InputLabel>Jour</InputLabel>
                       <Select
+                        size="small"
                         label="Jour"
                         value={dayTimeRange ? dayTimeRange.day : ''}
                         onChange={(e) => handleDayChange(e.target.value, index)}
@@ -193,6 +194,7 @@ const DayTimeRangeComponent = () => {
 
                   <Grid item xs={3}>
                     <TextField
+                      size="small"
                       fullWidth
                       variant="outlined"
                       label="Heure début"
@@ -218,6 +220,7 @@ const DayTimeRangeComponent = () => {
 
                   <Grid item xs={3}>
                     <TextField
+                      size="small"
                       fullWidth
                       variant="outlined"
                       label="Heure fin"

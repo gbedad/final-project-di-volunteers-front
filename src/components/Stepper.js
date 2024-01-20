@@ -139,7 +139,7 @@ const BasicTabs = () => {
       <TabPanel value={value} index={2}>
         <div>
           <InstructionComponent />
-          <Uploads />
+          <Uploads userSelected={userId} />
         </div>
       </TabPanel>
       <TabPanel value={value} index={3}>

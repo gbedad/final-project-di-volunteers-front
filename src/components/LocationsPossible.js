@@ -146,6 +146,7 @@ const LocationsPossibleComponent = () => {
               style={{ marginTop: '16px' }}>
               <Grid item xs={9}>
                 <TextField
+                  size="small"
                   fullWidth
                   variant="outlined"
                   label="Site"

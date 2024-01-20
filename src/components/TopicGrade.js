@@ -172,6 +172,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
               style={{ marginTop: '16px' }}>
               <Grid item xs={4}>
                 <TextField
+                  size="small"
                   fullWidth
                   variant="outlined"
                   label="Matière"
@@ -193,6 +194,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                  size="small"
                   fullWidth
                   variant="outlined"
                   label="Classe mini"
@@ -216,6 +218,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                  size="small"
                   fullWidth
                   variant="outlined"
                   label="Classe maxi"

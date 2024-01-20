@@ -63,6 +63,8 @@ import FormInterviewComponent from './interviews/Interview';
 import TopicGradeComponent from '../components/TopicGrade';
 import PreInterviewComponent from './interviews/PreInterview';
 
+import Uploads from './FileUploader';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // const Item = styled(Paper)(({ theme }) => ({
@@ -107,12 +109,7 @@ const ChangeUserStatus = () => {
     console.log('Checked state', event.target.checked);
     setChecked(event.target.checked);
   };
-  // if (checked === true) {
-  //   setNewIsActive(true)
-  // }
-  // else {
-  //   setNewIsActive(false)
-  // }
+
   const handleSubmitActiveChange = async () => {
     try {
       await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
@@ -572,88 +569,29 @@ const ChangeUserStatus = () => {
           <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Entretiens" sx={{ display: 'flex' }}>
               <FormInterviewComponent userId={user.id} />
-              {/* <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>
-                *Test voltaire ou autre test.
-              </Typography>
-              <Divider />
-              {user.file.length !== 0 ? (
-                <Box>
-                  {user.file.map((f, i) => (
-                    <List
-                      key={i}
-                      sx={{
-                        width: '100%',
-                        maxWidth: 360,
-                        overflow: '',
-                        maxHeight: 300,
-                        position: 'relative',
-                        bgcolor: 'background.paper',
-                      }}>
-                      <ListItem>
-                        <ListItemButton
-                          component="a"
-                          onClick={() => handleOpen(f.path)}>
-                          <ListItemAvatar>
-                            <Avatar>{checkFileType(f.mimetype)}</Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={f.filename}
-                            secondary={f.mimetype}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </List>
-                  ))}
-                </Box>
-              ) : (
-                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                  Aucun fichier n'a été téléchargé.
-                </Typography>
-              )} */}
             </BorderedBoxWithLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <DocumentCheckbox user={user} />
-              <Typography mt={6} mb={2} color="info" variant="p" fontSize={14}>
+              <Typography
+                sx={{ paddingTop: '5px' }}
+                color="info"
+                variant="p"
+                fontSize={14}>
                 *Test Voltaire ou autre.
               </Typography>
               <Divider />
               {user.file.length !== 0 ? (
-                <Box>
-                  {user.file.map((f, i) => (
-                    <List
-                      key={i}
-                      sx={{
-                        width: '100%',
-                        maxWidth: 360,
-                        overflow: '',
-                        maxHeight: 300,
-                        position: 'relative',
-                        bgcolor: 'background.paper',
-                      }}>
-                      <ListItem>
-                        <ListItemButton
-                          component="a"
-                          onClick={() => handleOpen(f.path)}>
-                          <ListItemAvatar>
-                            <Avatar>{checkFileType(f.mimetype)}</Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            sx={{
-                              maxWidth: '360px', // Set your desired maximum width
-                              width: '100%', // Ensure the width takes up the available space
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                            primary={f.filename}
-                            secondary={f.mimetype}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </List>
-                  ))}
+                <Box mt={2}>
+                  <Typography variant="title">
+                    Rajouter la convention signée
+                  </Typography>
+                  <Typography variant="body2">
+                    (par l'association Séphora Berrebi)
+                  </Typography>
+
+                  <Uploads userSelected={user.id} />
                 </Box>
               ) : (
                 <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>

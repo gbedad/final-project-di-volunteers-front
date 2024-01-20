@@ -67,91 +67,93 @@ const DocumentCheckbox = ({ user }) => {
   }, []);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={1}>
-        <Grid item xs={8}>
-          <FormControl component="fieldset">
-            <FormGroup aria-label="position" row>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={cvReceived || false}
-                    onChange={handleCvReceived}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    color="primary"
-                  />
-                }
-                label="CV"
-                labelPlacement="right"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={idReceived || false}
-                    onChange={handleIdReceived}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    color="primary"
-                  />
-                }
-                label="ID"
-                labelPlacement="right"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={b3Received || false}
-                    onChange={handleB3Received}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    color="primary"
-                  />
-                }
-                label="B3"
-                labelPlacement="right"
-              />
-            </FormGroup>
-            <FormGroup aria-label="position" row>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={testVoltairePassed || false}
-                    onChange={handleTestVoltaire}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    color="primary"
-                  />
-                }
-                label="Test de français *"
-                labelPlacement="right"
-              />
-            </FormGroup>
-            <FormGroup row aria-label="position">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={conventionReceived || false}
-                    onChange={handleConventionReceived}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    color="primary"
-                  />
-                }
-                label="Convention"
-                labelPlacement="right"
-              />
-            </FormGroup>
-            <Grid item xs={4}>
-              <FormControlLabel
-                control={
-                  <Button variant="contained" onClick={handleReceivedChange}>
-                    CONFIRMER
-                  </Button>
-                }
-                label=""
-                labelPlacement="top"
-              />
-            </Grid>
-          </FormControl>
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={1}>
+          <Grid item xs={8}>
+            <FormControl component="fieldset">
+              <FormGroup aria-label="position" row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={cvReceived || false}
+                      onChange={handleCvReceived}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                      color="primary"
+                    />
+                  }
+                  label="CV"
+                  labelPlacement="right"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={idReceived || false}
+                      onChange={handleIdReceived}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                      color="primary"
+                    />
+                  }
+                  label="ID"
+                  labelPlacement="right"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={b3Received || false}
+                      onChange={handleB3Received}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                      color="primary"
+                    />
+                  }
+                  label="B3"
+                  labelPlacement="right"
+                />
+              </FormGroup>
+              <FormGroup aria-label="position" row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={testVoltairePassed || false}
+                      onChange={handleTestVoltaire}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                      color="primary"
+                    />
+                  }
+                  label="Test de français *"
+                  labelPlacement="right"
+                />
+              </FormGroup>
+              <FormGroup row aria-label="position">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={conventionReceived || false}
+                      onChange={handleConventionReceived}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                      color="primary"
+                    />
+                  }
+                  label="Convention"
+                  labelPlacement="right"
+                />
+              </FormGroup>
+              <Grid item xs={4} mb={2}>
+                <FormControlLabel
+                  control={
+                    <Button variant="contained" onClick={handleReceivedChange}>
+                      CONFIRMER
+                    </Button>
+                  }
+                  label=""
+                  labelPlacement="top"
+                />
+              </Grid>
+            </FormControl>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 };
 
