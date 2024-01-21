@@ -154,7 +154,10 @@ const ProfilePage = ({ status }) => {
   // const { user } = location.state.userLogged;
   let user = {};
 
-  if (location.state.userLogged) {
+  if (
+    location.state.userLogged &&
+    location.state.userLogged.user.id === userSelected.id
+  ) {
     user = location.state.userLogged.user;
   } else {
     user = userSelected;

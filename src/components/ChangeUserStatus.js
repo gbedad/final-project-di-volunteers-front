@@ -99,7 +99,7 @@ const ChangeUserStatus = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   // const [openPopper, setOpenPopper] = React.useState(false);
   // const [placement, setPlacement] = React.useState();
-
+  const userLogged = JSON.parse(localStorage.getItem('user'));
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -124,7 +124,7 @@ const ChangeUserStatus = () => {
   console.log(user);
   const handleEditUserProfile = () => {
     navigate('../profile', {
-      state: { userSelected: user, userLogged: state.userLogged },
+      state: { userSelected: user, userLogged },
     });
   };
   // console.log(state);
