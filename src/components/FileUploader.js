@@ -6,6 +6,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import ImageIcon from '@mui/icons-material/Image';
 import IconButton from '@mui/material/IconButton';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Stack from '@mui/material/Stack';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -49,6 +51,7 @@ export default function Uploads({ userSelected }) {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [filesUploaded, setFilesUploaded] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [changeFileList, setChangeFileList] = useState(false);
@@ -104,6 +107,7 @@ export default function Uploads({ userSelected }) {
     const formData = new FormData();
     formData.append('file', selectedFile);
     console.log(formData);
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BASE_URL}/upload/${userId}`,
@@ -114,6 +118,7 @@ export default function Uploads({ userSelected }) {
           },
         }
       );
+
       // console.log(response.data);
       if (response.status === 200) {
         console.log('File uploaded successfully');
@@ -121,6 +126,7 @@ export default function Uploads({ userSelected }) {
         setChangeFileList(true);
         setOpenAlert(true);
         setSelectedFile(null);
+        setLoading(false);
       } else {
         console.log('Error uploading file:', response.status);
       }
@@ -180,13 +186,23 @@ export default function Uploads({ userSelected }) {
           />
 
           {showUploadButton && (
-            <Button
-              onClick={() => handleFileUpload()}
-              component="label"
-              // startIcon={<AddCircleIcon />}
+            // <Button
+            //   onClick={() => handleFileUpload()}
+            //   component="label"
+            //   // startIcon={<AddCircleIcon />}
+            //   variant="contained">
+            //   AJOUTER
+            // </Button>
+            <LoadingButton
+              size="small"
+              color="primary"
+              onClick={handleFileUpload}
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
               variant="contained">
-              AJOUTER
-            </Button>
+              <span>Ajouter</span>
+            </LoadingButton>
             // <label>
             //   <Fab
             //     sx={fab.sx}

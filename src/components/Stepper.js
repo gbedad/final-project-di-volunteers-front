@@ -47,7 +47,7 @@ function a11yProps(index) {
   };
 }
 
-const BasicTabs = () => {
+const BasicTabs = ({ userSelected }) => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
   const [status, setStatus] = useState('localStorage.getItem("user-status")');
@@ -58,7 +58,11 @@ const BasicTabs = () => {
     setStatus(userStatus);
     setValue(newValue);
   };
-  let userId = location.state.userLogged.user.id;
+  const userId =
+    location.state.userLogged.user.id === userSelected
+      ? location.state.userLogged.user.id
+      : userSelected;
+  // let userId = location.state.userLogged.user.id;
   console.log(location.state.userLogged.user.id);
   console.log(location.state.userLogged.user.status);
 

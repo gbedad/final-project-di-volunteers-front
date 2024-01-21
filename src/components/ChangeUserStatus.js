@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -88,6 +88,7 @@ const CustomWidthTooltip = styled(({ className, ...props }) => (
 
 const ChangeUserStatus = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState('');
   const [newStatus, setNewStatus] = useState('');
@@ -120,6 +121,12 @@ const ChangeUserStatus = () => {
     }
   };
 
+  console.log(user);
+  const handleEditUserProfile = () => {
+    navigate('../profile', {
+      state: { userSelected: user, userLogged: state.userLogged },
+    });
+  };
   // console.log(state);
   // let userLogged = state.userLogged;
 
@@ -259,7 +266,9 @@ const ChangeUserStatus = () => {
                       }}
                       primary={user.email2 ? user.email2 : user.email}
                       secondary={
-                        parsePhoneNumber(user.phone).number.international
+                        user.phone
+                          ? parsePhoneNumber(user.phone).number.international
+                          : null
                       }
                     />
                   </ListItem>
@@ -383,108 +392,110 @@ const ChangeUserStatus = () => {
                   </Box>
                 </ListItemButton>
               </List>
-              <div>
-                <Box sx={{ minWidth: 120 }}>
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Changer le statut
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={newStatus}
-                      defaultValue={status}
-                      label="Change Status"
-                      onChange={handleStatusChange}>
-                      <MenuItem value={'Compte créé'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('Compte créé')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>Compte créé</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      <MenuItem value={'A renseigner'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('A renseigner')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>A renseigner</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      <MenuItem value={'A interviewer'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('A interviewer')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>A interviewer</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      <MenuItem value={'A finaliser'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('A finaliser')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>A finaliser</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      <MenuItem value={'Validé'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('Validé')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>Validé</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      <MenuItem value={'Déclinée'}>
-                        <CustomWidthTooltip
-                          placement="right"
-                          title={
-                            <Typography
-                              sx={{ fontSize: '16px', padding: '5px' }}>
-                              {longDescription('Déclinée')}
-                            </Typography>
-                          }
-                          arrow>
-                          <span>Déclinée</span>
-                        </CustomWidthTooltip>
-                      </MenuItem>
-                      {/* <MenuItem value={'validé'}>Validé</MenuItem>
+
+              <Box sx={{ minWidth: 120 }}>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
+                  <InputLabel id="demo-simple-select-label">
+                    Changer le statut
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={newStatus}
+                    defaultValue={status}
+                    label="Change Status"
+                    onChange={handleStatusChange}>
+                    <MenuItem value={'Compte créé'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('Compte créé')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>Compte créé</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'A renseigner'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('A renseigner')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>A renseigner</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'A interviewer'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('A interviewer')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>A interviewer</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'A finaliser'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('A finaliser')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>A finaliser</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'Validé'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('Validé')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>Validé</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    <MenuItem value={'Déclinée'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('Déclinée')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>Déclinée</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
+                    {/* <MenuItem value={'validé'}>Validé</MenuItem>
                     <MenuItem value={'created'}>Created</MenuItem>
                     <MenuItem value={'proposed'}>Proposed</MenuItem>
                     <MenuItem value={'selected'}>Selected</MenuItem> */}
-                    </Select>
-                  </FormControl>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Button variant="contained" onClick={handleConfirmClick} mb={3}>
+                Confirmer
+              </Button>
+
+              <Typography variant="body2" mt={2}>
+                Cliquer pour éditer le profil du tuteur
+                <Box mt={1}>
+                  <Button variant="contained" onClick={handleEditUserProfile}>
+                    Editer profil
+                  </Button>
                 </Box>
-                <Button variant="contained" onClick={handleConfirmClick}>
-                  Confirmer
-                </Button>
-              </div>
+              </Typography>
             </BorderedBoxWithLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>

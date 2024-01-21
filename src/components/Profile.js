@@ -147,12 +147,22 @@ const ProfilePage = ({ status }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const { userSelected } = location.state;
   console.log('from location', location.state.userLogged);
+  console.log('from props', userSelected);
   // const user = location.state.userLogged
-  const { user } = location.state.userLogged;
-  const formattedPhoneNumber = parsePhoneNumber(user.phone).number
-    .international;
+  // const { user } = location.state.userLogged;
+  let user = {};
+
+  if (location.state.userLogged) {
+    user = location.state.userLogged.user;
+  } else {
+    user = userSelected;
+  }
+
+  // const { user } = selectedUser;
+  // const formattedPhoneNumber = parsePhoneNumber(user.phone).number
+  //   .international;
 
   console.log(user);
 
