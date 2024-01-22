@@ -110,6 +110,7 @@ const PreInterviewComponent = ({ userId }) => {
   });
   const [confirmed, setConfirmed] = useState(false);
   const [isDateValid, setIsDateValid] = useState(true);
+  const [showButton, setShowButton] = useState(false);
 
   const userToken = location.state.userLogged.token;
   const userLogged = location.state.userLogged.user.first_name;
@@ -137,6 +138,14 @@ const PreInterviewComponent = ({ userId }) => {
       ...prevState,
       [field]: value,
     }));
+    console.log(preInterview);
+    if (
+      preInterview.date !== '' &&
+      preInterview.by !== '' &&
+      preInterview.evaluation !== ''
+    ) {
+      setShowButton(true);
+    }
   };
 
   const handleSavePreInterview = async () => {
@@ -155,6 +164,7 @@ const PreInterviewComponent = ({ userId }) => {
       if (response.data.message) {
         setConfirmed(true);
         console.log('Pre Interview saved successfully');
+        setShowButton(false);
       } else {
         console.error('Failed to save interview');
       }
@@ -264,6 +274,7 @@ const PreInterviewComponent = ({ userId }) => {
       </Grid>
 
       <Button
+        disabled={!showButton}
         startIcon={confirmed ? <CheckIcon /> : ''}
         variant="contained"
         color={confirmed ? 'primary' : 'primary'}
