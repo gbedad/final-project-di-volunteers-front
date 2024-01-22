@@ -93,6 +93,7 @@ const ChangeUserStatus = () => {
   const [status, setStatus] = useState('');
   const [newStatus, setNewStatus] = useState('');
   const [checked, setChecked] = React.useState(false);
+  const [showActiveConfirm, setShowActiveConfirm] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -110,6 +111,7 @@ const ChangeUserStatus = () => {
   const handleActiveChange = async (event) => {
     console.log('Checked state', event.target.checked);
     setChecked(event.target.checked);
+    setShowActiveConfirm(true);
   };
 
   const handleSubmitActiveChange = async () => {
@@ -117,6 +119,7 @@ const ChangeUserStatus = () => {
       await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
         newIsActive: checked,
       });
+      setShowActiveConfirm(false);
     } catch (err) {
       console.log(err);
     }
@@ -224,7 +227,10 @@ const ChangeUserStatus = () => {
             }
             label="Actif"
           />
-          <Button variant="contained" onClick={handleSubmitActiveChange}>
+          <Button
+            variant="contained"
+            disabled={!showActiveConfirm}
+            onClick={handleSubmitActiveChange}>
             CONFIRMER
           </Button>
         </Box>
