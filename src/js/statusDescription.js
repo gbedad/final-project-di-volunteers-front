@@ -76,15 +76,15 @@ export function setStatusStep(key) {
 
 export function nextStepStatus(key) {
   switch (key) {
-    case 'compte créé':
+    case 'Compte créé':
       return 'Etape suivante : A renseigner (2/5)';
     case 'à renseigner':
       return 'Etape suivante : A interviewer (3/5)';
-    case 'à interviewer':
+    case 'A interviewer':
       return 'Etape suivante : A finaliser (4/5)';
-    case 'à finaliser':
+    case 'A finaliser':
       return 'Etape suivante : A valider (5/5)';
-    case 'validé':
+    case 'Validé':
       return 'Etape suivante : Activer';
     default:
       return 'Etape suivante : A renseigner';
