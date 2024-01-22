@@ -151,12 +151,19 @@ const ProfilePage = ({ status }) => {
   console.log('from location', location.state.userLogged);
   console.log('from props', userSelected);
   // const user = location.state.userLogged
-  // const { user } = location.state.userLogged;
+  // const { user } =
+  //   location.state.userLogged &&
+  //   location.state.userLogged.user.id === userSelected.id
+  //     ? location.state.userLogged.user
+  //     : userSelected;
+
   let user = {};
 
   if (
-    location.state.userLogged &&
-    location.state.userLogged.user.id === userSelected.id
+    (location.state.userLogged &&
+      userSelected &&
+      location.state.userLogged.user.id === userSelected.id) ||
+    !userSelected
   ) {
     user = location.state.userLogged.user;
   } else {

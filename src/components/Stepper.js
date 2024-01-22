@@ -50,18 +50,40 @@ function a11yProps(index) {
 const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
-  const [status, setStatus] = useState('localStorage.getItem("user-status")');
+  const [status, setStatus] = useState('');
+
+  console.log(location.state.userSelected);
 
   const handleChange = (event, newValue) => {
-    let userStatus = localStorage.getItem('user-status');
+    let userStatus = '';
+    if (location.state.userSelected) {
+      userStatus = location.state.userSelected.status;
+    } else {
+      userStatus = localStorage.getItem('user-status');
+    }
+
     console.log(userStatus);
     setStatus(userStatus);
     setValue(newValue);
   };
+  let userId = '';
+  if (
+    (location.state.userLogged &&
+      location.state.userSelected &&
+      location.state.userLogged.user.id === location.state.userSelected.id) ||
+    !location.state.userSelected
+  ) {
+    userId = location.state.userLogged.user.id;
+  } else {
+    userId = location.state.userSelected.id;
+  }
 
-  let userId = location.state.userLogged.user.id;
-  console.log(location.state.userLogged.user.id);
-  console.log(location.state.userLogged.user.status);
+  // let userId = location.state.userLogged
+  //   ? location.state.userLogged.user.id
+  //   : location.state.userSelected.id;
+
+  console.log(userId);
+  console.log(status);
 
   const getUser = async () => {
     try {

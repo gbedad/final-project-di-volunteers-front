@@ -28,7 +28,7 @@ const fabStyle = {
   right: 16,
 };
 
-const LocationsPossibleComponent = () => {
+const LocationsPossibleComponent = ({ userSelected }) => {
   const location = useLocation();
   const [locationsPossible, setLocationsPossible] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +37,12 @@ const LocationsPossibleComponent = () => {
   const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
 
-  const userId = location.state.userLogged.user.id;
+  // const userId = location.state.userLogged.user.id;
+  const userId =
+    location.state.userLogged.user.id === userSelected
+      ? location.state.userLogged.user.id
+      : userSelected;
+  console.log('USERID', userId);
 
   useEffect(() => {
     const getLocations = async () => {

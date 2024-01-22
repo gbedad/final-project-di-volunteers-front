@@ -121,12 +121,13 @@ const ChangeUserStatus = () => {
     }
   };
 
-  console.log(user);
-  const handleEditUserProfile = () => {
-    navigate('../profile', {
-      state: { userSelected: user, userLogged },
-    });
-  };
+  console.log(userLogged, state);
+  // const handleEditUserProfile = () => {
+  //   navigate('../profile', {
+  //     state: { userSelected: user, userLogged },
+  //   });
+  // };
+
   // console.log(state);
   // let userLogged = state.userLogged;
 
@@ -166,6 +167,14 @@ const ChangeUserStatus = () => {
   const handleStatusChange = async (e) => {
     setNewStatus(e.target.value);
   };
+  console.log(user);
+  const handleEditUserProfile = () => {
+    navigate('../stepper', {
+      state: { userSelected: user, userLogged },
+    });
+  };
+
+  console.log(user, userLogged);
 
   // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
@@ -569,7 +578,7 @@ const ChangeUserStatus = () => {
                 </Typography>
               )}
             </BorderedBoxWithLabel>
-            <TopicGradeComponent userSelected={user.id} />
+            {/* <TopicGradeComponent userSelected={user.id} /> */}
             <BorderedBoxWithLabel
               label="Premier contact"
               sx={{ display: 'flex' }}>

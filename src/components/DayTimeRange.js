@@ -29,7 +29,7 @@ const fabStyle = {
   right: 16,
 };
 
-const DayTimeRangeComponent = () => {
+const DayTimeRangeComponent = ({ userSelected }) => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +41,12 @@ const DayTimeRangeComponent = () => {
 
   //  const dayTimesRanges = userLogged.user.skill.when_day_slot
 
-  const userId = location.state.userLogged.user.id;
+  // const userId = location.state.userLogged.user.id;
+  const userId =
+    location.state.userLogged.user.id === userSelected
+      ? location.state.userLogged.user.id
+      : userSelected;
+  console.log('USERID', userId);
   const token = location.state.userLogged.token;
 
   //  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
