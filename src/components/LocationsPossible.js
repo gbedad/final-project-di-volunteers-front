@@ -84,7 +84,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const handleSaveLocationsPossible = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userLogged.user.id}`,
+        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
         { where_location: locationsPossible },
         {
           headers: {

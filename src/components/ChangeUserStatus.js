@@ -95,6 +95,7 @@ const ChangeUserStatus = () => {
   const [checked, setChecked] = React.useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [open, setOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
   // const [openPopper, setOpenPopper] = React.useState(false);
@@ -166,8 +167,9 @@ const ChangeUserStatus = () => {
 
   const handleStatusChange = async (e) => {
     setNewStatus(e.target.value);
+    setShowConfirm(true);
   };
-  console.log(user);
+  // console.log(user);
   const handleEditUserProfile = () => {
     navigate('../stepper', {
       state: { userSelected: user, userLogged },
@@ -186,6 +188,7 @@ const ChangeUserStatus = () => {
         { newStatus: newStatus }
       );
       setStatus(response.data.status);
+      setShowConfirm(false);
     } catch (error) {
       console.error(error);
     }
@@ -493,14 +496,21 @@ const ChangeUserStatus = () => {
                   </Select>
                 </FormControl>
               </Box>
-              <Button variant="contained" onClick={handleConfirmClick} mb={3}>
+              <Button
+                variant="contained"
+                disabled={!showConfirm}
+                onClick={handleConfirmClick}
+                mb={3}>
                 Confirmer
               </Button>
 
               <Typography variant="body2" mt={2}>
                 Cliquer pour éditer le profil du tuteur
                 <Box mt={1}>
-                  <Button variant="contained" onClick={handleEditUserProfile}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleEditUserProfile}>
                     Editer profil
                   </Button>
                 </Box>

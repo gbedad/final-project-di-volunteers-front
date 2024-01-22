@@ -121,6 +121,16 @@ const BasicTabs = () => {
           display: 'flex',
           flexDirection: 'column',
         }}>
+        {location.state.userSelected && (
+          <Typography
+            mt={2}
+            variant="h5"
+            component="h6"
+            sx={{ color: 'primary.main' }}>
+            Edition du profil de {location.state.userSelected.first_name}{' '}
+            {location.state.userSelected.last_name}
+          </Typography>
+        )}
         <Box>
           <Tabs
             value={value}

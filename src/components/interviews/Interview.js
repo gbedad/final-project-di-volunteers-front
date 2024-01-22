@@ -109,7 +109,7 @@ const FormInterviewComponent = ({ userId }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState('');
-
+  const [showButton, setShowButton] = useState(false);
   const [content, setContent] = useState('');
   const [records, setRecords] = useState([]);
   const [date, setDate] = React.useState(dayjs(Date.now()));
@@ -141,6 +141,7 @@ const FormInterviewComponent = ({ userId }) => {
         );
         setInterviews(parsed_array);
         setIsLoading(false);
+        setShowButton(false);
       }
       setIsLoading(false);
       if (response.data.interviews.length > 0) {
@@ -252,6 +253,7 @@ const FormInterviewComponent = ({ userId }) => {
       },
     ]);
     setConfirmed(false);
+    setShowButton(true);
   };
 
   const handleSaveInterviews = async () => {
@@ -266,6 +268,7 @@ const FormInterviewComponent = ({ userId }) => {
           },
         }
       );
+      setShowButton(false);
       console.log(response.data.message);
       if (response.data.message) {
         setConfirmed(true);
@@ -310,6 +313,7 @@ const FormInterviewComponent = ({ userId }) => {
           aria-label={fab.label}
           color={fab.color}
           onClick={() => handleAddInterview()}
+          disabled={showButton}
           component="button">
           {fab.icon}
         </Fab>
@@ -682,6 +686,7 @@ const FormInterviewComponent = ({ userId }) => {
           </Grid>
         ))}
       <Button
+        disabled={!showButton}
         startIcon={confirmed ? <CheckIcon /> : ''}
         variant="contained"
         color={confirmed ? 'primary' : 'primary'}
