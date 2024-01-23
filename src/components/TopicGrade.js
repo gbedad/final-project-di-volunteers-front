@@ -111,7 +111,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
           },
         }
       );
-      console.log(response.data.message);
+      console.log(response.data.message, subjectClassRanges);
       if (response.data.message) {
         console.log('Subject and class ranges saved successfully');
         toast.success(response.data.message, {

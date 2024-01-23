@@ -504,7 +504,9 @@ const ProfilePage = ({ status }) => {
                   <FormControl sx={{ width: '50%' }}>
                     <TextField
                       label="Téléphone"
-                      value={parsePhoneNumber(phone).number.international}
+                      value={
+                        phone && parsePhoneNumber(phone).number.international
+                      }
                       onChange={handlePhoneChange}
                       disabled={!editing}
                       variant="standard"

@@ -93,7 +93,9 @@ const LocationsPossibleComponent = ({ userSelected }) => {
           },
         }
       );
-      console.log(response.data.message);
+
+      console.log(response.data);
+
       if (response.data.message) {
         toast.success(response.data.message, {
           position: 'top-center',
@@ -107,12 +109,26 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         });
       }
     } catch (error) {
-      toast.error('Failed to save location', {
-        position: 'top-center',
-      });
       console.error('Failed to save locations', error);
+
+      // Check if the error is from the server response
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message, {
+          position: 'top-center',
+        });
+      } else {
+        // Handle other types of errors (e.g., network issues)
+        toast.error('Failed to save location', {
+          position: 'top-center',
+        });
+      }
+    } finally {
+      console.log('Saving locations: ', locationsPossible);
     }
-    console.log('Saving locations: ', locationsPossible);
   };
 
   const fab = {

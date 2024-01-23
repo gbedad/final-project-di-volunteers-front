@@ -215,8 +215,7 @@ const ChangeUserStatus = () => {
     // <ThemeProvider theme={lightTheme}>
     <>
       <Container maxWidth="l">
-        <Box mb={2}>
-          <h3>Activer/désactiver</h3>
+        <Box mb={2} mt={2}>
           <FormControlLabel
             control={
               <Switch
@@ -534,6 +533,7 @@ const ChangeUserStatus = () => {
 
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
+                        user.skill.topics !== null &&
                         user.skill.topics.map((topic, i) => (
                           <div key={i}>
                             {JSON.parse(topic).subject} de{' '}
