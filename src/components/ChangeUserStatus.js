@@ -224,7 +224,7 @@ const ChangeUserStatus = () => {
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }
-            label="Actif"
+            label="Activer"
           />
           <Button
             variant="contained"
