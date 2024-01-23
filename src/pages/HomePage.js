@@ -6,7 +6,7 @@ import siteimage from '../assets/neuropedagogie.png';
 import style_apprentissage_image from '../assets/styles-dapprentissage.png';
 import home_png from '../assets/home_image.png';
 import HomeGif from '../assets/MyCogniverseHome.gif';
-import ImageUrl from '../assets/mycogniverse_logo.gif';
+import ImageUrl from '../assets/mycogniverse.png';
 
 const imageURL = '../assets/MyCogniverseCentered.gif';
 
