@@ -103,7 +103,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { topics: JSON.stringify(subjectClassRanges) },
+        { topics: subjectClassRanges },
         {
           headers: {
             'Content-Type': 'application/json',
