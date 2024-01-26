@@ -1,4 +1,6 @@
 import React from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Hidden from '@mui/material/Hidden';
 import CardList from '../components/cards/Cards';
 import { Typography, Container, Grid, Box } from '@mui/material';
 
@@ -6,7 +8,9 @@ import siteimage from '../assets/neuropedagogie.png';
 import style_apprentissage_image from '../assets/styles-dapprentissage.png';
 import home_png from '../assets/home_image.png';
 import HomeGif from '../assets/MyCogniverseHome.gif';
-import ImageUrl from '../assets/mycogniverse.png';
+import ImageUrl_lg from '../assets/mycogniverse.png';
+import ImageUrl_sm from '../assets/mycogniverse_sm.png';
+import ImageUrl_md from '../assets/mycogniverse_md.png';
 
 const imageURL = '../assets/MyCogniverseCentered.gif';
 
@@ -39,9 +43,24 @@ const imageStyle = {
 };
 
 const HomePage = () => {
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const isMediumScreen = useMediaQuery(
+    '(min-width:601px) and (max-width:960px)'
+  );
   return (
-    <Box style={containerStyle}>
-      <img src={ImageUrl} alt="Tutoring" style={imageStyle} />
+    <Box
+      style={containerStyle}
+      sx={{
+        backgroundImage: {
+          xs: 'url("../assets/mycogniverse_sm.png")',
+          md: 'url("../assets/mycogniverse_md.png")',
+          lg: `url(${'../assets/mycogniverse.png'})`,
+        },
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain', //like obect-fit
+      }}>
+      {/* <img src={ImageUrl_lg} alt="Tutoring" style={imageStyle} /> */}
     </Box>
     // <Container sx={{ display: 'flex', justifyContent: 'center' }}>
     //   <img
