@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Hidden from '@mui/material/Hidden';
 import CardList from '../components/cards/Cards';
@@ -11,6 +11,8 @@ import HomeGif from '../assets/MyCogniverseHome.gif';
 import ImageUrl_lg from '../assets/mycogniverse.png';
 import ImageUrl_sm from '../assets/mycogniverse_sm.png';
 import ImageUrl_md from '../assets/mycogniverse_md.png';
+
+import './HomePage.css';
 
 const imageURL = '../assets/MyCogniverseCentered.gif';
 
@@ -27,41 +29,43 @@ const imageURL = '../assets/MyCogniverseCentered.gif';
 const containerStyle = {
   position: 'relative',
   width: '100%',
-  height: '100%',
+
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
 };
 
-const imageStyle = {
-  position: 'relative',
-  top: 100,
-  left: 0,
-  width: '80vw',
-  height: 'auto',
-};
-
 const HomePage = () => {
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
-  const isMediumScreen = useMediaQuery(
-    '(min-width:601px) and (max-width:960px)'
-  );
+  const [screenSize, setScreenSize] = useState('');
+
+  // Update screen size on mount and on window resize
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 600) {
+        setScreenSize('sm');
+      } else if (width < 960) {
+        setScreenSize('md');
+      } else {
+        setScreenSize('lg');
+      }
+    };
+
+    updateScreenSize(); // Initial call
+    window.addEventListener('resize', updateScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', updateScreenSize);
+    };
+  }, []);
   return (
-    <Box
-      style={containerStyle}
-      sx={{
-        backgroundImage: {
-          xs: 'url("../assets/mycogniverse_sm.png")',
-          md: 'url("../assets/mycogniverse_md.png")',
-          lg: `url(${'../assets/mycogniverse.png'})`,
-        },
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain', //like obect-fit
-      }}>
-      {/* <img src={ImageUrl_lg} alt="Tutoring" style={imageStyle} /> */}
-    </Box>
+    <Container style={containerStyle}>
+      <div className={`background background-${screenSize}`}>
+        {/* Add content for each screen size */}
+        <div className="content">{/* Your content goes here */}</div>
+      </div>
+    </Container>
     // <Container sx={{ display: 'flex', justifyContent: 'center' }}>
     //   <img
     //     src={HomeGif}
