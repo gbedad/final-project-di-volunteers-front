@@ -37,6 +37,28 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 //   },
 // }));
 
+const base64toBlob = function (b64Data, contentType, sliceSize) {
+  contentType = contentType || '';
+  sliceSize = sliceSize || 512;
+  var byteCharacters = window.atob(b64Data);
+  var byteArrays = [];
+
+  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    var byteNumbers = new Array(slice.length);
+    for (var i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+  }
+  var blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+};
+
 const FileDisplay = ({ s3FilePath, open, handleClose }) => {
   const renderFileContent = () => {
     s3FilePath = s3FilePath.toString();
@@ -78,7 +100,7 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
     // This is just a placeholder
     try {
       // Fetch the file content from S3
-      const response = await fetch(s3FilePath, { mode: 'cors' });
+      const response = await fetch(s3FilePath, { mode: 'no-cors' });
 
       if (!response.ok) {
         throw new Error(
@@ -88,10 +110,28 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
 
       // Convert the response to a Blob
       const blob = await response.blob();
-      console.log(blob);
+      // Check file extension
+      const fileExtension = s3FilePath.split('.').pop().toLowerCase();
+
+      // Handle different file types
+      if (fileExtension === 'pdf') {
+        // Display PDF or handle accordingly
+        // window.open(URL.createObjectURL(blob));
+        saveAs(blob, 'downloaded_file');
+      } else if (
+        fileExtension === 'png' ||
+        fileExtension === 'jpeg' ||
+        fileExtension === 'jpg'
+      ) {
+        const blobImage = base64toBlob(s3FilePath);
+        console.log(blobImage);
+        saveAs(blobImage, `fileName.png`);
+      } else {
+        // Unsupported file type
+        console.error('Unsupported file type:', fileExtension);
+      }
 
       // Use FileSaver.js to save the Blob as a file
-      saveAs(blob, 'downloaded_file');
     } catch (error) {
       console.error('Error downloading file:', error);
       // Handle error appropriately (e.g., show a message to the user)
