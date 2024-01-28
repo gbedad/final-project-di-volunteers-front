@@ -566,6 +566,8 @@ const ChangeUserStatus = () => {
 
                           return null; // or handle the case when parsedSlot is null
                         })}
+                      Peut effectuer {user.skill.availability.min} à{' '}
+                      {user.skill.availability.max} heure(s) hebdomadaires
                     </Typography>
                   </Box>
                   <Box mt={2}>

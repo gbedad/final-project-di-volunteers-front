@@ -66,6 +66,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import EditMissionComponent from '../components/EditMissionComponent';
 
 import { TransitionProps } from '@mui/material/transitions';
 
@@ -344,6 +345,7 @@ const ProfilePage = ({ status }) => {
       handleSaveClick();
     }
   };
+  console.log(setStatusStep(status));
 
   return (
     <>
@@ -690,27 +692,36 @@ const ProfilePage = ({ status }) => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="La mission">
             {/* Content for Box 2 */}
-            <List>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <CategoryIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={user.mission.title}
-                  secondary={user.mission.description}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <MapIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.mission.location} secondary="" />
-              </ListItem>
-            </List>
+            {location.state.userLogged.user.role === 'admin' ||
+            (location.state.userLogged.user.role === 'volunteer' &&
+              setStatusStep(status).slice(
+                0,
+                setStatusStep(status).indexOf('/')
+              ) < 4) ? (
+              <EditMissionComponent user={user} />
+            ) : (
+              <List>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <CategoryIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={user.mission.title}
+                    secondary={user.mission.description}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <MapIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={user.mission.location} secondary="" />
+                </ListItem>
+              </List>
+            )}
           </BorderedBoxWithLabel>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // import { makeStyles } from '@mui/styles';
+import axios from 'axios';
 import {
   Paper,
   Typography,
@@ -74,18 +75,8 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
     return <Typography>Unsupported File Type</Typography>;
   };
   const handleDownload = async () => {
-    // You should implement your download logic here
-    // This is just a placeholder
     try {
-      const presignedUrl = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/get-presigned-url`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ s3FilePath }),
-        }
-      );
-      const { url } = await presignedUrl.json();
-
+      const { url } = await s3FilePath;
       // Fetch the file from the presigned URL
       const response = await fetch(url, { mode: 'cors' });
 
