@@ -1,14 +1,32 @@
 import React, { useState, useEffect } from 'react';
 
-import { Container } from '@mui/material';
+import { Container, Link, Typography } from '@mui/material';
 
 import './HomePage.css';
+
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mycogniverse.org/">
+        Association Séphora Berrebi by Gerald Berrebi
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 const containerStyle = {
   position: 'relative',
   width: '100%',
 
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
@@ -38,12 +56,15 @@ const HomePage = () => {
     };
   }, []);
   return (
-    <Container style={containerStyle}>
-      <div className={`background background-${screenSize}`}>
-        {/* Add content for each screen size */}
-        <div className="content">{/* Your content goes here */}</div>
-      </div>
-    </Container>
+    <>
+      <Container style={containerStyle} component="main" maxWidth="lg">
+        <div className={`background background-${screenSize}`}>
+          {/* Add content for each screen size */}
+          <div className="content">{/* Your content goes here */}</div>
+        </div>
+        <Copyright sx={{ mt: 5 }} />
+      </Container>
+    </>
   );
 };
 

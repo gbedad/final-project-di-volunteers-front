@@ -136,7 +136,7 @@ const ProfilePage = ({ status }) => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email2, setEmail2] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [birthDate, setBirthDate] = useState(dayjs(Date.now()) || '');
   const [activity, setActivity] = useState('');
   const [streetSelected, setStreetSelected] = React.useState('');
   const [citySelected, setCitySelected] = React.useState('');
