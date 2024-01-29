@@ -48,7 +48,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 
-import timezone from 'dayjs/plugin/timezone';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import SpeedDial from '@mui/material/SpeedDial';
@@ -94,11 +93,6 @@ import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline
 import RefreshButton from './refreshIcon';
 
 // Extend dayjs with the necessary plugins
-
-dayjs.extend(timezone);
-
-// Set default timezone to France
-dayjs.tz.setDefault('Europe/Paris');
 
 // Set locale to French
 dayjs.locale('fr');
