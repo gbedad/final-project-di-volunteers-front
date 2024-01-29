@@ -47,7 +47,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
-import utc from 'dayjs/plugin/utc';
+
 import timezone from 'dayjs/plugin/timezone';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
@@ -94,7 +94,7 @@ import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline
 import RefreshButton from './refreshIcon';
 
 // Extend dayjs with the necessary plugins
-dayjs.extend(utc);
+
 dayjs.extend(timezone);
 
 // Set default timezone to France
