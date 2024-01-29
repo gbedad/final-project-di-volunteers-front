@@ -19,22 +19,28 @@ const DocumentCheckbox = ({ user }) => {
   const [b3Received, setB3Received] = useState(false);
   const [conventionReceived, setConventionReceived] = useState(false);
   const [testVoltairePassed, setTestVoltairePassed] = useState(false);
+  const [showButton, setShowButton] = useState(false);
 
   const handleCvReceived = (event) => {
     setCvReceived(event.target.checked);
+    setShowButton(true);
   };
   const handleIdReceived = (event) => {
     setIdReceived(event.target.checked);
+    setShowButton(true);
   };
   const handleB3Received = (event) => {
     setB3Received(event.target.checked);
+    setShowButton(true);
   };
 
   const handleConventionReceived = (event) => {
     setConventionReceived(event.target.checked);
+    setShowButton(true);
   };
   const handleTestVoltaire = (event) => {
     setTestVoltairePassed(event.target.checked);
+    setShowButton(true);
   };
 
   const handleReceivedChange = async (event) => {
@@ -53,6 +59,7 @@ const DocumentCheckbox = ({ user }) => {
           testVoltairePassed,
         }),
       });
+      setShowButton(false);
       console.log(`Document status updated for "${user.id}"`);
     } catch (error) {
       console.error('Error updating document status:', error);
@@ -141,7 +148,10 @@ const DocumentCheckbox = ({ user }) => {
               <Grid item xs={4} mb={2}>
                 <FormControlLabel
                   control={
-                    <Button variant="contained" onClick={handleReceivedChange}>
+                    <Button
+                      variant="contained"
+                      onClick={handleReceivedChange}
+                      disabled={!showButton}>
                       CONFIRMER
                     </Button>
                   }
