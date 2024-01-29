@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -63,6 +63,8 @@ const RegisterForm = ({ mission }) => {
   const [phone, setPhone] = useState('');
   const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
+
+  dayjs.locale('fr');
 
   const isStrongPassword = () => {
     // Define the criteria for a strong password
