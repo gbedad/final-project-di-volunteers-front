@@ -23,6 +23,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Input from 'react-phone-number-input/input';
 import CustomPhoneNumber from '../components/phone-numbers/PhoneNumber';
 
+import { FormControl, InputLabel } from '@mui/material';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -86,10 +88,6 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = dayjs(birth_date, 'DD/MM/YYYY')
-      .toISOString()
-      .slice(0, 10);
-    console.log('Formatted Date (client):', formattedDate);
 
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
@@ -294,17 +292,21 @@ const RegisterForm = ({ mission }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="fr">
-                    <DatePicker
-                      value={birth_date}
-                      onChange={(newValue) => setBirthDate(newValue)}
-                      required
-                      id="birthdate"
-                      label="Birth Date"
-                    />
-                  </LocalizationProvider>
+                  <InputLabel id="demo-simple-select-helper-label"></InputLabel>
+                  <TextField
+                    required={true}
+                    fullWidth
+                    size="normal"
+                    label="Date de naissance"
+                    type="date"
+                    value={birth_date}
+                    // error={!isDateValid}
+                    // helperText={!isDateValid && 'Please select a valid date.'}
+                    onChange={(e) => setBirthDate(e.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
