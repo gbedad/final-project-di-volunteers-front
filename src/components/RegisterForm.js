@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/en';
 
+import moment from 'moment-timezone';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -15,6 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateField } from '@mui/x-date-pickers/DateField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
@@ -35,6 +38,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
+
+moment().tz('Europe/Paris').format();
 
 function Copyright(props) {
   return (
@@ -88,7 +93,7 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = dayjs(birth_date).format('YYYY-MM-DD');
+    const formattedDate = birth_date.toISOString().slice(0, 10);
     console.log(formattedDate);
 
     try {
@@ -98,7 +103,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: JSON.stringify(formattedDate),
+        birth_date,
         message,
         mission_id: propsData,
       });
@@ -294,11 +299,12 @@ const RegisterForm = ({ mission }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      format="DD/MM/YYYY"
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale={'fr'}>
+                    <DateField
                       value={birth_date}
-                      onChange={(newValue) => setBirthDate(dayjs(newValue))}
+                      onChange={(newValue) => setBirthDate(newValue)}
                       required
                       id="birthdate"
                       label="Birth Date"
