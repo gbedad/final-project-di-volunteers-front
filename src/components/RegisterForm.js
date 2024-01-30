@@ -89,7 +89,7 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = dayjs(birth_date);
+    const formattedDate = dayjs(birth_date).format('YYYY-MM-DD');
     console.log(formattedDate);
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
@@ -235,7 +235,7 @@ const RegisterForm = ({ mission }) => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
-                    required
+                    required={true}
                     fullWidth
                     id="email"
                     label="Email Address"
@@ -303,7 +303,6 @@ const RegisterForm = ({ mission }) => {
                       required
                       id="birthdate"
                       label="Birth Date"
-                      renderInput={(params) => <TextField {...params} />}
                     />
                   </LocalizationProvider>
                 </Grid>
