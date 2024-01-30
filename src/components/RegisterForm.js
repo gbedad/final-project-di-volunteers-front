@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
-import dayjs from 'dayjs';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/en';
-
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,9 +8,9 @@ import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateField } from '@mui/x-date-pickers/DateField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
@@ -69,6 +64,8 @@ const RegisterForm = ({ mission }) => {
   const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
 
+  dayjs.locale('fr');
+
   const isStrongPassword = () => {
     // Define the criteria for a strong password
     const minLength = 8;
@@ -89,8 +86,6 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = new Date(birth_date).toISOString().slice(0, 10);
-    console.log(formattedDate);
 
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
@@ -236,7 +231,7 @@ const RegisterForm = ({ mission }) => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
-                    required={true}
+                    required
                     fullWidth
                     id="email"
                     label="Email Address"
@@ -297,8 +292,8 @@ const RegisterForm = ({ mission }) => {
                 <Grid item xs={12} sm={6}>
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
-                    adapterLocale={'fr'}>
-                    <DateField
+                    adapterLocale="fr">
+                    <DatePicker
                       value={birth_date}
                       onChange={(newValue) => setBirthDate(newValue)}
                       required
