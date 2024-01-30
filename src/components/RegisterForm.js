@@ -299,6 +299,7 @@ const RegisterForm = ({ mission }) => {
                       required
                       id="birthdate"
                       label="Birth Date"
+                      renderInput={(params) => <TextField {...params} />}
                     />
                   </LocalizationProvider>
                 </Grid>
