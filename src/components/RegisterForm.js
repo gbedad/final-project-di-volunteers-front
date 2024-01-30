@@ -89,7 +89,7 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = dayjs(birth_date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+    const formattedDate = dayjs(birth_date).format('YYYY-MM-DD');
     console.log(formattedDate);
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
