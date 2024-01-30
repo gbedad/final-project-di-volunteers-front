@@ -89,7 +89,7 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = birth_date.toISOString().slice(0, 10);
+    const formattedDate = new Date(birth_date).toISOString().slice(0, 10);
     console.log(formattedDate);
 
     try {
