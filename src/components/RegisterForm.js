@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
+import 'dayjs/locale/en';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
@@ -66,8 +67,6 @@ const RegisterForm = ({ mission }) => {
   const [phone, setPhone] = useState('');
   const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
-
-  dayjs.locale('fr');
 
   const isStrongPassword = () => {
     // Define the criteria for a strong password
@@ -298,8 +297,11 @@ const RegisterForm = ({ mission }) => {
                     dateAdapter={AdapterDayjs}
                     adapterLocale="fr">
                     <DatePicker
+                      format="DD/MM/YYYY"
                       value={birth_date}
-                      onChange={(newValue) => setBirthDate(newValue)}
+                      onChange={(newValue) =>
+                        setBirthDate(newValue.toDate().toISOString())
+                      }
                       required
                       id="birthdate"
                       label="Birth Date"
