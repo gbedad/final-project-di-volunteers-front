@@ -98,7 +98,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: formattedDate,
+        birth_date: JSON.stringify(formattedDate),
         message,
         mission_id: propsData,
       });
