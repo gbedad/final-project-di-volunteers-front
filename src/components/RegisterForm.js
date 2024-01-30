@@ -84,6 +84,8 @@ const RegisterForm = ({ mission }) => {
     );
   };
 
+  const formattedDateUTC = dayjs(birth_date).utc().format('YYYY-MM-DD');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -94,7 +96,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: birth_date.utc().format('YYYY-MM-DD'),
+        birth_date: formattedDateUTC,
         message,
         mission_id: propsData,
       });
