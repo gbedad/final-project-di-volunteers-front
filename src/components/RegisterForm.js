@@ -90,6 +90,7 @@ const RegisterForm = ({ mission }) => {
     e.preventDefault();
     const formattedDate = dayjs(birth_date).format('YYYY-MM-DD');
     console.log(formattedDate);
+
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
         email,
@@ -293,15 +294,11 @@ const RegisterForm = ({ mission }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="fr">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       format="DD/MM/YYYY"
                       value={birth_date}
-                      onChange={(newValue) =>
-                        setBirthDate(newValue.toDate().toISOString())
-                      }
+                      onChange={(newValue) => setBirthDate(dayjs(newValue))}
                       required
                       id="birthdate"
                       label="Birth Date"
