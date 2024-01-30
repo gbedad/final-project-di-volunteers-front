@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
+import utc from 'dayjs/plugin/utc';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -67,6 +68,8 @@ const RegisterForm = ({ mission }) => {
   const [message, setMessage] = useState('');
 
   dayjs.locale('fr');
+  dayjs.extend(utc);
+  // dayjs.utc(); // results in date in correct timezone
 
   const isStrongPassword = () => {
     // Define the criteria for a strong password
@@ -88,7 +91,9 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const utcDateString = new Date(birth_date).toISOString();
+    const dateUtc = dayjs.utc(birth_date);
+    console.log(dateUtc);
+
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
         email,
@@ -96,7 +101,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: utcDateString,
+        birth_date: dateUtc,
         message,
         mission_id: propsData,
       });
@@ -299,10 +304,10 @@ const RegisterForm = ({ mission }) => {
                     size="normal"
                     label="Date de naissance"
                     type="date"
-                    value={birth_date.toISOString().split('T')[0]}
+                    value={birth_date}
                     // error={!isDateValid}
                     // helperText={!isDateValid && 'Please select a valid date.'}
-                    onChange={(e) => setBirthDate(new Date(e.target.value))}
+                    onChange={(e) => setBirthDate(e.target.value)}
                     InputLabelProps={{
                       shrink: true,
                     }}

@@ -303,7 +303,10 @@ const ChangeUserStatus = () => {
                         <CakeIcon />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={user.birth_date} secondary="" />
+                    <ListItemText
+                      primary={user.birth_date.split('T')[0]}
+                      secondary=""
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemAvatar>
