@@ -23,6 +23,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Input from 'react-phone-number-input/input';
 import CustomPhoneNumber from '../components/phone-numbers/PhoneNumber';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { FormControl, InputLabel } from '@mui/material';
 
@@ -51,7 +52,7 @@ function Copyright(props) {
     </Typography>
   );
 }
-
+dayjs.extend(customParseFormat);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const theme = createTheme();
 
@@ -91,8 +92,6 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dateUtc = dayjs.utc(birth_date);
-    console.log(dateUtc);
 
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
@@ -101,7 +100,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: dateUtc,
+        birth_date,
         message,
         mission_id: propsData,
       });
