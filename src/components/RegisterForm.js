@@ -5,8 +5,6 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/en';
 
-import moment from 'moment-timezone';
-
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -38,8 +36,6 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
-
-moment().tz('Europe/Paris').format();
 
 function Copyright(props) {
   return (
