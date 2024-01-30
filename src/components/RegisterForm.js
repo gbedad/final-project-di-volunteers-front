@@ -63,7 +63,7 @@ const RegisterForm = ({ mission }) => {
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
   const [phone, setPhone] = useState('');
-  const [birth_date, setBirthDate] = useState('');
+  const [birth_date, setBirthDate] = useState(new Date());
   const [message, setMessage] = useState('');
 
   dayjs.locale('fr');
@@ -88,7 +88,7 @@ const RegisterForm = ({ mission }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const utcDateString = new Date(birth_date).toISOString();
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
         email,
@@ -96,7 +96,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date,
+        birth_date: utcDateString,
         message,
         mission_id: propsData,
       });
