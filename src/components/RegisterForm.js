@@ -94,7 +94,7 @@ const RegisterForm = ({ mission }) => {
         first_name,
         last_name,
         phone,
-        birth_date: birth_date.toLocaleDateString(),
+        birth_date: birth_date.toLocalString(),
         message,
         mission_id: propsData,
       });
