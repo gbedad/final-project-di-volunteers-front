@@ -299,10 +299,10 @@ const RegisterForm = ({ mission }) => {
                     size="normal"
                     label="Date de naissance"
                     type="date"
-                    value={birth_date}
+                    value={birth_date.toISOString().split('T')[0]}
                     // error={!isDateValid}
                     // helperText={!isDateValid && 'Please select a valid date.'}
-                    onChange={(e) => setBirthDate(e.target.value)}
+                    onChange={(e) => setBirthDate(new Date(e.target.value))}
                     InputLabelProps={{
                       shrink: true,
                     }}
