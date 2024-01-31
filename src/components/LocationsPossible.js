@@ -42,7 +42,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
     location.state.userLogged.user.id === userSelected
       ? location.state.userLogged.user.id
       : userSelected;
-  console.log('USERID', userId);
+  // console.log('USERID', userId);
 
   useEffect(() => {
     const getLocations = async () => {
@@ -94,13 +94,13 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         }
       );
 
-      console.log(response.data);
+      // console.log(response.data);
 
       if (response.data.message) {
         toast.success(response.data.message, {
           position: 'top-center',
         });
-        console.log('Locations saved successfully');
+        // console.log('Locations saved successfully');
         setShowButton(false);
       } else {
         console.error('Failed to save locations');
@@ -127,7 +127,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         });
       }
     } finally {
-      console.log('Saving locations: ', locationsPossible);
+      // console.log('Saving locations: ', locationsPossible);
     }
   };
 

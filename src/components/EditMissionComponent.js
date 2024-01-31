@@ -31,7 +31,7 @@ function YourComponent({ user }) {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${user.id}`
       );
-      console.log(response.data.mission);
+      // console.log(response.data.mission);
       const newMission = response.data.mission;
       setMission(newMission);
     };
@@ -50,14 +50,14 @@ function YourComponent({ user }) {
       .catch((error) => console.error(error));
   }, []);
 
-  console.log(missions);
+  // console.log(missions);
 
   const handleMissionChange = async (e) => {
     setSelectedMissionTitle(e.target.value);
     setShowButton(true);
     // Update user's mission title in your state or send a request to the server
   };
-  console.log(selectedMissionTitle);
+  // console.log(selectedMissionTitle);
 
   const handleSubmit = async () => {
     const response = await axios.patch(
@@ -65,7 +65,7 @@ function YourComponent({ user }) {
       { mission_id: selectedMissionTitle }
     );
     setShowButton(false);
-    console.log(response.data.message);
+    // console.log(response.data.message);
   };
 
   return (

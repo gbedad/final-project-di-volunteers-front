@@ -39,12 +39,12 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const [showButton, setShowButton] = useState(false);
 
   // const subjectClassesRanges = userLogged.user.skill.topics
-  console.log(userSelected);
+  // console.log(userSelected);
   const userId =
     location.state.userLogged.user.id === userSelected
       ? location.state.userLogged.user.id
       : userSelected;
-  console.log('USERID', userId);
+  // console.log('USERID', userId);
 
   useEffect(() => {
     setIsLoading(false);
@@ -52,7 +52,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.skill) {
         const parsed_array = response.data.skill.topics.map((string) =>
           JSON.parse(string)
@@ -111,9 +111,9 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
           },
         }
       );
-      console.log(response.data.message, subjectClassRanges);
+      // console.log(response.data.message, subjectClassRanges);
       if (response.data.message) {
-        console.log('Subject and class ranges saved successfully');
+        // console.log('Subject and class ranges saved successfully');
         toast.success(response.data.message, {
           position: 'top-center',
         });
@@ -130,7 +130,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       });
       console.error('Failed to save subject and class ranges', error);
     }
-    console.log('Saving subject and class ranges: ', subjectClassRanges);
+    // console.log('Saving subject and class ranges: ', subjectClassRanges);
   };
 
   const fab = {

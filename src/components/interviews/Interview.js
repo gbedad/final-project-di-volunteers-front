@@ -9,25 +9,24 @@ import {
   Select,
   MenuItem,
   Stack,
-  Box,
   Chip,
   FormControl,
   InputLabel,
 } from '@mui/material';
-import Zoom from '@mui/material/Zoom';
+// import Zoom from '@mui/material/Zoom';
 import Fab from '@mui/material/Fab';
-import LoadingButton from '@mui/lab/LoadingButton';
+// import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
-import SaveIcon from '@mui/icons-material/Save';
+// import SaveIcon from '@mui/icons-material/Save';
 import CheckIcon from '@mui/icons-material/Check';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { styled } from '@mui/system';
-import dayjs, { Dayjs } from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateField } from '@mui/x-date-pickers/DateField';
-import NativeSelect from '@mui/material/NativeSelect';
+// import TextareaAutosize from '@mui/material/TextareaAutosize';
+// import { styled } from '@mui/system';
+// import dayjs from 'dayjs';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { DateField } from '@mui/x-date-pickers/DateField';
+// import NativeSelect from '@mui/material/NativeSelect';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -35,67 +34,67 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const blue = {
-  100: '#DAECFF',
-  200: '#b6daff',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  900: '#003A75',
-};
+// const blue = {
+//   100: '#DAECFF',
+//   200: '#b6daff',
+//   400: '#3399FF',
+//   500: '#007FFF',
+//   600: '#0072E5',
+//   900: '#003A75',
+// };
 
-const grey = {
-  50: '#f6f8fa',
-  100: '#eaeef2',
-  200: '#d0d7de',
-  300: '#afb8c1',
-  400: '#8c959f',
-  500: '#6e7781',
-  600: '#57606a',
-  700: '#424a53',
-  800: '#32383f',
-  900: '#24292f',
-};
+// const grey = {
+//   50: '#f6f8fa',
+//   100: '#eaeef2',
+//   200: '#d0d7de',
+//   300: '#afb8c1',
+//   400: '#8c959f',
+//   500: '#6e7781',
+//   600: '#57606a',
+//   700: '#424a53',
+//   800: '#32383f',
+//   900: '#24292f',
+// };
 
-const StyledTextarea = styled(TextareaAutosize)(
-  ({ theme }) => `
-   
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 5px 5px 0 5px;
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-    box-shadow: 0px 2px 2px ${
-      theme.palette.mode === 'dark' ? grey[900] : grey[50]
-    };
-  
-    &:hover {
-      border-color: ${blue[400]};
-    }
-  
-    &:focus {
-      border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${
-        theme.palette.mode === 'dark' ? blue[500] : blue[200]
-      };
-    }
-  
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-);
-function a11yProps(index) {
-  return {
-    id: `action-tab-${index}`,
-    'aria-controls': `action-tabpanel-${index}`,
-  };
-}
+// const StyledTextarea = styled(TextareaAutosize)(
+//   ({ theme }) => `
+
+//     font-family: IBM Plex Sans, sans-serif;
+//     font-size: 0.875rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     padding: 12px;
+//     border-radius: 5px 5px 0 5px;
+//     color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+//     background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+//     border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+//     box-shadow: 0px 2px 2px ${
+//       theme.palette.mode === 'dark' ? grey[900] : grey[50]
+//     };
+
+//     &:hover {
+//       border-color: ${blue[400]};
+//     }
+
+//     &:focus {
+//       border-color: ${blue[400]};
+//       box-shadow: 0 0 0 3px ${
+//         theme.palette.mode === 'dark' ? blue[500] : blue[200]
+//       };
+//     }
+
+//     // firefox
+//     &:focus-visible {
+//       outline: 0;
+//     }
+//   `
+// );
+// function a11yProps(index) {
+//   return {
+//     id: `action-tab-${index}`,
+//     'aria-controls': `action-tabpanel-${index}`,
+//   };
+// }
 
 const fabStyle = {
   position: 'absolute',
@@ -103,16 +102,17 @@ const fabStyle = {
   right: 16,
 };
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const FormInterviewComponent = ({ userId }) => {
   const location = useLocation();
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
-  const [title, setTitle] = useState('');
+  // const [title, setTitle] = useState('');
   const [showButton, setShowButton] = useState(false);
-  const [content, setContent] = useState('');
-  const [records, setRecords] = useState([]);
-  const [date, setDate] = React.useState(dayjs(Date.now()));
+  // const [content, setContent] = useState('');
+  // const [records, setRecords] = useState([]);
+  // const [date, setDate] = React.useState(dayjs(Date.now()));
   const [interviews, setInterviews] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
   const [countInterviews, setCountInterviews] = useState(0);
@@ -134,7 +134,7 @@ const FormInterviewComponent = ({ userId }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.interviews) {
         const parsed_array = response.data.interviews.map((string) =>
           JSON.parse(string)
@@ -151,7 +151,7 @@ const FormInterviewComponent = ({ userId }) => {
     };
 
     getInterviews();
-  }, []);
+  }, [userId]);
 
   const handleTitleChange = (value, index) => {
     const updatedInterviews = [...interviews];
@@ -170,11 +170,11 @@ const FormInterviewComponent = ({ userId }) => {
   //     setInterviews((prevInterviews) => ({ ...prevInterviews, date: value }));
   //   };
 
-  const handleContentChange = (value, index) => {
-    const updatedInterviews = [...interviews];
-    updatedInterviews[index].content = value;
-    setInterviews(updatedInterviews);
-  };
+  // const handleContentChange = (value, index) => {
+  //   const updatedInterviews = [...interviews];
+  //   updatedInterviews[index].content = value;
+  //   setInterviews(updatedInterviews);
+  // };
 
   const handleInterviewChange = (key, value, index) => {
     setInterviews((prevInterviews) => {
@@ -184,18 +184,18 @@ const FormInterviewComponent = ({ userId }) => {
     });
   };
 
-  function parseInterviews(data) {
-    const parsedData = data.map((interview) => {
-      const { title, date, content } = JSON.parse(interview);
-      return {
-        title,
-        date,
-        content,
-        by: { userLogged },
-      };
-    });
-    return parsedData;
-  }
+  // function parseInterviews(data) {
+  //   const parsedData = data.map((interview) => {
+  //     const { title, date, content } = JSON.parse(interview);
+  //     return {
+  //       title,
+  //       date,
+  //       content,
+  //       by: { userLogged },
+  //     };
+  //   });
+  //   return parsedData;
+  // }
   //   const parsedInterviews = parseInterviews(data);
 
   //   console.log(parsedInterviews);
@@ -217,7 +217,7 @@ const FormInterviewComponent = ({ userId }) => {
   //       setTextarea('');
   //     }
   //   };
-  console.log(interviews);
+  // console.log(interviews);
   //   const handleAddInterview = () => {
   //     if (title && date && content) {
   //       const newInterview = {
@@ -237,9 +237,9 @@ const FormInterviewComponent = ({ userId }) => {
     if (interviews.length > 0) {
       count = interviews.length + 1;
     }
-    console.log(count);
-    const dateToday = new Date().toLocaleDateString();
-    console.log(dateToday);
+    // console.log(count);
+    // const dateToday = new Date().toLocaleDateString();
+    // console.log(dateToday);
 
     setInterviews([
       ...interviews,
@@ -269,7 +269,7 @@ const FormInterviewComponent = ({ userId }) => {
         }
       );
       setShowButton(false);
-      console.log(response.data.message);
+      // console.log(response.data.message);
       if (response.data.message) {
         setConfirmed(true);
         console.log('Interview saved successfully');

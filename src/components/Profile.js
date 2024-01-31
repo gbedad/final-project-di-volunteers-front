@@ -145,7 +145,7 @@ const ProfilePage = ({ status }) => {
   const [userStatus, setUserStatus] = useState('');
   const [open, setOpen] = React.useState(false);
 
-  console.log('Status from props', status);
+  // console.log('Status from props', status);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -155,8 +155,8 @@ const ProfilePage = ({ status }) => {
     setOpen(false);
   };
   const { userSelected } = location.state;
-  console.log('from location', location.state.userLogged);
-  console.log('from props', userSelected);
+  // console.log('from location', location.state.userLogged);
+  // console.log('from props', userSelected);
   // const user = location.state.userLogged
   // const { user } =
   //   location.state.userLogged &&
@@ -181,7 +181,7 @@ const ProfilePage = ({ status }) => {
   // const formattedPhoneNumber = parsePhoneNumber(user.phone).number
   //   .international;
 
-  console.log(user);
+  // console.log(user);
 
   const handleCancelRegistration = () => {
     axios
@@ -189,7 +189,7 @@ const ProfilePage = ({ status }) => {
       .then((response) => {
         setIsRegistered(false);
         // console.log(response.data);
-        console.log('Registration cancelled successfully');
+        // console.log('Registration cancelled successfully');
         toast.success(
           `${user.first_name}, vous êtes bien retiré de la mission et vos données ont été effacées`,
           {
@@ -238,7 +238,7 @@ const ProfilePage = ({ status }) => {
           country: countrySelected,
         }
       );
-      console.log(response.data.message);
+      // console.log(response.data.message);
 
       // Perform any desired actions after successful submission
     } catch (error) {
@@ -343,15 +343,15 @@ const ProfilePage = ({ status }) => {
   //handler function
   const handleClick = (operation) => {
     if (operation === 'edit') {
-      console.log('Edit mode');
+      // console.log('Edit mode');
       setEditing(true);
     } else if (operation === 'save') {
       // setEditing(false);
-      console.log('Save mode');
+      // console.log('Save mode');
       handleSaveClick();
     }
   };
-  console.log(setStatusStep(status));
+  // console.log(setStatusStep(status));
 
   return (
     <>

@@ -63,11 +63,11 @@ export default function ForgotPassword() {
         email,
       });
 
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.status === 201) {
         // localStorage.setItem("user", JSON.stringify(response.data))
         // localStorage.setItem('token', response.data.token);
-        console.log(response.data);
+        // console.log(response.data);
         setIsLoading(false);
         setOpen(true);
         toast.success(
@@ -99,7 +99,7 @@ export default function ForgotPassword() {
     }
   };
 
-  console.log(email);
+  // console.log(email);
 
   return (
     // <ThemeProvider theme={theme}>

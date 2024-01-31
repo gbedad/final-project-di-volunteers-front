@@ -114,7 +114,7 @@ function DashboardContent() {
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  console.log(token, isLoggedIn);
+  // console.log(token, isLoggedIn);
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -124,7 +124,7 @@ function DashboardContent() {
   // console.log(location.state);
   const userLogged = location.state.userLogged;
 
-  console.log(token);
+  // console.log(token);
   useEffect(() => {
     const token = localStorage.getItem('token1');
     const fetchUserList = async () => {
@@ -135,7 +135,7 @@ function DashboardContent() {
           },
         });
         // console.log("Response",response)
-        console.log(response.data);
+        // console.log(response.data);
         const filteredData = response.data.filter(
           (item) => item.is_active === true
         );
@@ -204,7 +204,6 @@ function DashboardContent() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 100,
                   }}>
                   <UsersByStatusGrid data={countUsersByStatus} />
                 </Paper>
@@ -216,7 +215,6 @@ function DashboardContent() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 100,
                   }}>
                   <ActiveUsers data={activeUsers} />
                 </Paper>

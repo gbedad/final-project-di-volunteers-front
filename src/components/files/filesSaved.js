@@ -60,7 +60,7 @@ const DocumentCheckbox = ({ user }) => {
         }),
       });
       setShowButton(false);
-      console.log(`Document status updated for "${user.id}"`);
+      // console.log(`Document status updated for "${user.id}"`);
     } catch (error) {
       console.error('Error updating document status:', error);
     }

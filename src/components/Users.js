@@ -204,7 +204,7 @@ export default function Users(props) {
   };
   const usersWithTrueValuesCount = calculateTrueValues(users);
 
-  console.log(usersWithTrueValuesCount);
+  // console.log(usersWithTrueValuesCount);
 
   const rows = usersWithTrueValuesCount.map((item, key = item.id) => {
     return createData(

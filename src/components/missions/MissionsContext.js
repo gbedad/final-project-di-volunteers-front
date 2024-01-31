@@ -62,7 +62,7 @@ export const MissionsProvider = ({ children }) => {
     fetchMissions();
   }, []);
 
-  console.log(state);
+  // console.log(state);
 
   return (
     <MissionsContext.Provider value={{ missions: state.missions, dispatch }}>

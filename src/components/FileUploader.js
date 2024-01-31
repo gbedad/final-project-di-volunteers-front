@@ -63,7 +63,7 @@ export default function Uploads({ userSelected }) {
     location.state.userLogged.user.id === userSelected
       ? location.state.userLogged.user.id
       : userSelected;
-  console.log('USERID', userId);
+  // console.log('USERID', userId);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -106,7 +106,7 @@ export default function Uploads({ userSelected }) {
   const handleFileUpload = async () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
-    console.log(formData);
+    // console.log(formData);
     setLoading(true);
     try {
       const response = await axios.post(
@@ -121,14 +121,14 @@ export default function Uploads({ userSelected }) {
 
       // console.log(response.data);
       if (response.status === 200) {
-        console.log('File uploaded successfully');
+        // console.log('File uploaded successfully');
         setFileUploaded(true);
         setChangeFileList(true);
         setOpenAlert(true);
         setSelectedFile(null);
         setLoading(false);
       } else {
-        console.log('Error uploading file:', response.status);
+        // console.log('Error uploading file:', response.status);
       }
     } catch (error) {
       console.error(error);
@@ -155,7 +155,7 @@ export default function Uploads({ userSelected }) {
   const handleDeleteFile = async (fileId) => {
     try {
       const response = await axios.delete(`${BASE_URL}/files/cancel/${fileId}`);
-      console.log(response.data); // Optional: Log the response if needed
+      // console.log(response.data); // Optional: Log the response if needed
       // Add any additional logic or state updates upon successful file deletion
       setChangeFileList(true);
     } catch (error) {

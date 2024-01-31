@@ -67,10 +67,10 @@ const ResetPassword = () => {
           },
         }
       );
-      console.log(res);
+      // console.log(res);
 
       if (res.ok) {
-        console.log('user valid');
+        // console.log('user valid');
       } else {
         navigate('*');
       }
@@ -114,7 +114,7 @@ const ResetPassword = () => {
           }
         );
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
 
         if (data.status === 201) {
           setPassword('');

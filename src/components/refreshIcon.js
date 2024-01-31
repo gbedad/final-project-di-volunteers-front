@@ -5,7 +5,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 const RefreshButton = ({ getUser }) => {
   const handleRefresh = () => {
     // Call the getUser function when the button is clicked
-    console.log('Clicked');
+    // console.log('Clicked');
     getUser();
   };
 

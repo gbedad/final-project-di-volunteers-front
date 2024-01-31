@@ -15,7 +15,7 @@ const SelectFormActivity = (props) => {
   const [selectedOption, setSelectedOption] = useState('');
   const [showSubmit, setShowSubmit] = useState(false);
   const { userId, onHandleChangeActivity, editing, activity } = props;
-  console.log(activity);
+  // console.log(activity);
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedOption(selectedValue);
@@ -33,7 +33,7 @@ const SelectFormActivity = (props) => {
         userId,
         selectedActivity: selectedOption,
       });
-      console.log(response.data.message);
+      // console.log(response.data.message);
       setShowSubmit(false);
       // Perform any desired actions after successful submission
     } catch (error) {

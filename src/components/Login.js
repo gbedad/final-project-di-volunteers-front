@@ -68,7 +68,7 @@ export default function SignIn() {
 
       const token = response.data.token;
 
-      console.log('Handlesubmit token');
+      // console.log('Handlesubmit token');
       updateToken(token);
       localStorage.setItem('token1', response.data.token);
 
@@ -86,7 +86,7 @@ export default function SignIn() {
           draggable: true,
         });
 
-        console.log(userLogged, isLoading);
+        // console.log(userLogged, isLoading);
         if (userLogged.user.role === 'volunteer') {
           navigate('/stepper', { state: { userLogged } });
         } else if (userLogged.user.role === 'admin') {

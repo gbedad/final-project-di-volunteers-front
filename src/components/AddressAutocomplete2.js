@@ -38,7 +38,7 @@ export default function AutofillCheckoutDemo() {
   );
 
   function handleSaveMarkerLocation(coordinate) {
-    console.log(`Marker moved to ${JSON.stringify(coordinate)}.`);
+    // console.log(`Marker moved to ${JSON.stringify(coordinate)}.`);
   }
 
   const handleSubmit = useCallback(

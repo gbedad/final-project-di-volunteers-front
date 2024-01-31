@@ -10,37 +10,37 @@ export default function UsersByStatusGrid(props) {
   return (
     <>
       <Grid container spacing={2} sx={{ m: 0.5 }}>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>Compte créé</Title>
           <Typography component="p" variant="h4">
             {allStatus['Compte créé'] ? allStatus['Compte créé'] : 0}
           </Typography>
         </Grid>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>A renseigner</Title>
           <Typography component="p" variant="h4">
             {allStatus['A renseigner'] ? allStatus['A renseigner'] : 0}
           </Typography>
         </Grid>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>A interviewer</Title>
           <Typography component="p" variant="h4">
             {allStatus['A interviewer'] ? allStatus['A interviewer'] : 0}
           </Typography>
         </Grid>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>A finaliser</Title>
           <Typography component="p" variant="h4">
             {allStatus['A finaliser'] ? allStatus['A finaliser'] : 0}
           </Typography>
         </Grid>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>Validé</Title>
           <Typography component="p" variant="h4">
             {allStatus['Validé'] ? allStatus['Validé'] : 0}
           </Typography>
         </Grid>
-        <Grid xs={2}>
+        <Grid item xs={2}>
           <Title>Décliné</Title>
           <Typography component="p" variant="h4">
             {allStatus['Décliné'] ? allStatus['Décliné'] : 0}

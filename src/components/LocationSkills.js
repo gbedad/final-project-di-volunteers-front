@@ -26,7 +26,7 @@ const LocationSkills = () => {
   const [whereLocation, setWhereLocation] = useState(null);
   const [reload, setReload] = useState(false);
 
-  console.log(location.state.userLogged.id);
+  // console.log(location.state.userLogged.id);
 
   const locations = ['Maison des Associations', 'Aubervillers', 'Bercy'];
 
@@ -41,7 +41,7 @@ const LocationSkills = () => {
     }
     setSelectedItems(newChecked);
   };
-  console.log('SELECTED ITEMS', selectedItems);
+  // console.log('SELECTED ITEMS', selectedItems);
 
   const handleLocationSubmit = async () => {
     const response = await axios.post(
@@ -58,7 +58,7 @@ const LocationSkills = () => {
       const response = await axios.get(
         `${BASE_URL}/user-by-id/${location.state.userLogged.id}`
       );
-      console.log('====>>>', response.data.skill);
+      // console.log('====>>>', response.data.skill);
       if (response.data.skill) {
         setWhereLocation(response.data.skill);
         setReload(false);

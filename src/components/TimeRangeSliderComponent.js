@@ -14,7 +14,7 @@ function valuetext(value) {
 
 const TimeRangeSlider = ({ userSelected, userLogged }) => {
   const userId = userSelected;
-  console.log(userSelected);
+  // console.log(userSelected);
   const [value, setValue] = React.useState([1, 1]);
   const [showButton, setShowButton] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +41,7 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setShowButton(true);
-    console.log(newValue);
+    // console.log(newValue);
   };
 
   //   const handleChange = (values) => {
@@ -60,9 +60,9 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
           },
         }
       );
-      console.log(value);
+      // console.log(value);
       if (response.data.message) {
-        console.log('Subject and class ranges saved successfully');
+        // console.log('Subject and class ranges saved successfully');
         toast.success(response.data.message, {
           position: 'top-center',
         });
@@ -73,7 +73,7 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
           position: 'top-center',
         });
       }
-      console.log('Response from server:', response.data);
+      // console.log('Response from server:', response.data);
     } catch (error) {
       console.error('Error sending request:', error);
       // Handle error appropriately, e.g., display an error message to the user

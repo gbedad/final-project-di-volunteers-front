@@ -24,7 +24,7 @@ import { TbNumber5 } from 'react-icons/tb';
 
 export default function StatusTimelineComponent(props) {
   const { userStatusStep } = props;
-  console.log(parseFloat(userStatusStep));
+  // console.log(parseFloat(userStatusStep));
   return (
     <Timeline position="alternate">
       <TimelineItem>

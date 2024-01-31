@@ -17,7 +17,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
+// import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import HomeIcon from '@mui/icons-material/Home';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -26,8 +26,8 @@ import Typography from '@mui/material/Typography';
 
 import Divider from '@mui/material/Divider';
 
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import DraftsIcon from '@mui/icons-material/Drafts';
+// import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+// import DraftsIcon from '@mui/icons-material/Drafts';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
@@ -46,9 +46,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Popper from '@mui/material/Popper';
 import Fade from '@mui/material/Fade';
 import Paper from '@mui/material/Paper';
-
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import { lightBlue } from '@mui/material/colors';
+// import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
+// import { lightBlue } from '@mui/material/colors';
 
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
@@ -60,7 +60,7 @@ import BorderedBoxWithLabel from './borderedBox';
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import FormInterviewComponent from './interviews/Interview';
 
-import TopicGradeComponent from '../components/TopicGrade';
+// import TopicGradeComponent from '../components/TopicGrade';
 import PreInterviewComponent from './interviews/PreInterview';
 
 import Uploads from './FileUploader';
@@ -76,7 +76,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 // }));
 
 // const darkTheme = createTheme({ palette: { mode: 'dark' } });
-const lightTheme = createTheme({ palette: { mode: 'light' } });
+// const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 const CustomWidthTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -94,7 +94,7 @@ const ChangeUserStatus = () => {
   const [newStatus, setNewStatus] = useState('');
   const [checked, setChecked] = React.useState(false);
   const [showActiveConfirm, setShowActiveConfirm] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
@@ -109,7 +109,7 @@ const ChangeUserStatus = () => {
   const openPopper = Boolean(anchorEl);
 
   const handleActiveChange = async (event) => {
-    console.log('Checked state', event.target.checked);
+    // console.log('Checked state', event.target.checked);
     setChecked(event.target.checked);
     setShowActiveConfirm(true);
   };
@@ -125,7 +125,7 @@ const ChangeUserStatus = () => {
     }
   };
 
-  console.log(userLogged, state);
+  // console.log(userLogged, state);
   // const handleEditUserProfile = () => {
   //   navigate('../profile', {
   //     state: { userSelected: user, userLogged },
@@ -135,18 +135,18 @@ const ChangeUserStatus = () => {
   // console.log(state);
   // let userLogged = state.userLogged;
 
-  const checkFileType = (mime) => {
-    switch (mime) {
-      case 'image/png':
-        return <ImageIcon />;
-      case 'image/jpeg':
-        return <ImageIcon />;
-      case 'application/pdf':
-        return <PictureAsPdfIcon />;
-      default:
-        break;
-    }
-  };
+  // const checkFileType = (mime) => {
+  //   switch (mime) {
+  //     case 'image/png':
+  //       return <ImageIcon />;
+  //     case 'image/jpeg':
+  //       return <ImageIcon />;
+  //     case 'application/pdf':
+  //       return <PictureAsPdfIcon />;
+  //     default:
+  //       break;
+  //   }
+  // };
   // console.log("userId", state.userId);
 
   useEffect(() => {
@@ -166,7 +166,7 @@ const ChangeUserStatus = () => {
       }
     };
     getUser();
-  }, [status]);
+  }, [state.userId, status]);
 
   const handleStatusChange = async (e) => {
     setNewStatus(e.target.value);
@@ -179,7 +179,7 @@ const ChangeUserStatus = () => {
     });
   };
 
-  console.log(user, userLogged);
+  // console.log(user, userLogged);
 
   // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
@@ -196,10 +196,10 @@ const ChangeUserStatus = () => {
       console.error(error);
     }
   };
-  const handleOpen = (file) => {
-    setSelectedFile(file);
-    setOpen(true);
-  };
+  // const handleOpen = (file) => {
+  //   setSelectedFile(file);
+  //   setOpen(true);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -270,14 +270,14 @@ const ChangeUserStatus = () => {
                         scrollbarWidth: 'thin', // Firefox
                         scrollbarColor: 'darkgray lightgray', // Firefox
                         WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
-                        '&::-webkit-scrollbar': {
+                        '&::WebkitScrollbar': {
                           width: '12px', // Width of vertical scrollbar
                         },
-                        '&::-webkit-scrollbar-thumb': {
+                        '&::WebkitScrollbar-thumb': {
                           backgroundColor: 'darkgray', // Color of the thumb
                           borderRadius: '6px', // Rounded corners
                         },
-                        '&::-webkit-scrollbar-track': {
+                        '&::WebkitScrollbar-track': {
                           backgroundColor: 'lightgray', // Color of the track
                         },
                       }}

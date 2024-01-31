@@ -59,7 +59,7 @@ const MissionCard = (props) => {
   const handleClose = () => setOpen(false);
   const imageUrl = props.image_data;
 
-  console.log(imageUrl);
+  // console.log(imageUrl);
 
   return (
     <Card className="card animated-card">

@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Checkbox,
+} from '@mui/material';
 import TextField from '@mui/material/TextField';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 // import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 // import { TimeField } from '@mui/x-date-pickers/TimeField';
@@ -24,26 +30,32 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 
-
 const DaySlotSkill = () => {
-    const location = useLocation()
-    const [selectedItems, setSelectedItems] = useState([]);
-    // const [selectedDate, handleDateChange] = useState(new Date());
-    const [selectedStartTime, setSelectedStartTime] = useState(null);
-    const [selectedEndTime, setSelectedEndTime] = useState(null);
-    const [locale, setLocale] = useState('en')
-    const [dayTimeSlot, setDayTimeSlot] = useState(null)
-    const [reload, setReload] = useState(false)
-    
+  const location = useLocation();
+  const [selectedItems, setSelectedItems] = useState([]);
+  // const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedStartTime, setSelectedStartTime] = useState(null);
+  const [selectedEndTime, setSelectedEndTime] = useState(null);
+  const [locale, setLocale] = useState('en');
+  const [dayTimeSlot, setDayTimeSlot] = useState(null);
+  const [reload, setReload] = useState(false);
 
-    console.log(location.state.userLogged.id);
-    const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  // console.log(location.state.userLogged.id);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
 
   const handleStartTimeChange = (newTime) => {
     setSelectedStartTime(newTime);
   };
-  
+
   const handleEndTimeChange = (newTime) => {
     setSelectedEndTime(newTime);
   };
@@ -59,7 +71,6 @@ const DaySlotSkill = () => {
   getTimeString(selectedStartTime);
   getTimeString(selectedEndTime);
 
-
   // const handleToggle = (value) => {
   //   const currentIndex = selectedItems.indexOf(value);
   //   const newChecked = [...selectedItems];
@@ -73,11 +84,15 @@ const DaySlotSkill = () => {
   // };
 
   const handleToggle = (value) => {
-    const currentIndex = selectedItems.findIndex(item => item.day === value);
+    const currentIndex = selectedItems.findIndex((item) => item.day === value);
     const newChecked = [...selectedItems];
 
     if (currentIndex === -1) {
-      newChecked.push({day: value, startTime: getTimeString(selectedStartTime), endTime: getTimeString(selectedEndTime) });
+      newChecked.push({
+        day: value,
+        startTime: getTimeString(selectedStartTime),
+        endTime: getTimeString(selectedEndTime),
+      });
       // newChecked.push(`day: ${value}, startTime: ${getTimeString(selectedStartTime)}, endTime: ${getTimeString(selectedEndTime)}`)
     } else {
       newChecked.splice(currentIndex, 1);
@@ -85,61 +100,60 @@ const DaySlotSkill = () => {
 
     setSelectedItems(newChecked);
   };
-    console.log(selectedItems);
-    // const parsedData = selectedItems.forEach((element)=> {
-    //   JSON.stringify(element)
-    // });
+  // console.log(selectedItems);
+  // const parsedData = selectedItems.forEach((element)=> {
+  //   JSON.stringify(element)
+  // });
 
-    const handleDaysSubmit = async () => {
-       const response = await axios.post(`${BASE_URL}/create-skill/${location.state.userLogged.id}`,{
-          headers: {
-            "Content-Type": "application/json"
-          },
-          when_day_slot:selectedItems  
-      }  
-  ) 
-  if (response) {
-    setReload(true)
-  }
+  const handleDaysSubmit = async () => {
+    const response = await axios.post(
+      `${BASE_URL}/create-skill/${location.state.userLogged.id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        when_day_slot: selectedItems,
       }
-
-useEffect(() => {
-  const getSkills =  async () => {
-    const response = await axios.get(`${BASE_URL}/user-by-id/${location.state.userLogged.id}`)
-    console.log("====>>>", response.data.skill)
-    if (response.data.skill) {
-      setDayTimeSlot(response.data.skill)
-      setReload(false)
+    );
+    if (response) {
+      setReload(true);
     }
-  }
-  getSkills()
-}, [reload, selectedItems])
+  };
 
+  useEffect(() => {
+    const getSkills = async () => {
+      const response = await axios.get(
+        `${BASE_URL}/user-by-id/${location.state.userLogged.id}`
+      );
+      // console.log("====>>>", response.data.skill)
+      if (response.data.skill) {
+        setDayTimeSlot(response.data.skill);
+        setReload(false);
+      }
+    };
+    getSkills();
+  }, [reload, selectedItems]);
 
   return (
     <>
-   
-
       <TimePicker
-            sx={{
-                border: 'none'
-            }}
-            nativeInputAriaLabel="Time From"
-            maxTime='22:00:00'
-            minTime='09:00:00'
-            inputVariant="outlined"
-            value='10:00'
-            onChange={handleStartTimeChange}
-           
-          /> 
-        <TimePicker
-            label="Time To"
-            inputVariant="outlined"
-            value={selectedEndTime}
-            onChange={handleEndTimeChange}
-            
-          />  
-      
+        sx={{
+          border: 'none',
+        }}
+        nativeInputAriaLabel="Time From"
+        maxTime="22:00:00"
+        minTime="09:00:00"
+        inputVariant="outlined"
+        value="10:00"
+        onChange={handleStartTimeChange}
+      />
+      <TimePicker
+        label="Time To"
+        inputVariant="outlined"
+        value={selectedEndTime}
+        onChange={handleEndTimeChange}
+      />
+
       <List>
         {days.map((day, index) => (
           <ListItem key={index} dense button onClick={() => handleToggle(day)}>
@@ -147,7 +161,7 @@ useEffect(() => {
             <ListItemSecondaryAction>
               <Checkbox
                 edge="end"
-                checked={selectedItems.some(item => item.day === day)}
+                checked={selectedItems.some((item) => item.day === day)}
                 onChange={() => handleToggle(day)}
               />
             </ListItemSecondaryAction>
@@ -156,37 +170,41 @@ useEffect(() => {
       </List>
       {selectedItems.map((day, index) => (
         <div key={index}>
-          <div>{day.day} {selectedStartTime ? getTimeString(selectedStartTime) : ''} to {selectedEndTime ? getTimeString(selectedEndTime) : ''}</div>
+          <div>
+            {day.day}{' '}
+            {selectedStartTime ? getTimeString(selectedStartTime) : ''} to{' '}
+            {selectedEndTime ? getTimeString(selectedEndTime) : ''}
+          </div>
         </div>
       ))}
       <Button onClick={handleDaysSubmit}>Submit</Button>
-   
 
-    <Card sx={{ minWidth: 275, mt:6, p:4}}>
-                  <Typography variant="h5" component="div">
-                      My Days Slots
-                  </Typography>
+      <Card sx={{ minWidth: 275, mt: 6, p: 4 }}>
+        <Typography variant="h5" component="div">
+          My Days Slots
+        </Typography>
 
-                {!dayTimeSlot ?
-                  <Box sx={{ display: 'flex' }}>
-                    <CircularProgress />
-                  </Box>
-                :
-                dayTimeSlot.when_day_slot.length !== 0 ? 
- 
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      {dayTimeSlot.when_day_slot.map((item, index) => (
-                    <p>{JSON.parse(item).day} from {JSON.parse(item).startTime} to {JSON.parse(item).endTime}</p>
-                    ))}
-                  </Typography>
-                :
-               
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      You don't yet have inserted data.
-                  </Typography>
-                        }
-                </Card>
+        {!dayTimeSlot ? (
+          <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+          </Box>
+        ) : dayTimeSlot.when_day_slot.length !== 0 ? (
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {dayTimeSlot.when_day_slot.map((item, index) => (
+              <p>
+                {JSON.parse(item).day} from {JSON.parse(item).startTime} to{' '}
+                {JSON.parse(item).endTime}
+              </p>
+            ))}
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            You don't yet have inserted data.
+          </Typography>
+        )}
+      </Card>
     </>
-)}
+  );
+};
 
-export default DaySlotSkill
+export default DaySlotSkill;

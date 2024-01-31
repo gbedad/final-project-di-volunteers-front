@@ -110,7 +110,7 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
       console.error('Error downloading file:', error);
       // Handle error appropriately (e.g., show a message to the user)
     }
-    console.log('Download button clicked for:', s3FilePath);
+    // console.log('Download button clicked for:', s3FilePath);
   };
 
   return (

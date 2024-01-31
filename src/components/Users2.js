@@ -249,7 +249,7 @@ export default function DataGridDemo(props) {
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
   };
-  console.log(selectedSubject);
+  // console.log(selectedSubject);
 
   function filterBySubject(users, subject) {
     return users.filter((user) => {

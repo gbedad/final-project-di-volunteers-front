@@ -105,10 +105,10 @@ export const CourseProvider = ({ children }) => {
       }
     };
 
-    fetchCourses();
+    // fetchCourses();
   }, []);
 
-  console.log(state);
+  // console.log(state);
 
   return (
     <CourseContext.Provider value={{ courses: state.courses, dispatch }}>

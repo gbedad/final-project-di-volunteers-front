@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
   if (location.state) {
     userLogged = location.state.userLogged;
   }
-  console.log('=======>', userLogged);
+  // console.log('=======>', userLogged);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -79,17 +79,17 @@ function ResponsiveAppBar() {
     try {
       if (page === "L'association") {
         navigate('/', { state: { userLogged } });
-      }
-      if (
+      } else if (
         page === 'Missions bénévoles' &&
         (!userLogged || userLogged.user.role === 'volunteer')
       ) {
         navigate('/missions', { state: { userLogged } });
-      }
-      if (page === 'Missions bénévoles' && userLogged.user.role === 'admin') {
+      } else if (
+        page === 'Missions bénévoles' &&
+        userLogged.user.role === 'admin'
+      ) {
         navigate('/all-missions', { state: { userLogged } });
-      }
-      if (page === 'A propos') {
+      } else if (page === 'A propos') {
         navigate('/tutorat', { state: { userLogged } });
       }
     } catch (err) {

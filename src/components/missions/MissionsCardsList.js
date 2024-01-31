@@ -29,7 +29,7 @@ const CardList = () => {
     setIsLoading(false);
   }, [missions]);
 
-  console.log(displayedMissions);
+  // console.log(displayedMissions);
 
   return isLoading ? (
     <Box sx={{ width: '100%' }}>

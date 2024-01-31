@@ -46,7 +46,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     location.state.userLogged.user.id === userSelected
       ? location.state.userLogged.user.id
       : userSelected;
-  console.log('USERID', userId);
+  // console.log('USERID', userId);
   const token = location.state.userLogged.token;
 
   //  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
@@ -56,7 +56,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data);
+      // console.log(response.data);
 
       if (response.data.skill && response.data.skill.when_day_slot) {
         const parsed_array = response.data.skill.when_day_slot.map((string) =>
@@ -116,9 +116,9 @@ const DayTimeRangeComponent = ({ userSelected }) => {
           },
         }
       );
-      console.log(response.data.message);
+      // console.log(response.data.message);
       if (response.data.message) {
-        console.log('Day and time ranges saved successfully');
+        // console.log('Day and time ranges saved successfully');
         toast.success(response.data.message, {
           position: 'top-center',
         });

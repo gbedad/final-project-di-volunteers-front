@@ -143,10 +143,10 @@ function DashboardContent() {
     fetchUserList();
   }, []);
 
-  console.log('Active Users', activeUsers);
-  console.log('By Status', countUsersByStatus);
+  // console.log('Active Users', activeUsers);
+  // console.log('By Status', countUsersByStatus);
 
-  console.log(users);
+  // console.log(users);
 
   const toggleDrawer = () => {
     setOpen(!open);

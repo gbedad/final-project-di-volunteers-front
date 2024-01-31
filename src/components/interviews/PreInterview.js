@@ -4,104 +4,103 @@ import axios from 'axios';
 import {
   TextField,
   Button,
-  Typography,
   Grid,
   Select,
   MenuItem,
   Stack,
-  Chip,
   FormControl,
   InputLabel,
 } from '@mui/material';
 
-import AddIcon from '@mui/icons-material/Add';
+// import AddIcon from '@mui/icons-material/Add';
 
 import CheckIcon from '@mui/icons-material/Check';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { styled } from '@mui/system';
-import dayjs, { Dayjs } from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateField } from '@mui/x-date-pickers/DateField';
-import NativeSelect from '@mui/material/NativeSelect';
+// import TextareaAutosize from '@mui/material/TextareaAutosize';
+// import { styled } from '@mui/system';
+// import dayjs from 'dayjs';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { DateField } from '@mui/x-date-pickers/DateField';
+// import NativeSelect from '@mui/material/NativeSelect';
 
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+// import Accordion from '@mui/material/Accordion';
+// import AccordionSummary from '@mui/material/AccordionSummary';
+// import AccordionDetails from '@mui/material/AccordionDetails';
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const blue = {
-  100: '#DAECFF',
-  200: '#b6daff',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  900: '#003A75',
-};
+// const blue = {
+//   100: '#DAECFF',
+//   200: '#b6daff',
+//   400: '#3399FF',
+//   500: '#007FFF',
+//   600: '#0072E5',
+//   900: '#003A75',
+// };
 
-const grey = {
-  50: '#f6f8fa',
-  100: '#eaeef2',
-  200: '#d0d7de',
-  300: '#afb8c1',
-  400: '#8c959f',
-  500: '#6e7781',
-  600: '#57606a',
-  700: '#424a53',
-  800: '#32383f',
-  900: '#24292f',
-};
+// const grey = {
+//   50: '#f6f8fa',
+//   100: '#eaeef2',
+//   200: '#d0d7de',
+//   300: '#afb8c1',
+//   400: '#8c959f',
+//   500: '#6e7781',
+//   600: '#57606a',
+//   700: '#424a53',
+//   800: '#32383f',
+//   900: '#24292f',
+// };
 
-const StyledTextarea = styled(TextareaAutosize)(
-  ({ theme }) => `
-   
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 5px 5px 0 5px;
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-    box-shadow: 0px 2px 2px ${
-      theme.palette.mode === 'dark' ? grey[900] : grey[50]
-    };
-  
-    &:hover {
-      border-color: ${blue[400]};
-    }
-  
-    &:focus {
-      border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${
-        theme.palette.mode === 'dark' ? blue[500] : blue[200]
-      };
-    }
-  
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-);
-function a11yProps(index) {
-  return {
-    id: `action-tab-${index}`,
-    'aria-controls': `action-tabpanel-${index}`,
-  };
-}
+// const StyledTextarea = styled(TextareaAutosize)(
+//   ({ theme }) => `
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+//     font-family: IBM Plex Sans, sans-serif;
+//     font-size: 0.875rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     padding: 12px;
+//     border-radius: 5px 5px 0 5px;
+//     color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+//     background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+//     border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+//     box-shadow: 0px 2px 2px ${
+//       theme.palette.mode === 'dark' ? grey[900] : grey[50]
+//     };
+
+//     &:hover {
+//       border-color: ${blue[400]};
+//     }
+
+//     &:focus {
+//       border-color: ${blue[400]};
+//       box-shadow: 0 0 0 3px ${
+//         theme.palette.mode === 'dark' ? blue[500] : blue[200]
+//       };
+//     }
+
+//     // firefox
+//     &:focus-visible {
+//       outline: 0;
+//     }
+//   `
+// );
+// function a11yProps(index) {
+//   return {
+//     id: `action-tab-${index}`,
+//     'aria-controls': `action-tabpanel-${index}`,
+//   };
+// }
+
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const PreInterviewComponent = ({ userId }) => {
   const location = useLocation();
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
 
-  const [content, setContent] = useState('');
-  const [date, setDate] = React.useState(dayjs(Date.now()));
+  // const [content, setContent] = useState('');
+  // const [date, setDate] = React.useState(dayjs(Date.now()));
   const [preInterview, setPreInterview] = useState({
     date: '',
     by: '',
@@ -109,29 +108,45 @@ const PreInterviewComponent = ({ userId }) => {
     nextStep: '',
   });
   const [confirmed, setConfirmed] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [isDateValid, setIsDateValid] = useState(true);
   const [showButton, setShowButton] = useState(false);
 
   const userToken = location.state.userLogged.token;
-  const userLogged = location.state.userLogged.user.first_name;
+  // const userLogged = location.state.userLogged.user.first_name;
 
   useEffect(() => {
     const getPreInterview = async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log('=====>', response.data);
-      if (response.data.pre_interview) {
-        const preInterviewdata = response.data.pre_interview;
+      // console.log('=====>', response.data);
+      let preInterviewdata;
+      try {
+        if (Object.keys(response.data.pre_interview).length === 0) {
+          preInterviewdata = {
+            date: '',
+            by: '',
+            evaluation: '',
+            nextStep: '',
+          };
+          setPreInterview(preInterviewdata);
+        } else if (Object.keys(response.data.pre_interview).length !== 0) {
+          preInterviewdata = response.data.pre_interview;
 
-        setPreInterview(JSON.parse(preInterviewdata));
-        setIsLoading(false);
+          setPreInterview(JSON.parse(preInterviewdata));
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          return true;
+        }
+      } catch (error) {
+        console.log(error);
       }
-      setIsLoading(false);
     };
 
     getPreInterview();
-  }, []);
+  }, [userId]);
 
   const updatePreInterview = (field, value) => {
     setPreInterview((prevState) => ({
@@ -160,7 +175,7 @@ const PreInterviewComponent = ({ userId }) => {
           },
         }
       );
-      console.log(response.data.message);
+      // console.log(response.data.message);
       if (response.data.message) {
         setConfirmed(true);
         console.log('Pre Interview saved successfully');
@@ -207,6 +222,9 @@ const PreInterviewComponent = ({ userId }) => {
                 label="Réalisé par"
                 value={preInterview.by}
                 onChange={(e) => updatePreInterview('by', e.target.value)}>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
                 <MenuItem value={'Noemie Rolland'}>Noemie Rolland</MenuItem>
                 <MenuItem value={'Corinne Zuili'}>Corinne Zuili</MenuItem>
                 <MenuItem value={'Emmanuelle Berrebi'}>

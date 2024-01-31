@@ -52,7 +52,7 @@ const BasicTabs = () => {
   const [value, setValue] = React.useState(0);
   const [status, setStatus] = useState('');
 
-  console.log(location.state.userSelected);
+  // console.log(location.state.userSelected);
 
   const handleChange = (event, newValue) => {
     let userStatus = '';
@@ -62,7 +62,7 @@ const BasicTabs = () => {
       userStatus = localStorage.getItem('user-status');
     }
 
-    console.log(userStatus);
+    // console.log(userStatus);
     setStatus(userStatus);
     setValue(newValue);
   };
@@ -82,22 +82,22 @@ const BasicTabs = () => {
   //   ? location.state.userLogged.user.id
   //   : location.state.userSelected.id;
 
-  console.log(userId);
-  console.log(status);
+  // console.log(userId);
+  // console.log(status);
 
   const getUser = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      console.log(response.data.status);
+      // console.log(response.data.status);
       setStatus(response.data.status);
     } catch (err) {
       console.log(err);
     }
 
     //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-    console.log(status);
+    // console.log(status);
   };
   useEffect(() => {
     getUser();

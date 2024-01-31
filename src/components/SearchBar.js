@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Box, Button, Autocomplete, Stack } from '@mui/material';
+import { TextField, Button, Autocomplete, Stack } from '@mui/material';
+import { existingSubjects } from '../options/existingOptions';
 
-const subjects = [
-  { title: 'Mathématiques' },
-  { title: 'Physique' },
-  { title: 'Histoire-Géographie' },
-  { title: 'Français' },
-  { title: 'Anglais' },
-  { title: 'Sciences' },
-  { title: 'Philosophie' },
-  { title: 'Codage' },
-  { title: 'Chinois' },
-];
+const subjects = existingSubjects;
 
 const SearchBar = ({ onSearchSubject }) => {
   const [selectedSubject, setSelectedSubject] = useState('');

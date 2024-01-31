@@ -55,7 +55,7 @@ const tutorsfakeFullNames = Array.from({ length: 120 }, () => {
   };
 });
 
-console.log(tutorsfakeFullNames);
+// console.log(tutorsfakeFullNames);
 const studentsfakeFullNames = Array.from(
   { length: 120 },
   () => `${faker.person.firstName()} ${faker.person.lastName()}`
@@ -673,7 +673,7 @@ const CourseList = ({ courses, handleCourseUpdate, handleInstanceCreate }) => {
 
 const CreateInstanceForm = ({ courses, onInstanceCreate }) => {
   const { dispatch } = useValue();
-  console.log('=====>', courses);
+  // console.log('=====>', courses);
   const handleInstancesCreate = () => {
     const currentDate = new Date();
     const nextWeekStart = new Date(
@@ -681,7 +681,7 @@ const CreateInstanceForm = ({ courses, onInstanceCreate }) => {
       currentDate.getMonth(),
       currentDate.getDate() + (7 - currentDate.getDay()) + 1
     ); // Get the next week's starting date (Monday)
-    console.log(nextWeekStart.toLocaleDateString());
+    // console.log(nextWeekStart.toLocaleDateString());
 
     function getNextDay(day) {
       const currentDate = new Date();
@@ -758,10 +758,10 @@ const CreateInstanceForm = ({ courses, onInstanceCreate }) => {
       // }
       // return course;
     });
-    console.log(coursesInstances);
+    // console.log(coursesInstances);
 
     coursesInstances.forEach((element) => {
-      console.log(element);
+      // console.log(element);
       dispatch({ type: 'UPDATE_COURSE', payload: element.id });
     });
   };
