@@ -144,7 +144,7 @@ const FormInterviewComponent = ({ userId }) => {
         setShowButton(false);
       }
       setIsLoading(false);
-      if (response.data.interviews.length > 0) {
+      if (response.data.interviews && response.data.interviews.length > 0) {
         setCountInterviews(response.data.interviews.length);
         setConfirmed(true);
       }

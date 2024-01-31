@@ -37,7 +37,7 @@ function YourComponent({ user }) {
     };
 
     getUserMission();
-  }, [showButton]);
+  }, [user.id, showButton]);
 
   useEffect(() => {
     axios
@@ -48,7 +48,7 @@ function YourComponent({ user }) {
         )
       )
       .catch((error) => console.error(error));
-  }, []);
+  }, [user.id]);
 
   // console.log(missions);
 
@@ -60,10 +60,9 @@ function YourComponent({ user }) {
   // console.log(selectedMissionTitle);
 
   const handleSubmit = async () => {
-    const response = await axios.patch(
-      `${BASE_URL}/update-user-profile/${user.id}`,
-      { mission_id: selectedMissionTitle }
-    );
+    await axios.patch(`${BASE_URL}/update-user-profile/${user.id}`, {
+      mission_id: selectedMissionTitle,
+    });
     setShowButton(false);
     // console.log(response.data.message);
   };

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Card, CardContent, Typography, Grid } from '@mui/material';
-import Container from '@mui/material/Container';
+import { Typography, Grid } from '@mui/material';
+// import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -15,31 +15,31 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
-import Input from '@mui/material/Input';
+// import Input from '@mui/material/Input';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
+// import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+// import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import HomeIcon from '@mui/icons-material/Home';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import Divider from '@mui/material/Divider';
+// import InboxIcon from '@mui/icons-material/Inbox';
+// import DraftsIcon from '@mui/icons-material/Drafts';
 import CakeIcon from '@mui/icons-material/Cake';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import BadgeIcon from '@mui/icons-material/Badge';
-import TrafficIcon from '@mui/icons-material/Traffic';
+// import BadgeIcon from '@mui/icons-material/Badge';
+// import TrafficIcon from '@mui/icons-material/Traffic';
 import Badge from '@mui/material/Badge';
-import FormHelperText from '@mui/material/FormHelperText';
+// import FormHelperText from '@mui/material/FormHelperText';
 import CallIcon from '@mui/icons-material/Call';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
@@ -54,13 +54,13 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 
-import Fab from '@mui/material/Fab';
-import LoadingButton from '@mui/lab/LoadingButton';
+// import Fab from '@mui/material/Fab';
+// import LoadingButton from '@mui/lab/LoadingButton';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { styled } from '@mui/material/styles';
+// import { styled } from '@mui/material/styles';
 
-import { deepOrange, deepPurple, purple } from '@mui/material/colors';
+// import { deepOrange, deepPurple, purple } from '@mui/material/colors';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -69,52 +69,48 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import EditMissionComponent from '../components/EditMissionComponent';
 
-import { TransitionProps } from '@mui/material/transitions';
+// import { TransitionProps } from '@mui/material/transitions';
 
 import BorderedBoxWithLabel from './borderedBox';
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 
-import { UserContext } from '../UserContext';
+// import { UserContext } from '../UserContext';
 
-import { shortDescriptionForSupervisor } from '../js/statusDescription';
-import EditProfile from './EditProfile';
+// import { shortDescriptionForSupervisor } from '../js/statusDescription';
+// import EditProfile from './EditProfile';
 
-import {
-  shortDescription,
-  longDescription,
-  setStatusStep,
-} from '../js/statusDescription';
+import { shortDescription, setStatusStep } from '../js/statusDescription';
 import AddressAutocomplete from './AddressAutocomplete';
-import AutofillCheckoutDemo from './AddressAutocomplete2';
-import SelectFormActivity from './SelectActivity';
-import ImageDisplay from './ImageDisplay';
+// import AutofillCheckoutDemo from './AddressAutocomplete2';
+// import SelectFormActivity from './SelectActivity';
+// import ImageDisplay from './ImageDisplay';
 import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
-import RefreshButton from './refreshIcon';
+// import RefreshButton from './refreshIcon';
 
 // Extend dayjs with the necessary plugins
 
 // Set locale to French
 dayjs.locale('fr');
 
-const fabStyle = {
-  position: 'absolute',
-  top: 16,
-  right: 16,
-};
+// const fabStyle = {
+//   position: 'absolute',
+//   top: 16,
+//   right: 16,
+// };
 
 // Stylred TextField
-const options = {
-  shouldForwardProp: (prop) => prop !== 'fontColor',
-};
-const StyledTextField = styled(
-  TextField,
-  options
-)(({ fontColor }) => ({
-  input: {
-    color: fontColor,
-  },
-}));
+// const options = {
+//   shouldForwardProp: (prop) => prop !== 'fontColor',
+// };
+// const StyledTextField = styled(
+//   TextField,
+//   options
+// )(({ fontColor }) => ({
+//   input: {
+//     color: fontColor,
+//   },
+// }));
 
 const Transition = function (props) {
   return React.createElement(
@@ -129,6 +125,7 @@ const ProfilePage = ({ status }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [resp, setResp] = useState(null);
   const [invisible, setInvisible] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -142,6 +139,7 @@ const ProfilePage = ({ status }) => {
   const [citySelected, setCitySelected] = React.useState('');
   const [zipcodeSelected, setZipcodeSelected] = React.useState('');
   const [countrySelected, setCountrySelected] = React.useState('');
+  // eslint-disable-next-line no-unused-vars
   const [userStatus, setUserStatus] = useState('');
   const [open, setOpen] = React.useState(false);
 
@@ -214,30 +212,27 @@ const ProfilePage = ({ status }) => {
   useEffect(() => {
     if (user.activity !== null) handleActivityBadgeVisibility();
     if (user.street !== null) handleAddressBadgeVisibility();
-  }, []);
-
-  const handleEditClick = () => {
-    setEditing(true);
-  };
+  });
+  // eslint-disable-next-line no-unused-vars
+  // const handleEditClick = () => {
+  //   setEditing(true);
+  // };
 
   const handleSaveClick = async () => {
     // Perform any necessary validation or data processing before saving
     try {
-      const response = await axios.patch(
-        `${BASE_URL}/update-user-profile/${user.id}`,
-        {
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone,
-          email2: email2,
-          birth_date: birthDate,
-          activity: activity,
-          street: streetSelected,
-          city: citySelected,
-          zipcode: zipcodeSelected,
-          country: countrySelected,
-        }
-      );
+      await axios.patch(`${BASE_URL}/update-user-profile/${user.id}`, {
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone,
+        email2: email2,
+        birth_date: birthDate,
+        activity: activity,
+        street: streetSelected,
+        city: citySelected,
+        zipcode: zipcodeSelected,
+        country: countrySelected,
+      });
       // console.log(response.data.message);
 
       // Perform any desired actions after successful submission
@@ -316,20 +311,20 @@ const ProfilePage = ({ status }) => {
 
   useEffect(() => {
     getUserById();
-  }, []);
+  });
   // console.log(activity);
-  const fabEdit = {
-    color: 'secondary',
-    sx: fabStyle,
-    icon: <EditIcon />,
-    label: 'Edit',
-  };
-  const fabSave = {
-    color: 'primary',
-    sx: fabStyle,
-    icon: <SaveIcon />,
-    label: 'Save',
-  };
+  // const fabEdit = {
+  //   color: 'secondary',
+  //   sx: fabStyle,
+  //   icon: <EditIcon />,
+  //   label: 'Edit',
+  // };
+  // const fabSave = {
+  //   color: 'primary',
+  //   sx: fabStyle,
+  //   icon: <SaveIcon />,
+  //   label: 'Save',
+  // };
 
   const actions = [
     {

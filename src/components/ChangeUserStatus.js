@@ -304,7 +304,11 @@ const ChangeUserStatus = () => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={user.birth_date.split('T')[0]}
+                      primary={
+                        user.birth_date === null
+                          ? ''
+                          : user.birth_date.split('T')[0]
+                      }
                       secondary=""
                     />
                   </ListItem>

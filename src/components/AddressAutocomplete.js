@@ -1,34 +1,28 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
-import {
-  AddressAutofill,
-  AddressMinimap,
-  useConfirmAddress,
-  config,
-} from '@mapbox/search-js-react';
+import React from 'react';
+// import axios from 'axios';
+import { AddressAutofill } from '@mapbox/search-js-react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionActions from '@mui/material/AccordionActions';
+// import AccordionActions from '@mui/material/AccordionActions';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Chip from '@mui/material/Chip';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+// import Chip from '@mui/material/Chip';
+// import Button from '@mui/material/Button';
+// import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import Alert from '@mui/material/Alert';
+// import Container from '@mui/material/Container';
+// import Snackbar from '@mui/material/Snackbar';
+// import MuiAlert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 
 import Stack from '@mui/material/Stack';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const AddressAutocomplete = (props) => {
   // const { userId, street, city, zipcode, country } = props;
   const {
-    userId,
     street,
     country,
     city,
@@ -131,7 +125,7 @@ const AddressAutocomplete = (props) => {
                 placeholder="Commencer à indiquer le nom de votre voie..."
                 name="address"
                 autoComplete="address-line1"
-                value={street}
+                value={street || ''}
                 onChange={onStreetChange}
                 fullWidth
                 required
