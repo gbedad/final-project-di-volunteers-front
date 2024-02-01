@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
+
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -25,6 +25,7 @@ const InstructionComponent = () => {
             id="panel1a-header">
             <Typography
               variant="h5"
+              component="div"
               sx={{ width: '100%', flexShrink: 0, fontWeight: 'bold' }}
               gutterBottom>
               Comment télécharger mes documents
@@ -37,12 +38,12 @@ const InstructionComponent = () => {
                   label="Documents à télécharger"
                   sx={{ display: 'flex' }}>
                   <Box p={3}>
-                    <Typography variant="body2" sx={{}}>
+                    <Typography variant="body2" component="p" sx={{}}>
                       Merci de bien vouloir télécharger ici les documents
                       suivants uniquement dans les formats pdf, jpeg, jpg ou
                       png&nbsp;:
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="div">
                       <List>
                         <ListItem alignItems="flex-start" dense>
                           <ListItemIcon>
@@ -81,7 +82,7 @@ const InstructionComponent = () => {
                   label="Nomenclature des fichiers"
                   sx={{ display: 'flex' }}>
                   <Box p={3}>
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="div">
                       Vous pouvez télécharger jusqu’à 12 documents en format
                       pdf, jpg ou png. Merci de bien vouloir les nommer selon la
                       nomenclature suivante :
@@ -121,7 +122,7 @@ const InstructionComponent = () => {
                         </ListItem>
                       </List>
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="p">
                       Vous pouvez ajouter tout document utile à l’examen de
                       votre candidature.
                     </Typography>

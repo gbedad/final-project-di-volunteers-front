@@ -534,7 +534,7 @@ const ChangeUserStatus = () => {
               {user.skill ? (
                 <>
                   <Box mt={3}>
-                    <Typography variant="h6" component="div">
+                    <Typography variant="h6" component="span">
                       Matière(s)
                     </Typography>
 

@@ -19,9 +19,7 @@ import MapIcon from '@mui/icons-material/Map';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function YourComponent({ user }) {
-  const [selectedMissionTitle, setSelectedMissionTitle] = useState(
-    user.mission.title || ''
-  );
+  const [selectedMissionTitle, setSelectedMissionTitle] = useState(null);
   const [missions, setMissions] = useState([]);
   const [mission, setMission] = useState(user.mission);
   const [showButton, setShowButton] = useState(false);
@@ -49,8 +47,6 @@ function YourComponent({ user }) {
       )
       .catch((error) => console.error(error));
   }, [user.id]);
-
-  // console.log(missions);
 
   const handleMissionChange = async (e) => {
     setSelectedMissionTitle(e.target.value);
@@ -91,17 +87,24 @@ function YourComponent({ user }) {
         </ListItem>
         <Box mt={2}>
           <Typography variant="body1">Modifier la mission</Typography>
-          {mission.title !== undefined && (
+          {!missions ? (
+            ''
+          ) : (
             <Select
               fullWidth
-              value={selectedMissionTitle || mission.title || ''}
+              value={
+                selectedMissionTitle === undefined ||
+                selectedMissionTitle === null ||
+                missions.length === 0
+                  ? ''
+                  : selectedMissionTitle
+              }
               onChange={handleMissionChange}>
-              {missions &&
-                missions.map((mission) => (
-                  <MenuItem key={mission.id} value={mission.id}>
-                    {mission.title}
-                  </MenuItem>
-                ))}
+              {missions.map((mission) => (
+                <MenuItem key={mission.id} value={mission.id}>
+                  {mission.title}
+                </MenuItem>
+              ))}
             </Select>
           )}
         </Box>

@@ -54,10 +54,10 @@ const BasicTabs = () => {
 
   // console.log(location.state.userSelected);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = async (event, newValue) => {
     let userStatus = '';
     if (location.state.userSelected) {
-      userStatus = location.state.userSelected.status;
+      userStatus = await location.state.userSelected.status;
     } else {
       userStatus = localStorage.getItem('user-status');
     }
@@ -78,13 +78,6 @@ const BasicTabs = () => {
     userId = location.state.userSelected.id;
   }
 
-  // let userId = location.state.userLogged
-  //   ? location.state.userLogged.user.id
-  //   : location.state.userSelected.id;
-
-  // console.log(userId);
-  // console.log(status);
-
   const getUser = async () => {
     try {
       const response = await axios.get(
@@ -101,6 +94,7 @@ const BasicTabs = () => {
   };
   useEffect(() => {
     getUser();
+    // eslint-disable-next-line
   }, [value]);
 
   return (

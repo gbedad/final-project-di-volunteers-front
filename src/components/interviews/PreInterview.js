@@ -124,12 +124,13 @@ const PreInterviewComponent = ({ userId }) => {
       let preInterviewdata;
       try {
         if (Object.keys(response.data.pre_interview).length === 0) {
-          preInterviewdata = {
-            date: '',
-            by: '',
-            evaluation: '',
-            nextStep: '',
-          };
+          preInterviewdata =
+            {
+              date: '',
+              by: '',
+              evaluation: '',
+              nextStep: '',
+            } || '';
           setPreInterview(preInterviewdata);
         } else if (Object.keys(response.data.pre_interview).length !== 0) {
           preInterviewdata = response.data.pre_interview;
