@@ -311,7 +311,8 @@ const ProfilePage = ({ status }) => {
 
   useEffect(() => {
     getUserById();
-  });
+    // eslint-disable-next-line
+  }, []);
   // console.log(activity);
   // const fabEdit = {
   //   color: 'secondary',
@@ -527,7 +528,7 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl sx={{ width: '60%' }}>
                     <TextField
-                      labelId="email2"
+                      labelid="email2"
                       label="Email"
                       value={email2}
                       onChange={handleEmail2Change}
@@ -624,7 +625,7 @@ const ProfilePage = ({ status }) => {
                     <Select
                       color="warning"
                       disabled={!editing}
-                      labelId="demo-simple-select-standard-label"
+                      labelid="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
                       value={activity || ''}
                       onChange={handleActivityChange}

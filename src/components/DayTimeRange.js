@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -9,7 +9,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
   Box,
   LinearProgress,
 } from '@mui/material';
@@ -21,7 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { AuthContext } from '../AuthContext';
+// import { AuthContext } from '../AuthContext';
 
 const fabStyle = {
   position: 'absolute',
@@ -34,7 +33,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showButton, setShowButton] = useState(false);
-  const { userLogged } = location.state && location.state.userLogged;
+  // const { userLogged } = location.state && location.state.userLogged;
   // Check if location.state is not null before destructuring values
 
   // const { token } = useContext(AuthContext);
@@ -69,7 +68,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     };
 
     getDays();
-  }, []);
+  }, [userId]);
 
   const handleAddDayTimeRange = () => {
     setDayTimeRanges([
@@ -182,7 +181,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                         value={dayTimeRange ? dayTimeRange.day : ''}
                         onChange={(e) => handleDayChange(e.target.value, index)}
                         error={!dayTimeRange.day} // Add error prop
-                        helperText={
+                        helpertext={
                           !dayTimeRange.day ? 'Ce champ est obligatoire' : ''
                         }>
                         <MenuItem value="">Choisir un jour</MenuItem>
@@ -215,7 +214,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                         step: 300,
                       }}
                       error={!dayTimeRange.startTime} // Add error prop
-                      helperText={
+                      helpertext={
                         !dayTimeRange.startTime
                           ? 'Ce champ est obligatoire'
                           : ''
@@ -241,7 +240,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                         step: 300,
                       }}
                       error={!dayTimeRange.endTime} // Add error prop
-                      helperText={
+                      helpertext={
                         !dayTimeRange.endTime ? 'Ce champ est obligatoire' : ''
                       }
                     />

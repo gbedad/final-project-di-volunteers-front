@@ -273,11 +273,11 @@ const ChangeUserStatus = () => {
                         '&::WebkitScrollbar': {
                           width: '12px', // Width of vertical scrollbar
                         },
-                        '&::WebkitScrollbar-thumb': {
+                        ' &::WebkitScrollbarThumb': {
                           backgroundColor: 'darkgray', // Color of the thumb
                           borderRadius: '6px', // Rounded corners
                         },
-                        '&::WebkitScrollbar-track': {
+                        '&::WebkitScrollbarTrack': {
                           backgroundColor: 'lightgray', // Color of the track
                         },
                       }}

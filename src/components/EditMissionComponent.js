@@ -91,16 +91,19 @@ function YourComponent({ user }) {
         </ListItem>
         <Box mt={2}>
           <Typography variant="body1">Modifier la mission</Typography>
-          <Select
-            fullWidth
-            value={selectedMissionTitle || mission.title}
-            onChange={handleMissionChange}>
-            {missions.map((mission) => (
-              <MenuItem key={mission.id} value={mission.id}>
-                {mission.title}
-              </MenuItem>
-            ))}
-          </Select>
+          {mission.title !== undefined && (
+            <Select
+              fullWidth
+              value={selectedMissionTitle || mission.title || ''}
+              onChange={handleMissionChange}>
+              {missions &&
+                missions.map((mission) => (
+                  <MenuItem key={mission.id} value={mission.id}>
+                    {mission.title}
+                  </MenuItem>
+                ))}
+            </Select>
+          )}
         </Box>
       </List>
       <Button variant="contained" disabled={!showButton} onClick={handleSubmit}>
