@@ -33,6 +33,7 @@ const CardList = () => {
         );
         setCardsData(filteredIsActive);
         setIsLoading(false);
+        return true;
       } catch (error) {
         if (error.message === 'Failed to fetch') {
           toast.error('Erreur de reseau');
@@ -43,6 +44,7 @@ const CardList = () => {
     setIsLoading(false);
 
     fetchMissionsList();
+    // eslint-disable-next-line
   }, []);
 
   // axios.interceptors.response.use(

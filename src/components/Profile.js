@@ -153,14 +153,6 @@ const ProfilePage = ({ status }) => {
     setOpen(false);
   };
   const { userSelected } = location.state;
-  // console.log('from location', location.state.userLogged);
-  // console.log('from props', userSelected);
-  // const user = location.state.userLogged
-  // const { user } =
-  //   location.state.userLogged &&
-  //   location.state.userLogged.user.id === userSelected.id
-  //     ? location.state.userLogged.user
-  //     : userSelected;
 
   let user = {};
 
@@ -289,6 +281,19 @@ const ProfilePage = ({ status }) => {
   const getUserById = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/user-by-id/${user.id}`);
+      if (!response) {
+        setFirstName('');
+        setLastName('');
+        setPhone('');
+        setEmail2('');
+        setBirthDate('');
+        setActivity('');
+        setCitySelected('');
+        setStreetSelected('');
+        setZipcodeSelected('');
+        setCountrySelected('');
+        setUserStatus('');
+      }
       if (response.data) {
         const userData = response.data;
 
@@ -312,7 +317,7 @@ const ProfilePage = ({ status }) => {
   useEffect(() => {
     getUserById();
     // eslint-disable-next-line
-  }, []);
+  }, [user.id]);
   // console.log(activity);
   // const fabEdit = {
   //   color: 'secondary',

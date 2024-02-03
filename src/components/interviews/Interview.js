@@ -151,7 +151,7 @@ const FormInterviewComponent = ({ userId }) => {
     };
 
     getInterviews();
-  }, [userId]);
+  }, [userId, confirmed]);
 
   const handleTitleChange = (value, index) => {
     const updatedInterviews = [...interviews];

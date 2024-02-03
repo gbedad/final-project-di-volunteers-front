@@ -115,39 +115,51 @@ const PreInterviewComponent = ({ userId }) => {
   const userToken = location.state.userLogged.token;
   // const userLogged = location.state.userLogged.user.first_name;
 
-  useEffect(() => {
-    const getPreInterview = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
-      );
-      // console.log('=====>', response.data);
-      let preInterviewdata;
-      try {
-        if (Object.keys(response.data.pre_interview).length === 0) {
-          preInterviewdata =
-            {
-              date: '',
-              by: '',
-              evaluation: '',
-              nextStep: '',
-            } || '';
-          setPreInterview(preInterviewdata);
-        } else if (Object.keys(response.data.pre_interview).length !== 0) {
-          preInterviewdata = response.data.pre_interview;
+  useEffect(
+    () => {
+      const getPreInterview = async () => {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        );
+        // console.log('=====>', response.data);
+        let preInterviewdata;
+        try {
+          if (
+            !response.data.pre_interview ||
+            typeof response.data.pre_interview !== 'object' ||
+            Object.keys(response.data.pre_interview).length === 0 ||
+            response.data.pre_interview === null
+          ) {
+            preInterviewdata =
+              {
+                date: '',
+                by: '',
+                evaluation: '',
+                nextStep: '',
+              } || '';
+            setPreInterview(preInterviewdata);
+          } else if (
+            Object.keys(response.data.pre_interview) === null ||
+            Object.keys(response.data.pre_interview).length !== 0
+          ) {
+            preInterviewdata = response.data.pre_interview;
 
-          setPreInterview(JSON.parse(preInterviewdata));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          return true;
+            setPreInterview(JSON.parse(preInterviewdata));
+            setIsLoading(false);
+          } else {
+            setIsLoading(false);
+            return true;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      };
 
-    getPreInterview();
-  }, [userId]);
+      getPreInterview();
+    },
+    [userId],
+    confirmed
+  );
 
   const updatePreInterview = (field, value) => {
     setPreInterview((prevState) => ({

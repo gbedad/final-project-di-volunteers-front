@@ -120,6 +120,7 @@ const ChangeUserStatus = () => {
         newIsActive: checked,
       });
       setShowActiveConfirm(false);
+      return true;
     } catch (err) {
       console.log(err);
     }
@@ -190,8 +191,11 @@ const ChangeUserStatus = () => {
         `${BASE_URL}/update-status/${user.id}`,
         { newStatus: newStatus }
       );
-      setStatus(response.data.status);
-      setShowConfirm(false);
+      if (response.data) {
+        setStatus(response.data.status);
+        setShowConfirm(false);
+        return true;
+      }
     } catch (error) {
       console.error(error);
     }
@@ -426,7 +430,6 @@ const ChangeUserStatus = () => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={newStatus}
-                    defaultValue={status}
                     label="Change Status"
                     onChange={handleStatusChange}>
                     <MenuItem value={'Compte créé'}>

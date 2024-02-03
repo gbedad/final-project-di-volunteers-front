@@ -46,7 +46,7 @@ function YourComponent({ user }) {
         )
       )
       .catch((error) => console.error(error));
-  }, [user.id]);
+  }, [mission.id]);
 
   const handleMissionChange = async (e) => {
     setSelectedMissionTitle(e.target.value);
