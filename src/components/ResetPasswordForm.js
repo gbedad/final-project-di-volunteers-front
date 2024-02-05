@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { TextField, Button } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Snackbar from '@mui/material/Snackbar';
-import Stack from '@mui/material/Stack';
+
 import Grid from '@mui/material/Grid';
-import MuiAlert from '@mui/material/Alert';
+
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Avatar from '@mui/material/Avatar';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { UserContext } from '../UserContext';
+// import { UserContext } from '../UserContext';
 
 function Copyright(props) {
   return (
@@ -38,9 +38,9 @@ function Copyright(props) {
   );
 }
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+// const Alert = React.forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 // const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -106,7 +106,7 @@ const ResetPasswordForm = async () => {
             <LockOpenIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Renouveller mon mot de passe
+            Renouveler mon mot de passe
           </Typography>
           <Typography></Typography>
           <Box
@@ -141,7 +141,7 @@ const ResetPasswordForm = async () => {
               sx={{ mt: 3, mb: 2 }}
               type="submit"
               fullWidth>
-              Renouveller
+              Renouveler
             </Button>
           </Box>
           <Snackbar

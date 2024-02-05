@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Stack,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Alert,
-  AlertTitle,
-  Autocomplete,
-  TextField,
-  Tooltip,
-} from '@mui/material';
+import { Box, Stack, Button, Autocomplete, TextField } from '@mui/material';
 import {
   DataGrid,
   GridToolbarContainer,
@@ -28,6 +15,7 @@ import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
 import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
+import { existingSubjects } from '../options/existingOptions';
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -37,17 +25,7 @@ const StyledRating = styled(Rating)({
     color: '#ff3d47',
   },
 });
-const subjects = [
-  '',
-  'Mathématiques',
-  'Physique-Chimie',
-  'Histoire-Géographie',
-  'Français',
-  'Anglais',
-  'Sciences',
-  'Philosophie',
-  'Codage',
-];
+const subjects = existingSubjects;
 
 const columns = [
   {
@@ -230,25 +208,26 @@ export default function DataGridDemo(props) {
   const location = useLocation();
 
   const users = props.data;
-  const userList = localStorage.setItem('users', JSON.stringify(users));
+  // const userList = localStorage.setItem('users', JSON.stringify(users));
   // console.log(users);
   // const [users, setUsers] = useState([])
+  // eslint-disable-next-line
   const [selectedUser, setSelectedUser] = useState(null);
-  const [dataActive, setDataActive] = useState([]);
-  const [activeUsers, setActiveUsers] = useState(null);
-  const [countUsersByStatus, setCountUsersByStatus] = useState({});
+  // const [dataActive, setDataActive] = useState([]);
+  // const [activeUsers, setActiveUsers] = useState(null);
+  // const [countUsersByStatus, setCountUsersByStatus] = useState({});
   const [selectedSubject, setSelectedSubject] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
-  const [value, setValue] = React.useState(subjects[0]);
+  // const [value, setValue] = React.useState(subjects[0]);
   const [inputValue, setInputValue] = React.useState('');
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  // const [page, setPage] = React.useState(0);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleSubjectChange = (event) => {
-    setSelectedSubject(event.target.value);
-  };
+  // const handleSubjectChange = (event) => {
+  //   setSelectedSubject(event.target.value);
+  // };
   // console.log(selectedSubject);
 
   function filterBySubject(users, subject) {
@@ -283,6 +262,7 @@ export default function DataGridDemo(props) {
 
   useEffect(() => {
     handleResetFilter();
+    // eslint-disable-next-line
   }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
