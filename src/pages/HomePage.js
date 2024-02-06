@@ -58,9 +58,16 @@ const HomePage = () => {
   return (
     <>
       <Container style={containerStyle} component="main" maxWidth="lg">
+        <Typography variant="h4" component="h3" color="primary.main" mt={6}>
+          Pour nous aider à mieux vous connaître avant de vous proposer des
+          élèves à accompagner.
+        </Typography>
         <div className={`background background-${screenSize}`}>
-          {/* Add content for each screen size */}
-          <div className="content">{/* Your content goes here */}</div>
+          <div className="content">
+            <Typography variant="h3" component="h3" color="primary">
+              A vous de jouer : commencez par choisir une mission&nbsp;!
+            </Typography>
+          </div>
         </div>
         <Copyright sx={{ mt: 5 }} />
       </Container>
