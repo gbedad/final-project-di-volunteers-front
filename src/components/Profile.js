@@ -42,6 +42,7 @@ import Badge from '@mui/material/Badge';
 // import FormHelperText from '@mui/material/FormHelperText';
 import CallIcon from '@mui/icons-material/Call';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -142,6 +143,9 @@ const ProfilePage = ({ status }) => {
   // eslint-disable-next-line no-unused-vars
   const [userStatus, setUserStatus] = useState('');
   const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = useState('');
+
+  const [showButton, setShowButton] = useState(false);
 
   // console.log('Status from props', status);
 
@@ -308,6 +312,7 @@ const ProfilePage = ({ status }) => {
         setZipcodeSelected(userData.zipcode);
         setCountrySelected(userData.country);
         setUserStatus(userData.status);
+        setMessage(userData.message);
       }
     } catch (error) {
       console.log(error);
@@ -334,11 +339,15 @@ const ProfilePage = ({ status }) => {
 
   const actions = [
     {
-      icon: <EditIcon />,
-      name: 'Modifier',
+      icon: 'Modifier',
+      // name: 'Text',
       operation: 'edit',
     },
-    { icon: <SaveIcon />, name: 'Sauvegarder', operation: 'save' },
+    {
+      icon: 'Confirmer',
+      // name: 'Text',
+      operation: 'save',
+    },
   ];
 
   //handler function
@@ -353,6 +362,21 @@ const ProfilePage = ({ status }) => {
     }
   };
   // console.log(setStatusStep(status));
+
+  const handleMotivationChange = async (e) => {
+    setMessage(e.target.value);
+    setShowButton(true);
+    // Update user's mission title in your state or send a request to the server
+  };
+  // console.log(selectedMissionTitle);
+
+  const handleSubmit = async () => {
+    await axios.patch(`${BASE_URL}/update-user-profile/${user.id}`, {
+      message,
+    });
+    setShowButton(false);
+    // console.log(response.data.message);
+  };
 
   return (
     <>
@@ -432,8 +456,12 @@ const ProfilePage = ({ status }) => {
                   // onClick={() => handleClick()}
                   direction={'down'}
                   ariaLabel="SpeedDial basic example"
-                  sx={{ position: 'absolute', top: 16, right: 16 }}
-                  icon={<SpeedDialIcon openIcon={<ManageAccountsIcon />} />}>
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                  }}
+                  icon={<EditIcon openIcon={<EditIcon />} />}>
                   {actions.map((action) => (
                     <SpeedDialAction
                       key={action.name}
@@ -441,6 +469,17 @@ const ProfilePage = ({ status }) => {
                       tooltipTitle={action.name}
                       operation={action.operation}
                       onClick={() => handleClick(action.operation)}
+                      sx={{
+                        width: 100,
+                        height: 40,
+                        borderRadius: 2,
+                        backgroundColor: 'primary.main',
+                        color: 'white',
+                        backgroundColor:
+                          action.operation === 'edit'
+                            ? 'light.main'
+                            : 'primary.main',
+                      }}
                     />
                   ))}
                 </SpeedDial>
@@ -459,19 +498,19 @@ const ProfilePage = ({ status }) => {
                       label="Prénom"
                       value={firstName}
                       onChange={handleFirstNameChange}
-                      disabled={!editing}
+                      disabled={!editing && true}
                       variant="standard"
-                      color="warning"
                       focused
+                      color="light"
                     />
                     <TextField
                       label="Nom"
                       value={lastName}
                       onChange={handleLastNameChange}
-                      disabled={!editing}
+                      disabled={!editing && true}
                       variant="standard"
-                      color="warning"
                       focused
+                      color="light"
                     />
                   </Stack>
                 </ListItem>
@@ -517,10 +556,10 @@ const ProfilePage = ({ status }) => {
                         phone && parsePhoneNumber(phone).number.international
                       }
                       onChange={handlePhoneChange}
-                      disabled={!editing}
+                      disabled={!editing && true}
                       variant="standard"
-                      color="warning"
                       focused
+                      color="light"
                     />
                   </FormControl>
                 </ListItem>
@@ -539,8 +578,8 @@ const ProfilePage = ({ status }) => {
                       onChange={handleEmail2Change}
                       disabled={!editing}
                       variant="standard"
-                      color="warning"
                       focused
+                      color="light"
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -581,6 +620,7 @@ const ProfilePage = ({ status }) => {
                         variant="standard"
                         id="birthdate"
                         label="Date de naissance"
+                        color="light"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -628,7 +668,7 @@ const ProfilePage = ({ status }) => {
                       Activité
                     </InputLabel>
                     <Select
-                      color="warning"
+                      color="light"
                       disabled={!editing}
                       labelid="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
@@ -732,10 +772,38 @@ const ProfilePage = ({ status }) => {
           </BorderedBoxWithLabel>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>
-          <BorderedBoxWithLabel label="Votre statut">
-            {/* Content for Box 3 */}
+          <BorderedBoxWithLabel label="Ma motivation">
+            <Grid item xs={12} md={12} lg={12}>
+              <TextareaAutosize
+                id="message"
+                label="Motivation"
+                name="message"
+                aria-label="minimum height"
+                minRows={10}
+                placeholder="Motivation"
+                style={{
+                  width: '100%',
+                  fontFamily: 'Roboto',
+                  fontSize: '1rem',
+                  color: 'primary.main',
+                }}
+                value={message}
+                onChange={handleMotivationChange}
+              />
+              <Typography variant="body2" component="p" color={'primary'}>
+                Vous pouvez, si vous le souhaitez, modifier votre texte de
+                motivation.
+              </Typography>
+              <Button
+                variant="contained"
+                disabled={!showButton}
+                onClick={handleSubmit}>
+                Confirmer
+              </Button>
+            </Grid>
+          </BorderedBoxWithLabel>
+          {/* <BorderedBoxWithLabel label="Votre statut">
 
-            {/* <ImageDisplay /> */}
             <Box display="flex" flexDirection="column">
               <Box>
                 <List>
@@ -747,25 +815,20 @@ const ProfilePage = ({ status }) => {
                     </ListItemAvatar>
 
                     <ListItemText primary={shortDescription(status)} />
-                    {/* <RefreshButton getUser={getUserById} /> */}
+              
                   </ListItem>
-                  {/* <ListItem>
-                <ListItemText
-                  sx={{ ml: 2 }}
-                  secondary={shortDescriptionForSupervisor(user.status)}
-                />
-              </ListItem> */}
+
                 </List>
               </Box>
             </Box>
             <StatusTimelineComponent userStatusStep={setStatusStep(status)} />
-          </BorderedBoxWithLabel>
+          </BorderedBoxWithLabel> */}
         </Grid>
       </Grid>
 
       <Box>
         <Typography variant="body2">
-          Votre compte est créé, vous avez encore la possibilité d'annuler votre
+          Votre compte est créé, vous avez la possibilité d'annuler votre
           candidature.
         </Typography>
         <Button

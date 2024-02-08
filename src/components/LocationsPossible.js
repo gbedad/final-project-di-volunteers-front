@@ -194,7 +194,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
               <Grid item xs={2}>
                 <Button onClick={() => handleRemoveLocation(index)}>
-                  <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                  <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
                 </Button>
               </Grid>
             </Grid>

@@ -86,9 +86,10 @@ export default function Uploads({ userSelected }) {
   useEffect(() => {
     const getFiles = async () => {
       const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
+
       if (response.data.file) {
         const filteredFiles = response.data.file.filter((file) =>
-          file.path.includes('/documents/')
+          file.path.includes('/conventions/')
         );
         setFilesUploaded(filteredFiles);
         setIsLoading(false);
@@ -113,7 +114,7 @@ export default function Uploads({ userSelected }) {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${BASE_URL}/upload/${userId}`,
+        `${BASE_URL}/upload/convention/${userId}`,
         formData,
         {
           headers: {

@@ -456,6 +456,18 @@ const ChangeUserStatus = () => {
                         <span>A renseigner</span>
                       </CustomWidthTooltip>
                     </MenuItem>
+                    <MenuItem value={'A télécharger'}>
+                      <CustomWidthTooltip
+                        placement="right"
+                        title={
+                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
+                            {longDescription('A télécharger')}
+                          </Typography>
+                        }
+                        arrow>
+                        <span>A renseigner</span>
+                      </CustomWidthTooltip>
+                    </MenuItem>
                     <MenuItem value={'A interviewer'}>
                       <CustomWidthTooltip
                         placement="right"

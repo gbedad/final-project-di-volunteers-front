@@ -7,6 +7,12 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+
 import Profile from './Profile';
 import Skills from './Skills';
 import Uploads from './FileUploader';
@@ -14,6 +20,11 @@ import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
 
 import RefreshButton from './refreshIcon';
+import StatusTimelineComponent from './TimeLineStatus/StatusTimeline';
+import StepperStatusTimeline from './StepperStatusTimeline';
+// import { setStatusStep } from '../js/statusDescription';
+import { shortDescription, setStatusStep } from '../js/statusDescription';
+import UploadConventionComponent from './FileConventionUploader';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -131,9 +142,10 @@ const BasicTabs = () => {
             onChange={handleChange}
             aria-label="basic tabs example"
             centered>
+            <Tab label="MON STATUT" {...a11yProps(0)} />
             <Tab label="MON PROFIL" {...a11yProps(0)} />
             <Tab
-              label="JE PEUX AIDER"
+              label="MES DISPONIBILITÉS"
               {...a11yProps(1)}
               disabled={status === 'Compte créé'}
             />
@@ -148,29 +160,56 @@ const BasicTabs = () => {
               disabled={
                 status === 'Compte créé' ||
                 status === 'A renseigner' ||
+                status === 'A télécharger' ||
                 status === 'A interviewer' ||
                 status === 'A finaliser'
               }
             />
             <RefreshButton getUser={getUser} />
+            <Box display="flex" flexDirection="column">
+              <Box>
+                <List>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                        {setStatusStep(status)}
+                      </Avatar>
+                    </ListItemAvatar>
+
+                    {/* <ListItemText primary={shortDescription(status)} /> */}
+                  </ListItem>
+                </List>
+              </Box>
+            </Box>
           </Tabs>
         </Box>
       </Box>
+      <TabPanel
+        value={value}
+        index={0}
+        style={{ display: 'flex', justifyContent: 'center' }}>
+        {/* <StatusTimelineComponent userStatusStep={setStatusStep(status)} /> */}
 
-      <TabPanel value={value} index={0}>
-        <Profile status={status} />
+        <StepperStatusTimeline
+          userStatusStep={setStatusStep(status)}
+          handleChange={handleChange}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Skills userId={userId} />
+        <Profile status={status} />
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <Skills userId={userId} />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         <div>
           <InstructionComponent />
           <Uploads userSelected={userId} />
         </div>
       </TabPanel>
-      <TabPanel value={value} index={3}>
+      <TabPanel value={value} index={4}>
         <ConventionComponent />
+        <UploadConventionComponent userSelected={userId} />
       </TabPanel>
     </div>
   );

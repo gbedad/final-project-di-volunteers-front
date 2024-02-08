@@ -227,7 +227,7 @@ const RegisterForm = ({ mission }) => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign up to mission {propsData}
+              S'inscrire pour la mission {propsData}
             </Typography>
             <Box
               component="form"
@@ -327,8 +327,8 @@ const RegisterForm = ({ mission }) => {
                   />
                   <Typography color={isStrongPassword() ? 'success' : 'error'}>
                     {isStrongPassword()
-                      ? 'Strong Password'
-                      : 'Password must be strong'}
+                      ? 'Mot de passe valide'
+                      : 'Le mot de passe doit contenir au moins 8 caractères dont des majuscules, des chiffres et des caractères spéciaux'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -360,12 +360,12 @@ const RegisterForm = ({ mission }) => {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}>
-                Sign Up
+                S'inscrire
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
                   <Link href="/login" variant="body2">
-                    Already have an account? Sign in
+                    J'ai déjà un compte ? Se connecter
                   </Link>
                 </Grid>
               </Grid>

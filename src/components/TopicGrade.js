@@ -241,7 +241,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
               </Grid>
               <Grid item xs={2}>
                 <Button onClick={() => handleRemoveSubjectClassRange(index)}>
-                  <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                  <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
                 </Button>
               </Grid>
             </Grid>

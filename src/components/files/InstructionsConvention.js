@@ -18,6 +18,7 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import BorderedBoxWithLabel from '../borderedBox';
+import UploadConventionComponent from '../FileConventionUploader';
 
 import pdfFile from '../../assets/presentationtuteurs.pdf';
 
@@ -178,13 +179,13 @@ const InstructionCoventionComponent = () => {
                       </List>
                     </Typography>
                     <Typography variant="body2" mb={2}>
-                      Merci de déposer la convention complérée et signée par vos
-                      soins dans l'onglet 'MES DOCUMENTS' en utilisant le
-                      libellé suivant <strong>nom_prénom_convention</strong>.
+                      Merci de déposer ici la convention complétée et signée par
+                      vos soins en utilisant le libellé suivant{' '}
+                      <strong>nom_prénom_convention</strong>.
                     </Typography>
                     <Typography variant="body2">
-                      La version signée par l'association vous sera transmise
-                      par mail.
+                      La version signée par l'association sera déposée sur la
+                      plateforme ci-dessous.
                     </Typography>
                   </Box>
                 </BorderedBoxWithLabel>

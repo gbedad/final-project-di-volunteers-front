@@ -4,6 +4,8 @@ export function shortDescription(key) {
       return 'Votre compte est créé';
     case 'A renseigner':
       return 'Nous aimerions en savoir plus';
+    case 'A télécharger':
+      return 'Vous pouvez télécharger vos documents';
     case 'A interviewer':
       return 'Le moment est venu de s’entretenir';
     case 'A finaliser':
@@ -22,6 +24,8 @@ export function longDescription(key) {
     case 'Compte créé':
       return 'Le candidat s’est enregistré sur l’application grâce aux données : mail, nom, prénom, date de naissance, texte de motivation';
     case 'A renseigner':
+      return 'Après vérifications de base (s’agit-il d’une candidature farfelue, incohérente ou indésirable, le texte de motivation est-il très insuffisant, etc.), l’administrateur change le statut « Compte créé » en statut « A renseigner ». Ainsi, le candidat accède à la possibilité de renseigner toutes les informations complémentaires (disponibilités, documents) dont celles requises pour organiser un entretien.';
+    case 'A télécharger':
       return 'Après vérifications de base (s’agit-il d’une candidature farfelue, incohérente ou indésirable, le texte de motivation est-il très insuffisant, etc.), l’administrateur change le statut « Compte créé » en statut « A renseigner ». Ainsi, le candidat accède à la possibilité de renseigner toutes les informations complémentaires (disponibilités, documents) dont celles requises pour organiser un entretien.';
     case 'A interviewer':
       return `L’administrateur passe le dossier du statut « A renseigner » au statut « A interviewer » dès qu’il juge les informations renseignées suffisante pour lancer un processus d’entretien(s).
@@ -44,6 +48,8 @@ export function shortDescriptionForSupervisor(key) {
       return 'Votre compte sur notre plateforme de candidature est bien créé.';
     case 'A renseigner':
       return 'Nous aimerions en savoir plus sur vos disponibilités et souhaits : merci de renseigner toutes ces informations afin que nous puissions vous proposer un entretien. Les documents à télécharger peuvent l’être dès à présent ou dans une étape ultérieure.';
+    case 'A télécharger':
+      return 'Les documents à télécharger peuvent l’être dès à présent ou dans une étape ultérieure.';
     case 'A interviewer':
       return `Le moment est venu de s’entretenir. Pendant cette étape, nous vous contactons pour vous proposer un ou plusieurs rendez-vous. Vous pouvez d’ores et déjà télécharger les documents requis (le cv peut être utile avant la phase d’entretien) ou le faire ultérieurement.`;
     case 'A finaliser':
@@ -60,30 +66,34 @@ export function shortDescriptionForSupervisor(key) {
 export function setStatusStep(key) {
   switch (key) {
     case 'Compte créé':
-      return '1/5';
+      return '1/6';
     case 'A renseigner':
-      return '2/5';
+      return '2/6';
+    case 'A télécharger':
+      return '3/6';
     case 'A interviewer':
-      return '3/5';
+      return '4/6';
     case 'A finaliser':
-      return '4/5';
+      return '5/6';
     case 'Validé':
-      return '5/5';
+      return '6/6';
     default:
-      return '1/5';
+      return '1/6';
   }
 }
 
 export function nextStepStatus(key) {
   switch (key) {
     case 'Compte créé':
-      return 'Etape suivante : A renseigner (2/5)';
+      return 'Etape suivante : A renseigner (2/6)';
     case 'à renseigner':
-      return 'Etape suivante : A interviewer (3/5)';
+      return 'Etape suivante : A interviewer (3/6)';
+    case 'à télécharger':
+      return 'Etape suivante : A interviewer (4/6)';
     case 'A interviewer':
-      return 'Etape suivante : A finaliser (4/5)';
+      return 'Etape suivante : A finaliser (5/6)';
     case 'A finaliser':
-      return 'Etape suivante : A valider (5/5)';
+      return 'Etape suivante : A valider (6/6)';
     case 'Validé':
       return 'Etape suivante : Activer';
     default:

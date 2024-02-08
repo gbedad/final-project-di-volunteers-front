@@ -86,7 +86,7 @@ function YourComponent({ user }) {
           <ListItemText primary={mission.location} secondary="" />
         </ListItem>
         <Box mt={2}>
-          <Typography variant="body1">Modifier la mission</Typography>
+          <Typography variant="body1">Choisir une autre mission</Typography>
           {!missions ? (
             ''
           ) : (

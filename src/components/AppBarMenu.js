@@ -85,6 +85,11 @@ function ResponsiveAppBar() {
       ) {
         navigate('/missions', { state: { userLogged } });
       } else if (
+        page === 'Tableau de bord' &&
+        (!userLogged || userLogged.user.role === 'volunteer')
+      ) {
+        navigate(`/stepper`, { state: { userLogged } });
+      } else if (
         page === 'Missions bénévoles' &&
         userLogged.user.role === 'admin'
       ) {
@@ -361,7 +366,7 @@ function ResponsiveAppBar() {
               ))}
               {!location.state || !location.state.userLogged ? (
                 <MenuItem onClick={handleLogin}>
-                  <Typography textAlign="center">Login</Typography>
+                  <Typography textAlign="center">Se connecter</Typography>
                 </MenuItem>
               ) : null}
             </Menu>
@@ -374,14 +379,52 @@ function ResponsiveAppBar() {
               flexGrow: 1,
               display: { xs: 'none', md: 'flex', justifyContent: 'center' },
             }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => handleGoToPage(page)}
-                sx={{ my: 2, pl: 2, pr: 2, color: 'white', display: 'block' }}>
-                {page}
-              </Button>
-            ))}
+            {/* {pages.map(
+              (page) =>
+                (userLogged.user.role === 'volunteer' ||
+                  page !== 'Tableau de bord') && (
+                  <Button
+                    key={page}
+                    onClick={() => handleGoToPage(page)}
+                    sx={{
+                      my: 2,
+                      pl: 2,
+                      pr: 2,
+                      color: 'white',
+                      display: 'block',
+                    }}>
+                    {page}
+                  </Button>
+                )
+            )} */}
+            <Button
+              onClick={() => navigate('/missions', { state: { userLogged } })}
+              sx={{
+                my: 2,
+                pl: 2,
+                pr: 2,
+                color: 'white',
+                display: 'block',
+              }}>
+              Missions bénévoles
+            </Button>
+            {location.state &&
+              location.state.userLogged &&
+              location.state.userLogged.user.role === 'volunteer' && (
+                <Button
+                  onClick={() =>
+                    navigate('/stepper', { state: { userLogged } })
+                  }
+                  sx={{
+                    my: 2,
+                    pl: 2,
+                    pr: 2,
+                    color: 'white',
+                    display: 'block',
+                  }}>
+                  Tableau de bord
+                </Button>
+              )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -391,7 +434,7 @@ function ResponsiveAppBar() {
                   <Button
                     onClick={handleLogin}
                     sx={{ my: 2, color: 'white', display: 'block' }}>
-                    Login
+                    Se connecter
                   </Button>
                 </Box>
               </MenuItem>

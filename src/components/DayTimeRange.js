@@ -68,7 +68,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     };
 
     getDays();
-  }, [userId]);
+  }, []);
 
   const handleAddDayTimeRange = () => {
     setDayTimeRanges([
@@ -115,6 +115,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
           },
         }
       );
+
       // console.log(response.data.message);
       if (response.data.message) {
         // console.log('Day and time ranges saved successfully');
@@ -239,16 +240,21 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                       inputProps={{
                         step: 300,
                       }}
-                      error={!dayTimeRange.endTime} // Add error prop
-                      helpertext={
-                        !dayTimeRange.endTime ? 'Ce champ est obligatoire' : ''
+                      required // Add the required prop to make it mandatory
+                      error={
+                        !dayTimeRange.endTime && dayTimeRange.endTime !== ''
+                      } // Adjust error logic
+                      helperText={
+                        !dayTimeRange.endTime && dayTimeRange.endTime !== ''
+                          ? 'Ce champ est obligatoire'
+                          : ''
                       }
                     />
                   </Grid>
 
                   <Grid item xs={2}>
                     <Button onClick={() => handleRemoveDayTimeRange(index)}>
-                      <DeleteIcon sx={{ fontSize: 40 }} color="secondary" />
+                      <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
                     </Button>
                   </Grid>
                 </Grid>

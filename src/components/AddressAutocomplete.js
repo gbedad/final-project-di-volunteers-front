@@ -101,7 +101,7 @@ const AddressAutocomplete = (props) => {
 
   return (
     <div>
-      <Accordion disabled={!editing} defaultExpanded={true}>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
@@ -110,7 +110,7 @@ const AddressAutocomplete = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <form>
-            <AddressAutofill
+            {/* <AddressAutofill
               accessToken="pk.eyJ1IjoiZ2JlZGFkIiwiYSI6ImNsaTlyc3VzYTFicmgza2x1ODFndHc2eHoifQ.7FiDsQwHvL3qR-Bqdngb4g"
               popoverOptions={{
                 placement: 'top-start',
@@ -131,8 +131,9 @@ const AddressAutocomplete = (props) => {
                 required
                 sx={{ marginBottom: 4 }}
               />
-            </AddressAutofill>
+            </AddressAutofill> */}
             <TextField
+              disabled={!editing}
               InputLabelProps={{ shrink: true }}
               type="text"
               variant="outlined"
@@ -149,6 +150,7 @@ const AddressAutocomplete = (props) => {
               direction="row"
               sx={{ marginBottom: 4, marginTop: 4 }}>
               <TextField
+                disabled={!editing}
                 InputLabelProps={{ shrink: true }}
                 type="text"
                 variant="outlined"
@@ -160,6 +162,7 @@ const AddressAutocomplete = (props) => {
                 onChange={onZipcodeChange}
               />
               <TextField
+                disabled={!editing}
                 InputLabelProps={{ shrink: true }}
                 type="text"
                 variant="outlined"

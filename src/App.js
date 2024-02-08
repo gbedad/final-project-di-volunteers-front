@@ -44,13 +44,29 @@ import Error404 from './pages/404';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { cyan, purple, green } from '@mui/material/colors';
+import {
+  cyan,
+  purple,
+  green,
+  orange,
+  red,
+  blue,
+  blueGrey,
+} from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
     primary: { main: cyan[900] },
+    light: { main: cyan[500] },
     secondary: { main: purple[400] },
+    trash: { main: blueGrey[200] },
     success: { main: green[500] },
+    text: {
+      disabled: cyan[900],
+    },
+    background: {
+      disabled: 'transparent',
+    },
   },
 });
 

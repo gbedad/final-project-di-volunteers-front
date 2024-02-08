@@ -121,7 +121,7 @@ export default function SignIn() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Se connecter
             </Typography>
 
             <Box
@@ -159,7 +159,7 @@ export default function SignIn() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                Se connecter
               </Button>
               <Grid container>
                 <Grid item xs>
