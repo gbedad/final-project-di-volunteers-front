@@ -146,6 +146,8 @@ const ProfilePage = ({ status }) => {
   const [message, setMessage] = useState('');
 
   const [showButton, setShowButton] = useState(false);
+  const [showProfileButton, setShowProfileButton] = useState(false);
+  const [edit, setEdit] = useState(true);
 
   // console.log('Status from props', status);
 
@@ -230,13 +232,17 @@ const ProfilePage = ({ status }) => {
         country: countrySelected,
       });
       // console.log(response.data.message);
-
+      setShowProfileButton(false);
       // Perform any desired actions after successful submission
     } catch (error) {
       console.error(error);
       // Handle any errors
     }
     setEditing(false);
+  };
+  const handleEditProfile = () => {
+    setEditing(true);
+    setShowProfileButton(true);
   };
 
   const handleFirstNameChange = (event) => {
@@ -344,7 +350,7 @@ const ProfilePage = ({ status }) => {
       operation: 'edit',
     },
     {
-      icon: 'Confirmer',
+      icon: 'Enregistrer',
       // name: 'Text',
       operation: 'save',
     },
@@ -364,7 +370,13 @@ const ProfilePage = ({ status }) => {
   // console.log(setStatusStep(status));
 
   const handleMotivationChange = async (e) => {
+    e.preventDefault();
     setMessage(e.target.value);
+
+    // Update user's mission title in your state or send a request to the server
+  };
+  const handleChange = async (e) => {
+    setEdit(false);
     setShowButton(true);
     // Update user's mission title in your state or send a request to the server
   };
@@ -375,6 +387,7 @@ const ProfilePage = ({ status }) => {
       message,
     });
     setShowButton(false);
+    setEdit(true);
     // console.log(response.data.message);
   };
 
@@ -452,7 +465,7 @@ const ProfilePage = ({ status }) => {
                   </label>
                 )} */}
 
-                <SpeedDial
+                {/* <SpeedDial
                   // onClick={() => handleClick()}
                   direction={'down'}
                   ariaLabel="SpeedDial basic example"
@@ -482,7 +495,7 @@ const ProfilePage = ({ status }) => {
                       }}
                     />
                   ))}
-                </SpeedDial>
+                </SpeedDial> */}
 
                 <ListItem>
                   <ListItemAvatar>
@@ -734,6 +747,20 @@ const ProfilePage = ({ status }) => {
             ) : (
               <p>Please log in to view your profile.</p>
             )}
+            <Stack direction="row" spacing={2} mt={1}>
+              <Button
+                variant="contained"
+                disabled={showProfileButton}
+                onClick={handleEditProfile}>
+                Modifier
+              </Button>
+              <Button
+                variant="contained"
+                disabled={!showProfileButton}
+                onClick={handleSaveClick}>
+                Enregistrer
+              </Button>
+            </Stack>
           </BorderedBoxWithLabel>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>
@@ -772,9 +799,10 @@ const ProfilePage = ({ status }) => {
           </BorderedBoxWithLabel>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>
-          <BorderedBoxWithLabel label="Ma motivation">
+          <BorderedBoxWithLabel label="Dites-nous en plus sur votre motivation">
             <Grid item xs={12} md={12} lg={12}>
               <TextareaAutosize
+                disabled={edit}
                 id="message"
                 label="Motivation"
                 name="message"
@@ -786,21 +814,33 @@ const ProfilePage = ({ status }) => {
                   fontFamily: 'Roboto',
                   fontSize: '1rem',
                   color: 'primary.main',
+                  background: 'transparent',
+
+                  border: 'none',
+                  lineHeight: '1.5em',
                 }}
                 value={message}
                 onChange={handleMotivationChange}
               />
-              <Typography variant="body2" component="p" color={'primary'}>
-                Vous pouvez, si vous le souhaitez, modifier votre texte de
-                motivation.
-              </Typography>
+              {/* <Typography variant="body2" component="p" color={'primary'}>
+                Vous n'êtes pas sùr(e) de votre texte, vous pouvez, si vous le
+                souhaitez, le modifier.
+              </Typography> */}
+            </Grid>
+            <Stack direction="row" spacing={2} mt={1}>
+              <Button
+                variant="contained"
+                disabled={showButton}
+                onClick={handleChange}>
+                Modifier
+              </Button>
               <Button
                 variant="contained"
                 disabled={!showButton}
                 onClick={handleSubmit}>
-                Confirmer
+                Enregistrer
               </Button>
-            </Grid>
+            </Stack>
           </BorderedBoxWithLabel>
           {/* <BorderedBoxWithLabel label="Votre statut">
 
@@ -828,14 +868,13 @@ const ProfilePage = ({ status }) => {
 
       <Box>
         <Typography variant="body2">
-          Votre compte est créé, vous avez la possibilité d'annuler votre
-          candidature.
+          Votre compte MyCogniverse est créé.
         </Typography>
         <Button
           type="submit"
           onClick={handleClickOpen}
           variant="contained"
-          sx={{ backgroundColor: 'primary', mt: 3, mb: 2 }}>
+          sx={{ backgroundColor: 'green', mt: 3, mb: 2 }}>
           Retirer ma candidature
         </Button>
         <Dialog
@@ -853,7 +892,7 @@ const ProfilePage = ({ status }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Annuler</Button>
-            <Button onClick={handleCancelRegistration}>Confirmer</Button>
+            <Button onClick={handleCancelRegistration}>Enregistrer</Button>
           </DialogActions>
         </Dialog>
       </Box>

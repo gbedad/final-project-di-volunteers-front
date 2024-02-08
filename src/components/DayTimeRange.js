@@ -268,7 +268,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             color="primary"
             onClick={handleSaveDayTimeRanges}
             disabled={!showButton}>
-            CONFIRMER
+            Enregistrer
           </Button>
         )}
       </BorderedBoxWithLabel>

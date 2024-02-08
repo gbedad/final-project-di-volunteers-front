@@ -101,11 +101,12 @@ const AddressAutocomplete = (props) => {
 
   return (
     <div>
-      <Accordion defaultExpanded={true}>
+      <Accordion defaultExpanded={false}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
-          id="panel1c-header">
+          id="panel1c-header"
+          sx={{ border: 'none' }}>
           <Typography>Adresse</Typography>
         </AccordionSummary>
         <AccordionDetails>

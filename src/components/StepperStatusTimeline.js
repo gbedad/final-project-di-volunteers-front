@@ -15,14 +15,14 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 const steps = [
   {
     label: 'Votre compte est créé, nous aimerions en savoir plus sur vous',
-    description: `Seules quelques informations basiques sont demandées, ainsi qu'un
+    description: `Seules quelques informations basiques sont demandées. Vous pourrez à ce stade modifier ou compléter votre
     texte de motivation que nous lirons attentivement.`,
   },
 
   {
     label: 'Nous aimerions en savoir plus sur vos disponibilités',
     description: `Qui vous êtes (MON PROFIL), dans quelles matières vous souhaitez
-      accompagner un élève et à quel niveau (MES DISPONIBILITÉS).`,
+      accompagner un élève et à quel niveau (MES DISPONIBILITÉS). Vous recevrez prochainement un appel de notre part pour un premier contact`,
   },
   {
     label: 'Vous pouvez maintenant télécharger vos documents',

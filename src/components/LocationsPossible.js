@@ -207,7 +207,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
             color="primary"
             onClick={handleSaveLocationsPossible}
             disabled={!showButton}>
-            CONFIRMER
+            Enregistrer
           </Button>
         )}
       </BorderedBoxWithLabel>

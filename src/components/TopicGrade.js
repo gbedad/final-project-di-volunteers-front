@@ -254,7 +254,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             color="primary"
             onClick={handleSaveSubjectClassRanges}
             disabled={!showButton}>
-            CONFIRMER
+            Enregistrer
           </Button>
         )}
       </BorderedBoxWithLabel>

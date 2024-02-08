@@ -234,7 +234,7 @@ const ChangeUserStatus = () => {
             variant="contained"
             disabled={!showActiveConfirm}
             onClick={handleSubmitActiveChange}>
-            CONFIRMER
+            Enregistrer
           </Button>
         </Box>
 
@@ -465,7 +465,7 @@ const ChangeUserStatus = () => {
                           </Typography>
                         }
                         arrow>
-                        <span>A renseigner</span>
+                        <span>A télécharger</span>
                       </CustomWidthTooltip>
                     </MenuItem>
                     <MenuItem value={'A interviewer'}>
@@ -528,7 +528,7 @@ const ChangeUserStatus = () => {
                 disabled={!showConfirm}
                 onClick={handleConfirmClick}
                 mb={3}>
-                Confirmer
+                Enregistrer
               </Button>
 
               <Typography variant="body2" mt={2}>

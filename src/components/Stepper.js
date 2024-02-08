@@ -147,12 +147,16 @@ const BasicTabs = () => {
             <Tab
               label="MES DISPONIBILITÉS"
               {...a11yProps(1)}
-              disabled={status === 'Compte créé'}
+              disabled={status === 'Compte créé' || status === 'Déclinée'}
             />
             <Tab
               label="MES DOCUMENTS"
               {...a11yProps(2)}
-              disabled={status === 'Compte créé' || status === 'Déclinée'}
+              disabled={
+                status === 'Compte créé' ||
+                status === 'A renseigner' ||
+                status === 'Déclinée'
+              }
             />
             <Tab
               label="MA CONVENTION"
@@ -162,7 +166,8 @@ const BasicTabs = () => {
                 status === 'A renseigner' ||
                 status === 'A télécharger' ||
                 status === 'A interviewer' ||
-                status === 'A finaliser'
+                status === 'A finaliser' ||
+                status === 'Déclinée'
               }
             />
             <RefreshButton getUser={getUser} />

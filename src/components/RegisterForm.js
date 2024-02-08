@@ -339,7 +339,7 @@ const RegisterForm = ({ mission }) => {
                     name="message"
                     aria-label="minimum height"
                     minRows={5}
-                    placeholder="Motivation"
+                    placeholder="Pourquoi souhaitez-vous être bénévole ?"
                     style={{ width: 400 }}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}

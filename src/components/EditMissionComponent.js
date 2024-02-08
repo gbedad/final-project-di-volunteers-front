@@ -66,6 +66,9 @@ function YourComponent({ user }) {
   return (
     <>
       <List>
+        <Typography variant="body2" color="gray">
+          La mission que vous avez choisie :
+        </Typography>
         <ListItem>
           <ListItemAvatar>
             <Avatar>
@@ -86,7 +89,11 @@ function YourComponent({ user }) {
           <ListItemText primary={mission.location} secondary="" />
         </ListItem>
         <Box mt={2}>
-          <Typography variant="body1">Choisir une autre mission</Typography>
+          <Typography variant="body2" color="gray" mb={2}>
+            Vous avez changé d'avis et souhaitez choisir une autre mission que
+            celle ci-dessus ? Veuillez cliquer dans ce cas sur une autre mission
+            de la liste ci-dessous.
+          </Typography>
           {!missions ? (
             ''
           ) : (
@@ -110,7 +117,7 @@ function YourComponent({ user }) {
         </Box>
       </List>
       <Button variant="contained" disabled={!showButton} onClick={handleSubmit}>
-        Confirmer
+        Changer de mission
       </Button>
     </>
   );
