@@ -70,6 +70,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import EditMissionComponent from '../components/EditMissionComponent';
 
+import FloatingButton from './FloatingButton';
+
 // import { TransitionProps } from '@mui/material/transitions';
 
 import BorderedBoxWithLabel from './borderedBox';
@@ -863,6 +865,9 @@ const ProfilePage = ({ status }) => {
             </Box>
             <StatusTimelineComponent userStatusStep={setStatusStep(status)} />
           </BorderedBoxWithLabel> */}
+          {/* <Box sx={{ float: 'right' }}>
+            <FloatingButton />
+          </Box> */}
         </Grid>
       </Grid>
 

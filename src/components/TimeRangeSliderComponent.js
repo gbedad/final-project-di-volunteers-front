@@ -106,7 +106,7 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
             variant="contained"
             onClick={handleSubmit}
             disabled={!showButton}>
-            Confirmer
+            Enregistrer
           </Button>
         </Box>
       </BorderedBoxWithLabel>

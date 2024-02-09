@@ -37,6 +37,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const { token } = useContext(AuthContext);
 
   const [showButton, setShowButton] = useState(false);
+  const [allValuesFilled, setAllValuesFilled] = useState(false);
 
   // const subjectClassesRanges = userLogged.user.skill.topics
   // console.log(userSelected);
@@ -65,6 +66,19 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
 
     getSubjects();
   }, []);
+
+  useEffect(() => {
+    // Check if all values in all objects in dayTimeRanges are filled
+    const allFilled = subjectClassRanges.every((subjectClassRange) => {
+      return (
+        subjectClassRange.subject !== '' &&
+        subjectClassRange.classStart !== '' &&
+        subjectClassRange.classEnd !== ''
+      );
+    });
+    // Update allValuesFilled state accordingly
+    setAllValuesFilled(allFilled);
+  }, [subjectClassRanges]);
 
   const handleAddSubjectClassRange = () => {
     setSubjectClassRanges([
@@ -253,7 +267,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             variant="contained"
             color="primary"
             onClick={handleSaveSubjectClassRanges}
-            disabled={!showButton}>
+            disabled={!allValuesFilled || !showButton}>
             Enregistrer
           </Button>
         )}

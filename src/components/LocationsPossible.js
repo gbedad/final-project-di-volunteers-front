@@ -33,6 +33,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const [locationsPossible, setLocationsPossible] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showButton, setShowButton] = useState(false);
+  const [disableSave, setDisableSave] = useState(true);
   const { userLogged } = location.state;
   const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
@@ -67,7 +68,12 @@ const LocationsPossibleComponent = ({ userSelected }) => {
     setLocationsPossible([...locationsPossible, '']);
     setShowButton(true);
   };
-
+  useEffect(() => {
+    // Check if any location field is empty
+    const hasEmptyLocation = locationsPossible.some((loc) => loc === '');
+    // Disable the "Enregistrer" button if any location field is empty
+    setDisableSave(hasEmptyLocation);
+  }, [locationsPossible]);
   const handleLocationChange = (value, index) => {
     const updatedLocationsPossible = [...locationsPossible];
     updatedLocationsPossible[index] = value;
@@ -206,7 +212,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
             variant="contained"
             color="primary"
             onClick={handleSaveLocationsPossible}
-            disabled={!showButton}>
+            disabled={disableSave || !showButton}>
             Enregistrer
           </Button>
         )}

@@ -33,6 +33,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [allValuesFilled, setAllValuesFilled] = useState(false);
   // const { userLogged } = location.state && location.state.userLogged;
   // Check if location.state is not null before destructuring values
 
@@ -69,6 +70,19 @@ const DayTimeRangeComponent = ({ userSelected }) => {
 
     getDays();
   }, []);
+
+  useEffect(() => {
+    // Check if all values in all objects in dayTimeRanges are filled
+    const allFilled = dayTimeRanges.every((dayTimeRange) => {
+      return (
+        dayTimeRange.day !== '' &&
+        dayTimeRange.startTime !== '' &&
+        dayTimeRange.endTime !== ''
+      );
+    });
+    // Update allValuesFilled state accordingly
+    setAllValuesFilled(allFilled);
+  }, [dayTimeRanges]);
 
   const handleAddDayTimeRange = () => {
     setDayTimeRanges([
@@ -267,7 +281,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             variant="contained"
             color="primary"
             onClick={handleSaveDayTimeRanges}
-            disabled={!showButton}>
+            disabled={!allValuesFilled || !showButton}>
             Enregistrer
           </Button>
         )}

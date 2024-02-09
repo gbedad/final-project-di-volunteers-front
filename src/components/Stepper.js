@@ -25,6 +25,7 @@ import StepperStatusTimeline from './StepperStatusTimeline';
 // import { setStatusStep } from '../js/statusDescription';
 import { shortDescription, setStatusStep } from '../js/statusDescription';
 import UploadConventionComponent from './FileConventionUploader';
+import FloatingButton from './FloatingButton';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,6 +63,28 @@ const BasicTabs = () => {
   const location = useLocation();
   const [value, setValue] = React.useState(0);
   const [status, setStatus] = useState('');
+  const [screenSize, setScreenSize] = useState('');
+
+  // Update screen size on mount and on window resize
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 600) {
+        setScreenSize('sm');
+      } else if (width < 960) {
+        setScreenSize('md');
+      } else {
+        setScreenSize('lg');
+      }
+    };
+
+    updateScreenSize(); // Initial call
+    window.addEventListener('resize', updateScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', updateScreenSize);
+    };
+  }, []);
 
   // console.log(location.state.userSelected);
 
@@ -138,6 +161,11 @@ const BasicTabs = () => {
         )}
         <Box>
           <Tabs
+            orientation={
+              screenSize === 'md' || screenSize === 'sm'
+                ? 'vertical'
+                : 'horizontal'
+            }
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
@@ -192,7 +220,11 @@ const BasicTabs = () => {
       <TabPanel
         value={value}
         index={0}
-        style={{ display: 'flex', justifyContent: 'center' }}>
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          position: 'relative',
+        }}>
         {/* <StatusTimelineComponent userStatusStep={setStatusStep(status)} /> */}
 
         <StepperStatusTimeline
@@ -216,6 +248,11 @@ const BasicTabs = () => {
         <ConventionComponent />
         <UploadConventionComponent userSelected={userId} />
       </TabPanel>
+      {value > 0 && (
+        <Box sx={{ float: 'right' }}>
+          <FloatingButton handleChange={handleChange} />
+        </Box>
+      )}
     </div>
   );
 };
