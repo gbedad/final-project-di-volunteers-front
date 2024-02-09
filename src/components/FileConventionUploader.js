@@ -56,6 +56,7 @@ export default function Uploads({ userSelected }) {
   const [openAlert, setOpenAlert] = useState(false);
   const [changeFileList, setChangeFileList] = useState(false);
   const [showUploadButton, setShowUploadButton] = useState(false);
+  const [conventionReceived, setConventionReceived] = useState(false);
 
   // console.log(location.state.userLogged.user.id);
   // const userId = location.state.userLogged.user.id;
@@ -94,13 +95,15 @@ export default function Uploads({ userSelected }) {
         setFilesUploaded(filteredFiles);
         setIsLoading(false);
         setShowUploadButton(false);
+
+        setConventionReceived(true);
       } else {
         setIsLoading(false);
       }
     };
     setChangeFileList(false);
     getFiles();
-  }, [changeFileList]);
+  }, [changeFileList, userId]);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -131,6 +134,17 @@ export default function Uploads({ userSelected }) {
         setOpenAlert(true);
         setSelectedFile(null);
         setLoading(false);
+        await fetch(`${BASE_URL}/update-files-received/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userId,
+
+            conventionReceived,
+          }),
+        });
       } else {
         // console.log('Error uploading file:', response.status);
       }

@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import BorderedBoxWithLabel from '../borderedBox';
+import InfoIcon from '@mui/icons-material/Info';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -127,24 +128,12 @@ const DocumentCheckbox = ({ user }) => {
                       color="primary"
                     />
                   }
-                  label="Test de français *"
+                  label={'Test de français'}
                   labelPlacement="right"
                 />
+                <InfoIcon fontSize="0.8em" />
               </FormGroup>
-              <FormGroup row aria-label="position">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={conventionReceived || false}
-                      onChange={handleConventionReceived}
-                      inputProps={{ 'aria-label': 'controlled' }}
-                      color="primary"
-                    />
-                  }
-                  label="Convention"
-                  labelPlacement="right"
-                />
-              </FormGroup>
+
               <Grid item xs={4} mb={2}>
                 <FormControlLabel
                   control={
@@ -159,7 +148,30 @@ const DocumentCheckbox = ({ user }) => {
                   labelPlacement="top"
                 />
               </Grid>
+              <Typography
+                sx={{ paddingTop: '5px', width: '300px' }}
+                color="info"
+                variant="div"
+                fontSize={13}>
+                <InfoIcon fontSize="1em" /> Test Voltaire ou autre.
+              </Typography>
             </FormControl>
+
+            <Divider />
+            <FormGroup row aria-label="position">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={conventionReceived || false}
+                    onChange={handleConventionReceived}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="primary"
+                  />
+                }
+                label="Convention reçue"
+                labelPlacement="right"
+              />
+            </FormGroup>
           </Grid>
         </Grid>
       </Box>

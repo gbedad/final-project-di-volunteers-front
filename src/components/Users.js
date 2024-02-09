@@ -33,6 +33,7 @@ import { Button } from '@mui/material';
 import Badge from '@mui/material/Badge';
 
 import ArticleIcon from '@mui/icons-material/Article';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import { shortDescription, longDescription } from '../js/statusDescription';
 
@@ -197,7 +198,7 @@ export default function Users(props) {
         user.id_received,
         user.cv_received,
         user.b3_received,
-        user.convention_received,
+        // user.convention_received,
       ].filter((value) => value === true);
       return { ...user, trueValuesCount: trueValues.length };
     });
@@ -218,6 +219,7 @@ export default function Users(props) {
       item.status,
       item.is_active,
       item.trueValuesCount,
+      item.convention_received,
       item.test_voltaire_passed
     );
   });
@@ -250,6 +252,7 @@ export default function Users(props) {
             <TableCell>CREATED</TableCell>
             <TableCell>STATUS</TableCell>
             <TableCell>DOCS.</TableCell>
+            <TableCell>CONV.</TableCell>
             <TableCell align="right">ACTIVE</TableCell>
           </TableRow>
         </TableHead>
@@ -313,6 +316,13 @@ export default function Users(props) {
                   {row.status}
                 </TableCell>
               </Tooltip>
+              <TableCell style={{ width: 60 }} align="left">
+                <Badge
+                  badgeContent={`${row.trueValuesCount}/4`}
+                  color={row.convention_received && 'success'}>
+                  <ReceiptLongIcon />
+                </Badge>
+              </TableCell>
               <TableCell style={{ width: 60 }} align="left">
                 <Badge
                   badgeContent={`${row.trueValuesCount}/4`}

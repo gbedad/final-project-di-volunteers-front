@@ -194,7 +194,6 @@ const BasicTabs = () => {
                 status === 'A renseigner' ||
                 status === 'A télécharger' ||
                 status === 'A interviewer' ||
-                status === 'A finaliser' ||
                 status === 'Déclinée'
               }
             />

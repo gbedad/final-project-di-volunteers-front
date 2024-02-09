@@ -638,14 +638,7 @@ const ChangeUserStatus = () => {
           <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <DocumentCheckbox user={user} />
-              <Typography
-                sx={{ paddingTop: '5px' }}
-                color="info"
-                variant="p"
-                fontSize={14}>
-                *Test Voltaire ou autre.
-              </Typography>
-              <Divider />
+
               {user.file.length !== 0 ? (
                 <Box mt={2}>
                   <Typography variant="title">

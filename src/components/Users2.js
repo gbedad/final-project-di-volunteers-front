@@ -11,6 +11,7 @@ import {
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
@@ -114,9 +115,9 @@ const columns = [
   },
   {
     field: 'test_voltaire_passed',
-    headerName: 'Test',
+    headerName: 'Test Fr.',
 
-    width: 90,
+    width: 70,
     editable: true,
     renderCell: (params) => {
       return params.value ? (
@@ -131,10 +132,28 @@ const columns = [
     },
   },
   {
+    field: 'convention_received',
+    headerName: 'Conv.',
+
+    width: 50,
+    editable: true,
+    renderCell: (params) => {
+      return params.value ? (
+        <ReceiptLongIcon
+          style={{
+            color: 'purple',
+          }}
+        />
+      ) : (
+        ''
+      );
+    },
+  },
+  {
     field: 'is_active',
     headerName: 'Actif',
 
-    width: 90,
+    width: 70,
     editable: true,
     renderCell: (params) => {
       return params.value ? (
@@ -165,7 +184,7 @@ function renderRating(params) {
       getLabelText={(value) => `${value} ArticleIcon${value !== 1 ? 's' : ''}`}
       icon={<FilePresentRoundedIcon fontSize="10" />}
       emptyIcon={<FilePresentOutlinedIcon />}
-      max={4}
+      max={3}
     />
   );
 }
@@ -183,6 +202,7 @@ function createData(
   is_active,
   trueValuesCount,
   test_voltaire_passed,
+  convention_received,
   interviews
 ) {
   return {
@@ -199,6 +219,7 @@ function createData(
     is_active,
     trueValuesCount,
     test_voltaire_passed,
+    convention_received,
     interviews,
   };
 }
@@ -279,7 +300,7 @@ export default function DataGridDemo(props) {
         user.id_received,
         user.cv_received,
         user.b3_received,
-        user.convention_received,
+        // user.convention_received,
       ].filter((value) => value === true);
       return { ...user, trueValuesCount: trueValues.length };
     });
@@ -319,7 +340,8 @@ export default function DataGridDemo(props) {
       item.status,
       item.is_active,
       item.trueValuesCount,
-      item.test_voltaire_passed
+      item.test_voltaire_passed,
+      item.convention_received
     );
   });
   return (
