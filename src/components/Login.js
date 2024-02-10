@@ -89,7 +89,10 @@ export default function SignIn() {
         // console.log(userLogged, isLoading);
         if (userLogged.user.role === 'volunteer') {
           navigate('/stepper', { state: { userLogged } });
-        } else if (userLogged.user.role === 'admin') {
+        } else if (
+          userLogged.user.role === 'admin' ||
+          userLogged.user.role === 'interviewer'
+        ) {
           navigate('/view-users', { state: { userLogged } });
         } else {
           console.log('Loading.....');

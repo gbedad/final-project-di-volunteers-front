@@ -119,7 +119,10 @@ function ResponsiveAppBar() {
   };
 
   const handleViewUsers = () => {
-    if (userLogged.user.role === 'admin') {
+    if (
+      userLogged.user.role === 'admin' ||
+      userLogged.user.role === 'interviewer'
+    ) {
       navigate(`/view-users`, { state: { userLogged } });
     }
   };
@@ -512,14 +515,21 @@ function ResponsiveAppBar() {
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
                     location.pathname === '/view-users') &&
-                  location.state.userLogged.user.role === 'admin' ? (
+                  (location.state.userLogged.user.role === 'admin' ||
+                    location.state.userLogged.user.role === 'interviewer') ? (
                     <div>
                       <MenuItem onClick={handleViewUsers}>
                         <Typography textAlign="center">
                           Tableau de bord
                         </Typography>
                       </MenuItem>
-                      <MenuItem onClick={handleEditMissions}>
+
+                      <MenuItem
+                        onClick={handleEditMissions}
+                        sx={{
+                          display:
+                            userLogged.user.role === 'interviewer' && 'none',
+                        }}>
                         <Typography textAlign="center">Missions</Typography>
                       </MenuItem>
                       <MenuItem onClick={handleLogout}>

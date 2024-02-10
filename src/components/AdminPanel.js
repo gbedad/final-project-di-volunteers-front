@@ -157,7 +157,7 @@ function DashboardContent() {
     <>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        {userLogged.role === 'admin' ? (
+        {userLogged.role === 'admin' || userLogged.role === 'interviewer' ? (
           <Drawer variant="permanent" open={!open}>
             <Toolbar
               sx={{

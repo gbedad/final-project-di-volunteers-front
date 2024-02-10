@@ -531,17 +531,24 @@ const ChangeUserStatus = () => {
                 Enregistrer
               </Button>
 
-              <Typography variant="body2" mt={2}>
-                Cliquer pour éditer le profil du tuteur
-                <Box mt={1}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleEditUserProfile}>
-                    Editer profil
-                  </Button>
-                </Box>
-              </Typography>
+              <Box
+                mt={1}
+                sx={{
+                  display:
+                    userLogged.user.role === 'interviewer' ? 'none' : 'flex',
+                  flexDirection: 'column',
+                }}>
+                <Typography variant="body2" mt={2}>
+                  Cliquer pour éditer le profil du tuteur
+                </Typography>
+                <Button
+                  sx={{ width: 'fit-content' }}
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleEditUserProfile}>
+                  Editer profil
+                </Button>
+              </Box>
             </BorderedBoxWithLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
