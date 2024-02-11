@@ -75,141 +75,156 @@ const CardPresentation = () => {
 
   return (
     <>
-      {/* Cards */}
-      <Grid
-        container
-        spacing={2}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          marginTop: '20px',
-        }}>
-        {/* Card 1 */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Card
-            sx={{
-              maxWidth: 500,
-              width: 345,
-              height: 400,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-            }}>
-            <CardActionArea mr="auto">
-              {/* Your image */}
-              <img
-                src={LogoASB}
-                alt="Logo association"
-                style={{
-                  width: '80%',
-                  /* The CSS properties `display: 'flex'` and `justifyContent: 'center'` are used to
-                  create a flex container and center the content horizontally within that container. */
-                }}
-              />
-              <CardContent>
-                {/* Title */}
-                <Typography gutterBottom variant="h5" component="div">
-                  L'Association
-                </Typography>
-                {/* Description */}
-                <Typography variant="body2" color="text.secondary">
-                  L'Association
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions
-              sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              {/* Button to open modal */}
-              <Button size="standard" onClick={handleOpenModal1}>
-                En savoir plus
-              </Button>
+      <Box mt={2}>
+        {/* Cards */}
+        <Grid align="center" container spacing={2}>
+          {/* Card 1 */}
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              sx={{
+                maxWidth: 450,
+                minWidth: 300,
+                width: 350,
+                height: 500,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+              <CardActionArea mr="auto">
+                {/* Your image */}
+                <img
+                  src={LogoASB}
+                  alt="Logo association"
+                  style={{
+                    width: '80%',
 
-              <Link
-                sx={{ textDecoration: 'none', fontSize: 'small' }}
-                href="https://sephoraberrebi.org"
-                rel="noopener"
-                target="_blank">
-                SITE DE L'ASSOCIATION
-              </Link>
-            </CardActions>
-          </Card>
-        </Grid>
-        {/* Card 2 */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Card
-            sx={{
-              maxWidth: 500,
-              width: 345,
-              height: 400,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-            }}>
-            <CardActionArea>
-              {/* Your image */}
-              <img src={ImageTutorat} alt="Tutorat" style={{ width: '100%' }} />
-              <CardContent>
-                {/* Title */}
-                <Typography gutterBottom variant="h5" component="div">
-                  Le Tutorat
-                </Typography>
-                {/* Description */}
-                <Typography variant="body2" color="text.secondary">
-                  Description for Card 2
-                  <a href="https://fr.freepik.com/vecteurs-libre/fond-concept-travail-equipe-3d_6144599.htm#query=missions&position=7&from_view=search&track=sph&uuid=61f6fb43-db6f-4b20-b058-ad1453a3b926">
+                    /* The CSS properties `display: 'flex'` and `justifyContent: 'center'` are used to
+                  create a flex container and center the content horizontally within that container. */
+                  }}
+                />
+                <CardContent>
+                  {/* Title */}
+                  <Typography gutterBottom variant="h5" component="div">
+                    L'Association
+                  </Typography>
+                  {/* Description */}
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ textAlign: 'left' }}>
+                    L'association Séphora Berrebi accompagne les enfants,
+                    adolescents et jeunes adultes empêchés dans leurs
+                    apprentissages pour des raisons d'ordre socio-culturel ou
+                    médical.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions
+                sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                {/* Button to open modal */}
+                <Button size="standard" onClick={handleOpenModal1}>
+                  En savoir plus
+                </Button>
+
+                <Link
+                  sx={{ textDecoration: 'none', fontSize: 'small' }}
+                  href="https://sephoraberrebi.org"
+                  rel="noopener"
+                  target="_blank">
+                  SITE DE L'ASSOCIATION
+                </Link>
+              </CardActions>
+            </Card>
+          </Grid>
+          {/* Card 2 */}
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              sx={{
+                maxWidth: 450,
+                minWidth: 300,
+                width: 350,
+                height: 500,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+              <CardActionArea>
+                {/* Your image */}
+                <img
+                  src={ImageTutorat}
+                  alt="Tutorat"
+                  style={{ width: '100%' }}
+                />
+                <CardContent>
+                  {/* Title */}
+                  <Typography gutterBottom variant="h5" component="div">
+                    Le Tutorat
+                  </Typography>
+                  {/* Description */}
+                  <Typography variant="body2" color="text.secondary">
+                    Le pôle d'éducation solidaire de l'association Séphora
+                    Berrebi met en place des séances de tutorat personnalisé
+                    afin d'aider des élèves sur leur chemin de progrès dans les
+                    disciplines scolaires. Le tutorat ? Tout un symbole !
+                    Accompagner et guider un élève et l'encourager à devenir
+                    actif dans ses apprentissages.
+                    {/* <a href="https://fr.freepik.com/vecteurs-libre/fond-concept-travail-equipe-3d_6144599.htm#query=missions&position=7&from_view=search&track=sph&uuid=61f6fb43-db6f-4b20-b058-ad1453a3b926">
                     Image de pikisuperstar
                   </a>{' '}
                   sur Freepik
                   <a href="https://fr.freepik.com/vecteurs-libre/equipe-affaires-escaladant-poignee-main-geante-soutien-du-chef_18733161.htm#query=tutorat&position=18&from_view=search&track=sph&uuid=5e6dcb4f-368d-4db1-9da7-bb7be0d4df9b">
                     Image de pch.vector
                   </a>{' '}
-                  sur Freepik
-                </Typography>
-              </CardContent>
-            </CardActionArea>
+                  sur Freepik */}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
 
-            <CardActions>
-              {/* Button to open modal */}
-              <Button onClick={handleOpenModal2}>En savoir plus</Button>
-            </CardActions>
-          </Card>
+              <CardActions>
+                {/* Button to open modal */}
+                <Button onClick={handleOpenModal2}>En savoir plus</Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            {/* Card 3 */}
+            <Card
+              className="card animated-card"
+              sx={{
+                maxWidth: 450,
+                minWidth: 300,
+                width: 350,
+                height: 500,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+              <CardActionArea>
+                {/* Your image */}
+                <img
+                  src={ImageMissions}
+                  alt="Missions"
+                  style={{ width: '100%' }}
+                />
+                <CardContent>
+                  {/* Title */}
+                  <Typography gutterBottom variant="h5" component="div">
+                    Les missions
+                  </Typography>
+                  {/* Description */}
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"></Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                {/* Button to open modal */}
+                <Button onClick={gotoMissions}>Voir les missions</Button>
+              </CardActions>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          {/* Card 3 */}
-          <Card
-            sx={{
-              maxWidth: 500,
-              width: 345,
-              height: 400,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-            }}>
-            <CardActionArea>
-              {/* Your image */}
-              <img
-                src={ImageMissions}
-                alt="Missions"
-                style={{ width: '100%' }}
-              />
-              <CardContent>
-                {/* Title */}
-                <Typography gutterBottom variant="h5" component="div">
-                  Les missions
-                </Typography>
-                {/* Description */}
-                <Typography variant="body2" color="text.secondary">
-                  Description for Card 3
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              {/* Button to open modal */}
-              <Button onClick={gotoMissions}>Voir les missions</Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      </Grid>
+      </Box>
 
       {/* Modal 1 */}
       <Modal

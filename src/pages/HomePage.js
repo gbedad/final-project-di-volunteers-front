@@ -61,8 +61,7 @@ const HomePage = () => {
     <>
       <Container style={containerStyle} component="main" maxWidth="lg">
         <Typography variant="h4" component="h3" color="primary.main" mt={6}>
-          Pour nous aider à mieux vous connaître avant de vous proposer des
-          élèves à accompagner.
+          Rejoignez l'équipe de bénévoles de l'association Séphora Berrebi !
         </Typography>
         {/* <div className={`background background-${screenSize}`}>
           <div className="content">
@@ -73,6 +72,10 @@ const HomePage = () => {
         </div> */}
         <CardPresentation />
         <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'80%'} />
+        <Typography variant="h4" component="h3" color="primary.main" mt={6}>
+          Pour nous aider à mieux vous connaître avant de vous proposer des
+          élèves à accompagner.
+        </Typography>
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </>
