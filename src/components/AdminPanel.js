@@ -192,7 +192,7 @@ function DashboardContent() {
             overflow: 'auto',
           }}>
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 0, mb: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={4} md={8} lg={9}>
                 <Paper

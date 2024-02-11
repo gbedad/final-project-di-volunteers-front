@@ -47,19 +47,6 @@ const CardList = () => {
     // eslint-disable-next-line
   }, []);
 
-  // axios.interceptors.response.use(
-  //     response => {
-  //         return response
-  //     },
-  //     error => {
-  //         if (!error.response) {
-  //             console.log("Please check your internet connection.");
-  //         }
-
-  //         return Promise.reject(error)
-  //     }
-  // )
-  // console.log(cardsData);
   return isLoading ? (
     <Box sx={{ width: '100%' }}>
       <LinearProgress />

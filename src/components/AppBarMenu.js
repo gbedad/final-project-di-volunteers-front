@@ -323,7 +323,7 @@ function ResponsiveAppBar() {
             noWrap
             onClick={handleLogoClick}
             sx={{
-              mr: 2,
+              mr: 1,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,

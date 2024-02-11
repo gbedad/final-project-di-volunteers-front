@@ -219,7 +219,13 @@ const ChangeUserStatus = () => {
     // <ThemeProvider theme={lightTheme}>
     <>
       <Container maxWidth="l">
-        <Box mb={2} mt={2}>
+        <Box
+          mb={2}
+          mt={2}
+          sx={{
+            visibility:
+              userLogged.user.role === 'interviewer' ? 'hidden' : 'visible',
+          }}>
           <FormControlLabel
             control={
               <Switch
@@ -420,134 +426,141 @@ const ChangeUserStatus = () => {
                   </Box>
                 </ListItemButton>
               </List>
-
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    Changer le statut
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={newStatus}
-                    label="Change Status"
-                    onChange={handleStatusChange}>
-                    <MenuItem value={'Compte créé'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('Compte créé')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Compte créé</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'A renseigner'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('A renseigner')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A renseigner</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'A télécharger'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('A télécharger')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A télécharger</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'A interviewer'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('A interviewer')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A interviewer</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'A finaliser'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('A finaliser')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>A finaliser</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'Validé'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('Validé')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Validé</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    <MenuItem value={'Déclinée'}>
-                      <CustomWidthTooltip
-                        placement="right"
-                        title={
-                          <Typography sx={{ fontSize: '16px', padding: '5px' }}>
-                            {longDescription('Déclinée')}
-                          </Typography>
-                        }
-                        arrow>
-                        <span>Déclinée</span>
-                      </CustomWidthTooltip>
-                    </MenuItem>
-                    {/* <MenuItem value={'validé'}>Validé</MenuItem>
-                    <MenuItem value={'created'}>Created</MenuItem>
-                    <MenuItem value={'proposed'}>Proposed</MenuItem>
-                    <MenuItem value={'selected'}>Selected</MenuItem> */}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Button
-                variant="contained"
-                disabled={!showConfirm}
-                onClick={handleConfirmClick}
-                mb={3}>
-                Enregistrer
-              </Button>
-
               <Box
-                mt={1}
                 sx={{
                   display:
                     userLogged.user.role === 'interviewer' ? 'none' : 'flex',
                   flexDirection: 'column',
                 }}>
-                <Typography variant="body2" mt={2}>
-                  Cliquer pour éditer le profil du tuteur
-                </Typography>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
+                    <InputLabel id="demo-simple-select-label">
+                      Changer le statut
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={newStatus}
+                      label="Change Status"
+                      onChange={handleStatusChange}>
+                      <MenuItem value={'Compte créé'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('Compte créé')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Compte créé</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'A renseigner'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('A renseigner')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A renseigner</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'A télécharger'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('A télécharger')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A télécharger</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'A interviewer'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('A interviewer')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A interviewer</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'A finaliser'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('A finaliser')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>A finaliser</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'Validé'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('Validé')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Validé</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      <MenuItem value={'Déclinée'}>
+                        <CustomWidthTooltip
+                          placement="right"
+                          title={
+                            <Typography
+                              sx={{ fontSize: '16px', padding: '5px' }}>
+                              {longDescription('Déclinée')}
+                            </Typography>
+                          }
+                          arrow>
+                          <span>Déclinée</span>
+                        </CustomWidthTooltip>
+                      </MenuItem>
+                      {/* <MenuItem value={'validé'}>Validé</MenuItem>
+                    <MenuItem value={'created'}>Created</MenuItem>
+                    <MenuItem value={'proposed'}>Proposed</MenuItem>
+                    <MenuItem value={'selected'}>Selected</MenuItem> */}
+                    </Select>
+                  </FormControl>
+                </Box>
                 <Button
                   sx={{ width: 'fit-content' }}
                   variant="contained"
-                  color="secondary"
-                  onClick={handleEditUserProfile}>
-                  Editer profil
+                  disabled={!showConfirm}
+                  onClick={handleConfirmClick}
+                  mb={3}>
+                  Enregistrer
                 </Button>
+                <Box mt={1}>
+                  <Typography variant="body2" mt={2}>
+                    Cliquer pour éditer le profil du tuteur
+                  </Typography>
+                  <Button
+                    sx={{ width: 'fit-content' }}
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleEditUserProfile}>
+                    Editer profil
+                  </Button>
+                </Box>
               </Box>
             </BorderedBoxWithLabel>
           </Grid>
@@ -644,17 +657,25 @@ const ChangeUserStatus = () => {
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
-              <DocumentCheckbox user={user} />
-
+              <Box
+                sx={{
+                  display: userLogged.user.role === 'interviewer' && 'none',
+                }}>
+                <DocumentCheckbox user={user} />
+              </Box>
               {user.file.length !== 0 ? (
                 <Box mt={2}>
-                  <Typography variant="title">
-                    Rajouter la convention signée
-                  </Typography>
-                  <Typography variant="body2">
-                    (par l'association Séphora Berrebi)
-                  </Typography>
-
+                  <Box
+                    sx={{
+                      display: userLogged.user.role === 'interviewer' && 'none',
+                    }}>
+                    <Typography variant="title">
+                      Rajouter la convention signée
+                    </Typography>
+                    <Typography variant="body2">
+                      (par l'association Séphora Berrebi)
+                    </Typography>
+                  </Box>
                   <Uploads userSelected={user.id} />
                 </Box>
               ) : (

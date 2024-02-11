@@ -878,8 +878,8 @@ const ProfilePage = ({ status }) => {
         <Button
           type="submit"
           onClick={handleClickOpen}
-          variant="contained"
-          sx={{ backgroundColor: 'green', mt: 3, mb: 2 }}>
+          variant="outlined"
+          sx={{ backgroundColor: 'secondary', mt: 3, mb: 2 }}>
           Retirer ma candidature
         </Button>
         <Dialog

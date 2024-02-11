@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Link, Typography } from '@mui/material';
 
 import './HomePage.css';
+import CardPresentation from './cardsPresentationHomepage';
+import MyCogniverseImg from '../assets/mycogniverse.png';
 
 function Copyright(props) {
   return (
@@ -62,13 +64,15 @@ const HomePage = () => {
           Pour nous aider à mieux vous connaître avant de vous proposer des
           élèves à accompagner.
         </Typography>
-        <div className={`background background-${screenSize}`}>
+        {/* <div className={`background background-${screenSize}`}>
           <div className="content">
             <Typography variant="h3" component="h3" color="primary">
               A vous de jouer : commencez par choisir une mission&nbsp;!
             </Typography>
           </div>
-        </div>
+        </div> */}
+        <CardPresentation />
+        <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'80%'} />
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </>

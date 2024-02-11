@@ -98,6 +98,7 @@ function YourComponent({ user }) {
             ''
           ) : (
             <Select
+              sx={{ marginBottom: '1rem' }}
               fullWidth
               value={
                 selectedMissionTitle === undefined ||

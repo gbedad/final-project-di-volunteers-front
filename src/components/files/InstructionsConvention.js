@@ -26,7 +26,7 @@ const InstructionCoventionComponent = () => {
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = pdfFile;
-    link.download = 'convention-reciproque.pdf';
+    link.download = 'convention_reciproque.pdf';
     link.click();
   };
   return (
