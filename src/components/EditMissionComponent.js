@@ -69,7 +69,7 @@ function YourComponent({ user }) {
         <Typography variant="body2" color="gray">
           La mission que vous avez choisie :
         </Typography>
-        <ListItem>
+        <ListItem alignItems="flex-start">
           <ListItemAvatar>
             <Avatar>
               <CategoryIcon />

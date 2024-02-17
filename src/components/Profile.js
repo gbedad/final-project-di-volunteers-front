@@ -514,10 +514,13 @@ const ProfilePage = ({ status }) => {
                       label="Prénom"
                       value={firstName}
                       onChange={handleFirstNameChange}
-                      disabled={!editing && true}
+                      disabled={!editing}
                       variant="standard"
                       focused
-                      color="light"
+                      // color="light"
+                      InputProps={{
+                        style: { color: editing === false ? 'cyan' : 'black' },
+                      }}
                     />
                     <TextField
                       label="Nom"
@@ -526,7 +529,7 @@ const ProfilePage = ({ status }) => {
                       disabled={!editing && true}
                       variant="standard"
                       focused
-                      color="light"
+                      // color="light"
                     />
                   </Stack>
                 </ListItem>
@@ -575,7 +578,7 @@ const ProfilePage = ({ status }) => {
                       disabled={!editing && true}
                       variant="standard"
                       focused
-                      color="light"
+                      // color="light"
                     />
                   </FormControl>
                 </ListItem>
@@ -596,7 +599,7 @@ const ProfilePage = ({ status }) => {
                       disabled={!editing}
                       variant="standard"
                       focused
-                      color="light"
+                      // color="light"
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -638,7 +641,7 @@ const ProfilePage = ({ status }) => {
                         variant="standard"
                         id="birthdate"
                         label="Date de naissance"
-                        color="light"
+                        // color="light"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -679,6 +682,7 @@ const ProfilePage = ({ status }) => {
                     </Badge>
                   </ListItemAvatar>
                   <FormControl
+                    fullWidth
                     variant="standard"
                     // sx={{ m: 1, width: '100%' }}
                     required>
@@ -686,8 +690,9 @@ const ProfilePage = ({ status }) => {
                       Activité
                     </InputLabel>
                     <Select
+                      sx={{ color: !editing ? 'primary' : 'inherit' }}
                       fullWidth
-                      color="light"
+                      // color="light"
                       disabled={!editing}
                       labelid="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
@@ -708,17 +713,11 @@ const ProfilePage = ({ status }) => {
                     </Select>
                   </FormControl>
                 </ListItem>
-                <ListItem>
+                <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Badge
-                      badgeContent=""
-                      color="warning"
-                      variant="dot"
-                      invisible={user.street !== null ? true : false}>
-                      <Avatar>
-                        <HomeIcon />
-                      </Avatar>
-                    </Badge>
+                    <Avatar>
+                      <HomeIcon />
+                    </Avatar>
                   </ListItemAvatar>
                   <AddressAutocomplete
                     fullWidth
@@ -738,12 +737,12 @@ const ProfilePage = ({ status }) => {
                 {user.activity === null || user.street === null ? (
                   <ListItem>
                     <ListItemText
-                      primary={
-                        <Badge
-                          badgeContent=""
-                          color="warning"
-                          variant="dot"></Badge>
-                      }
+                      // primary={
+                      //   <Badge
+                      //     badgeContent=""
+                      //     color="warning"
+                      //     variant="dot"></Badge>
+                      // }
                       secondary="Merci de renseigner ces données quand vous le souhaitez d'ici l'étape 4."
                     />
                   </ListItem>
@@ -782,7 +781,7 @@ const ProfilePage = ({ status }) => {
               <EditMissionComponent user={user} />
             ) : (
               <List>
-                <ListItem>
+                <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar>
                       <CategoryIcon />
@@ -790,7 +789,17 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={user.mission.title}
-                    secondary={user.mission.description}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ display: 'inline' }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary">
+                          user.mission.description
+                        </Typography>
+                      </React.Fragment>
+                    }
                   />
                 </ListItem>
                 <ListItem>

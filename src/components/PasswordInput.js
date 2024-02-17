@@ -17,7 +17,7 @@ const PasswordInput = ({ password, handlePassword }) => {
       label="Mot de passe"
       value={password}
       onChange={handlePassword}
-      required={true}
+      required
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

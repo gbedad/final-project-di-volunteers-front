@@ -79,8 +79,8 @@ function ResponsiveAppBar() {
 
   const handleGoToPage = async (page) => {
     try {
-      if (page === "L'association") {
-        navigate('/', { state: { userLogged } });
+      if (page === 'Comment ça marche') {
+        navigate('/faq', { state: { userLogged } });
       } else if (
         page === 'Missions bénévoles' &&
         (!userLogged || userLogged.user.role === 'volunteer')
@@ -430,6 +430,17 @@ function ResponsiveAppBar() {
                   </Button>
                 )
             )} */}
+            <Button
+              onClick={() => navigate('/faq', { state: { userLogged } })}
+              sx={{
+                my: 2,
+                pl: 2,
+                pr: 2,
+                color: 'white',
+                display: 'block',
+              }}>
+              Comment ça marche
+            </Button>
             <Button
               onClick={() => navigate('/missions', { state: { userLogged } })}
               sx={{

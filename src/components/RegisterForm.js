@@ -347,21 +347,22 @@ const RegisterForm = ({ mission }) => {
                     aria-label="minimum height"
                     minRows={5}
                     placeholder="Pourquoi souhaitez-vous être bénévole ?"
-                    style={{ width: 400 }}
+                    style={{ width: 400, fontFamily: 'Roboto' }}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Box sx={{ fontSize: '12px' }}>
                     <FormControlLabel
+                      style={{ fontSize: '13px' }}
                       control={
                         <Checkbox value="allowExtraEmails" color="primary" />
                       }
                       label="Cliquez ici pour indiquer que vous avez lu et accepté les conditions présentées dans les conditions générales."
                     />
                   </Box>
-                </Grid>
+                </Grid> */}
               </Grid>
 
               <Button

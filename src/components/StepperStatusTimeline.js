@@ -16,41 +16,53 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 
 const steps = [
   {
-    label: 'Votre compte est créé, nous aimerions en savoir plus sur vous',
-    label_realised: 'Mon compte est créé',
-    description: `Merci de nous  communiquer quelques information de base.`,
+    label: 'Mon profil',
+    label_realised: 'Mon profil est créé',
+    label_waiting: "Mon compte est créé, j'ai renseigné mon profil",
+    description: `Votre compte est créé, nous aimerions en savoir plus sur vous : merci de nous communiquer quelques informations préliminaires sur votre profil (sauf, bien sûr, si vous l'avez déjà fait !).`,
+    description_waiting:
+      'Merci ! Nous vous envoyons un mail dès que nous en avons pris connaissance.',
   },
 
   {
-    label: 'Nous aimerions connaitre vos souhaits et disponibilités',
+    label: 'Mes souhaits (matières, niveaux) et disponibilités',
     label_realised: 'Mes souhaits et disponibilités sont renseignés',
-    description: `Une fois vos souhaits et diponibiltés renseignés, nous vous appellerons pour nous présenter lors d'un premier contact téléphonique.`,
+    label_waiting: "J'ai renseigné mes souhaits et disponibilités",
+    description: `Nous aimerions connaître vos souhaits et disponibilités (sauf, bien sûr, si vous l'avez déjà fait !). Une fois que vous les aurez saisis, nous vous appellerons afin de nous présenter lors d'un premier contact téléphonique.`,
+    description_waiting:
+      'Merci ! Nous vous envoyons un mail dès que nous en avons pris connaissance et vous appelons afin de nous présenter.',
   },
+
   {
-    label: 'Documents à télécharger',
+    label: 'Mes documents à télécharger',
     label_realised: 'Mes documents sont téléchargés',
-    description: `
-    Téléchargez vos pièce d'identité, extrait de casier judiciaire,
-    CV ou diplômes ou attestations.
+    label_waiting: "J'ai téléchargé mes documents",
+    description: `Nous vous serions reconnaissants de bien vouloir télécharger vos pièce d'identité, extrait de casier judiciaire, CV ou diplômes ou attestations (sauf, bien sûr, si vous l'avez déjà fait !).
 .`,
+    description_waiting:
+      "Merci ! Nous vous envoyons un mail dès réception de vos documents, avant de vous contacter pour convenir ensemble des modalités d'entretien.",
   },
 
   {
     label: 'Le moment est venu de nous entretenir',
     label_realised: 'Mes entretiens ont été réalisés',
+    label_waiting: 'Ma convention est signée',
     description: `Nous allons prendre contact pour vous proposer un ou plusieurs rendez-vous.`,
   },
   {
     label: "Il ne reste plus qu'à signer la convention",
     label_realised: 'Ma convention est signée',
+    label_waiting: '',
     description: `
-    Vous pouvez maintenant télécharger le modèle et signer la convention d'engagement réciproque. C'est aussi le moment de compléter d'éventuelles informations manquantes.
+    Vous pouvez maintenant télécharger le modèle et signer la convention d'engagement réciproque (sauf, bien sûr, si vous l'avez déjà fait !). C'est aussi le moment de compléter d'éventuelles informations manquantes.
   `,
+    description_waiting:
+      'Super ! Nous déposons dès que possible la convention signée par nos soins.',
   },
   {
     label: 'Ma candidature est validée',
-    description: `Bienvenue ! Nous cherchons parmi les demandes en attente, celles qui
-    correspondent à vos souhaits.`,
+    label_waiting: '',
+    description: `Bienvenue à l'association Séphora Berrebi ! Nous cherchons parmi les demandes de tutorat en attente celles qui correspondent à vos souhaits.,`,
   },
 ];
 
@@ -67,7 +79,7 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function StepperStatusTimeline(props) {
-  const { userStatusStep, handleChange } = props;
+  const { userStatusStep, handleChange, finished } = props;
 
   console.log(userStatusStep);
 
@@ -140,11 +152,15 @@ export default function StepperStatusTimeline(props) {
                     <Typography variant="caption">Dernière étape</Typography>
                   ) : null
                 }>
-                {activeStep > index ? step.label_realised : step.label}
+                {activeStep > index
+                  ? step.label_realised
+                  : finished
+                  ? step.label_waiting
+                  : step.label}
               </StepLabel>
               <StepContent TransitionProps={{ unmountOnExit: false }}>
                 <Typography color="secondary.dark" fontSize={13} ml={1}>
-                  {step.description}
+                  {finished ? step.description_waiting : step.description}
                 </Typography>
                 <Box sx={{ mb: 2 }}>
                   <div>

@@ -36,6 +36,7 @@ import CardList from './components/cards/Cards';
 // import Lassociation from './pages/lassociation';
 import Tutorat from './pages/focusTutorat';
 import HomePage from './pages/HomePage';
+import Faq from './pages/faq';
 // import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
@@ -61,9 +62,12 @@ const theme = createTheme({
     trash: { main: blueGrey[200] },
     success: { main: green[500], tooltip: green[100] },
     menu: { main: blueGrey[400] },
+
     text: {
       disabled: grey[500],
+      label: grey[600],
     },
+
     background: {
       disabled: 'transparent',
     },
@@ -101,7 +105,7 @@ function App() {
               path="/reset-password/:id/:token"
               element={<ResetPassword />}
             />
-
+            <Route path="/faq" element={<Faq />} />
             <Route path="/logout" />
             <Route path="/stepper" element={<Stepper />} />
             <Route path="/profile" element={<ProfilePage />} />

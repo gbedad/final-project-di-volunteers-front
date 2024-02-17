@@ -78,6 +78,7 @@ const BasicTabs = () => {
   const [value, setValue] = React.useState(0);
   const [status, setStatus] = useState('');
   const [screenSize, setScreenSize] = useState('');
+  const [finished, setFinished] = React.useState(false);
 
   // Update screen size on mount and on window resize
   useEffect(() => {
@@ -126,6 +127,10 @@ const BasicTabs = () => {
     userId = location.state.userSelected.id;
   }
 
+  const handleStepFinish = (newState) => {
+    setFinished(newState);
+  };
+
   const getUser = async () => {
     try {
       const response = await axios.get(
@@ -144,6 +149,8 @@ const BasicTabs = () => {
     getUser();
     // eslint-disable-next-line
   }, [value]);
+
+  console.log('Finished ?', finished);
 
   return (
     <div
@@ -190,6 +197,11 @@ const BasicTabs = () => {
               label="MES DISPONIBILITÉS"
               {...a11yProps(1)}
               disabled={status === 'Compte créé' || status === 'Déclinée'}
+              style={{
+                color:
+                  status === 'Compte créé' ||
+                  (status === 'Déclinée' && 'text.disabled'),
+              }}
             />
             <Tab
               label="MES DOCUMENTS"
@@ -199,6 +211,12 @@ const BasicTabs = () => {
                 status === 'A renseigner' ||
                 status === 'Déclinée'
               }
+              style={{
+                color:
+                  status === 'Compte créé' ||
+                  status === 'A renseigner' ||
+                  (status === 'Déclinée' && 'text.disabled'),
+              }}
             />
             <Tab
               label="MA CONVENTION"
@@ -210,6 +228,14 @@ const BasicTabs = () => {
                 status === 'A interviewer' ||
                 status === 'Déclinée'
               }
+              style={{
+                color:
+                  status === 'Compte créé' ||
+                  status === 'A renseigner' ||
+                  status === 'A télécharger' ||
+                  status === 'A interviewer' ||
+                  (status === 'Déclinée' && 'text.disabled'),
+              }}
             />
             <Box display="flex" justifyContent="center" alignItems="center">
               <RefreshButton getUser={getUser} />
@@ -261,6 +287,7 @@ const BasicTabs = () => {
         <StepperStatusTimeline
           userStatusStep={setStatusStep(status)}
           handleChange={handleChange}
+          finished={finished}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
@@ -281,7 +308,10 @@ const BasicTabs = () => {
       </TabPanel>
       {value > 0 && (
         <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>
-          <FloatingButton handleChange={handleChange} />
+          <FloatingButton
+            handleChange={handleChange}
+            setFinished={setFinished}
+          />
         </Box>
       )}
     </div>

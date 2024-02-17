@@ -29,8 +29,7 @@ const RefreshButton = ({ getUser }) => {
       title={
         <React.Fragment>
           <Typography color="secondary.dark" fontSize={13}>
-            En cliquant sur ce signe, vous pouvez rafraichier la page et
-            vérifier si votre statut a été actualisé.
+            Veuillez cliquer ici pour rafraîchir la page.
           </Typography>
         </React.Fragment>
       }>

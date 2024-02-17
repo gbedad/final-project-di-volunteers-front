@@ -21,9 +21,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function FloatingActionButtons(props) {
   const [disableButton, setDisableButton] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const { handleChange } = props;
+  // const [finished, setFinished] = React.useState(false);
+  const { handleChange, setFinished } = props;
   const handleFinish = (event) => {
     setDisableButton(true);
+    setFinished(true);
     // return (
     //   <Box
     //     sx={{ width: '100%', position: 'absolute', top: '200px', zIndex: 2 }}>

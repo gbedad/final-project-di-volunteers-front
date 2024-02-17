@@ -293,7 +293,7 @@ const CardPresentation = () => {
           {/* Pagination buttons */}
           <Box mt={2}>
             <Button onClick={handlePreviousPage1} disabled={activePage1 === 1}>
-              Page précédante
+              Page précédente
             </Button>
             <Button onClick={handleNextPage1} disabled={activePage1 === 4}>
               Page suivante
@@ -377,7 +377,7 @@ const CardPresentation = () => {
           {/* Pagination buttons */}
           <Box mt={2}>
             <Button onClick={handlePreviousPage2} disabled={activePage2 === 1}>
-              Page précédante
+              Page précédente
             </Button>
             <Button onClick={handleNextPage2} disabled={activePage2 === 5}>
               Page suivante

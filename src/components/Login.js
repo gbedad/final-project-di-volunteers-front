@@ -184,10 +184,11 @@ export default function SignIn() {
                     Mot de passe oublié ?
                   </Link>
                 </Grid>
+
                 <Grid item>
-                  {/* <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link> */}
+                  <Link href="/missions" variant="body2">
+                    {"Vous n'avez pas de compte ?"}
+                  </Link>
                 </Grid>
               </Grid>
             </Box>

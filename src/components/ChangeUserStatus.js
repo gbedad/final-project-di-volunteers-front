@@ -254,7 +254,7 @@ const ChangeUserStatus = () => {
                     maxWidth: 360,
                     bgcolor: 'background.paper',
                   }}>
-                  <ListItem>
+                  <ListItem alignItems="flex-start">
                     <ListItemAvatar>
                       <Avatar>
                         <Person2Icon />
@@ -343,7 +343,7 @@ const ChangeUserStatus = () => {
               )}
 
               <List component="nav" aria-label="main mailbox folders">
-                <ListItem>
+                <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar>
                       <CategoryIcon />

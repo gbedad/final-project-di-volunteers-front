@@ -106,7 +106,9 @@ const AddressAutocomplete = (props) => {
           aria-controls="panel1c-content"
           id="panel1c-header"
           sx={{ border: 'none', marginLeft: '-15px' }}>
-          <Typography color="text.disabled">Adresse</Typography>
+          <Typography color="text.label" fontSize={12}>
+            Ville
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form>
