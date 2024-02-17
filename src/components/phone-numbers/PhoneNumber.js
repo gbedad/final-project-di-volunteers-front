@@ -11,7 +11,7 @@ const phoneInput = (props, ref) => {
       inputRef={ref}
       fullWidth
       size="normal"
-      label="Phone Number"
+      label="Téléphone"
       variant="outlined"
       name="phone"
     />

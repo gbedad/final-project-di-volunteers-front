@@ -166,8 +166,8 @@ const InstructionCoventionComponent = () => {
                             />
                           </ListItemIcon>
                           <Typography variant="body2">
-                            Soit compléter et signer électroniquement. Des
-                            outils du type{' '}
+                            Soit compléter et signer le modèle électroniquement.
+                            Des outils du type{' '}
                             <Link
                               href="https://www.ilovepdf.com/fr"
                               target="_blank">
@@ -179,13 +179,13 @@ const InstructionCoventionComponent = () => {
                       </List>
                     </Typography>
                     <Typography variant="body2" mb={2}>
-                      Merci de déposer ici la convention complétée et signée par
-                      vos soins en utilisant le libellé suivant{' '}
-                      <strong>nom_prénom_convention</strong>.
+                      Merci de déposer grâce au bouton choisir un fichier la
+                      convention complétée et signée par vos soins en utilisant
+                      le libellé suivant <strong>nom_prénom_convention</strong>.
                     </Typography>
                     <Typography variant="body2">
-                      La version signée par l'association sera déposée sur la
-                      plateforme ci-dessous.
+                      La version signée par l'association sera déposée
+                      ci-dessous sur la plateforme.
                     </Typography>
                   </Box>
                 </BorderedBoxWithLabel>

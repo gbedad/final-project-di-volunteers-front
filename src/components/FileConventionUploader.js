@@ -30,6 +30,8 @@ import MuiAlert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import Input from '@mui/material/Input';
+import { MuiFileInput } from 'mui-file-input';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -108,6 +110,11 @@ export default function Uploads({ userSelected }) {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
     setShowUploadButton(event.target.files[0] !== null);
+  };
+  const handleChange = (newValue) => {
+    setSelectedFile(newValue);
+    setShowUploadButton(newValue.name !== null);
+    console.log(newValue);
   };
 
   const handleFileUpload = async () => {
@@ -195,12 +202,21 @@ export default function Uploads({ userSelected }) {
     <>
       {/* <InstructionComponent /> */}
       <Box style={{ position: 'relative' }}>
-        <Stack direction="row" spacing={2}>
-          <input
+        <Typography variant="h6" component={'p'} m={2}>
+          Pour télécharger les documents utiliser le bouton "Choisir un fichier"
+          et ensuite sur "Enregistrer"
+        </Typography>
+        <Stack direction="row" spacing={2} m={2}>
+          <MuiFileInput
             id="file-upload"
-            type="file"
-            defaultValue=""
-            onChange={handleFileChange}
+            // type="file"
+            label="Choisir un fichier"
+            // defaultValue="Choisir un fichier"
+            value={selectedFile}
+            variant="outlined"
+            color="primary"
+            // onChange={handleFileChange}
+            onChange={handleChange}
           />
 
           {showUploadButton && (
@@ -219,7 +235,7 @@ export default function Uploads({ userSelected }) {
               loadingPosition="start"
               startIcon={<SaveIcon />}
               variant="contained">
-              <span>Ajouter</span>
+              <span>Enregistrer</span>
             </LoadingButton>
             // <label>
             //   <Fab

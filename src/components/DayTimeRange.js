@@ -87,7 +87,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   const handleAddDayTimeRange = () => {
     setDayTimeRanges([
       ...dayTimeRanges,
-      { day: '', startTime: '', endTime: '' },
+      { day: '', startTime: '08:00', endTime: '09:00' },
     ]);
     setShowButton(true);
   };
@@ -96,18 +96,21 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].day = value;
     setDayTimeRanges(updatedDayTimeRanges);
+    setShowButton(true);
   };
 
   const handleStartTimeChange = (value, index) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].startTime = value;
     setDayTimeRanges(updatedDayTimeRanges);
+    setShowButton(true);
   };
 
   const handleEndTimeChange = (value, index) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].endTime = value;
     setDayTimeRanges(updatedDayTimeRanges);
+    setShowButton(true);
   };
 
   const handleRemoveDayTimeRange = (index) => {
@@ -187,18 +190,21 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                   spacing={1}
                   key={index}
                   style={{ marginTop: '16px' }}>
-                  <Grid item xs={4}>
+                  <Grid item xs={4} md={4} lg={4}>
                     <FormControl fullWidth variant="outlined">
                       <InputLabel>Jour</InputLabel>
                       <Select
                         size="small"
                         label="Jour"
                         value={dayTimeRange ? dayTimeRange.day : ''}
-                        onChange={(e) => handleDayChange(e.target.value, index)}
-                        error={!dayTimeRange.day} // Add error prop
-                        helpertext={
-                          !dayTimeRange.day ? 'Ce champ est obligatoire' : ''
-                        }>
+                        onChange={(e) =>
+                          handleDayChange(e.target.value || '08:00', index)
+                        }
+                        // error={!dayTimeRange.day} // Add error prop
+                        // helpertext={
+                        //   !dayTimeRange.day ? 'Ce champ est obligatoire' : ''
+                        // }
+                      >
                         <MenuItem value="">Choisir un jour</MenuItem>
                         <MenuItem value="Lundi">Lundi</MenuItem>
                         <MenuItem value="Mardi">Mardi</MenuItem>
@@ -211,7 +217,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={3} md={3} lg={3}>
                     <TextField
                       size="small"
                       fullWidth
@@ -227,18 +233,14 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                       }}
                       inputProps={{
                         step: 300,
+                        // 5 minutes in seconds (300 seconds)
                       }}
-                      error={!dayTimeRange.startTime} // Add error prop
-                      helpertext={
-                        !dayTimeRange.startTime
-                          ? 'Ce champ est obligatoire'
-                          : ''
-                      }
                     />
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={3} md={3} lg={3}>
                     <TextField
+                      id="time"
                       size="small"
                       fullWidth
                       variant="outlined"
@@ -252,21 +254,21 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                         shrink: true,
                       }}
                       inputProps={{
-                        step: 300,
+                        step: 300, // 5 minutes in seconds (300 seconds)
                       }}
                       required // Add the required prop to make it mandatory
-                      error={
-                        !dayTimeRange.endTime && dayTimeRange.endTime !== ''
-                      } // Adjust error logic
-                      helperText={
-                        !dayTimeRange.endTime && dayTimeRange.endTime !== ''
-                          ? 'Ce champ est obligatoire'
-                          : ''
-                      }
+                      // error={
+                      //   !dayTimeRange.endTime && dayTimeRange.endTime !== ''
+                      // } // Adjust error logic
+                      // helperText={
+                      //   !dayTimeRange.endTime && dayTimeRange.endTime !== ''
+                      //     ? 'Ce champ est obligatoire'
+                      //     : ''
+                      // }
                     />
                   </Grid>
 
-                  <Grid item xs={2}>
+                  <Grid item xs={1}>
                     <Button onClick={() => handleRemoveDayTimeRange(index)}>
                       <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
                     </Button>

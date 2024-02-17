@@ -669,12 +669,12 @@ const ChangeUserStatus = () => {
                     sx={{
                       display: userLogged.user.role === 'interviewer' && 'none',
                     }}>
-                    <Typography variant="title">
+                    {/* <Typography variant="title">
                       Rajouter la convention signée
-                    </Typography>
-                    <Typography variant="body2">
+                    </Typography> */}
+                    {/* <Typography variant="body2">
                       (par l'association Séphora Berrebi)
-                    </Typography>
+                    </Typography> */}
                   </Box>
                   <Uploads userSelected={user.id} />
                 </Box>

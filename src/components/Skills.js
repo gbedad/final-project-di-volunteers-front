@@ -10,15 +10,15 @@ const Skills = ({ userId }) => {
   return (
     <React.Fragment>
       <Grid container maxWidth="xxl" spacing={2}>
-        <Grid item xs={12} sm={12} md={6} lg={4}>
+        <Grid item xs={12} sm={12} md={6} lg={5}>
           <DayTimeRangeComponent userSelected={userId} />
           <TimeRangeSlider userSelected={userId} userLogged />
         </Grid>
 
-        <Grid item xs={12} sm={12} md={6} lg={5}>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
           <TopicGradeComponent userSelected={userId} />
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={3}>
+        <Grid item xs={12} sm={3} md={12} lg={3}>
           {/* <LocationSkill/> */}
           <LocationsPossibleComponent userSelected={userId} />
         </Grid>

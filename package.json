@@ -29,6 +29,7 @@
     "file-saver": "^2.0.5",
     "leaflet": "^1.9.4",
     "moment": "^2.29.4",
+    "mui-file-input": "^4.0.4",
     "react": "^18.2.0",
     "react-aws-s3": "^1.5.0",
     "react-dom": "^18.2.0",
@@ -73,5 +74,9 @@
   },
   "engines": {
     "npm": "9.2.0"
+  },
+  "devDependencies": {
+    "svg-loader": "^0.0.2",
+    "svgo": "^3.2.0"
   }
 }

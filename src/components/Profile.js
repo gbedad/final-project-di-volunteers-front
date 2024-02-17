@@ -51,14 +51,14 @@ import 'dayjs/locale/fr';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
+// import SpeedDial from '@mui/material/SpeedDial';
+// import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+// import SpeedDialAction from '@mui/material/SpeedDialAction';
 
 // import Fab from '@mui/material/Fab';
 // import LoadingButton from '@mui/lab/LoadingButton';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+// import EditIcon from '@mui/icons-material/Edit';
+// import SaveIcon from '@mui/icons-material/Save';
 // import { styled } from '@mui/material/styles';
 
 // import { deepOrange, deepPurple, purple } from '@mui/material/colors';
@@ -89,6 +89,7 @@ import AddressAutocomplete from './AddressAutocomplete';
 // import SelectFormActivity from './SelectActivity';
 // import ImageDisplay from './ImageDisplay';
 import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
+import { Input } from '@mui/icons-material';
 // import RefreshButton from './refreshIcon';
 
 // Extend dayjs with the necessary plugins
@@ -585,10 +586,11 @@ const ProfilePage = ({ status }) => {
                       <AlternateEmailIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <FormControl sx={{ width: '60%' }}>
+                  <FormControl sx={{ width: '90%' }}>
                     <TextField
+                      fullWidth
                       labelid="email2"
-                      label="Email"
+                      label="Email alternatif"
                       value={email2}
                       onChange={handleEmail2Change}
                       disabled={!editing}
@@ -598,7 +600,7 @@ const ProfilePage = ({ status }) => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      placeholder="Email à privilégier pour les échanges"
+                      placeholder="Pour les échanges si différent du nom d'utilisateur"
                     />
                     {/* <FormHelperText sx={{ marginLeft: 0 }}>
                       Email à privilégier pour les échanges
@@ -629,6 +631,7 @@ const ProfilePage = ({ status }) => {
                       dateAdapter={AdapterDayjs}
                       adapterLocale="fr">
                       <DatePicker
+                        size="small"
                         value={dayjs(birthDate)}
                         onChange={(newValue) => setBirthDate(newValue)}
                         disabled={!editing}
@@ -639,6 +642,7 @@ const ProfilePage = ({ status }) => {
                         InputLabelProps={{
                           shrink: true,
                         }}
+                        slotProps={{ textField: { size: 'small' } }}
                       />
                     </LocalizationProvider>
                   </FormControl>
@@ -676,13 +680,13 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl
                     variant="standard"
-                    sx={{ m: 1 }}
-                    fullWidth
+                    // sx={{ m: 1, width: '100%' }}
                     required>
                     <InputLabel id="demo-simple-select-standard-label">
                       Activité
                     </InputLabel>
                     <Select
+                      fullWidth
                       color="light"
                       disabled={!editing}
                       labelid="demo-simple-select-standard-label"
@@ -717,6 +721,7 @@ const ProfilePage = ({ status }) => {
                     </Badge>
                   </ListItemAvatar>
                   <AddressAutocomplete
+                    fullWidth
                     required
                     editing={editing}
                     userId={user.id}
@@ -810,6 +815,7 @@ const ProfilePage = ({ status }) => {
                 name="message"
                 aria-label="minimum height"
                 minRows={10}
+                maxRows={20}
                 placeholder="Motivation"
                 style={{
                   width: '100%',

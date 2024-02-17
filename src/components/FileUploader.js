@@ -30,6 +30,7 @@ import MuiAlert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { MuiFileInput } from 'mui-file-input';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -106,6 +107,12 @@ export default function Uploads({ userSelected }) {
     setShowUploadButton(event.target.files[0] !== null);
   };
 
+  const handleChange = (newValue) => {
+    setSelectedFile(newValue);
+    setShowUploadButton(newValue.name !== null);
+    console.log(newValue);
+  };
+
   const handleFileUpload = async () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -180,12 +187,21 @@ export default function Uploads({ userSelected }) {
     <>
       {/* <InstructionComponent /> */}
       <Box style={{ position: 'relative' }}>
-        <Stack direction="row" spacing={2}>
-          <input
+        <Typography variant="h6" component={'p'} m={2}>
+          Pour télécharger les documents utiliser le bouton "Choisir un fichier"
+          et ensuite sur "Enregistrer"
+        </Typography>
+        <Stack direction="row" spacing={2} m={2}>
+          <MuiFileInput
             id="file-upload"
-            type="file"
-            defaultValue=""
-            onChange={handleFileChange}
+            // type="file"
+            label="Choisir un fichier"
+            // defaultValue="Choisir un fichier"
+            value={selectedFile}
+            variant="outlined"
+            color="primary"
+            // onChange={handleFileChange}
+            onChange={handleChange}
           />
 
           {showUploadButton && (
@@ -196,6 +212,7 @@ export default function Uploads({ userSelected }) {
             //   variant="contained">
             //   AJOUTER
             // </Button>
+            //========== Button hidden ========================
             <LoadingButton
               size="small"
               color="primary"
@@ -204,8 +221,10 @@ export default function Uploads({ userSelected }) {
               loadingPosition="start"
               startIcon={<SaveIcon />}
               variant="contained">
-              <span>Ajouter</span>
+              <span>Enregistrer</span>
             </LoadingButton>
+
+            //========== Button hiddenend ========================
             // <label>
             //   <Fab
             //     sx={fab.sx}

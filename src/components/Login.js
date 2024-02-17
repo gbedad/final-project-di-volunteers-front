@@ -16,9 +16,12 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { AuthContext } from '../AuthContext';
+
+import PasswordInput from './PasswordInput';
 
 function Copyright(props) {
   return (
@@ -47,17 +50,21 @@ export default function SignIn() {
   const { updateToken } = useContext(AuthContext);
   const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   // const user = updateUser(userConnected);
   // console.log(user);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    // const data = new FormData(event.currentTarget);
 
     try {
       const response = await axios.post(`${BASE_URL}/login`, {
-        email: data.get('email'),
-        password: data.get('password'),
+        // email: data.get('email'),
+        // password: data.get('password'),
+        email,
+        password,
       });
       if (!response.data.token) {
         toast.error(`Utilisateur ou mot de passe incorrect`, {
@@ -105,6 +112,7 @@ export default function SignIn() {
       });
     }
   };
+  console.log(email, password);
 
   return (
     <>
@@ -141,8 +149,10 @@ export default function SignIn() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                email={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
+              {/* <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -151,11 +161,15 @@ export default function SignIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+              /> */}
+              <PasswordInput
+                password={password}
+                handlePassword={(e) => setPassword(e.target.value)}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
                 color="primary"
                 type="submit"

@@ -1,6 +1,6 @@
 import React from 'react';
 // import axios from 'axios';
-import { AddressAutofill } from '@mapbox/search-js-react';
+// import { AddressAutofill } from '@mapbox/search-js-react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -23,11 +23,10 @@ import Stack from '@mui/material/Stack';
 const AddressAutocomplete = (props) => {
   // const { userId, street, city, zipcode, country } = props;
   const {
-    street,
     country,
     city,
     zipcode,
-    onStreetChange,
+
     onCityChange,
     onZipcodeChange,
     onCountryChange,
@@ -101,13 +100,13 @@ const AddressAutocomplete = (props) => {
 
   return (
     <div>
-      <Accordion defaultExpanded={false}>
+      <Accordion defaultExpanded={false} sx={{ border: 'none' }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
           id="panel1c-header"
-          sx={{ border: 'none' }}>
-          <Typography>Adresse</Typography>
+          sx={{ border: 'none', marginLeft: '-15px' }}>
+          <Typography color="text.disabled">Adresse</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form>
@@ -134,6 +133,7 @@ const AddressAutocomplete = (props) => {
               />
             </AddressAutofill> */}
             <TextField
+              size="small"
               disabled={!editing}
               InputLabelProps={{ shrink: true }}
               type="text"
@@ -151,6 +151,7 @@ const AddressAutocomplete = (props) => {
               direction="row"
               sx={{ marginBottom: 4, marginTop: 4 }}>
               <TextField
+                size="small"
                 disabled={!editing}
                 InputLabelProps={{ shrink: true }}
                 type="text"
@@ -163,6 +164,7 @@ const AddressAutocomplete = (props) => {
                 onChange={onZipcodeChange}
               />
               <TextField
+                size="small"
                 disabled={!editing}
                 InputLabelProps={{ shrink: true }}
                 type="text"

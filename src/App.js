@@ -1,12 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+// import IconButton from '@mui/material/IconButton';
+// import Box from '@mui/material/Box';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import Home from './pages/HomePage';
+// import Home from './pages/HomePage';
 import Register from './components/RegisterForm';
 import Login from './components/Login';
 import ProfilePage from './components/Profile';
@@ -19,9 +17,9 @@ import Uploads from './components/FileUploader';
 import DaySlotSkill from './components/DaySlotSkills';
 import TopicSkills from './components/TopicSkills';
 
-import { UserProvider } from './UserContext';
-import MissionList from './components/missions/MissionList';
-import AdminPanel from './components/AdminPanel';
+// import { UserProvider } from './UserContext';
+// import MissionList from './components/missions/MissionList';
+// import AdminPanel from './components/AdminPanel';
 import DocumentCheckbox from './components/files/filesSaved';
 import SelectFormActivity from './components/SelectActivity';
 import AddressAutocomplete from './components/AddressAutocomplete';
@@ -29,16 +27,16 @@ import FormInterviewComponent from './components/interviews/Interview';
 import FormPreInterviewComponent from './components/interviews/PreInterview';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
-import ResetPasswordForm from './components/ResetPasswordForm';
+// import ResetPasswordForm from './components/ResetPasswordForm';
 import MissionsPage from './components/missions/MissionsPage';
 import MissionCard from './components/missions/MissionCard';
 import { AuthProvider } from './AuthContext';
 import { CourseProvider } from './components/courses/CourseContext';
 import CardList from './components/cards/Cards';
-import Lassociation from './pages/lassociation';
+// import Lassociation from './pages/lassociation';
 import Tutorat from './pages/focusTutorat';
 import HomePage from './pages/HomePage';
-import CoursePage from './components/courses/CoursePage';
+// import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
 import { ToastContainer } from 'react-toastify';
@@ -48,9 +46,10 @@ import {
   cyan,
   purple,
   green,
-  orange,
-  red,
-  blue,
+  grey,
+  // orange,
+  // red,
+  // blue,
   blueGrey,
 } from '@mui/material/colors';
 
@@ -58,14 +57,31 @@ const theme = createTheme({
   palette: {
     primary: { main: cyan[900] },
     light: { main: cyan[500] },
-    secondary: { main: purple[400] },
+    secondary: { main: purple[400], dark: purple[700] },
     trash: { main: blueGrey[200] },
-    success: { main: green[500] },
+    success: { main: green[500], tooltip: green[100] },
+    menu: { main: blueGrey[400] },
     text: {
-      disabled: cyan[900],
+      disabled: grey[500],
     },
     background: {
       disabled: 'transparent',
+    },
+  },
+  select: {
+    p: { fontSize: '1rem' },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 425,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      '2xl': 1536,
+      '3xl': 1920,
+      '4xl': 2560,
+      '5xl': 3200,
     },
   },
 });

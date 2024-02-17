@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -11,14 +11,15 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
+// import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+
+// import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './ListItems';
 import Users from './Users';
 import ActiveUsers from './ActiveUsers';
@@ -89,12 +90,12 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const mdTheme = createTheme();
+// const mdTheme = createTheme();
 
 function DashboardContent() {
   const location = useLocation();
   const [open, setOpen] = React.useState(true);
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
   const { user } = useContext(UserContext);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;

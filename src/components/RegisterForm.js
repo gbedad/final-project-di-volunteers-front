@@ -35,6 +35,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
+import PasswordInput from './PasswordInput';
 
 function Copyright(props) {
   return (
@@ -240,7 +241,7 @@ const RegisterForm = ({ mission }) => {
                     required
                     fullWidth
                     id="email"
-                    label="Email Address"
+                    label="Email"
                     name="email"
                     autoComplete="email"
                     value={email}
@@ -254,7 +255,7 @@ const RegisterForm = ({ mission }) => {
                     required
                     fullWidth
                     id="firstName"
-                    label="First Name"
+                    label="Prénom"
                     autoFocus
                     value={first_name}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -265,7 +266,7 @@ const RegisterForm = ({ mission }) => {
                     required
                     fullWidth
                     id="last_name"
-                    label="Last Name"
+                    label="Nom"
                     name="lastName"
                     autoComplete="family-name"
                     value={last_name}
@@ -288,7 +289,7 @@ const RegisterForm = ({ mission }) => {
                     international
                     withCountryCallingCode
                     defaultCountry="FR"
-                    placeholder="Phone number"
+                    placeholder="Téléphone"
                     value={phone}
                     onChange={setPhone}
                     style={{ innerHeight: '40px' }}
@@ -314,7 +315,7 @@ const RegisterForm = ({ mission }) => {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <TextField
+                  {/* <TextField
                     required
                     fullWidth
                     name="password"
@@ -324,8 +325,14 @@ const RegisterForm = ({ mission }) => {
                     autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                  /> */}
+                  <PasswordInput
+                    password={password}
+                    handlePassword={(e) => setPassword(e.target.value)}
                   />
-                  <Typography color={isStrongPassword() ? 'success' : 'error'}>
+                  <Typography
+                    color={isStrongPassword() ? 'success' : 'secondary'}
+                    variant={'body2'}>
                     {isStrongPassword()
                       ? 'Mot de passe valide'
                       : 'Le mot de passe doit contenir au moins 8 caractères dont des majuscules, des chiffres et des caractères spéciaux'}
@@ -346,12 +353,14 @@ const RegisterForm = ({ mission }) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox value="allowExtraEmails" color="primary" />
-                    }
-                    label="Click here to indicate that you have read and agree to the terms presented in the Terms and Conditions agreement."
-                  />
+                  <Box sx={{ fontSize: '12px' }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox value="allowExtraEmails" color="primary" />
+                      }
+                      label="Cliquez ici pour indiquer que vous avez lu et accepté les conditions présentées dans les conditions générales."
+                    />
+                  </Box>
                 </Grid>
               </Grid>
 

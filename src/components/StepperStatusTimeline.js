@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import BorderBoxWithLabels from './borderedBox';
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
@@ -15,41 +17,54 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 const steps = [
   {
     label: 'Votre compte est créé, nous aimerions en savoir plus sur vous',
-    description: `Seules quelques informations basiques sont demandées. Vous pourrez à ce stade modifier ou compléter votre
-    texte de motivation que nous lirons attentivement.`,
+    label_realised: 'Mon compte est créé',
+    description: `Merci de nous  communiquer quelques information de base.`,
   },
 
   {
-    label: 'Nous aimerions en savoir plus sur vos disponibilités',
-    description: `Qui vous êtes (MON PROFIL), dans quelles matières vous souhaitez
-      accompagner un élève et à quel niveau (MES DISPONIBILITÉS). Vous recevrez prochainement un appel de notre part pour un premier contact`,
+    label: 'Nous aimerions connaitre vos souhaits et disponibilités',
+    label_realised: 'Mes souhaits et disponibilités sont renseignés',
+    description: `Une fois vos souhaits et diponibiltés renseignés, nous vous appellerons pour nous présenter lors d'un premier contact téléphonique.`,
   },
   {
-    label: 'Vous pouvez maintenant télécharger vos documents',
+    label: 'Documents à télécharger',
+    label_realised: 'Mes documents sont téléchargés',
     description: `
-    Téléchargez vos pièces d'identité, extrait de casier judiciaire,
-    CV et/ou diplômes et/ou attestations.
-
-  Complétez le cas échéant avec un test (niveau collège).`,
+    Téléchargez vos pièce d'identité, extrait de casier judiciaire,
+    CV ou diplômes ou attestations.
+.`,
   },
 
   {
     label: 'Le moment est venu de nous entretenir',
-    description: `Nous prenons contact pour vous proposer un ou plusieurs rendez-vous.`,
+    label_realised: 'Mes entretiens ont été réalisés',
+    description: `Nous allons prendre contact pour vous proposer un ou plusieurs rendez-vous.`,
   },
   {
-    label: 'Il reste à compléter votre dossier',
+    label: "Il ne reste plus qu'à signer la convention",
+    label_realised: 'Ma convention est signée',
     description: `
-    Vous pouvez maintenant télécharger le modèle sur le lien indiqué.
-    Signez la convention d'engagement réciproque et déposez-la sur la plateforme.
+    Vous pouvez maintenant télécharger le modèle et signer la convention d'engagement réciproque. C'est aussi le moment de compléter d'éventuelles informations manquantes.
   `,
   },
   {
-    label: 'Votre candidature est validée',
+    label: 'Ma candidature est validée',
     description: `Bienvenue ! Nous cherchons parmi les demandes en attente, celles qui
     correspondent à vos souhaits.`,
   },
 ];
+
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#c8f5e9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #7b1fa2',
+  },
+}));
 
 export default function StepperStatusTimeline(props) {
   const { userStatusStep, handleChange } = props;
@@ -103,6 +118,11 @@ export default function StepperStatusTimeline(props) {
         borderColor: 'primary.main',
       },
     },
+    '& .Mui-disabled': {
+      '&.MuiStepIcon-root': {
+        fontSize: '2rem',
+      },
+    },
   };
 
   return (
@@ -114,30 +134,44 @@ export default function StepperStatusTimeline(props) {
           {statusSteps.map((step, index) => (
             <Step key={step.label}>
               <StepLabel
+                // sx={{ color: activeStep > index ? 'secondary.dark' : 'black' }}
                 optional={
                   index === 4 ? (
                     <Typography variant="caption">Dernière étape</Typography>
                   ) : null
                 }>
-                {step.label}
+                {activeStep > index ? step.label_realised : step.label}
               </StepLabel>
               <StepContent TransitionProps={{ unmountOnExit: false }}>
-                <Typography>{step.description}</Typography>
+                <Typography color="secondary.dark" fontSize={13} ml={1}>
+                  {step.description}
+                </Typography>
                 <Box sx={{ mb: 2 }}>
                   <div>
                     {(index < 3 ||
                       (index >= 4 && index !== steps.length - 1)) && (
-                      <Button
-                        variant="contained"
-                        onClick={(event) => {
-                          index === 4
-                            ? handleChange(event, index)
-                            : handleChange(event, index + 1);
-                        }}
-                        sx={{ mt: 1, mr: 1 }}>
-                        {/* {index === steps.length - 1 ? 'Terminer' : "J'y vais"} */}
-                        J'y vais
-                      </Button>
+                      <HtmlTooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color="secondary.dark" fontSize={13}>
+                              Vous n'avez pas encore renseigné les informations
+                              demandées à cette étape ? Vous souhaitez les
+                              modifier ? Alors allez-y !
+                            </Typography>
+                          </React.Fragment>
+                        }>
+                        <Button
+                          variant="contained"
+                          onClick={(event) => {
+                            index === 4
+                              ? handleChange(event, index)
+                              : handleChange(event, index + 1);
+                          }}
+                          sx={{ mt: 1, mr: 1 }}>
+                          {/* {index === steps.length - 1 ? 'Terminer' : "J'y vais"} */}
+                          J'y vais
+                        </Button>
+                      </HtmlTooltip>
                     )}
                     {index > 0 && (
                       <Button

@@ -98,8 +98,16 @@ function YourComponent({ user }) {
             ''
           ) : (
             <Select
-              sx={{ marginBottom: '1rem' }}
+              sx={{
+                marginBottom: '1rem',
+                fontSize: `${
+                  selectedMissionTitle == '-- Choisir une mission --'
+                } && '12px'`,
+                color: `${selectedMissionTitle === null} && 'menu.main'`,
+              }}
+              size="small"
               fullWidth
+              displayEmpty
               value={
                 selectedMissionTitle === undefined ||
                 selectedMissionTitle === null ||
@@ -108,6 +116,11 @@ function YourComponent({ user }) {
                   : selectedMissionTitle
               }
               onChange={handleMissionChange}>
+              <MenuItem
+                value={''}
+                sx={{ color: 'menu.main', fontSize: '14px' }}>
+                -- Choisir une mission --
+              </MenuItem>
               {missions.map((mission) => (
                 <MenuItem key={mission.id} value={mission.id}>
                   {mission.title}
@@ -118,7 +131,7 @@ function YourComponent({ user }) {
         </Box>
       </List>
       <Button variant="contained" disabled={!showButton} onClick={handleSubmit}>
-        Changer de mission
+        Enregistrer
       </Button>
     </>
   );

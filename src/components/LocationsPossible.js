@@ -180,8 +180,9 @@ const LocationsPossibleComponent = ({ userSelected }) => {
                   select
                   value={loc}
                   onChange={(e) => handleLocationChange(e.target.value, index)}
-                  error={!loc} // Add error prop
-                  helperText={!loc ? 'Ce champ est obligatoire' : ''}>
+                  // error={!loc} // Add error prop
+                  // helperText={!loc ? 'Ce champ est obligatoire' : ''}
+                >
                   {existingLocations.map((location, idx) => (
                     <MenuItem key={idx} value={location}>
                       {location}

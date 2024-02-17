@@ -26,6 +26,20 @@ import StepperStatusTimeline from './StepperStatusTimeline';
 import { shortDescription, setStatusStep } from '../js/statusDescription';
 import UploadConventionComponent from './FileConventionUploader';
 import FloatingButton from './FloatingButton';
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#c8f5e9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #7b1fa2',
+  },
+}));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -197,15 +211,33 @@ const BasicTabs = () => {
                 status === 'Déclinée'
               }
             />
-            <RefreshButton getUser={getUser} />
-            <Box display="flex" flexDirection="column">
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <RefreshButton getUser={getUser} />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center">
               <Box>
                 <List>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                        {setStatusStep(status)}
-                      </Avatar>
+                      <HtmlTooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color="secondary.dark" fontSize={13}>
+                              Votre statut actuel. Celui-ci évolura en fonction
+                              des renseignements que vous transmettrez. Le
+                              processus comprend 6 étapes jusqu'à la
+                              finalisation.
+                            </Typography>
+                          </React.Fragment>
+                        }>
+                        <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                          {setStatusStep(status)}
+                        </Avatar>
+                      </HtmlTooltip>
                     </ListItemAvatar>
 
                     {/* <ListItemText primary={shortDescription(status)} /> */}
@@ -248,7 +280,7 @@ const BasicTabs = () => {
         <UploadConventionComponent userSelected={userId} />
       </TabPanel>
       {value > 0 && (
-        <Box sx={{ float: 'right' }}>
+        <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>
           <FloatingButton handleChange={handleChange} />
         </Box>
       )}
