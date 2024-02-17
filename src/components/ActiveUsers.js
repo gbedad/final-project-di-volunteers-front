@@ -10,7 +10,7 @@ export default function ActiveUsers(props) {
   return (
     <>
       <Grid container spacing={2} sx={{ m: 0.5 }}>
-        <Grid item xs={4}>
+        <Grid item xs={12}>
           <Title>Tuteurs actifs</Title>
           {props.data ? (
             <Typography component="p" variant="h4">
