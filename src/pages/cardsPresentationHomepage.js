@@ -256,6 +256,7 @@ const CardPresentation = () => {
 
       {/* Modal 1 */}
       <Modal
+        fullScreen
         open={openModal1}
         onClose={handleCloseModal1}
         aria-labelledby="modal-modal-title"
@@ -263,12 +264,13 @@ const CardPresentation = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            top: '20%',
+            left: '20%',
+            transform: 'translate(-20%, -20%)',
             bgcolor: 'background.paper',
             border: '2px solid #000',
             boxShadow: 24,
+
             p: 4,
             maxWidth: '100vw',
             maxHeight: '100vh',
@@ -332,6 +334,7 @@ const CardPresentation = () => {
 
       {/* Modal 2 */}
       <Modal
+        fullScreen
         open={openModal2}
         onClose={handleCloseModal2}
         aria-labelledby="modal2-modal-title"
@@ -339,9 +342,9 @@ const CardPresentation = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            top: '20%',
+            left: '20%',
+            transform: 'translate(-20%, -20%)',
             bgcolor: 'background.paper',
             border: '2px solid #000',
             boxShadow: 24,
