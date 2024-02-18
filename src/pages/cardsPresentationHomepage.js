@@ -75,22 +75,22 @@ const CardPresentation = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, marginTop: '20px' }}>
+    <Box sx={{ maxWidth: '80%', marginTop: '20px' }}>
       {/* <Box mt={2}> */}
       {/* Cards */}
       <Grid
         container
-        spacing={{ xs: 1, md: 2, lg: 2, xl: 3 }}
-        columns={{ xs: 1, sm: 1, md: 6, lg: 12 }}>
+        spacing={{ xs: 1, md: 1, lg: 2, xl: 3 }}
+        columns={{ xs: 1, sm: 12, md: 12, lg: 12, xl: 12 }}>
         {/* Card 1 */}
-        <Grid item xs={4} sm={4} md={6} lg={4}>
+        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
           <Card
             className="card animated-card"
             sx={{
-              maxWidth: 450,
-              width: 380,
-              minWidth: 350,
-              height: 540,
+              maxWidth: 380,
+
+              minWidth: 330,
+              minHeight: 540,
 
               display: 'flex',
               flexDirection: 'column',
@@ -114,7 +114,11 @@ const CardPresentation = () => {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ textAlign: 'left' }}>
+                  sx={{
+                    textAlign: 'left',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
                   L'association Séphora Berrebi accompagne les enfants,
                   adolescents et jeunes adultes empêchés dans leurs
                   apprentissages pour des raisons d'ordre socio-culturel ou
@@ -144,15 +148,15 @@ const CardPresentation = () => {
           </Card>
         </Grid>
         {/* Card 2 */}
-        <Grid item xs={2} sm={4} md={4} lg={4}>
+        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
           <Card
             className="card animated-card"
             sx={{
-              minWidth: 350,
-              width: 380,
-              maxWidth: 450,
+              minWidth: 330,
 
-              height: 540,
+              maxWidth: 380,
+
+              minHeight: 540,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -169,7 +173,11 @@ const CardPresentation = () => {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ textAlign: 'left' }}>
+                  sx={{
+                    textAlign: 'left',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
                   Le pôle d'éducation solidaire de l'association Séphora Berrebi
                   met en place des séances de tutorat personnalisé afin d'aider
                   des enfants, adolescents ou jeunes adultes sur leur chemin de
@@ -195,15 +203,15 @@ const CardPresentation = () => {
             </div>
           </Card>
         </Grid>
-        <Grid item xs={2} sm={4} md={4} lg={4}>
+        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
           {/* Card 3 */}
           <Card
             className="card animated-card"
             sx={{
-              minWidth: 350,
-              maxWidth: 450,
-              width: 380,
-              height: 540,
+              minWidth: 330,
+              maxWidth: 380,
+
+              minHeight: 540,
 
               display: 'flex',
               flexDirection: 'column',
@@ -221,7 +229,11 @@ const CardPresentation = () => {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ textAlign: 'left' }}>
+                  sx={{
+                    textAlign: 'left',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
                   Pour devenir bénévole au sein de l'association Séphora
                   Berrebi, il suffit de candidater à l'une des missions
                   bénévoles proposées. Suite à nos échanges, il sera possible de

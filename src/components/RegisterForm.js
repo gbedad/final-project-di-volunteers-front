@@ -46,7 +46,7 @@ function Copyright(props) {
       {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Association Séphora Berrebi by Gerald Berrebi
+        Association Séphora Berrebi by Gérald Berrebi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

@@ -36,7 +36,7 @@ function Copyright(props) {
         Association Séphora Berrebi
       </Link>{' '}
       <p>
-        by Gerald Berrebi {new Date().getFullYear()}
+        by Gérald Berrebi {new Date().getFullYear()}
         {'.'}
       </p>
     </Typography>
