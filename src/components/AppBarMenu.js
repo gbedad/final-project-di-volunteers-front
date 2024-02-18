@@ -24,7 +24,7 @@ import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 import logo from '../assets/mycogniverse3.gif';
 import logoIcon from '../assets/logo_icon.png';
 
-const pages = ['Missions bénévoles', 'A propos'];
+const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -81,6 +81,8 @@ function ResponsiveAppBar() {
     try {
       if (page === 'Comment ça marche') {
         navigate('/faq', { state: { userLogged } });
+      } else if (page === 'Accueil') {
+        navigate('/', { state: { userLogged } });
       } else if (
         page === 'Missions bénévoles' &&
         (!userLogged || userLogged.user.role === 'volunteer')
