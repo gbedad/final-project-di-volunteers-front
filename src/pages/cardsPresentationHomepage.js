@@ -81,9 +81,9 @@ const CardPresentation = () => {
       <Grid
         container
         spacing={{ xs: 1, md: 1, lg: 2, xl: 3 }}
-        columns={{ xs: 1, sm: 12, md: 12, lg: 12, xl: 12 }}>
+        columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
         {/* Card 1 */}
-        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
+        <Grid item xs={12} sm={12} md={12} lg={6} xl={4}>
           <Card
             className="card animated-card"
             sx={{
@@ -148,7 +148,7 @@ const CardPresentation = () => {
           </Card>
         </Grid>
         {/* Card 2 */}
-        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
+        <Grid item xs={12} sm={12} md={12} lg={6} xl={4}>
           <Card
             className="card animated-card"
             sx={{
@@ -203,7 +203,7 @@ const CardPresentation = () => {
             </div>
           </Card>
         </Grid>
-        <Grid item xs={2} sm={12} md={6} lg={6} xl={4}>
+        <Grid item xs={12} sm={12} md={12} lg={6} xl={4}>
           {/* Card 3 */}
           <Card
             className="card animated-card"
