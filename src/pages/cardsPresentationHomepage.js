@@ -264,7 +264,7 @@ const CardPresentation = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '20%',
+            top: '25%',
             left: '20%',
             transform: 'translate(-20%, -20%)',
             bgcolor: 'background.paper',
@@ -342,7 +342,7 @@ const CardPresentation = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '20%',
+            top: '25%',
             left: '20%',
             transform: 'translate(-20%, -20%)',
             bgcolor: 'background.paper',
