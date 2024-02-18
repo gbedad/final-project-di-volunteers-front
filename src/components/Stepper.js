@@ -253,10 +253,8 @@ const BasicTabs = () => {
                         title={
                           <React.Fragment>
                             <Typography color="secondary.dark" fontSize={13}>
-                              Votre statut actuel. Celui-ci évolura en fonction
-                              des renseignements que vous transmettrez. Le
-                              processus comprend 6 étapes jusqu'à la
-                              finalisation.
+                              L'étape à laquelle vous en êtes, sur un total de 6
+                              étapes (cf. FAQ).
                             </Typography>
                           </React.Fragment>
                         }>

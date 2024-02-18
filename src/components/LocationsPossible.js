@@ -15,8 +15,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthContext } from '../AuthContext';
 
@@ -103,16 +103,16 @@ const LocationsPossibleComponent = ({ userSelected }) => {
       // console.log(response.data);
 
       if (response.data.message) {
-        toast.success(response.data.message, {
-          position: 'top-center',
-        });
+        // toast.success(response.data.message, {
+        //   position: 'top-center',
+        // });
         // console.log('Locations saved successfully');
         setShowButton(false);
       } else {
         console.error('Failed to save locations');
-        toast.error('Failed to save location', {
-          position: 'top-center',
-        });
+        // toast.error('Failed to save location', {
+        //   position: 'top-center',
+        // });
       }
     } catch (error) {
       console.error('Failed to save locations', error);
@@ -123,14 +123,14 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         error.response.data &&
         error.response.data.message
       ) {
-        toast.error(error.response.data.message, {
-          position: 'top-center',
-        });
+        // toast.error(error.response.data.message, {
+        //   position: 'top-center',
+        // });
       } else {
         // Handle other types of errors (e.g., network issues)
-        toast.error('Failed to save location', {
-          position: 'top-center',
-        });
+        // toast.error('Failed to save location', {
+        //   position: 'top-center',
+        // });
       }
     } finally {
       // console.log('Saving locations: ', locationsPossible);

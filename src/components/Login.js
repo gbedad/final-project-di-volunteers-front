@@ -16,6 +16,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import FilledAlerts from './Alerts';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -89,7 +90,7 @@ export default function SignIn() {
         // updateUser(userLogged);
         toast.success(`Bonjour  ${userLogged.user.first_name}`, {
           position: 'top-center',
-          autoClose: 1000,
+          autoClose: 2000,
           draggable: true,
         });
 
@@ -116,7 +117,8 @@ export default function SignIn() {
 
   return (
     <>
-      <ToastContainer autoClose={1000} />
+      {/* <ToastContainer autoClose={1000} /> */}
+
       {/* <ThemeProvider theme={theme}> */}
       <>
         <Container component="main" maxWidth="xs">

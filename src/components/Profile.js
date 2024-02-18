@@ -393,6 +393,11 @@ const ProfilePage = ({ status }) => {
     setEdit(true);
     // console.log(response.data.message);
   };
+  const disabledField = {
+    '& .MuiInputBase-input.Mui-disabled': {
+      WebkitTextFillColor: '#555555',
+    },
+  };
 
   return (
     <>
@@ -511,6 +516,7 @@ const ProfilePage = ({ status }) => {
                   /> */}
                   <Stack spacing={2} direction="row">
                     <TextField
+                      sx={disabledField}
                       label="Prénom"
                       value={firstName}
                       onChange={handleFirstNameChange}
@@ -523,6 +529,7 @@ const ProfilePage = ({ status }) => {
                       }}
                     />
                     <TextField
+                      sx={disabledField}
                       label="Nom"
                       value={lastName}
                       onChange={handleLastNameChange}
@@ -570,6 +577,7 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl sx={{ width: '50%' }}>
                     <TextField
+                      sx={disabledField}
                       label="Téléphone"
                       value={
                         phone && parsePhoneNumber(phone).number.international
@@ -591,6 +599,7 @@ const ProfilePage = ({ status }) => {
                   </ListItemAvatar>
                   <FormControl sx={{ width: '90%' }}>
                     <TextField
+                      sx={disabledField}
                       fullWidth
                       labelid="email2"
                       label="Email alternatif"
@@ -634,6 +643,7 @@ const ProfilePage = ({ status }) => {
                       dateAdapter={AdapterDayjs}
                       adapterLocale="fr">
                       <DatePicker
+                        sx={disabledField}
                         size="small"
                         value={dayjs(birthDate)}
                         onChange={(newValue) => setBirthDate(newValue)}
@@ -690,7 +700,7 @@ const ProfilePage = ({ status }) => {
                       Activité
                     </InputLabel>
                     <Select
-                      sx={{ color: !editing ? 'primary' : 'inherit' }}
+                      sx={disabledField}
                       fullWidth
                       // color="light"
                       disabled={!editing}
@@ -720,6 +730,7 @@ const ProfilePage = ({ status }) => {
                     </Avatar>
                   </ListItemAvatar>
                   <AddressAutocomplete
+                    sx={disabledField}
                     fullWidth
                     required
                     editing={editing}

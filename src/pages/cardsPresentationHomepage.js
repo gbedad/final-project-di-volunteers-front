@@ -14,6 +14,7 @@ import {
   IconButton,
   Link,
 } from '@mui/material';
+
 import { ReactComponent as YourSVGImage1 } from '../assets/pres1.svg'; // Import your SVG image
 import { ReactComponent as YourSVGImage2 } from '../assets/pres1.svg'; // Import your SVG image
 import { ReactComponent as Assoc1 } from '../assets/association/1.svg'; // Import your SVG image
@@ -26,9 +27,9 @@ import { ReactComponent as Tuto3 } from '../assets/tutorat/7.svg'; // Import you
 import { ReactComponent as Tuto4 } from '../assets/tutorat/8.svg'; // Import your SVG image
 import { ReactComponent as Tuto5 } from '../assets/tutorat/9.svg'; // Import your SVG image
 
-import ImageMissions from '../assets/3154099.jpg';
-import ImageTutorat from '../assets/support.jpg';
-import LogoASB from '../assets/LogoASB.png';
+import ImageMissions from '../assets/association/Mission2.png';
+import ImageTutorat from '../assets/tutorat/Tutorat.jpg';
+import LogoASB from '../assets/association/Association2.png';
 import CloseIcon from '@mui/icons-material/Close';
 
 const CardPresentation = () => {
@@ -74,51 +75,56 @@ const CardPresentation = () => {
   };
 
   return (
-    <>
-      <Box mt={2}>
-        {/* Cards */}
-        <Grid align="center" container spacing={2}>
-          {/* Card 1 */}
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <Card
-              sx={{
-                maxWidth: 450,
-                minWidth: 300,
-                width: 350,
-                height: 500,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}>
-              <CardActionArea mr="auto">
-                {/* Your image */}
-                <img
-                  src={LogoASB}
-                  alt="Logo association"
-                  style={{
-                    width: '80%',
+    <Box sx={{ flexGrow: 1, marginTop: '20px' }}>
+      {/* <Box mt={2}> */}
+      {/* Cards */}
+      <Grid
+        container
+        spacing={{ xs: 1, md: 2, lg: 2, xl: 3 }}
+        columns={{ xs: 1, sm: 1, md: 6, lg: 12 }}>
+        {/* Card 1 */}
+        <Grid item xs={4} sm={4} md={6} lg={4}>
+          <Card
+            className="card animated-card"
+            sx={{
+              maxWidth: 450,
+              width: 380,
+              minWidth: 350,
+              height: 540,
 
-                    /* The CSS properties `display: 'flex'` and `justifyContent: 'center'` are used to
-                  create a flex container and center the content horizontally within that container. */
-                  }}
-                />
-                <CardContent>
-                  {/* Title */}
-                  <Typography gutterBottom variant="h5" component="div">
-                    L'Association
-                  </Typography>
-                  {/* Description */}
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ textAlign: 'left' }}>
-                    L'association Séphora Berrebi accompagne les enfants,
-                    adolescents et jeunes adultes empêchés dans leurs
-                    apprentissages pour des raisons d'ordre socio-culturel ou
-                    médical.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}>
+            {/* Your image */}
+            <img
+              src={LogoASB}
+              alt="Logo association"
+              style={{
+                width: '100%',
+              }}
+            />
+            <div className="card-body">
+              <CardContent>
+                {/* Title */}
+                <Typography gutterBottom variant="h5" component="div">
+                  L'association
+                </Typography>
+                {/* Description */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ textAlign: 'left' }}>
+                  L'association Séphora Berrebi accompagne les enfants,
+                  adolescents et jeunes adultes empêchés dans leurs
+                  apprentissages pour des raisons d'ordre socio-culturel ou
+                  médical (maladie grave ou chronique, handicap cognitif,
+                  trouble de l'apprentissage) de différentes façons : tutorat,
+                  accompagnement personnalisé, stages, activités à l'hôpital,
+                  évènements, etc.
+                </Typography>
+              </CardContent>
+
               <CardActions
                 sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 {/* Button to open modal */}
@@ -134,41 +140,44 @@ const CardPresentation = () => {
                   SITE DE L'ASSOCIATION
                 </Link>
               </CardActions>
-            </Card>
-          </Grid>
-          {/* Card 2 */}
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <Card
-              sx={{
-                maxWidth: 450,
-                minWidth: 300,
-                width: 350,
-                height: 500,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}>
-              <CardActionArea>
-                {/* Your image */}
-                <img
-                  src={ImageTutorat}
-                  alt="Tutorat"
-                  style={{ width: '100%' }}
-                />
-                <CardContent>
-                  {/* Title */}
-                  <Typography gutterBottom variant="h5" component="div">
-                    Le Tutorat
-                  </Typography>
-                  {/* Description */}
-                  <Typography variant="body2" color="text.secondary">
-                    Le pôle d'éducation solidaire de l'association Séphora
-                    Berrebi met en place des séances de tutorat personnalisé
-                    afin d'aider des élèves sur leur chemin de progrès dans les
-                    disciplines scolaires. Le tutorat ? Tout un symbole !
-                    Accompagner et guider un élève et l'encourager à devenir
-                    actif dans ses apprentissages.
-                    {/* <a href="https://fr.freepik.com/vecteurs-libre/fond-concept-travail-equipe-3d_6144599.htm#query=missions&position=7&from_view=search&track=sph&uuid=61f6fb43-db6f-4b20-b058-ad1453a3b926">
+            </div>
+          </Card>
+        </Grid>
+        {/* Card 2 */}
+        <Grid item xs={2} sm={4} md={4} lg={4}>
+          <Card
+            className="card animated-card"
+            sx={{
+              minWidth: 350,
+              width: 380,
+              maxWidth: 450,
+
+              height: 540,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}>
+            {/* Your image */}
+            <img src={ImageTutorat} alt="Tutorat" style={{ width: '100%' }} />
+            <div className="card-body">
+              <CardContent>
+                {/* Title */}
+                <Typography gutterBottom variant="h5" component="div">
+                  Le tutorat
+                </Typography>
+                {/* Description */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ textAlign: 'left' }}>
+                  Le pôle d'éducation solidaire de l'association Séphora Berrebi
+                  met en place des séances de tutorat personnalisé afin d'aider
+                  des enfants, adolescents ou jeunes adultes sur leur chemin de
+                  progrès dans les disciplines scolaires voire universitaires.
+                  Le tutorat ? Tout un symbole ! Il s'agit d'accompagner et de
+                  guider un élève ou un étudiant pour l'encourager à devenir
+                  actif et autonome dans ses apprentissages.
+                  {/* <a href="https://fr.freepik.com/vecteurs-libre/fond-concept-travail-equipe-3d_6144599.htm#query=missions&position=7&from_view=search&track=sph&uuid=61f6fb43-db6f-4b20-b058-ad1453a3b926">
                     Image de pikisuperstar
                   </a>{' '}
                   sur Freepik
@@ -176,55 +185,62 @@ const CardPresentation = () => {
                     Image de pch.vector
                   </a>{' '}
                   sur Freepik */}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+                </Typography>
+              </CardContent>
 
               <CardActions>
                 {/* Button to open modal */}
                 <Button onClick={handleOpenModal2}>En savoir plus</Button>
               </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            {/* Card 3 */}
-            <Card
-              className="card animated-card"
-              sx={{
-                maxWidth: 450,
-                minWidth: 300,
-                width: 350,
-                height: 500,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}>
-              <CardActionArea>
-                {/* Your image */}
-                <img
-                  src={ImageMissions}
-                  alt="Missions"
-                  style={{ width: '100%' }}
-                />
-                <CardContent>
-                  {/* Title */}
-                  <Typography gutterBottom variant="h5" component="div">
-                    Les missions
-                  </Typography>
-                  {/* Description */}
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"></Typography>
-                </CardContent>
-              </CardActionArea>
+            </div>
+          </Card>
+        </Grid>
+        <Grid item xs={2} sm={4} md={4} lg={4}>
+          {/* Card 3 */}
+          <Card
+            className="card animated-card"
+            sx={{
+              minWidth: 350,
+              maxWidth: 450,
+              width: 380,
+              height: 540,
+
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}>
+            {/* Your image */}
+            <img src={ImageMissions} alt="Missions" style={{ width: '100%' }} />
+            <div className="card-body">
+              <CardContent>
+                {/* Title */}
+                <Typography gutterBottom variant="h5" component="div">
+                  Les missions
+                </Typography>
+                {/* Description */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ textAlign: 'left' }}>
+                  Pour devenir bénévole au sein de l'association Séphora
+                  Berrebi, il suffit de candidater à l'une des missions
+                  bénévoles proposées. Suite à nos échanges, il sera possible de
+                  modifier la mission. La plupart des missions portent sur du
+                  tutorat : le besoin d'aide d'enfants issus de milieux peu
+                  favorisés ne cesse de croître, notre liste d'attente de
+                  bénéficiaires en demande n'en finit pas de s'allonger.
+                </Typography>
+              </CardContent>
+
               <CardActions>
                 {/* Button to open modal */}
                 <Button onClick={gotoMissions}>Voir les missions</Button>
               </CardActions>
-            </Card>
-          </Grid>
+            </div>
+          </Card>
         </Grid>
-      </Box>
+      </Grid>
+      {/* </Box> */}
 
       {/* Modal 1 */}
       <Modal
@@ -242,8 +258,8 @@ const CardPresentation = () => {
             border: '2px solid #000',
             boxShadow: 24,
             p: 4,
-            maxWidth: '90vw',
-            maxHeight: '90vh',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
             overflow: 'auto',
             textAlign: 'center',
           }}>
@@ -318,8 +334,9 @@ const CardPresentation = () => {
             border: '2px solid #000',
             boxShadow: 24,
             p: 4,
-            maxWidth: '80vw',
-            maxHeight: '80vh',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+
             overflow: 'hidden', // Hide overflow content
             textAlign: 'center',
           }}>
@@ -385,7 +402,7 @@ const CardPresentation = () => {
           </Box>
         </Box>
       </Modal>
-    </>
+    </Box>
   );
 };
 

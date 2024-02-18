@@ -97,6 +97,11 @@ const AddressAutocomplete = (props) => {
   //   setZipcodeSelected('');
   //   setCountrySelected('');
   // }
+  const disabledField = {
+    '& .MuiInputBase-input.Mui-disabled': {
+      WebkitTextFillColor: '#555555',
+    },
+  };
 
   return (
     <div>
@@ -135,6 +140,7 @@ const AddressAutocomplete = (props) => {
               />
             </AddressAutofill> */}
             <TextField
+              sx={disabledField}
               size="small"
               disabled={!editing}
               InputLabelProps={{ shrink: true }}
@@ -153,6 +159,7 @@ const AddressAutocomplete = (props) => {
               direction="row"
               sx={{ marginBottom: 4, marginTop: 4 }}>
               <TextField
+                sx={disabledField}
                 size="small"
                 disabled={!editing}
                 InputLabelProps={{ shrink: true }}
@@ -166,6 +173,7 @@ const AddressAutocomplete = (props) => {
                 onChange={onZipcodeChange}
               />
               <TextField
+                sx={disabledField}
                 size="small"
                 disabled={!editing}
                 InputLabelProps={{ shrink: true }}

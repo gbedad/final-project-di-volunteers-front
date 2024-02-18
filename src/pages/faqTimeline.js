@@ -73,7 +73,7 @@ export default function VerticalLinearStepper() {
                     variant="contained"
                     onClick={handleNext}
                     sx={{ mt: 1, mr: 1 }}>
-                    {index === steps.length - 1 ? 'Terminer' : 'Suivant'}
+                    {index === steps.length - 1 ? 'Fin' : 'Suivant'}
                   </Button>
                   <Button
                     disabled={index === 0}

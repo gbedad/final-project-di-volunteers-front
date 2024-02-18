@@ -12,8 +12,8 @@ import FaqTimeline from './faqTimeline.js';
 
 function FAQPage() {
   return (
-    <Container maxWidth="md" sx={{ marginTop: '20px' }}>
-      <Typography variant="h3" align="center" gutterBottom color={'secondary'}>
+    <Container maxWidth="md" sx={{ marginTop: '50px' }}>
+      <Typography variant="h4" align="center" gutterBottom color={'primary'}>
         Comment ça marche ?
       </Typography>
       <Accordion>
@@ -26,7 +26,7 @@ function FAQPage() {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography color={'primary'}>
+          <Typography color={'secondary.dark'}>
             Dans l’onglet Missions, veuillez choisir une mission qui vous
             convienne. En cliquant sur le bouton « Je postule » d’une mission,
             vous êtes dirigé sur le formulaire de demande de création de compte.
@@ -48,13 +48,18 @@ function FAQPage() {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography color={'primary'}>
+          <Typography color={'secondary.dark'}>
             Une fois votre compte créé, le processus de recrutement de chaque
             bénévole passe par les étapes suivantes. A tout moment bien sûr,
             vous pouvez retirer votre candidature. A tout moment également,
             l’association peut décider de mettre fin au processus.
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '1.5rem',
+            }}>
             <FaqTimeline />
           </Box>
         </AccordionDetails>
@@ -69,7 +74,7 @@ function FAQPage() {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography color={'primary'}>
+          <Typography color={'secondary.dark'}>
             Quand vous avez terminé de compléter une page, vous cliquez sur le
             bouton « J’ai terminé ». Entre chaque étape du processus, un membre
             habilité de l’association prend connaissance des informations que

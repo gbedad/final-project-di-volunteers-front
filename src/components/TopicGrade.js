@@ -15,8 +15,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthContext } from '../AuthContext';
 
@@ -131,20 +131,20 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       // console.log(response.data.message, subjectClassRanges);
       if (response.data.message) {
         // console.log('Subject and class ranges saved successfully');
-        toast.success(response.data.message, {
-          position: 'top-center',
-        });
+        // toast.success(response.data.message, {
+        //   position: 'top-center',
+        // });
         setShowButton(false);
       } else {
         console.error('Failed to save subjects');
-        toast.error('Failed to save subjects', {
-          position: 'top-center',
-        });
+        // toast.error('Failed to save subjects', {
+        //   position: 'top-center',
+        // });
       }
     } catch (error) {
-      toast.error('Failed to save subjects', {
-        position: 'top-center',
-      });
+      // toast.error('Failed to save subjects', {
+      //   position: 'top-center',
+      // });
       console.error('Failed to save subject and class ranges', error);
     }
     // console.log('Saving subject and class ranges: ', subjectClassRanges);
@@ -159,7 +159,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
 
   return (
     <div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <BorderedBoxWithLabel
         label="Matières et classes"
         sx={{ display: 'flex' }}>

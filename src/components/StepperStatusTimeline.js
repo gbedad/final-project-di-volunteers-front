@@ -177,6 +177,7 @@ export default function StepperStatusTimeline(props) {
                           </React.Fragment>
                         }>
                         <Button
+                          disabled={finished}
                           variant="contained"
                           onClick={(event) => {
                             index === 4

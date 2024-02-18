@@ -439,7 +439,7 @@ function ResponsiveAppBar() {
                 color: 'white',
                 display: 'block',
               }}>
-              Comment ça marche
+              FAQ
             </Button>
             <Button
               onClick={() => navigate('/missions', { state: { userLogged } })}
