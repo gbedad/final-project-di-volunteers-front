@@ -15,7 +15,7 @@ const steps = [
   },
   {
     label: 'Mes souhaits et disponibilités',
-    description: `Avant de vous contacter par téléphone, il nous est utile d’en savoir plus sur vos disponibilités ainsi que sur vous souhaits. En particulier, dans quelle(s) matière(s) et à quel(s) niveau(x) aimeriez-vous accompagner un bénéficiaire en tant que tuteur ?
+    description: `Avant de vous contacter par téléphone, il nous est utile d’en savoir plus sur vos disponibilités ainsi que sur vos souhaits. En particulier, dans quelle(s) matière(s) et à quel(s) niveau(x) aimeriez-vous accompagner un bénéficiaire en tant que tuteur ?
       L’échange téléphonique qui s’ensuit est l’occasion de vous présenter les modalités de fonctionnement de l’association s’agissant du tutorat.`,
   },
   {
@@ -28,7 +28,7 @@ const steps = [
   },
   {
     label: 'Ma convention',
-    description: `Une convention d'engagement réciproque est co-signée. Cela permet de fixer un cadre au bénévolat sur des qui relèvent du bon sens : ponctualité, fiabilité, laïcité, neutralité, bienveillance, etc.
+    description: `Une convention d'engagement réciproque est co-signée. Cela permet de fixer un cadre au bénévolat sur la base de principes qui relèvent du bon sens : ponctualité, fiabilité, laïcité, neutralité, bienveillance, etc.
     Pour information, de la même manière, l’association signe une convention d’engagement réciproque avec un représentant légal du bénéficiaire.`,
   },
   {

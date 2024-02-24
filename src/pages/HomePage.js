@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Container, Link, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 
 import './HomePage.css';
 import CardPresentation from './cardsPresentationHomepage';
@@ -71,11 +71,15 @@ const HomePage = () => {
           </div>
         </div> */}
         <CardPresentation />
-        <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'80%'} />
-        <Typography variant="h4" component="h3" color="primary.main" mt={6}>
-          Pour nous aider à mieux vous connaître avant de vous proposer des
-          élèves à accompagner.
-        </Typography>
+
+        <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'50%'} />
+
+        <Box mt={-8} maxWidth={'50%'}>
+          <Typography variant="h6" component="h5" color="primary.main" mt={6}>
+            Pour nous aider à mieux vous connaître avant de vous proposer des
+            élèves à accompagner.
+          </Typography>
+        </Box>
       </div>
       <Copyright sx={{ mt: 5 }} />
     </>

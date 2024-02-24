@@ -47,7 +47,7 @@ const steps = [
     label: 'Le moment est venu de nous entretenir',
     label_realised: 'Mes entretiens ont été réalisés',
     label_waiting: 'Ma convention est signée',
-    description: `Nous allons prendre contact pour vous proposer un ou plusieurs rendez-vous.`,
+    description: `Nous allons vous contacter prochainement pour vous proposer un ou plusieurs rendez-vous.`,
   },
   {
     label: "Il ne reste plus qu'à signer la convention",

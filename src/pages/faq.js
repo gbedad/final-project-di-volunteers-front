@@ -28,12 +28,12 @@ function FAQPage() {
         <AccordionDetails>
           <Typography color={'secondary.dark'}>
             Dans l’onglet Missions, veuillez choisir une mission qui vous
-            convienne. En cliquant sur le bouton « Je postule » d’une mission,
-            vous êtes dirigé sur le formulaire de demande de création de compte.
-            Dès que votre compte est créé, vous pouvez commencer à renseigner
-            votre profil. Vous avez alors la possibilité de choisir une mission
-            différente de celle que vous avez sélectionnée en première intention
-            pour candidater.
+            convient. En cliquant sur le bouton « Je postule » associé à une
+            mission, vous serez dirigé sur le formulaire de demande de création
+            de compte. Dès que votre compte est créé, vous pouvez commencer à
+            renseigner votre profil. Vous avez alors la possibilité de choisir
+            une mission différente de celle que vous avez initialement
+            sélectionnée pour postuler.
           </Typography>
         </AccordionDetails>
       </Accordion>

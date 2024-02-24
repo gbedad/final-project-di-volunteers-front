@@ -119,11 +119,12 @@ const CardPresentation = () => {
                     maxHeight: '200px',
                     overflowY: 'auto',
                   }}>
-                  L'association Séphora Berrebi accompagne les enfants,
-                  adolescents et jeunes adultes empêchés dans leurs
-                  apprentissages pour des raisons d'ordre socio-culturel ou
-                  médical (maladie grave ou chronique, handicap cognitif,
-                  trouble de l'apprentissage) de différentes façons : tutorat,
+                  L'association Séphora Berrebi <strong>accompagne</strong>{' '}
+                  grâce à ses bénévoles les enfants, adolescents et jeunes
+                  adultes empêchés dans leurs <strong>apprentissages</strong>{' '}
+                  pour des raisons d'ordre socio-culturel ou médical (maladie
+                  grave ou chronique, handicap cognitif, trouble de
+                  l'apprentissage) de différentes façons : tutorat,
                   accompagnement personnalisé, stages, activités à l'hôpital,
                   évènements, etc.
                 </Typography>
@@ -132,7 +133,10 @@ const CardPresentation = () => {
               <CardActions
                 sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 {/* Button to open modal */}
-                <Button size="standard" onClick={handleOpenModal1}>
+                <Button
+                  size="standard"
+                  onClick={handleOpenModal1}
+                  variant="outlined">
                   En savoir plus
                 </Button>
 
@@ -179,12 +183,14 @@ const CardPresentation = () => {
                     overflowY: 'auto',
                   }}>
                   Le pôle d'éducation solidaire de l'association Séphora Berrebi
-                  met en place des séances de tutorat personnalisé afin d'aider
-                  des enfants, adolescents ou jeunes adultes sur leur chemin de
-                  progrès dans les disciplines scolaires voire universitaires.
-                  Le tutorat ? Tout un symbole ! Il s'agit d'accompagner et de
-                  guider un élève ou un étudiant pour l'encourager à devenir
-                  actif et autonome dans ses apprentissages.
+                  met en place des séances de tutorat{' '}
+                  <strong>personnalisé</strong> afin d'aider des enfants,
+                  adolescents ou jeunes adultes sur leur chemin de progrès dans
+                  les disciplines scolaires voire universitaires. Le tutorat ?
+                  Tout un symbole ! Il s'agit d'accompagner et de{' '}
+                  <strong>guider</strong> un élève ou un étudiant pour
+                  l'encourager à devenir actif et autonome dans ses
+                  apprentissages.
                   {/* <a href="https://fr.freepik.com/vecteurs-libre/fond-concept-travail-equipe-3d_6144599.htm#query=missions&position=7&from_view=search&track=sph&uuid=61f6fb43-db6f-4b20-b058-ad1453a3b926">
                     Image de pikisuperstar
                   </a>{' '}
@@ -198,7 +204,9 @@ const CardPresentation = () => {
 
               <CardActions>
                 {/* Button to open modal */}
-                <Button onClick={handleOpenModal2}>En savoir plus</Button>
+                <Button onClick={handleOpenModal2} variant="outlined">
+                  En savoir plus
+                </Button>
               </CardActions>
             </div>
           </Card>
@@ -234,19 +242,22 @@ const CardPresentation = () => {
                     maxHeight: '200px',
                     overflowY: 'auto',
                   }}>
-                  Pour devenir bénévole au sein de l'association Séphora
-                  Berrebi, il suffit de candidater à l'une des missions
-                  bénévoles proposées. Suite à nos échanges, il sera possible de
-                  modifier la mission. La plupart des missions portent sur du
-                  tutorat : le besoin d'aide d'enfants issus de milieux peu
-                  favorisés ne cesse de croître, notre liste d'attente de
-                  bénéficiaires en demande n'en finit pas de s'allonger.
+                  Pour devenir <strong>bénévole</strong> au sein de
+                  l'association Séphora Berrebi, il suffit de{' '}
+                  <strong>candidater</strong> à l'une des missions bénévoles
+                  proposées. Suite à nos échanges, il sera possible de modifier
+                  la mission. La plupart des missions portent sur du tutorat :
+                  le besoin d'aide d'enfants issus de milieux peu favorisés ne
+                  cesse de croître, notre liste d'attente de bénéficiaires en
+                  demande n'en finit pas de s'allonger.
                 </Typography>
               </CardContent>
 
               <CardActions>
                 {/* Button to open modal */}
-                <Button onClick={gotoMissions}>Voir les missions</Button>
+                <Button onClick={gotoMissions} variant="contained">
+                  Voir les missions
+                </Button>
               </CardActions>
             </div>
           </Card>
