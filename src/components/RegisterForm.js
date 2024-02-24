@@ -90,9 +90,48 @@ const RegisterForm = ({ mission }) => {
       hasSpecialChar
     );
   };
+  const isEmailValid = () => {
+    return email.includes('@');
+  };
+
+  const isPhoneValid = () => {
+    return phone.trim() !== '';
+  };
+
+  const isBirthDateValid = () => {
+    return birth_date.trim() !== '';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isEmailValid()) {
+      toast.error('Veuillez saisir une adresse e-mail valide.', {
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (!isStrongPassword()) {
+      toast.error("Votre mot de passe n'est pas assez sécurisé.", {
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (!isPhoneValid()) {
+      toast.error('Veuillez saisir un numéro de téléphone valide.', {
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (!isBirthDateValid()) {
+      toast.error('Veuillez sélectionner une date de naissance valide.', {
+        position: 'top-center',
+      });
+      return;
+    }
 
     try {
       const response = await axios.post(`${BASE_URL}/register`, {
@@ -128,89 +167,6 @@ const RegisterForm = ({ mission }) => {
   };
 
   return (
-    // <form onSubmit={handleSubmit}>
-    //   <label>
-    //     Email:
-    //     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     Password:
-    //     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     First Name:
-    //     <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     Last Name:
-    //     <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     Phone:
-    //     <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     Birth Date:
-    //     <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <label>
-    //     Message:
-    //     <textarea value={message} onChange={(e) => setMessage(e.target.value)} required />
-    //   </label>
-    //   <br />
-    //   <button type="submit">Register</button>
-    // </form>
-    //   <form onSubmit={handleSubmit}>
-    //   <TextField
-    //     label="Email"
-    //     type="email"
-    //     variant="outlined"
-    //     value={email}
-    //     onChange={(e) => setEmail(e.target.value)}
-    //     required
-    //   />
-    //   <br />
-    //   <TextField
-    //     label="Password"
-    //     type="password"
-    //     variant="outlined"
-    //     value={password}
-    //     onChange={(e) => setPassword(e.target.value)}
-    //     required
-    //   />
-    //   <br />
-    //   <TextField
-    //     label="Birth Date"
-    //     type="date"
-    //     variant="outlined"
-    //     value={birthDate}
-    //     onChange={(e) => setBirthDate(e.target.value)}
-    //     required
-    //     InputLabelProps={{
-    //       shrink: true,
-    //     }}
-    //   />
-    //   <br />
-    //   <TextField
-    //     label="Message"
-    //     multiline
-    //     rows={4}
-    //     variant="outlined"
-    //     value={message}
-    //     onChange={(e) => setMessage(e.target.value)}
-    //     required
-    //   />
-    //   <br />
-    //   <Button type="submit" variant="contained" color="primary">
-    //     Register
-    //   </Button>
-    // </form>
     <>
       <ToastContainer />
       {/* <ThemeProvider theme={theme}> */}
@@ -274,17 +230,6 @@ const RegisterForm = ({ mission }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  {/* <TextField
-                  autoComplete="phone-number"
-                  name="phone"
-                  required
-                  fullWidth
-                  id="phone"
-                  label="Phone Number"
-                  autoFocus
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                /> */}
                   <Input
                     international
                     withCountryCallingCode
@@ -315,17 +260,6 @@ const RegisterForm = ({ mission }) => {
                 </Grid>
 
                 <Grid item xs={12}>
-                  {/* <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  /> */}
                   <PasswordInput
                     password={password}
                     handlePassword={(e) => setPassword(e.target.value)}
