@@ -86,9 +86,9 @@ export function nextStepStatus(key) {
   switch (key) {
     case 'Compte créé':
       return 'Etape suivante : A renseigner (2/6)';
-    case 'à renseigner':
-      return 'Etape suivante : A interviewer (3/6)';
-    case 'à télécharger':
+    case 'A renseigner':
+      return 'Etape suivante : A télécharger (3/6)';
+    case 'A télécharger':
       return 'Etape suivante : A interviewer (4/6)';
     case 'A interviewer':
       return 'Etape suivante : A finaliser (5/6)';

@@ -17,10 +17,11 @@ const HtmlTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-const RefreshButton = ({ getUser }) => {
+const RefreshButton = ({ getUser, setFinished }) => {
   const handleRefresh = () => {
     // Call the getUser function when the button is clicked
     // console.log('Clicked');
+    setFinished(false);
     getUser();
   };
 

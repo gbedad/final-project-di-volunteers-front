@@ -238,7 +238,7 @@ const BasicTabs = () => {
               }}
             />
             <Box display="flex" justifyContent="center" alignItems="center">
-              <RefreshButton getUser={getUser} />
+              <RefreshButton getUser={getUser} setFinished={setFinished} />
             </Box>
             <Box
               display="flex"

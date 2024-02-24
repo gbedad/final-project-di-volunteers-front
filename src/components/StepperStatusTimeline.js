@@ -46,8 +46,9 @@ const steps = [
   {
     label: 'Le moment est venu de nous entretenir',
     label_realised: 'Mes entretiens ont été réalisés',
-    label_waiting: 'Ma convention est signée',
-    description: `Nous allons vous contacter prochainement pour vous proposer un ou plusieurs rendez-vous.`,
+    label_waiting:
+      'Nous allons vous contacter prochainement pour vous proposer un ou plusieurs rendez-vous.',
+    description: `Aussi allons-nous prendre contact par téléphone ou par mail pour vous proposer un ou plusieurs rendez-vous.`,
   },
   {
     label: "Il ne reste plus qu'à signer la convention",
@@ -61,7 +62,7 @@ const steps = [
   },
   {
     label: 'Ma candidature est validée',
-    label_waiting: '',
+    label_waiting: 'Votre candidature a été validée',
     description: `Bienvenue à l'association Séphora Berrebi ! Nous cherchons parmi les demandes de tutorat en attente celles qui correspondent à vos souhaits.,`,
   },
 ];
@@ -152,7 +153,7 @@ export default function StepperStatusTimeline(props) {
                     <Typography variant="caption">Dernière étape</Typography>
                   ) : null
                 }>
-                {activeStep > index
+                {activeStep > index && activeStep !== 6
                   ? step.label_realised
                   : finished
                   ? step.label_waiting
