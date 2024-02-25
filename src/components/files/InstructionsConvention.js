@@ -20,7 +20,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import BorderedBoxWithLabel from '../borderedBox';
 import UploadConventionComponent from '../FileConventionUploader';
 
-import pdfFile from '../../assets/presentationtuteurs.pdf';
+import pdfFile from '../../assets/Charte_benevolat2023-2024.pdf';
 
 const InstructionCoventionComponent = () => {
   const handleDownload = () => {
