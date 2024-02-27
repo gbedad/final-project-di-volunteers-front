@@ -31,7 +31,7 @@ const InstructionCoventionComponent = () => {
     const filename = urlParts[urlParts.length - 1];
 
     // Remove UUID from filename
-    const modifiedFilename = filename.replace('.de77072fa64ffd82f015', ''); // Replace UUID with an empty string
+    const modifiedFilename = filename.replace(/\.de77072fa64ffd82f015/, ''); // Replace UUID with an empty string
     link.download = modifiedFilename;
     link.click();
   };
