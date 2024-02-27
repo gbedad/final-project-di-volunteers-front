@@ -69,7 +69,14 @@ const InstructionComponent = () => {
                               sx={{ fontSize: '0.6rem' }}
                             />
                           </ListItemIcon>
-                          Extrait de casier judiciaire (s’obtient en ligne).
+                          Extrait de casier judiciaire (
+                          <a
+                            href="https://www.service-public.fr/particuliers/vosdroits/F1420"
+                            rel="noreferrer"
+                            target="_blank">
+                            s’obtient en ligne)
+                          </a>
+                          .
                         </ListItem>
                       </List>
                     </Typography>

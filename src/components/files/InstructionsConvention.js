@@ -26,7 +26,13 @@ const InstructionCoventionComponent = () => {
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = pdfFile;
-    link.download = 'convention_reciproque.pdf';
+    // Extracting filename from URL
+    const urlParts = pdfFile.split('/');
+    const filename = urlParts[urlParts.length - 1];
+
+    // Remove UUID from filename
+    const modifiedFilename = filename.replace('.de77072fa64ffd82f015', ''); // Replace UUID with an empty string
+    link.download = modifiedFilename;
     link.click();
   };
   return (

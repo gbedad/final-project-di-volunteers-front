@@ -62,7 +62,7 @@ export default function FloatingActionButtons(props) {
         ) : (
           <CheckCircleIcon sx={{ nmr: 1 }} />
         )}
-        J'ai terminé
+        J'ai terminé cette étape
       </Fab>
       {/* <Fab disabled aria-label="like">
         <FavoriteIcon />
