@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
@@ -13,6 +13,7 @@ import Stack from '@mui/material/Stack';
 import UploadIcon from '@mui/icons-material/Upload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -49,6 +50,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Uploads({ userSelected }) {
   const location = useLocation();
+  const containerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [filesUploaded, setFilesUploaded] = useState([]);
@@ -59,6 +61,25 @@ export default function Uploads({ userSelected }) {
   const [changeFileList, setChangeFileList] = useState(false);
   const [showUploadButton, setShowUploadButton] = useState(false);
   const [conventionReceived, setConventionReceived] = useState(false);
+  const [isColumnDirection, setIsColumnDirection] = useState(false);
+
+  // Define component width for Stack direction
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current.clientWidth < 400) {
+        setIsColumnDirection(true);
+      } else {
+        setIsColumnDirection(false);
+      }
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // console.log(location.state.userLogged.user.id);
   // const userId = location.state.userLogged.user.id;
@@ -201,12 +222,15 @@ export default function Uploads({ userSelected }) {
   return (
     <>
       {/* <InstructionComponent /> */}
-      <Box style={{ position: 'relative' }}>
+      <Box style={{ position: 'relative' }} ref={containerRef}>
         <Typography variant="h6" component={'p'} m={2}>
-          Pour télécharger les documents utiliser le bouton "Choisir un fichier"
-          et ensuite sur "Enregistrer"
+          Pour télécharger la convention signée utiliser le bouton "Choisir un
+          fichier" et ensuite sur "Enregistrer"
         </Typography>
-        <Stack direction="row" spacing={2} m={2}>
+        <Stack
+          direction={isColumnDirection ? 'column' : 'row'}
+          spacing={2}
+          m={2}>
           <MuiFileInput
             id="file-upload"
             // type="file"
@@ -228,7 +252,6 @@ export default function Uploads({ userSelected }) {
             //   AJOUTER
             // </Button>
             <LoadingButton
-              size="small"
               color="primary"
               onClick={handleFileUpload}
               loading={loading}

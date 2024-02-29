@@ -64,6 +64,7 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 
 import Uploads from './FileUploader';
+import UploadConvention from './FileConventionUploader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -676,6 +677,7 @@ const ChangeUserStatus = () => {
                       (par l'association Séphora Berrebi)
                     </Typography> */}
                   </Box>
+                  <UploadConvention userSelected={user.id} />
                   <Uploads userSelected={user.id} />
                 </Box>
               ) : (
