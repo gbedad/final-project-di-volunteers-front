@@ -184,7 +184,8 @@ const RegisterForm = ({ mission }) => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              S'inscrire pour la mission {propsData}
+              {/* S'inscrire pour la mission {propsData} */}
+              Créer un compte
             </Typography>
             <Box
               component="form"

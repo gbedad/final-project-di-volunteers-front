@@ -38,6 +38,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import InstructionComponent from './files/Instructions';
 
+import { saveAs } from 'file-saver';
+
 import './fileInputStyle.css';
 
 const fabStyle = {
@@ -48,7 +50,7 @@ const fabStyle = {
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export default function Uploads({ userSelected }) {
+export default function Uploads({ userSelected, s3FilePath }) {
   const location = useLocation();
   const containerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -211,6 +213,45 @@ export default function Uploads({ userSelected }) {
   };
   // console.log(filesUploaded);
 
+  const handleDownload = async () => {
+    try {
+      const { url } = await selectedFile;
+      // Fetch the file from the presigned URL
+      const response = await fetch(url, { mode: 'cors' });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch file (${response.status}: ${response.statusText})`
+        );
+      }
+
+      const blob = await response.blob();
+      const fileExtension = selectedFile.split('.').pop().toLowerCase();
+
+      if (fileExtension === 'pdf') {
+        saveAs(blob, 'downloaded_file.pdf');
+      } else if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+        // No need to convert to base64, use the blob directly
+        saveAs(blob, `downloaded_file.${fileExtension}`);
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch file (${response.status}: ${response.statusText})`
+          );
+        }
+      } else {
+        // Unsupported file type
+        console.error('Unsupported file type:', fileExtension);
+      }
+
+      // Use FileSaver.js to save the Blob as a file
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      // Handle error appropriately (e.g., show a message to the user)
+    }
+    // console.log('Download button clicked for:', s3FilePath);
+  };
+
   const fab = {
     color: '#fff',
     backGroundColor: 'primary.main',
@@ -327,6 +368,13 @@ export default function Uploads({ userSelected }) {
                       secondary={f.mimetype}
                     />
                   </ListItemButton>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    onClick={handleDownload}>
+                    Télécharger
+                  </Button>
                 </ListItem>
               </List>
             ))

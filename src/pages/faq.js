@@ -95,7 +95,7 @@ function FAQPage() {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography color={'secondary'}>
+          <Typography color={'secondary.dark'}>
             Ecrivez-nous à{' '}
             <a href="mailto:skola@sephoraberrebi.org " target="_top">
               skola@sephoraberrebi.org
