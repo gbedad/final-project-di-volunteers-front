@@ -63,7 +63,8 @@ const steps = [
   {
     label: 'Ma candidature est validée',
     label_waiting: 'Votre candidature a été validée',
-    description: `Bienvenue à l'association Séphora Berrebi ! Nous cherchons parmi les demandes de tutorat en attente celles qui correspondent à vos souhaits.,`,
+    description_waiting: `Bienvenue à l'association Séphora Berrebi ! Nous cherchons parmi les demandes de tutorat en attente celles qui correspondent à vos souhaits.`,
+    description: `Bienvenue à l'association Séphora Berrebi ! Nous cherchons parmi les demandes de tutorat en attente celles qui correspondent à vos souhaits.`,
   },
 ];
 
