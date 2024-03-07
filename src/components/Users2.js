@@ -18,6 +18,8 @@ import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import { existingSubjects } from '../options/existingOptions';
 
+import { formatPhoneNumber } from '../js/phoneNumbersSpace';
+
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#ff6d75',
@@ -65,6 +67,8 @@ const columns = [
   {
     field: 'phone',
     headerName: 'Téléphone',
+    valueGetter: (params) =>
+      params.row.phone ? `${formatPhoneNumber(params.row.phone)}` : '',
 
     width: 150,
     editable: true,

@@ -37,8 +37,8 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import { shortDescription, longDescription } from '../js/statusDescription';
 
-import displayPhone from '../js/phoneNumbersSpace';
-import { parsePhoneNumber } from 'awesome-phonenumber';
+import { displayPhone } from '../js/phoneNumbersSpace';
+
 function preventDefault(event) {
   event.preventDefault();
 }
@@ -305,7 +305,7 @@ export default function Users(props) {
                 {row.email}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {parsePhoneNumber(row.phone).number.international}
+                {displayPhone(row.phone)}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
                 {row.mission}
