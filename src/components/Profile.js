@@ -680,7 +680,7 @@ const ProfilePage = ({ status }) => {
                   /> 
                 </ListItem>*/}
                 <ListItem>
-                  <ListItemAvatar>
+                  {/* <ListItemAvatar>
                     <Badge
                       badgeContent=""
                       color="warning"
@@ -690,7 +690,7 @@ const ProfilePage = ({ status }) => {
                         <WorkIcon />
                       </Avatar>
                     </Badge>
-                  </ListItemAvatar>
+                  </ListItemAvatar> */}
                   <FormControl
                     fullWidth
                     variant="standard"

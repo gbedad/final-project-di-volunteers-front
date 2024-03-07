@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { toast } from 'react-toastify';
 import Grid from '@mui/material/Grid';
 import Card from './Card'; // Import the Card component;
+import Typography from '@mui/material/Typography';
 import './Card.css';
 
 import Box from '@mui/material/Box';
@@ -54,6 +55,15 @@ const CardList = () => {
   ) : (
     <>
       <Box sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h4"
+          component="h3"
+          color="primary.main"
+          m={2}
+          textAlign={'center'}>
+          Demandez la création de votre compte MyCogniverse en postulant à une
+          mission !
+        </Typography>
         <Grid
           align="center"
           container
