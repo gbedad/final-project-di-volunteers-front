@@ -90,9 +90,9 @@ function YourComponent({ user }) {
         </ListItem>
         <Box mt={2}>
           <Typography variant="body2" color="gray" mb={2}>
-            Vous avez changé d'avis et souhaitez choisir une autre mission que
-            celle ci-dessus ? Veuillez cliquer dans ce cas sur une autre mission
-            de la liste ci-dessous.
+            Vous souhaitez choisir une autre mission que celle ci-dessus ?
+            Veuillez cliquer dans ce cas sur une autre mission de la liste
+            ci-dessous.
           </Typography>
           {!missions ? (
             ''

@@ -18,7 +18,7 @@ const steps = [
   {
     label: 'Mon profil',
     label_realised: 'Mon profil est créé',
-    label_waiting: "Mon compte est créé, j'ai renseigné mon profil",
+    label_waiting: "Mon compte est créé, j'ai saisi les informations demandées",
     description: `Votre compte est créé, nous aimerions en savoir plus sur vous : merci de nous communiquer quelques informations préliminaires sur votre profil (sauf, bien sûr, si vous l'avez déjà fait !).`,
     description_waiting:
       'Merci ! Nous vous envoyons un mail dès que nous en avons pris connaissance.',

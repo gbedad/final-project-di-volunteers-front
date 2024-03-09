@@ -305,7 +305,7 @@ const RegisterForm = ({ mission }) => {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}>
-                S'inscrire
+                Créer mon compte pour postuler
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>

@@ -489,7 +489,7 @@ function ResponsiveAppBar() {
                       backgroundColor: 'white',
                       color: 'primary',
                       '&:hover': {
-                        backgroundColor: 'success.main',
+                        backgroundColor: '',
                         color: 'white',
                       },
                       display: 'block',

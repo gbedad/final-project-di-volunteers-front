@@ -13,7 +13,12 @@ import FaqTimeline from './faqTimeline.js';
 function FAQPage() {
   return (
     <Container maxWidth="md" sx={{ marginTop: '50px' }}>
-      <Typography variant="h4" align="center" gutterBottom color={'primary'}>
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        color={'primary'}
+        mb={3}>
         Foire aux questions
       </Typography>
       <Accordion>
