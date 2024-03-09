@@ -196,7 +196,7 @@ const BasicTabs = () => {
             <Tab
               label="MES DISPONIBILITÉS"
               {...a11yProps(1)}
-              disabled={status === 'Compte créé' || status === 'Déclinée'}
+              disabled={status === 'Déclinée'}
               style={{
                 color:
                   status === 'Compte créé' ||

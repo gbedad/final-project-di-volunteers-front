@@ -372,6 +372,11 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
               {!location.state || !location.state.userLogged ? (
+                <MenuItem onClick={() => navigate('/register', { state: '1' })}>
+                  <Typography textAlign="center">Créer un compte</Typography>
+                </MenuItem>
+              ) : null}
+              {!location.state || !location.state.userLogged ? (
                 <MenuItem onClick={handleLogin}>
                   <Typography textAlign="center">Se connecter</Typography>
                 </MenuItem>
