@@ -195,6 +195,7 @@ const RegisterForm = ({ mission }) => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
+                    autoFocus
                     required
                     fullWidth
                     id="email"
@@ -213,7 +214,6 @@ const RegisterForm = ({ mission }) => {
                     fullWidth
                     id="firstName"
                     label="Prénom"
-                    autoFocus
                     value={first_name}
                     onChange={(e) => setFirstName(e.target.value)}
                   />

@@ -441,7 +441,7 @@ function ResponsiveAppBar() {
                 color: 'white',
                 display: 'block',
               }}>
-              FAQ
+              Comment ça marche
             </Button>
             <Button
               onClick={() => navigate('/missions', { state: { userLogged } })}
@@ -478,8 +478,26 @@ function ResponsiveAppBar() {
               <MenuItem>
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                   <Button
+                    onClick={() => navigate('/register', { state: '1' })}
+                    sx={{
+                      my: 2,
+                      backgroundColor: 'white',
+                      color: 'primary',
+                      '&:hover': {
+                        backgroundColor: 'success.main',
+                        color: 'white',
+                      },
+                      display: 'block',
+                    }}>
+                    Créer un compte
+                  </Button>
+                  <Button
                     onClick={handleLogin}
-                    sx={{ my: 2, color: 'white', display: 'block' }}>
+                    sx={{
+                      my: 2,
+                      color: 'white',
+                      display: 'block',
+                    }}>
                     Se connecter
                   </Button>
                 </Box>

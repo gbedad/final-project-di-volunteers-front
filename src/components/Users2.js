@@ -19,6 +19,7 @@ import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import { existingSubjects } from '../options/existingOptions';
 
 import { formatPhoneNumber } from '../js/phoneNumbersSpace';
+import { parsePhoneNumber } from 'awesome-phonenumber';
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -68,7 +69,9 @@ const columns = [
     field: 'phone',
     headerName: 'Téléphone',
     valueGetter: (params) =>
-      params.row.phone ? `${formatPhoneNumber(params.row.phone)}` : '',
+      params.row.phone
+        ? `${parsePhoneNumber(params.row.phone).number.international}`
+        : '',
 
     width: 150,
     editable: true,

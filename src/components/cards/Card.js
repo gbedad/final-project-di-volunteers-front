@@ -77,9 +77,11 @@ const MissionCard = (props) => {
           <Button size="small" onClick={handleOpen}>
             En savoir plus
           </Button>
-          <Link to="/register" className="card-link" state={props.id}>
-            JE POSTULE
-          </Link>
+          <Box sx={{ display: !props.token ? 'block' : 'none' }}>
+            <Link to="/register" className="card-link" state={props.id}>
+              JE POSTULE
+            </Link>
+          </Box>
         </CardActions>
       </div>
 

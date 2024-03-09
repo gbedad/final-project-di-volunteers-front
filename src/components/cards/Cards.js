@@ -18,6 +18,7 @@ const CardList = () => {
   const { token } = useContext(AuthContext);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const userToken = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchMissionsList = async () => {
@@ -80,6 +81,7 @@ const CardList = () => {
                 location={card.location}
                 link={card.link}
                 description={card.description}
+                token={userToken}
               />
             </Grid>
           ))}

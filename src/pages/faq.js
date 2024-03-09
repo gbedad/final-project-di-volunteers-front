@@ -14,7 +14,7 @@ function FAQPage() {
   return (
     <Container maxWidth="md" sx={{ marginTop: '50px' }}>
       <Typography variant="h4" align="center" gutterBottom color={'primary'}>
-        Comment ça marche ?
+        Foire aux questions
       </Typography>
       <Accordion>
         <AccordionSummary

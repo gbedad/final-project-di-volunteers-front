@@ -6,6 +6,8 @@ import './HomePage.css';
 import CardPresentation from './cardsPresentationHomepage';
 import MyCogniverseImg from '../assets/mycogniverse.png';
 
+import FloatingActionButton from '../components/FloatingButtonRegister';
+
 function Copyright(props) {
   return (
     <Typography
