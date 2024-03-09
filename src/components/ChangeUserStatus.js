@@ -93,6 +93,8 @@ const ChangeUserStatus = () => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState('');
   const [newStatus, setNewStatus] = useState('');
+  const [isRegistered, setIsRegistered] = useState(true);
+  const [resp, setResp] = useState(null);
   const [checked, setChecked] = React.useState(false);
   const [showActiveConfirm, setShowActiveConfirm] = useState(false);
   const [selectedFile] = useState(null);
@@ -100,6 +102,7 @@ const ChangeUserStatus = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   // const [openPopper, setOpenPopper] = React.useState(false);
   // const [placement, setPlacement] = React.useState();
   const userLogged = JSON.parse(localStorage.getItem('user'));
@@ -179,6 +182,25 @@ const ChangeUserStatus = () => {
     navigate('../stepper', {
       state: { userSelected: user, userLogged },
     });
+  };
+
+  const handleCancelRegistration = () => {
+    axios
+      .delete(`${BASE_URL}/delete-registration/${user.id}`)
+      .then((response) => {
+        setIsRegistered(false);
+        // console.log(response.data);
+        // console.log('Registration cancelled successfully');
+        setResp(response.data.msg);
+        setTimeout(() => {
+          navigate('/view-users', {
+            state: { userSelected: user, userLogged },
+          });
+        }, 2500);
+      })
+      .catch((error) => {
+        console.error('Failed to cancel registration: ', error);
+      });
   };
 
   // console.log(user, userLogged);
@@ -556,10 +578,20 @@ const ChangeUserStatus = () => {
                   </Typography>
                   <Button
                     sx={{ width: 'fit-content' }}
-                    variant="contained"
+                    variant="outlined"
                     color="secondary"
                     onClick={handleEditUserProfile}>
                     Editer profil
+                  </Button>
+                  <Typography variant="body2" mt={2}>
+                    Supprimer le compte du tuteur
+                  </Typography>
+                  <Button
+                    sx={{ width: 'fit-content' }}
+                    variant="outlined"
+                    color="warning"
+                    onClick={handleCancelRegistration}>
+                    Supprimer le compte
                   </Button>
                 </Box>
               </Box>
