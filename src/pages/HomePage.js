@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
 import { Box, Link, Typography } from '@mui/material';
 
 import './HomePage.css';
-import CardPresentation from './cardsPresentationHomepage';
+
 import MyCogniverseImg from '../assets/mycogniverse.png';
 
 import FloatingActionButton from '../components/FloatingButtonRegister';
+
+const CardPresentation = lazy(() => import('./cardsPresentationHomepage'));
 
 function Copyright(props) {
   return (
@@ -72,8 +74,9 @@ const HomePage = () => {
             </Typography>
           </div>
         </div> */}
-        <CardPresentation />
-
+        <Suspense fallback={<div>Loading…</div>}>
+          <CardPresentation />
+        </Suspense>
         <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'50%'} />
 
         <Box mt={-8} maxWidth={'50%'}>
