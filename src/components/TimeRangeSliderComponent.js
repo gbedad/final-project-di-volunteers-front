@@ -5,9 +5,6 @@ import Slider from '@mui/material/Slider';
 import { Typography, Button, Box } from '@mui/material';
 import BorderedBoxWithLabel from './borderedBox';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 function valuetext(value) {
   return `${value}heures`;
 }
@@ -63,15 +60,10 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
       // console.log(value);
       if (response.data.message) {
         // console.log('Subject and class ranges saved successfully');
-        toast.success(response.data.message, {
-          position: 'top-center',
-        });
+
         setShowButton(false);
       } else {
         console.error('Failed to save subjects');
-        toast.error('Failed to save subjects', {
-          position: 'top-center',
-        });
       }
       // console.log('Response from server:', response.data);
     } catch (error) {
@@ -82,7 +74,6 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
 
   return (
     <>
-      <ToastContainer />
       <BorderedBoxWithLabel label="Disponibilité" sx={{ display: 'flex' }}>
         <Typography
           variant="body2"

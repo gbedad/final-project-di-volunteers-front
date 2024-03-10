@@ -192,7 +192,7 @@ export default function StepperStatusTimeline(props) {
                         </Button>
                       </HtmlTooltip>
                     )}
-                    {index > 0 && (
+                    {/* {index > 0 && (
                       <Button
                         disabled={index === -1}
                         onClick={handleBack}
@@ -209,7 +209,7 @@ export default function StepperStatusTimeline(props) {
                           <SkipNextIcon /> {index + 2}
                         </>
                       )}
-                    </Button>
+                    </Button> */}
                   </div>
                 </Box>
               </StepContent>

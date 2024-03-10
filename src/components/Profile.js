@@ -680,17 +680,11 @@ const ProfilePage = ({ status }) => {
                   /> 
                 </ListItem>*/}
                 <ListItem>
-                  {/* <ListItemAvatar>
-                    <Badge
-                      badgeContent=""
-                      color="warning"
-                      variant="dot"
-                      invisible={user.activity !== null ? true : false}>
-                      <Avatar>
-                        <WorkIcon />
-                      </Avatar>
-                    </Badge>
-                  </ListItemAvatar> */}
+                  <ListItemAvatar>
+                    <Avatar>
+                      <WorkIcon />
+                    </Avatar>
+                  </ListItemAvatar>
                   <FormControl
                     fullWidth
                     variant="standard"
@@ -769,7 +763,7 @@ const ProfilePage = ({ status }) => {
                 variant="contained"
                 disabled={showProfileButton}
                 onClick={handleEditProfile}>
-                Modifier
+                Compléter
               </Button>
               <Button
                 variant="contained"

@@ -37,27 +37,27 @@ const columns = [
     hideable: true,
   },
   { field: 'id', headerName: 'ID', width: 90, hideable: true },
-  // {
-  //   field: 'first_name',
-  //   headerName: 'First name',
-  //   width: 150,
-  //   editable: true,
-  // },
-  // {
-  //   field: 'last_name',
-  //   headerName: 'Last name',
-  //   width: 150,
-  //   editable: true,
-  // },
   {
-    field: 'fullName',
-    headerName: 'Nom',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 220,
-    valueGetter: (params) =>
-      `${params.row.first_name || ''} ${params.row.last_name || ''}`,
+    field: 'first_name',
+    headerName: 'Prénom',
+    width: 150,
+    editable: true,
   },
+  {
+    field: 'last_name',
+    headerName: 'Nom',
+    width: 150,
+    editable: true,
+  },
+  // {
+  //   field: 'fullName',
+  //   headerName: 'Nom',
+  //   description: 'This column has a value getter and is not sortable.',
+  //   sortable: false,
+  //   width: 220,
+  //   valueGetter: (params) =>
+  //     `${params.row.first_name || ''} ${params.row.last_name || ''}`,
+  // },
   {
     field: 'email',
     headerName: 'Email',
@@ -122,7 +122,7 @@ const columns = [
   },
   {
     field: 'test_voltaire_passed',
-    headerName: 'Test Fr.',
+    headerName: 'Test',
 
     width: 70,
     editable: true,
@@ -140,10 +140,10 @@ const columns = [
   },
   {
     field: 'convention_received',
-    headerName: 'Conv.',
+    headerName: 'Convention',
 
-    width: 50,
-    editable: true,
+    width: 100,
+
     renderCell: (params) => {
       return params.value ? (
         <ReceiptLongIcon

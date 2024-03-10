@@ -11,6 +11,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import Button from '@mui/material/Button';
 // import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+
+import Box from '@mui/material/Box';
 // import Container from '@mui/material/Container';
 // import Snackbar from '@mui/material/Snackbar';
 // import MuiAlert from '@mui/material/Alert';
@@ -104,7 +106,7 @@ const AddressAutocomplete = (props) => {
   };
 
   return (
-    <div>
+    <Box sx={{ width: '100%' }}>
       <Accordion defaultExpanded={false} sx={{ border: 'none' }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -203,7 +205,7 @@ const AddressAutocomplete = (props) => {
           </Alert>
         </Snackbar>
       )} */}
-    </div>
+    </Box>
   );
 };
 
