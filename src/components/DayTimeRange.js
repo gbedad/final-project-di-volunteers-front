@@ -256,15 +256,6 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                       inputProps={{
                         step: 300, // 5 minutes in seconds (300 seconds)
                       }}
-                      required // Add the required prop to make it mandatory
-                      // error={
-                      //   !dayTimeRange.endTime && dayTimeRange.endTime !== ''
-                      // } // Adjust error logic
-                      // helperText={
-                      //   !dayTimeRange.endTime && dayTimeRange.endTime !== ''
-                      //     ? 'Ce champ est obligatoire'
-                      //     : ''
-                      // }
                     />
                   </Grid>
 

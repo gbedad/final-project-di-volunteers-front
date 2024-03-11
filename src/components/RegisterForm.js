@@ -271,7 +271,7 @@ const RegisterForm = ({ mission }) => {
                     variant={'body2'}>
                     {isStrongPassword()
                       ? 'Mot de passe valide'
-                      : 'Le mot de passe doit contenir au moins 8 caractères dont des majuscules, des chiffres et des caractères spéciaux'}
+                      : 'Le mot de passe doit contenir au moins 8 caractères dont majuscule, une minuscule, un chiffre et un caractère spécial'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>

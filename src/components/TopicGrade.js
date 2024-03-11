@@ -242,16 +242,8 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                   variant="outlined"
                   label="Classe maxi"
                   select
-                  required
                   value={subjectClassRange.classEnd}
-                  onChange={(e) => handleClassEndChange(e.target.value, index)}
-                  // error={!subjectClassRange.classEnd} // Add error prop
-                  // helperText={
-                  //   !subjectClassRange.classEnd
-                  //     ? 'Ce champ est obligatoire'
-                  //     : ''
-                  // }
-                >
+                  onChange={(e) => handleClassEndChange(e.target.value, index)}>
                   {existingClasses.map((classe, idx) => (
                     <MenuItem key={idx} value={classe}>
                       {classe}

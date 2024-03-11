@@ -62,30 +62,31 @@ const MissionCard = (props) => {
   // console.log(imageUrl);
 
   return (
-    <Card className="card animated-card">
-      <img src={imageUrl ? imageUrl : image} alt={props.title} />
-      <div className="card-body">
-        <CardContent>
-          <Typography variant="h5" mb={3} sx={{ fontWeight: 'bold' }}>
-            {props.title}
-          </Typography>
-          {/* <h2 className="card-title">{props.title}</h2> */}
-          {/* <p className="card-text">{props.location}</p> */}
-          <Typography variant="p">{props.location}</Typography>
-        </CardContent>
-        <CardActions sx={{ justifyContent: 'space-between' }}>
-          <Button size="small" onClick={handleOpen}>
-            En savoir plus
-          </Button>
-          <Box sx={{ display: !props.token ? 'block' : 'none' }}>
-            <Link to="/register" className="card-link" state={props.id}>
-              JE POSTULE
-            </Link>
-          </Box>
-        </CardActions>
-      </div>
+    <>
+      <Card className="card animated-card">
+        <img src={imageUrl ? imageUrl : image} alt={props.title} />
+        <div className="card-body">
+          <CardContent>
+            <Typography variant="h5" mb={3} sx={{ fontWeight: 'bold' }}>
+              {props.title}
+            </Typography>
+            {/* <h2 className="card-title">{props.title}</h2> */}
+            {/* <p className="card-text">{props.location}</p> */}
+            <Typography variant="p">{props.location}</Typography>
+          </CardContent>
+          <CardActions sx={{ justifyContent: 'space-between' }}>
+            <Button size="small" onClick={handleOpen}>
+              En savoir plus
+            </Button>
+            <Box sx={{ display: !props.token ? 'block' : 'none' }}>
+              <Link to="/register" className="card-link" state={props.id}>
+                JE POSTULE
+              </Link>
+            </Box>
+          </CardActions>
+        </div>
 
-      {/* <Modal
+        {/* <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -99,65 +100,66 @@ const MissionCard = (props) => {
           </Typography>
         </Box>
       </Modal> */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle id="draggable-dialog-title">
-          Détails de la mission
-        </DialogTitle>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle id="draggable-dialog-title">
+            Détails de la mission
+          </DialogTitle>
 
-        <CssBaseline />
+          <CssBaseline />
 
-        <DialogContent>
-          <TextField
-            type="text"
-            label="Titre de la mission"
-            required
-            fullWidth
-            margin="normal"
-            value={props.title}
-            disabled
-          />
+          <DialogContent>
+            <TextField
+              type="text"
+              label="Titre de la mission"
+              required
+              fullWidth
+              margin="normal"
+              value={props.title}
+              disabled
+            />
 
-          <TextField
-            type="text"
-            label="Lieu de la mission"
-            required
-            fullWidth
-            margin="normal"
-            value={props.location}
-            disabled
-          />
+            <TextField
+              type="text"
+              label="Lieu de la mission"
+              required
+              fullWidth
+              margin="normal"
+              value={props.location}
+              disabled
+            />
 
-          <TextareaAutosize
-            minRows={10}
-            label="Description de la mission"
-            placeholder="Description de la mission"
-            value={props.description}
-            disabled
-            style={{
-              width: '100%',
-              maxWidth: '100%',
-              minWidth: '100%',
-              marginTop: 15,
-              marginBottom: 15,
-              fontFamily: 'roboto',
-              fontSize: 16,
-            }}
-            required
-          />
-          {getCenter(props.location) && (
-            <MapComponent center={getCenter(props.location)} />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={handleClose}
-            sx={{ mt: 3, mb: 2 }}>
-            Fermer
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Card>
+            <TextareaAutosize
+              minRows={10}
+              label="Description de la mission"
+              placeholder="Description de la mission"
+              value={props.description}
+              disabled
+              style={{
+                width: '100%',
+                maxWidth: '100%',
+                minWidth: '100%',
+                marginTop: 15,
+                marginBottom: 15,
+                fontFamily: 'roboto',
+                fontSize: 16,
+              }}
+              required
+            />
+            {getCenter(props.location) && (
+              <MapComponent center={getCenter(props.location)} />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
+              sx={{ mt: 3, mb: 2 }}>
+              Fermer
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Card>
+    </>
   );
 };
 

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 
 import { Box, Link, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import './HomePage.css';
 
 import MyCogniverseImg from '../assets/mycogniverse.png';
-
-import FloatingActionButton from '../components/FloatingButtonRegister';
 
 const CardPresentation = lazy(() => import('./cardsPresentationHomepage'));
 
@@ -74,7 +73,13 @@ const HomePage = () => {
             </Typography>
           </div>
         </div> */}
-        <Suspense fallback={<div>Loading…</div>}>
+        <Suspense
+          fallback={
+            <div>
+              <Typography>Chargement de la page en cours...</Typography>
+              <CircularProgress />
+            </div>
+          }>
           <CardPresentation />
         </Suspense>
         <img src={MyCogniverseImg} alt="Logo MyCogniverse" width={'50%'} />

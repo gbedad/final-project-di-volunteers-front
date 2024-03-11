@@ -689,7 +689,7 @@ const ProfilePage = ({ status }) => {
                     fullWidth
                     variant="standard"
                     // sx={{ m: 1, width: '100%' }}
-                    required>
+                  >
                     <InputLabel id="demo-simple-select-standard-label">
                       Activité
                     </InputLabel>

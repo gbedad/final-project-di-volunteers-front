@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { toast } from 'react-toastify';
 import Grid from '@mui/material/Grid';
 // import Card from './Card'; // Import the Card component;
 import Typography from '@mui/material/Typography';
+import Card from './Card';
 import './Card.css';
 
 import Box from '@mui/material/Box';
@@ -10,8 +11,6 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { AuthContext } from '../../AuthContext';
-
-const Card = lazy(() => import('./Card'));
 
 const CardList = () => {
   const [cardsData, setCardsData] = useState([]);
@@ -68,23 +67,21 @@ const CardList = () => {
           mission !
         </Typography>
         <Grid align="center" container spacing={{ xs: 1, md: 1, lg: 2 }}>
-          <Suspense fallback={<div>Loading...</div>}>
-            {cardsData.map((card, index) => (
-              <Grid item xs={12} sm={12} md={6} lg={3} key={card.id}>
-                <Card
-                  sx={{ maxWidth: 450, minWidth: 300 }}
-                  image_data={card.image_data}
-                  image_type={card.image_type}
-                  id={card.id}
-                  title={card.title}
-                  location={card.location}
-                  link={card.link}
-                  description={card.description}
-                  token={userToken}
-                />
-              </Grid>
-            ))}
-          </Suspense>
+          {cardsData.map((card, index) => (
+            <Grid item xs={12} sm={12} md={6} lg={3} key={card.id}>
+              <Card
+                sx={{ maxWidth: 450, minWidth: 300 }}
+                image_data={card.image_data}
+                image_type={card.image_type}
+                id={card.id}
+                title={card.title}
+                location={card.location}
+                link={card.link}
+                description={card.description}
+                token={userToken}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </>
