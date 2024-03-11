@@ -76,7 +76,13 @@ const HomePage = () => {
         <Suspense
           fallback={
             <div>
-              <Typography>Chargement de la page en cours...</Typography>
+              <Typography variant="h5">
+                Chargement de la page en cours...
+              </Typography>
+              <Typography variant="h6">
+                Pendant le chargement, vous pouvez en profiter pour aller sur
+                les pages "COMMENT CA MARCHE" ou "MISSIONS BENEVOLES".
+              </Typography>
               <CircularProgress />
             </div>
           }>
