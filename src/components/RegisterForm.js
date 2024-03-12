@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -103,6 +104,7 @@ const RegisterForm = ({ mission }) => {
     e.preventDefault();
 
     if (!isEmailValid()) {
+      toast.error('Veuillez saisir une adresse e-mail valide.');
       console.log('Veuillez saisir une adresse e-mail valide.');
       return;
     }
@@ -133,9 +135,18 @@ const RegisterForm = ({ mission }) => {
         message,
         mission_id: propsData,
       });
+      console.log(response.data);
+      if (response.data.msg === 'Register Successful') {
+        toast.success('Votre compte est créé; vous pouvez vous connecter.', {
+          duration: 6000,
+          position: 'top-center',
+        });
+      }
 
-      if (!isStrongPassword)
+      if (!isStrongPassword) {
+        toast.error("Votre mot de passe n'est pas assez sécurisé");
         return console.log("Votre mot de passe n'est pas assez sécurisé.");
+      }
       // console.log(response.data); // Handle successful response here
       navigate('/login');
     } catch (error) {
@@ -144,7 +155,7 @@ const RegisterForm = ({ mission }) => {
         // Assuming 409 is the status code for email already existing
         console.log('Email already exists. Please use a different email.');
       } else {
-        console.log('An error occurred. Please try again later.', {
+        toast.error('An error occurred. Please try again later.', {
           position: 'top-center',
         });
       }
@@ -155,6 +166,7 @@ const RegisterForm = ({ mission }) => {
     <>
       {/* <ThemeProvider theme={theme}> */}
       <>
+        <Toaster />
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box

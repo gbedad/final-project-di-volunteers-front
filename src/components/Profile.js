@@ -189,16 +189,17 @@ const ProfilePage = ({ status }) => {
         setIsRegistered(false);
         // console.log(response.data);
         // console.log('Registration cancelled successfully');
+
+        setResp(response.data.msg);
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
         toast.success(
-          `${user.first_name}, vous êtes bien retiré de la mission et vos données ont été effacées`,
+          `${user.first_name}, votre candidature a été retirée, votre compte annulé et vos données ont été effacées`,
           {
             position: 'top-center',
           }
         );
-        setResp(response.data.msg);
-        setTimeout(() => {
-          navigate('/');
-        }, 2500);
       })
       .catch((error) => {
         console.error('Failed to cancel registration: ', error);
