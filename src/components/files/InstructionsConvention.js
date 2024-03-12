@@ -113,9 +113,9 @@ const InstructionCoventionComponent = () => {
                   label="Signer la convention"
                   sx={{ display: 'flex' }}>
                   <Box p={3}>
-                    <Typography variant="body2">
-                      Merci de compléter les champs manquants de la convention
-                      puis de la signer.
+                    <Typography variant="body2" color="secondary.dark">
+                      Après avoir téléchargé le modèle, merci de compléter les
+                      champs manquants de la convention puis de la signer..
                       {/* <List sx={{ padding: '0px 0' }}>
                         <ListItem>
                           <b>nom_prénom_cv_1</b>,{' '}

@@ -15,9 +15,6 @@ import Box from '@mui/material/Box';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Avatar from '@mui/material/Avatar';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 // import { UserContext } from '../UserContext';
 
 function Copyright(props) {
@@ -78,9 +75,7 @@ const ResetPasswordForm = async () => {
       }
     }
   } catch (error) {
-    toast.error('An error occurred. Please try again later.', {
-      position: 'top-center',
-    });
+    console.log(error);
   }
 
   // Reset the form fields
@@ -92,7 +87,6 @@ const ResetPasswordForm = async () => {
   return (
     // <ThemeProvider theme={theme}>
     <>
-      <ToastContainer />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

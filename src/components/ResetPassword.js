@@ -3,8 +3,7 @@ import { useNavigate, useParams, NavLink, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ResetPasswordForm from './ResetPasswordForm';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 import CssBaseline from '@mui/material/CssBaseline';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
@@ -86,17 +85,11 @@ const ResetPassword = () => {
     event.preventDefault();
 
     if (password === '') {
-      toast.error('Password is required!', {
-        position: 'top-center',
-      });
+      console.log('Password is required!');
     } else if (!isStrongPassword(password)) {
-      return toast.error("Votre mot de passe n'est pas assez sécurisé.", {
-        position: 'top-center',
-      });
+      return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
-      toast.error('Passwords must match', {
-        position: 'top-center',
-      });
+      console.log('Passwords must match');
     } else {
       try {
         const res = await fetch(
@@ -120,22 +113,16 @@ const ResetPassword = () => {
           setPassword('');
           setConfirmPassword('');
           setMessage(true);
-          toast.success('Votre mot de passe a été renouvelé', {
-            position: 'top-center',
-          });
+          console.log('Votre mot de passe a été renouvelé');
           setTimeout(() => {
             navigate('/login');
           }, 1000);
         } else {
-          toast.error('Token expired, generate a new link', {
-            position: 'top-center',
-          });
+          console.log('Token expired, generate a new link');
         }
       } catch (error) {
         console.log(error);
-        toast.error('Something went wrong', {
-          position: 'top-center',
-        });
+        console.log('Something went wrong');
       }
     }
   };
@@ -148,7 +135,6 @@ const ResetPassword = () => {
     <>
       {!loading ? (
         <div>
-          <ToastContainer />
           <>
             {/* <ThemeProvider theme={theme}> */}
             <Container component="main" maxWidth="xs">

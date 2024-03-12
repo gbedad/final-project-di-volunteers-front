@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
+
 import { Typography, Grid } from '@mui/material';
 // import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -222,23 +222,30 @@ const ProfilePage = ({ status }) => {
   const handleSaveClick = async () => {
     // Perform any necessary validation or data processing before saving
     try {
-      await axios.patch(`${BASE_URL}/update-user-profile/${user.id}`, {
-        first_name: firstName,
-        last_name: lastName,
-        phone: phone,
-        email2: email2,
-        birth_date: birthDate,
-        activity: activity,
-        street: streetSelected,
-        city: citySelected,
-        zipcode: zipcodeSelected,
-        country: countrySelected,
-      });
+      const response = await axios.patch(
+        `${BASE_URL}/update-user-profile/${user.id}`,
+        {
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          email2: email2,
+          birth_date: birthDate,
+          activity: activity,
+          street: streetSelected,
+          city: citySelected,
+          zipcode: zipcodeSelected,
+          country: countrySelected,
+        }
+      );
       // console.log(response.data.message);
-      setShowProfileButton(false);
-      // Perform any desired actions after successful submission
+      if (response.data.message === 'Profile updated successfully') {
+        setShowProfileButton(false);
+        // Perform any desired actions after successful submission
+        toast.success('Le profil a été completé');
+      }
     } catch (error) {
       console.error(error);
+      toast.error(error);
       // Handle any errors
     }
     setEditing(false);
@@ -386,12 +393,24 @@ const ProfilePage = ({ status }) => {
   // console.log(selectedMissionTitle);
 
   const handleSubmit = async () => {
-    await axios.patch(`${BASE_URL}/update-user-profile/${user.id}`, {
-      message,
-    });
-    setShowButton(false);
-    setEdit(true);
-    // console.log(response.data.message);
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/update-user-profile/${user.id}`,
+        {
+          message,
+        }
+      );
+      console.log(response.data);
+      if (response.data.message === 'Profile updated successfully') {
+        setShowButton(false);
+        setEdit(true);
+        toast.success('Modification effectuée');
+      }
+
+      // console.log(response.data.message);
+    } catch (err) {
+      toast.error(err);
+    }
   };
   const disabledField = {
     '& .MuiInputBase-input.Mui-disabled': {
@@ -417,7 +436,7 @@ const ProfilePage = ({ status }) => {
         </Stack>
       )}
       <Box></Box>
-      <ToastContainer />
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel
@@ -863,6 +882,7 @@ const ProfilePage = ({ status }) => {
                 Enregistrer
               </Button>
             </Stack>
+            <Toaster />
           </BorderedBoxWithLabel>
           {/* <BorderedBoxWithLabel label="Votre statut">
 
@@ -892,7 +912,7 @@ const ProfilePage = ({ status }) => {
       </Grid>
 
       <Box>
-        <Typography variant="body2">
+        <Typography variant="body2" color="secondary.dark">
           Votre compte MyCogniverse est créé.
         </Typography>
         <Button

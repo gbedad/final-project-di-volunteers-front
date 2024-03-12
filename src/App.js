@@ -40,8 +40,7 @@ import Faq from './pages/faq';
 // import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
 
 import {
   cyan,
@@ -96,7 +95,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CourseProvider>
           <AppBarMenu />
-          <ToastContainer />
+          <Toaster />
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />

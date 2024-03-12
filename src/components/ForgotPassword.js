@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -145,7 +144,7 @@ export default function ForgotPassword() {
               Demande de nouveau mot de passe
             </Button>
           </Box>
-          <ToastContainer />
+          <Toaster />
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

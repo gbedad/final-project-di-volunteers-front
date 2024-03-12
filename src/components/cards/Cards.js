@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { toast } from 'react-toastify';
+
 import Grid from '@mui/material/Grid';
 // import Card from './Card'; // Import the Card component;
 import Typography from '@mui/material/Typography';
@@ -39,7 +39,6 @@ const CardList = () => {
         return true;
       } catch (error) {
         if (error.message === 'Failed to fetch') {
-          toast.error('Erreur de reseau');
         }
         console.error(error);
       }

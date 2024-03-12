@@ -66,7 +66,7 @@ function YourComponent({ user }) {
   return (
     <>
       <List>
-        <Typography variant="body2" color="gray">
+        <Typography variant="body2" color="secondary.dark">
           La mission que vous avez choisie :
         </Typography>
         <ListItem alignItems="flex-start">
@@ -89,7 +89,7 @@ function YourComponent({ user }) {
           <ListItemText primary={mission.location} secondary="" />
         </ListItem>
         <Box mt={2}>
-          <Typography variant="body2" color="gray" mb={2}>
+          <Typography variant="body2" color="secondary.dark" mb={2}>
             Vous souhaitez choisir une autre mission que celle ci-dessus ?
             Veuillez cliquer dans ce cas sur une autre mission de la liste
             ci-dessous.

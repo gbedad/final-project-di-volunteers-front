@@ -11,7 +11,7 @@ import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import NavigationIcon from '@mui/icons-material/Navigation';
+import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -58,9 +58,9 @@ export default function FloatingActionButtons(props) {
         disabled={disableButton}
         color="primary">
         {!disableButton ? (
-          <NavigationIcon sx={{ mr: 1 }} />
+          <CheckCircleIcon sx={{ mr: 1 }} />
         ) : (
-          <CheckCircleIcon sx={{ nmr: 1 }} />
+          <CheckIcon sx={{ nmr: 1 }} />
         )}
         J'ai terminé cette étape
       </Fab>

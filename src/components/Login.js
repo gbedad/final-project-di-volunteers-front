@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
 
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -90,8 +90,19 @@ export default function SignIn() {
         // updateUser(userLogged);
         toast.success(`Bonjour  ${userLogged.user.first_name}`, {
           position: 'top-center',
-          autoClose: 2000,
-          draggable: true,
+
+          // Styling
+          style: {},
+          className: '',
+
+          // Custom Icon
+          icon: '👏',
+
+          // Change colors of success/error/loading icon
+          iconTheme: {
+            primary: '#000',
+            secondary: '#fff',
+          },
         });
 
         // console.log(userLogged, isLoading);
@@ -113,12 +124,9 @@ export default function SignIn() {
       });
     }
   };
-  console.log(email, password);
 
   return (
     <>
-      {/* <ToastContainer autoClose={1000} /> */}
-
       {/* <ThemeProvider theme={theme}> */}
       <>
         <Container component="main" maxWidth="xs">
@@ -198,6 +206,8 @@ export default function SignIn() {
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
         {/* </ThemeProvider> */}
+
+        <Toaster />
       </>
     </>
   );

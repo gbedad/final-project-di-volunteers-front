@@ -27,9 +27,6 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { FormControl, InputLabel } from '@mui/material';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -106,30 +103,22 @@ const RegisterForm = ({ mission }) => {
     e.preventDefault();
 
     if (!isEmailValid()) {
-      toast.error('Veuillez saisir une adresse e-mail valide.', {
-        position: 'top-center',
-      });
+      console.log('Veuillez saisir une adresse e-mail valide.');
       return;
     }
 
     if (!isStrongPassword()) {
-      toast.error("Votre mot de passe n'est pas assez sécurisé.", {
-        position: 'top-center',
-      });
+      console.log("Votre mot de passe n'est pas assez sécurisé.");
       return;
     }
 
     if (!isPhoneValid()) {
-      toast.error('Veuillez saisir un numéro de téléphone valide.', {
-        position: 'top-center',
-      });
+      console.log('Veuillez saisir un numéro de téléphone valide.');
       return;
     }
 
     if (!isBirthDateValid()) {
-      toast.error('Veuillez sélectionner une date de naissance valide.', {
-        position: 'top-center',
-      });
+      console.log('Veuillez sélectionner une date de naissance valide.');
       return;
     }
 
@@ -146,20 +135,16 @@ const RegisterForm = ({ mission }) => {
       });
 
       if (!isStrongPassword)
-        return toast.error("Votre mot de passe n'est pas assez sécurisé.", {
-          position: 'top-center',
-        });
+        return console.log("Votre mot de passe n'est pas assez sécurisé.");
       // console.log(response.data); // Handle successful response here
       navigate('/login');
     } catch (error) {
       console.error(error); // Handle error here
       if (error) {
         // Assuming 409 is the status code for email already existing
-        toast.error('Email already exists. Please use a different email.', {
-          position: 'top-center',
-        });
+        console.log('Email already exists. Please use a different email.');
       } else {
-        toast.error('An error occurred. Please try again later.', {
+        console.log('An error occurred. Please try again later.', {
           position: 'top-center',
         });
       }
@@ -168,7 +153,6 @@ const RegisterForm = ({ mission }) => {
 
   return (
     <>
-      <ToastContainer />
       {/* <ThemeProvider theme={theme}> */}
       <>
         <Container component="main" maxWidth="xs">
@@ -271,7 +255,7 @@ const RegisterForm = ({ mission }) => {
                     variant={'body2'}>
                     {isStrongPassword()
                       ? 'Mot de passe valide'
-                      : 'Le mot de passe doit contenir au moins 8 caractères dont majuscule, une minuscule, un chiffre et un caractère spécial'}
+                      : 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un caractère spécial'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
