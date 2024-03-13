@@ -123,32 +123,6 @@ const Transition = function (props) {
   );
 };
 
-const Textarea = styled(TextareaAutosize)(
-  () => `
-    width: '100%';
-    fontFamily: 'Roboto';
-    fontSize: '1rem';
-    color: 'primary.main';
-    background: 'transparent';
-
-    border: 'none';
-    lineHeight: '1.5em';
-    &:hover {
-      border-color: light;
-    }
-
-    &:focus {
-      border-color: light;
-      box-shadow: 0 0 0 3px secondary.main};
-    }
-
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-);
-
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ProfilePage = ({ status }) => {
@@ -881,12 +855,12 @@ const ProfilePage = ({ status }) => {
                 style={{
                   width: '100%',
                   fontFamily: 'Roboto',
-                  fontSize: '1rem',
+                  fontSize: '16px',
                   color: 'primary.main',
                   background: 'transparent',
 
                   border: 'none',
-                  lineHeight: '1.5em',
+                  lineHeight: '20px',
                 }}
                 value={message}
                 onChange={handleMotivationChange}
