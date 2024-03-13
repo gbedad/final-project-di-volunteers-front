@@ -42,7 +42,7 @@ import Badge from '@mui/material/Badge';
 // import FormHelperText from '@mui/material/FormHelperText';
 import CallIcon from '@mui/icons-material/Call';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -91,6 +91,37 @@ import AddressAutocomplete from './AddressAutocomplete';
 import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
 import { Input } from '@mui/icons-material';
 // import RefreshButton from './refreshIcon';
+
+const Textarea = styled(BaseTextareaAutosize)(
+  () => `
+    box-sizing: border-box;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 2px;
+    color:'blue';
+    background: '!edit ? transparent : transparent';
+    border-width: 0;
+    
+
+    &:hover {
+      border-color: 'secondary.dark;
+    }
+
+    &:focus {
+      border-color: 'light';
+      
+    }
+
+    // firefox
+    &:focus-visible {
+      outline: 0;
+    }
+  `
+);
 
 // Extend dayjs with the necessary plugins
 
@@ -843,7 +874,7 @@ const ProfilePage = ({ status }) => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="Dites-nous en plus sur votre motivation">
             <Grid item xs={12} md={12} lg={12}>
-              <TextareaAutosize
+              <Textarea
                 disabled={edit}
                 autoFocus
                 id="message"
@@ -853,16 +884,6 @@ const ProfilePage = ({ status }) => {
                 minRows={10}
                 maxRows={20}
                 placeholder="Motivation"
-                style={{
-                  width: '100%',
-                  fontFamily: 'Roboto',
-                  fontSize: '16px',
-                  color: 'primary.main',
-                  background: 'transparent',
-
-                  border: 'none',
-                  lineHeight: '20px',
-                }}
                 value={message}
                 onChange={handleMotivationChange}
               />
