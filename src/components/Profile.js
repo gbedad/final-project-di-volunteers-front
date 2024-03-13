@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
-
+import { styled } from '@mui/system';
 import { Typography, Grid } from '@mui/material';
 // import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -122,6 +122,32 @@ const Transition = function (props) {
     Object.assign({ direction: 'up', ref: props.ref }, props)
   );
 };
+
+const Textarea = styled(TextareaAutosize)(
+  () => `
+    width: '100%';
+    fontFamily: 'Roboto';
+    fontSize: '1rem';
+    color: 'primary.main';
+    background: 'transparent';
+
+    border: 'none';
+    lineHeight: '1.5em';
+    &:hover {
+      border-color: light;
+    }
+
+    &:focus {
+      border-color: light;
+      box-shadow: 0 0 0 3px secondary.main};
+    }
+
+    // firefox
+    &:focus-visible {
+      outline: 0;
+    }
+  `
+);
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -844,6 +870,7 @@ const ProfilePage = ({ status }) => {
             <Grid item xs={12} md={12} lg={12}>
               <TextareaAutosize
                 disabled={edit}
+                autoFocus
                 id="message"
                 label="Motivation"
                 name="message"

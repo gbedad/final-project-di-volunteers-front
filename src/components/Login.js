@@ -89,6 +89,7 @@ export default function SignIn() {
         // setUserConnected(userLogged)
         // updateUser(userLogged);
         toast.success(`Bonjour  ${userLogged.user.first_name}`, {
+          duration: 6000,
           position: 'top-center',
 
           // Styling
@@ -100,7 +101,7 @@ export default function SignIn() {
 
           // Change colors of success/error/loading icon
           iconTheme: {
-            primary: '#000',
+            primary: 'light.main',
             secondary: '#fff',
           },
         });
@@ -207,7 +208,16 @@ export default function SignIn() {
         </Container>
         {/* </ThemeProvider> */}
 
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            success: {
+              iconTheme: {
+                primary: 'green',
+                secondary: 'black',
+              },
+            },
+          }}
+        />
       </>
     </>
   );
