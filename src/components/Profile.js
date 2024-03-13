@@ -421,6 +421,7 @@ const ProfilePage = ({ status }) => {
 
   return (
     <>
+      <Toaster />
       {!isRegistered && (
         <Stack sx={{ width: '100%' }} spacing={2}>
           <Alert onClose={() => {}}>
@@ -884,7 +885,6 @@ const ProfilePage = ({ status }) => {
                 Enregistrer
               </Button>
             </Stack>
-            <Toaster />
           </BorderedBoxWithLabel>
           {/* <BorderedBoxWithLabel label="Votre statut">
 
