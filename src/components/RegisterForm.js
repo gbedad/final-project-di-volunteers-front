@@ -63,12 +63,12 @@ const Textarea = styled(BaseTextareaAutosize)(
     line-height: 1.5;
     padding: 8px 12px;
     border-radius: 4px;
-    color:'trash';
-    background: 'transparent';
-    border: 1px solid rgba(20, 20, 20, 0.5)' ;
+    
+    background: transparent;
+    border: 1px solid rgba(20, 20, 20, 0.5) ;
     
     &:focus {
-      border-color: 'secondary.main';
+      border-color: black;
       
     }
 
