@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { styled } from '@mui/system';
 import toast, { Toaster } from 'react-hot-toast';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
@@ -51,6 +52,33 @@ function Copyright(props) {
     </Typography>
   );
 }
+
+const Textarea = styled(BaseTextareaAutosize)(
+  () => `
+    box-sizing: border-box;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color:'trash';
+    background: 'transparent';
+    border: 1px solid rgba(20, 20, 20, 0.5)' ;
+    
+    &:focus {
+      border-color: 'secondary.main';
+      
+    }
+
+    // firefox
+    &:focus-visible {
+      outline: 0;
+    }
+  `
+);
+
 dayjs.extend(customParseFormat);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const theme = createTheme();
@@ -271,7 +299,7 @@ const RegisterForm = ({ mission }) => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextareaAutosize
+                  <Textarea
                     required
                     id="message"
                     label="Motivation"
@@ -279,7 +307,6 @@ const RegisterForm = ({ mission }) => {
                     aria-label="minimum height"
                     minRows={5}
                     placeholder="Pourquoi souhaitez-vous être bénévole ?"
-                    style={{ width: 400, fontFamily: 'Roboto' }}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
