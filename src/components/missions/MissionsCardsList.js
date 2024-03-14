@@ -38,13 +38,9 @@ const CardList = ({ userLogged }) => {
   ) : (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <Grid
-          align="center"
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid align="center" container spacing={{ xs: 2, md: 3 }}>
           {displayedMissions.map((mission) => (
-            <Grid item xs={3} sm={4} md={4} key={mission.id}>
+            <Grid item xs={12} sm={12} md={6} lg={4} key={mission.id}>
               <MissionCard
                 mission={mission}
                 imageData={mission.image_data}

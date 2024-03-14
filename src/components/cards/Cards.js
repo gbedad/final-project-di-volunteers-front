@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import Grid from '@mui/material/Grid';
 // import Card from './Card'; // Import the Card component;
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import Card from './Card';
 import './Card.css';
 
@@ -55,34 +56,36 @@ const CardList = () => {
     </Box>
   ) : (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography
-          variant="h4"
-          component="h3"
-          color="primary.main"
-          m={2}
-          textAlign={'center'}>
-          Demandez la création de votre compte MyCogniverse en postulant à une
-          mission !
-        </Typography>
-        <Grid align="center" container spacing={{ xs: 1, md: 1, lg: 2 }}>
-          {cardsData.map((card, index) => (
-            <Grid item xs={12} sm={12} md={6} lg={3} key={card.id}>
-              <Card
-                sx={{ maxWidth: 450, minWidth: 300 }}
-                image_data={card.image_data}
-                image_type={card.image_type}
-                id={card.id}
-                title={card.title}
-                location={card.location}
-                link={card.link}
-                description={card.description}
-                token={userToken}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Container maxWidth="xl" mt={4}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h4"
+            component="h3"
+            color="primary.main"
+            m={2}
+            textAlign={'center'}>
+            Demandez la création de votre compte MyCogniverse en postulant à une
+            mission !
+          </Typography>
+          <Grid align="center" container spacing={{ xs: 2, md: 3 }}>
+            {cardsData.map((card) => (
+              <Grid item xs={12} sm={12} md={6} lg={4} key={card.id}>
+                <Card
+                  sx={{ maxWidth: 450, minWidth: 300 }}
+                  image_data={card.image_data}
+                  image_type={card.image_type}
+                  id={card.id}
+                  title={card.title}
+                  location={card.location}
+                  link={card.link}
+                  description={card.description}
+                  token={userToken}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Container>
     </>
   );
 };

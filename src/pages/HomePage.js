@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 
 import { Box, Link, Typography } from '@mui/material';
+
 import CircularProgress from '@mui/material/CircularProgress';
 
 import './HomePage.css';
