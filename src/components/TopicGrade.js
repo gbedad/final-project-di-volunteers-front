@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Typography,
   Button,
   Grid,
   MenuItem,
@@ -33,7 +32,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const [subjectClassRanges, setSubjectClassRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { userLogged } = location.state;
+  // const { userLogged } = location.state;
   const { token } = useContext(AuthContext);
 
   const [showButton, setShowButton] = useState(false);

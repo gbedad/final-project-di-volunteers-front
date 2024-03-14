@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Button from '@mui/material/Button';
+import toast, { Toaster } from 'react-hot-toast';
+
 import DeleteIcon from '@mui/icons-material/Delete';
-import SendIcon from '@mui/icons-material/Send';
+
 import ImageIcon from '@mui/icons-material/Image';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Stack from '@mui/material/Stack';
-import UploadIcon from '@mui/icons-material/Upload';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -20,29 +20,25 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import { FixedSizeList } from 'react-window';
-import Fade from '@mui/material/Fade';
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
+// import { FixedSizeList } from 'react-window';
+
+// import Alert from '@mui/material/Alert';
 import FileDisplay from './FileDisplay';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+
 import Typography from '@mui/material/Typography';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
+
+// import AddIcon from '@mui/icons-material/Add';
 import { MuiFileInput } from 'mui-file-input';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
-import InstructionComponent from './files/Instructions';
-
 import './fileInputStyle.css';
 
-const fabStyle = {
-  position: 'absolute',
-  bottom: -10,
-  left: 300,
-};
+// const fabStyle = {
+//   position: 'absolute',
+//   bottom: -10,
+//   left: 300,
+// };
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -55,7 +51,7 @@ export default function Uploads({ userSelected }) {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
+  // const [openAlert, setOpenAlert] = useState(false);
   const [changeFileList, setChangeFileList] = useState(false);
   const [showUploadButton, setShowUploadButton] = useState(false);
   const [isColumnDirection, setIsColumnDirection] = useState(false);
@@ -86,9 +82,9 @@ export default function Uploads({ userSelected }) {
       : userSelected;
   // console.log('USERID', userId);
 
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+  // const Alert = React.forwardRef(function Alert(props, ref) {
+  //   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  // });
 
   const checkFileType = (mime) => {
     switch (mime) {
@@ -122,10 +118,10 @@ export default function Uploads({ userSelected }) {
     getFiles();
   }, [changeFileList]);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setShowUploadButton(event.target.files[0] !== null);
-  };
+  // const handleFileChange = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  //   setShowUploadButton(event.target.files[0] !== null);
+  // };
 
   const handleChange = (newValue) => {
     setSelectedFile(newValue);
@@ -152,9 +148,12 @@ export default function Uploads({ userSelected }) {
       // console.log(response.data);
       if (response.status === 200) {
         // console.log('File uploaded successfully');
+        toast.success('Le fichier a bien été téléchargé', {
+          position: 'bottom-left',
+        });
         setFileUploaded(true);
         setChangeFileList(true);
-        setOpenAlert(true);
+
         setSelectedFile(null);
         setLoading(false);
       } else {
@@ -174,34 +173,40 @@ export default function Uploads({ userSelected }) {
     setOpen(false);
   };
 
-  const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  // const handleAlertClose = (event, reason) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
 
-    setOpenAlert(false);
-  };
+  //   setOpenAlert(false);
+  // };
 
   const handleDeleteFile = async (fileId) => {
     try {
       const response = await axios.delete(`${BASE_URL}/files/cancel/${fileId}`);
       // console.log(response.data); // Optional: Log the response if needed
       // Add any additional logic or state updates upon successful file deletion
-      setChangeFileList(true);
+      if (response.statusText === 'OK') {
+        toast.success('Le fichier a bien été effacé', {
+          position: 'bottom-left',
+        });
+        setChangeFileList(true);
+      }
     } catch (error) {
       console.error(error);
+      toast.error(error);
       // Handle any error cases, such as displaying an error message
     }
   };
   // console.log(filesUploaded);
 
-  const fab = {
-    color: '#fff',
-    backGroundColor: 'primary.main',
-    sx: fabStyle,
-    icon: <AddIcon />,
-    label: 'Add',
-  };
+  // const fab = {
+  //   color: '#fff',
+  //   backGroundColor: 'primary.main',
+  //   sx: fabStyle,
+  //   icon: <AddIcon />,
+  //   label: 'Add',
+  // };
 
   return (
     <>
@@ -260,7 +265,7 @@ export default function Uploads({ userSelected }) {
           )}
         </Stack>
       </Box>
-      {fileUploaded && (
+      {/* {fileUploaded && (
         <Snackbar
           open={openAlert}
           autoHideDuration={3000}
@@ -272,7 +277,8 @@ export default function Uploads({ userSelected }) {
             File Uploaded!
           </Alert>
         </Snackbar>
-      )}
+      )} */}
+      <Toaster />
       <Box>
         <Paper>
           {isLoading ? (

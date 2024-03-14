@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -8,17 +8,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import FilledAlerts from './Alerts';
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { createTheme } from '@mui/material/styles';
 
 import { AuthContext } from '../AuthContext';
 
@@ -43,13 +41,13 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
+// const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function SignIn() {
   const navigate = useNavigate();
   const { updateToken } = useContext(AuthContext);
-  const [userConnected, setUserConnected] = useState({});
+  // const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -97,7 +95,7 @@ export default function SignIn() {
           className: '',
 
           // Custom Icon
-          icon: '👏',
+          icon: '🚀',
 
           // Change colors of success/error/loading icon
           iconTheme: {

@@ -38,10 +38,10 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 // import BadgeIcon from '@mui/icons-material/Badge';
 // import TrafficIcon from '@mui/icons-material/Traffic';
-import Badge from '@mui/material/Badge';
+
 // import FormHelperText from '@mui/material/FormHelperText';
 import CallIcon from '@mui/icons-material/Call';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -70,7 +70,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import EditMissionComponent from '../components/EditMissionComponent';
 
-import FloatingButton from './FloatingButton';
+// import FloatingButton from './FloatingButton';
 
 // import { TransitionProps } from '@mui/material/transitions';
 
@@ -83,13 +83,13 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 // import { shortDescriptionForSupervisor } from '../js/statusDescription';
 // import EditProfile from './EditProfile';
 
-import { shortDescription, setStatusStep } from '../js/statusDescription';
+import { setStatusStep } from '../js/statusDescription';
 import AddressAutocomplete from './AddressAutocomplete';
 // import AutofillCheckoutDemo from './AddressAutocomplete2';
 // import SelectFormActivity from './SelectActivity';
 // import ImageDisplay from './ImageDisplay';
-import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
-import { Input } from '@mui/icons-material';
+// import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
+
 // import RefreshButton from './refreshIcon';
 
 const Textarea = styled(BaseTextareaAutosize)(
@@ -385,30 +385,30 @@ const ProfilePage = ({ status }) => {
   //   label: 'Save',
   // };
 
-  const actions = [
-    {
-      icon: 'Modifier',
-      // name: 'Text',
-      operation: 'edit',
-    },
-    {
-      icon: 'Enregistrer',
-      // name: 'Text',
-      operation: 'save',
-    },
-  ];
+  // const actions = [
+  //   {
+  //     icon: 'Modifier',
+  //     // name: 'Text',
+  //     operation: 'edit',
+  //   },
+  //   {
+  //     icon: 'Enregistrer',
+  //     // name: 'Text',
+  //     operation: 'save',
+  //   },
+  // ];
 
   //handler function
-  const handleClick = (operation) => {
-    if (operation === 'edit') {
-      // console.log('Edit mode');
-      setEditing(true);
-    } else if (operation === 'save') {
-      // setEditing(false);
-      // console.log('Save mode');
-      handleSaveClick();
-    }
-  };
+  // const handleClick = (operation) => {
+  //   if (operation === 'edit') {
+  //     // console.log('Edit mode');
+  //     setEditing(true);
+  //   } else if (operation === 'save') {
+  //     // setEditing(false);
+  //     // console.log('Save mode');
+  //     handleSaveClick();
+  //   }
+  // };
   // console.log(setStatusStep(status));
 
   const handleMotivationChange = async (e) => {

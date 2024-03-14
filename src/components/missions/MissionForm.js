@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material//TextField';
 import TextareaAutosize from '@mui/material//TextareaAutosize';
 import Switch from '@mui/material//Switch';
@@ -7,7 +8,8 @@ import Select from '@mui/material//Select';
 import MenuItem from '@mui/material//MenuItem';
 import axios from 'axios';
 
-const MissionForm = ({ mission, onSubmit }) => {
+const MissionForm = ({ mission, onSubmit, userLogged }) => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState(mission.title);
   const [description, setDescription] = useState(mission.description);
   const [location, setLocation] = useState(mission.location);
@@ -44,6 +46,7 @@ const MissionForm = ({ mission, onSubmit }) => {
 
       // Call onSubmit with updated mission data
       onSubmit(updatedMission);
+      navigate('all-missions', { state: { userLogged } });
     } catch (error) {
       console.error(error);
     }
@@ -51,11 +54,7 @@ const MissionForm = ({ mission, onSubmit }) => {
 
   return (
     <form>
-      <TextField
-        label="Title"
-        value={title}
-        onChange={handleTitleChange}
-      />
+      <TextField label="Title" value={title} onChange={handleTitleChange} />
       <TextareaAutosize
         label="Description"
         value={description}
@@ -63,11 +62,7 @@ const MissionForm = ({ mission, onSubmit }) => {
         rows={4}
         placeholder="Description"
       />
-      <Select
-        label="Location"
-        value={location}
-        onChange={handleLocationChange}
-      >
+      <Select label="Location" value={location} onChange={handleLocationChange}>
         <MenuItem value="MDA">MDA</MenuItem>
         <MenuItem value="Location2">Location 2</MenuItem>
         <MenuItem value="ParisAnim">ParisAnim</MenuItem>

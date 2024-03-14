@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
+
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -18,7 +18,6 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import BorderedBoxWithLabel from '../borderedBox';
-import UploadConventionComponent from '../FileConventionUploader';
 
 import pdfFile from '../../assets/Charte_benevolat2023-2024.pdf';
 

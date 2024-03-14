@@ -1,26 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
+
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 import LockResetIcon from '@mui/icons-material/LockReset';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Snackbar from '@mui/material/Snackbar';
-import Stack from '@mui/material/Stack';
-import MuiAlert from '@mui/material/Alert';
 
-import { AuthContext } from '../AuthContext';
+// import { AuthContext } from '../AuthContext';
 
 function Copyright(props) {
   return (
@@ -39,19 +34,15 @@ function Copyright(props) {
   );
 }
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
 // const theme = createTheme();
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const { updateUser } = useContext(AuthContext);
-  const [userConnected, setUserConnected] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = React.useState(false);
+  // const { updateUser } = useContext(AuthContext);
+  // const [userConnected, setUserConnected] = useState({});
+  const [setIsLoading] = useState(true);
+  const [setOpen] = React.useState(false);
   const [email, setEmail] = useState('');
 
   const handleSubmit = async (event) => {

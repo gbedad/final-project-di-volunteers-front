@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 // import { makeStyles } from '@mui/styles';
-import axios from 'axios';
+
 import {
-  Paper,
   Typography,
   Box,
   Button,
@@ -11,7 +10,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { Document, Page, pdfjs } from 'react-pdf';
-import AWS from 'aws-sdk';
+// import AWS from 'aws-sdk';
 import { saveAs } from 'file-saver';
 
 // Provide the path to the PDF.js worker file

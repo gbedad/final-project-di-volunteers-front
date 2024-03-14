@@ -8,26 +8,23 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import utc from 'dayjs/plugin/utc';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { createTheme } from '@mui/material/styles';
 import Input from 'react-phone-number-input/input';
 import CustomPhoneNumber from '../components/phone-numbers/PhoneNumber';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-import { FormControl, InputLabel } from '@mui/material';
+import { InputLabel } from '@mui/material';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -81,7 +78,7 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 dayjs.extend(customParseFormat);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const theme = createTheme();
+// const theme = createTheme();
 
 const RegisterForm = ({ mission }) => {
   const location = useLocation();

@@ -12,7 +12,7 @@ export default function ActiveUsers(props) {
       <Grid container spacing={2} sx={{ m: 0.5 }}>
         <Grid item xs={12}>
           <Title>Tuteurs actifs</Title>
-          {props.data ? (
+          {props.data || props.data === 0 ? (
             <Typography component="p" variant="h4">
               {activeUsers}
             </Typography>

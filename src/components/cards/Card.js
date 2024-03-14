@@ -6,11 +6,11 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+
 import DialogTitle from '@mui/material/DialogTitle';
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -28,13 +28,13 @@ import './Card.css';
 // const center = [48.834218481227296, 2.3869057718685927];
 
 const MissionCard = (props) => {
-  function isBase64Image(imageString) {
-    const base64ImagePattern =
-      /^data:image\/(png|jpeg|jpg|gif|svg\+xml);base64,/;
+  // function isBase64Image(imageString) {
+  //   const base64ImagePattern =
+  //     /^data:image\/(png|jpeg|jpg|gif|svg\+xml);base64,/;
 
-    return base64ImagePattern.test(imageString);
-  }
-  const imageString = `data:${props.image_type};base64,${props.image_data}`; // Example base64 image string
+  //   return base64ImagePattern.test(imageString);
+  // }
+  // const imageString = `data:${props.image_type};base64,${props.image_data}`; // Example base64 image string
 
   // if (isBase64Image(imageString)) {
   //   console.log('The string represents a base64-encoded image.');
@@ -42,17 +42,17 @@ const MissionCard = (props) => {
   //   console.log('The string is not a base64-encoded image.');
   // }
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
+  // const style = {
+  //   position: 'absolute',
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: 'translate(-50%, -50%)',
+  //   width: 400,
+  //   bgcolor: 'background.paper',
+  //   border: '2px solid #000',
+  //   boxShadow: 24,
+  //   p: 4,
+  // };
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);

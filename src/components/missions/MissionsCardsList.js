@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import MissionCard from './MissionCard';
-import MissionForm from './MissionForm2';
 
 const getBufferImage = (buffer) => {
   if (!buffer) {
@@ -18,8 +17,9 @@ const getBufferImage = (buffer) => {
   return imageURL;
 };
 
-const CardList = () => {
+const CardList = ({ userLogged }) => {
   const { missions } = useContext(MissionsContext);
+
   // const [cardsData, setCardsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [displayedMissions, setDisplayedMissions] = useState([]);
@@ -37,7 +37,6 @@ const CardList = () => {
     </Box>
   ) : (
     <>
-      <MissionForm />
       <Box sx={{ flexGrow: 1 }}>
         <Grid
           align="center"
@@ -46,18 +45,11 @@ const CardList = () => {
           columns={{ xs: 4, sm: 8, md: 12 }}>
           {displayedMissions.map((mission) => (
             <Grid item xs={3} sm={4} md={4} key={mission.id}>
-              {/* <Card
-              sx={{ maxWidth: 400 }}
-              image_data={card.image_data}
-              image_type={card.image_type}
-              image_name={card.image_name}
-              id={card.id}
-              title={card.title}
-              location={card.location}
-              link={card.link}
-              description={card.description}
-            /> */}
-              <MissionCard mission={mission} imageData={mission.image_data} />
+              <MissionCard
+                mission={mission}
+                imageData={mission.image_data}
+                userLogged={userLogged}
+              />
             </Grid>
           ))}
         </Grid>

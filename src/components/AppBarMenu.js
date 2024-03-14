@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -15,17 +15,14 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+
 import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
-import { replaceInvalidDateByNull } from '@mui/x-date-pickers/internals';
 
-import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 import logo from '../assets/mycogniverse3.gif';
-import logoIcon from '../assets/logo_icon.png';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
-const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
+// const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 

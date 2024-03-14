@@ -1,24 +1,19 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  AddressAutofill,
-  AddressMinimap,
-  useConfirmAddress,
-  config,
-} from '@mapbox/search-js-react';
+import { AddressAutofill } from '@mapbox/search-js-react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionActions from '@mui/material/AccordionActions';
+
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Chip from '@mui/material/Chip';
+
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+
 import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
+
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+
 import Alert from '@mui/material/Alert';
 
 import Stack from '@mui/material/Stack';
@@ -33,7 +28,6 @@ const AddressAutocomplete = (props) => {
   const [countrySelected, setCountrySelected] = React.useState('');
   const [addressSaved, setAddressSaved] = React.useState(false);
 
-  const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
 
   const handleSubmit = async () => {

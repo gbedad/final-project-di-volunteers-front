@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 
@@ -20,10 +20,10 @@ import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
 
 import RefreshButton from './refreshIcon';
-import StatusTimelineComponent from './TimeLineStatus/StatusTimeline';
+
 import StepperStatusTimeline from './StepperStatusTimeline';
 // import { setStatusStep } from '../js/statusDescription';
-import { shortDescription, setStatusStep } from '../js/statusDescription';
+import { setStatusStep } from '../js/statusDescription';
 import UploadConventionComponent from './FileConventionUploader';
 import FloatingButton from './FloatingButton';
 import { styled } from '@mui/material/styles';
@@ -127,9 +127,9 @@ const BasicTabs = () => {
     userId = location.state.userSelected.id;
   }
 
-  const handleStepFinish = (newState) => {
-    setFinished(newState);
-  };
+  // const handleStepFinish = (newState) => {
+  //   setFinished(newState);
+  // };
 
   const getUser = async () => {
     try {

@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams, NavLink, useHistory } from 'react-router-dom';
-import axios from 'axios';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ResetPasswordForm from './ResetPasswordForm';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
-import Snackbar from '@mui/material/Snackbar';
-import Stack from '@mui/material/Stack';
+
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import MuiAlert from '@mui/material/Alert';
+
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
@@ -49,9 +45,9 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
+  const [setMessage] = useState('');
+  // const [open, setOpen] = useState(false);
+  const [email] = useState('');
 
   const userValid = async () => {
     try {

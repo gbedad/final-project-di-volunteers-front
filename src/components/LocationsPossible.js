@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Typography,
   Button,
   Grid,
   MenuItem,
@@ -18,7 +17,7 @@ import BorderedBoxWithLabel from './borderedBox';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
-import { AuthContext } from '../AuthContext';
+// import { AuthContext } from '../AuthContext';
 
 import { existingLocations } from '../options/existingOptions';
 
@@ -35,7 +34,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const [showButton, setShowButton] = useState(false);
   const [disableSave, setDisableSave] = useState(true);
   const { userLogged } = location.state;
-  const token = useContext(AuthContext);
+  // const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
 
   // const userId = location.state.userLogged.user.id;

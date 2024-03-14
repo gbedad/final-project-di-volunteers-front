@@ -1,19 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Box,
-  Stack,
-  Input,
-  Typography,
-  IconButton,
-} from '@mui/material';
-import {
-  PhotoCamera,
-  Delete,
-  Send,
-  Alarm,
-  AddShoppingCart,
-} from '@mui/icons-material';
+import { Button, Box, Stack, Input, Typography } from '@mui/material';
 
 function PlainButton() {
   return (

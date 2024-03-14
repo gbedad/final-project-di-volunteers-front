@@ -3,13 +3,13 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
+
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import BorderedBoxWithLabel from '../borderedBox';
+
 import InfoIcon from '@mui/icons-material/Info';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
