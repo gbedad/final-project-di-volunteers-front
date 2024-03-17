@@ -60,6 +60,7 @@ function ResponsiveAppBar() {
       localStorage.removeItem('token1');
       localStorage.removeItem('users');
       localStorage.removeItem('user');
+      localStorage.removeItem('refreshToken');
       navigate('/');
     } catch (err) {
       console.log(err);

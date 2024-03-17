@@ -1,6 +1,6 @@
 import React from 'react';
 // import axios from 'axios';
-// import { AddressAutofill } from '@mapbox/search-js-react';
+import { AddressAutofill } from '@mapbox/search-js-react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -119,7 +119,7 @@ const AddressAutocomplete = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <form>
-            {/* <AddressAutofill
+            <AddressAutofill
               accessToken="pk.eyJ1IjoiZ2JlZGFkIiwiYSI6ImNsaTlyc3VzYTFicmgza2x1ODFndHc2eHoifQ.7FiDsQwHvL3qR-Bqdngb4g"
               popoverOptions={{
                 placement: 'top-start',
@@ -134,13 +134,14 @@ const AddressAutocomplete = (props) => {
                 placeholder="Commencer à indiquer le nom de votre voie..."
                 name="address"
                 autoComplete="address-line1"
-                value={street || ''}
-                onChange={onStreetChange}
+                // value={street || ''}
+                // onChange={onStreetChange}
                 fullWidth
-                required
+                disabled={!editing}
                 sx={{ marginBottom: 4 }}
               />
-            </AddressAutofill> */}
+            </AddressAutofill>
+
             <TextField
               sx={disabledField}
               size="small"

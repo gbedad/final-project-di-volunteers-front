@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 
 import LinearProgress from '@mui/material/LinearProgress';
 import MissionCard from './MissionCard';
+import Error404 from '../../pages/404';
 
 const getBufferImage = (buffer) => {
   if (!buffer) {
@@ -28,6 +29,7 @@ const CardList = ({ userLogged }) => {
     setDisplayedMissions(missions);
     setIsLoading(false);
   }, [missions]);
+  if (userLogged === null) return <Error404 />;
 
   // console.log(displayedMissions);
 

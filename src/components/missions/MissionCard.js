@@ -316,7 +316,6 @@ const MissionCard = ({ mission, userLogged }) => {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setImageData(e.target.files[0])}
-                  required
                 />
               </Grid>
 

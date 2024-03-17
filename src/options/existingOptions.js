@@ -2,8 +2,9 @@ export const existingLocations = [
   'Aubervilliers',
   'A distance',
   'Paris 12ème',
-  'Paris 12ème Gabriel Lamé',
-  'Paris 12ème Maison des Associations',
+  '22 rue Gabriel Lamé, Paris 12ème',
+  '181 avenue Daumesnil, Paris 12ème',
+  'Paris 18ème',
 ];
 
 export const existingClasses = [

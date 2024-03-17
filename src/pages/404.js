@@ -13,10 +13,10 @@ const Error404 = () => {
         marginTop: '5rem',
       }}>
       <Typography variant="h2" color="primary">
-        404 - Not Found
+        404 - Erreur
       </Typography>
-      <Typography variant="body1">
-        La page que vous demandez n'existe pas.
+      <Typography variant="body">
+        La page que vous demandez n'existe pas ou n'est pas accessible.
       </Typography>
     </Container>
   );

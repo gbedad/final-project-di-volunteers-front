@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -73,10 +74,12 @@ export default function SignIn() {
       const userLogged = response.data;
 
       const token = response.data.token;
+      const refreshToken = response.data.refreshToken;
 
       // console.log('Handlesubmit token');
       updateToken(token);
       localStorage.setItem('token1', response.data.token);
+      localStorage.setItem('refreshToken', refreshToken);
 
       if (response.data) {
         localStorage.setItem('user', JSON.stringify(response.data));
@@ -195,7 +198,7 @@ export default function SignIn() {
                 </Grid>
 
                 <Grid item>
-                  <Link href="/missions" variant="body2">
+                  <Link href="/register" variant="body2">
                     {"Vous n'avez pas de compte ?"}
                   </Link>
                 </Grid>

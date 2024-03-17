@@ -1,4 +1,7 @@
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useJwt } from 'react-jwt';
 import './App.css';
 // import IconButton from '@mui/material/IconButton';
 // import Box from '@mui/material/Box';
@@ -31,7 +34,7 @@ import ResetPassword from './components/ResetPassword';
 import MissionsPage from './components/missions/MissionsPage';
 import MissionCard from './components/missions/MissionCard';
 
-import { AuthProvider } from './AuthContext';
+import { AuthProvider } from './AuthContext.js';
 import { CourseProvider } from './components/courses/CourseContext';
 import CardList from './components/cards/Cards';
 // import Lassociation from './pages/lassociation';
@@ -41,7 +44,7 @@ import Faq from './pages/faq';
 // import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import {
   cyan,
@@ -91,20 +94,24 @@ const theme = createTheme({
 });
 
 function App() {
+  // }
+
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
         <AppBarMenu />
         <Toaster />
+
         <Routes>
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/reset-password/:id/:token"
             element={<ResetPassword />}
           />
           <Route path="/faq" element={<Faq />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/logout" />
           <Route path="/stepper" element={<Stepper />} />
           <Route path="/profile" element={<ProfilePage />} />
@@ -138,6 +145,7 @@ function App() {
           <Route path="/courses2" element={<VirtualizedTable />} />
 
           <Route exact path="/" element={<HomePage />} />
+
           <Route path="*" element={<Error404 />} />
         </Routes>
       </ThemeProvider>

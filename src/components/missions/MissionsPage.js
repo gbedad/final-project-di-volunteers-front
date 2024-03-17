@@ -6,12 +6,19 @@ import { Typography, Container } from '@mui/material';
 
 import CardList from './MissionsCardsList';
 import MissionForm from './MissionForm2';
+import Error404 from '../../pages/404';
 
 const MissionPage = () => {
   const location = useLocation();
-  const user = location.state.userLogged;
+  const connected = location.state;
+  let user;
+  if (connected) {
+    user = connected.userLogged;
+  }
 
-  return (
+  return !connected ? (
+    <Error404 />
+  ) : (
     <MissionsProvider>
       <Container maxWidth="xl" mt={4}>
         <Typography variant="h6">Liste des missions</Typography>
