@@ -200,7 +200,7 @@ const BasicTabs = () => {
 
   return (
     <AuthProvider>
-      {!isAuthenticated.isLoggedIn || location.state === null ? (
+      {!isAuthenticated.isLoggedIn && location.state === null ? (
         <Error404 />
       ) : (
         <div
