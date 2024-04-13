@@ -5,6 +5,7 @@ export const existingLocations = [
   '22 rue Gabriel Lamé, Paris 12ème',
   '181 avenue Daumesnil, Paris 12ème',
   'Paris 18ème',
+  'Présentiel ou distanciel',
 ];
 
 export const existingClasses = [

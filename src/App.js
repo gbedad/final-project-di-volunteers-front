@@ -12,7 +12,8 @@ import Register from './components/RegisterForm';
 import Login from './components/Login';
 import ProfilePage from './components/Profile';
 import AlertCancelRegistration from './components/AlertCancelRegistration';
-import AppBarMenu from './components/AppBarMenu';
+import AppBarMenu from './components/navbar/AppBarMenu';
+
 import AllUsers from './components/AllUsers';
 import ChangeUserStatus from './components/ChangeUserStatus';
 import Stepper from './components/Stepper';
@@ -46,6 +47,10 @@ import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
 import { Toaster } from 'react-hot-toast';
 
+import AppLayout from './components/navbar/AppBarLayout.js';
+
+import CoursesModule from './modules/Courses/CoursesModule';
+
 import {
   cyan,
   purple,
@@ -56,6 +61,7 @@ import {
   // blue,
   blueGrey,
 } from '@mui/material/colors';
+import RecruitmentModule from './Recruitment.js';
 
 const theme = createTheme({
   palette: {
@@ -100,9 +106,11 @@ function App() {
     <AuthProvider>
       <ThemeProvider theme={theme}>
         <AppBarMenu />
+        {/* <AppLayout> */}
         <Toaster />
 
         <Routes>
+          <Route path="/courses" element={<CoursesModule />} />
           <Route path="/register" element={<Register />} />
 
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -124,7 +132,6 @@ function App() {
             element={<AlertCancelRegistration />}
           />
           <Route path="/view-users" element={<AllUsers />} />
-          {/* <Route path="/view-users" element={<AdminPanel />} /> */}
           <Route path="/change-status" element={<ChangeUserStatus />} />
           <Route path="/update-files-received" element={<DocumentCheckbox />} />
           <Route path="/add-activity" element={<SelectFormActivity />} />
@@ -134,20 +141,19 @@ function App() {
             path="add-pre-interview"
             element={<FormPreInterviewComponent />}
           />
-          {/* <Route path="/" element={<CardList />} /> */}
           <Route path="/all-missions" element={<MissionsPage />} />
 
           <Route path="/missions/update/:id" element={<MissionCard />} />
           <Route path="/tutorat" element={<Tutorat />} />
           <Route path="/missions" element={<CardList />} />
 
-          {/* <Route path="/courses" element={<CoursePage />} /> */}
           <Route path="/courses2" element={<VirtualizedTable />} />
 
           <Route exact path="/" element={<HomePage />} />
 
           <Route path="*" element={<Error404 />} />
         </Routes>
+        {/* </AppLayout> */}
       </ThemeProvider>
     </AuthProvider>
   );

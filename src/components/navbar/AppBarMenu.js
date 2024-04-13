@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { styled, useTheme } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -19,7 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
 
-import logo from '../assets/mycogniverse3.gif';
+import logo from '../../assets/mycogniverse3.gif';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 // const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
@@ -370,7 +371,8 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
               {!location.state || !location.state.userLogged ? (
-                <MenuItem onClick={() => navigate('/register', { state: '1' })}>
+                <MenuItem
+                  onClick={() => navigate('/register', { state: '63' })}>
                   <Typography textAlign="center">Créer un compte</Typography>
                 </MenuItem>
               ) : null}
