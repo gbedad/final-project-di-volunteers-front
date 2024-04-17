@@ -93,7 +93,7 @@ const HomePage = () => {
           </Typography>
         </Box>
       </div>
-      <Copyright sx={{ mt: 5 }} />
+      {/* <Copyright sx={{ mt: 5 }} /> */}
     </>
   );
 };

@@ -42,6 +42,8 @@ import CardList from './components/cards/Cards';
 import Tutorat from './pages/focusTutorat';
 import HomePage from './pages/HomePage';
 import Faq from './pages/faq';
+import MentionsLegales from './pages/mentionsLegales.js';
+import BottomNavigation from './components/navbar/BottomNavigation.js';
 // import CoursePage from './components/courses/CoursePage';
 import VirtualizedTable from './components/courses/CoursePage2';
 import Error404 from './pages/404';
@@ -118,6 +120,7 @@ function App() {
             path="/reset-password/:id/:token"
             element={<ResetPassword />}
           />
+          <Route path="/cgu" element={<MentionsLegales />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" />
@@ -154,6 +157,7 @@ function App() {
           <Route path="*" element={<Error404 />} />
         </Routes>
         {/* </AppLayout> */}
+        <BottomNavigation />
       </ThemeProvider>
     </AuthProvider>
   );
