@@ -62,7 +62,8 @@ const CardList = () => {
             variant="h4"
             component="h3"
             color="primary.main"
-            m={2}
+            mt={6}
+            mb={2}
             textAlign={'center'}>
             Demandez la création de votre compte MyCogniverse en postulant à une
             mission !
