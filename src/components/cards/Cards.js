@@ -65,8 +65,8 @@ const CardList = () => {
             mt={6}
             mb={2}
             textAlign={'center'}>
-            Demandez la création de votre compte MyCogniverse en postulant à une
-            mission !
+            Demandez la création de votre compte MyCogniverse
+            <br /> en postulant à une mission !
           </Typography>
           <Grid align="center" container spacing={{ xs: 2, md: 3 }}>
             {cardsData.map((card) => (

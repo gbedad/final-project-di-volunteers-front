@@ -316,7 +316,7 @@ function ResponsiveAppBar() {
   // );
 
   return (
-    <AppBar position="static" color="primary">
+    <AppBar fixed="top" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography

@@ -15,7 +15,7 @@ const GeneralConditions = () => {
           Rollin 75012 Paris.
         </Typography>
         <Typography variant="body1" paragraph>
-          RNA : W751237786
+          RNA : W751237786.
           <br /> SIRET : 827 780 602.
           <br /> Représentante légale : Madame Emmanuelle Berrebi.
           <br /> Présidente : Madame Emmanuelle Berrebi.

@@ -28,12 +28,12 @@ const BottomNav = () => {
   return (
     <BottomNavWrapper>
       <Paper
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
+        // sx={{
+        //   position: 'fixed',
+        //   bottom: 0,
+        //   left: 0,
+        //   right: 0,
+        // }}
         elevation={3}>
         <BottomNavigation value={value} onChange={handleChange} showLabels>
           <BottomNavigationAction
