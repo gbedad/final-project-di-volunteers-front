@@ -282,7 +282,7 @@ const MissionCard = ({ mission, userLogged }) => {
                     onChange={(e) => setLocation(e.target.value)}
                     fullWidth
                     required
-                    label="Lieu de la missio">
+                    label="Lieu de la mission">
                     {existingLocations.map((location) => (
                       <MenuItem key={location} value={location} fullWidth>
                         <ListItemText primary={location} />

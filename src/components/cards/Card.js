@@ -15,7 +15,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
+// import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { styled } from '@mui/system';
+import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
 import MapComponent from '../maps/MapComponent';
 
@@ -26,6 +28,37 @@ import image from '../../assets/hands.jpeg';
 import './Card.css';
 
 // const center = [48.834218481227296, 2.3869057718685927];
+
+const Textarea = styled(BaseTextareaAutosize)(
+  () => `
+    box-sizing: border-box;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 2px;
+    color:'blue';
+    background: '!edit ? transparent : transparent';
+    border-width: 1px solid light.main;
+    
+
+    &:hover {
+      border-color: 'secondary.dark;
+    }
+
+    &:focus {
+      border-color: 'light';
+      
+    }
+
+    // firefox
+    &:focus-visible {
+      outline: 0;
+    }
+  `
+);
 
 const MissionCard = (props) => {
   // function isBase64Image(imageString) {
@@ -132,22 +165,14 @@ const MissionCard = (props) => {
               disabled
             />
 
-            <TextareaAutosize
+            <Textarea
+              value={props.description}
               minRows={10}
               label="Description de la mission"
-              placeholder="Description de la mission"
-              value={props.description}
-              disabled
-              style={{
-                width: '100%',
-                maxWidth: '100%',
-                minWidth: '100%',
-                marginTop: 15,
-                marginBottom: 15,
-                fontFamily: 'roboto',
-                fontSize: 16,
-              }}
               required
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             {getCenter(props.location) && (
               <MapComponent center={getCenter(props.location)} />
