@@ -83,13 +83,13 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 export default function StepperStatusTimeline(props) {
   const { userStatusStep, handleChange, finished } = props;
 
-  console.log(userStatusStep);
+  // console.log(userStatusStep);
 
   const userIndex = Number(userStatusStep.split('/')[0]);
   const [activeStep, setActiveStep] = React.useState(userIndex);
   const statusSteps = [...steps.slice(0, userIndex)];
 
-  console.log(userIndex);
+  // console.log(userIndex);
 
   useEffect(() => {
     const getProps = () => {

@@ -125,7 +125,7 @@ export default function Uploads({ userSelected, s3FilePath }) {
   const handleChange = (newValue) => {
     setSelectedFile(newValue);
     setShowUploadButton(newValue.name !== null);
-    console.log(newValue);
+    // console.log(newValue);
   };
 
   const handleFileUpload = async () => {

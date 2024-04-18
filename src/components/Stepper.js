@@ -89,12 +89,12 @@ const BasicTabs = () => {
 
   // Update screen size on mount and on window resize
 
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
   const { decodedToken, isExpired, reEvaluateToken } = useJwt(
     isAuthenticated.token
   );
 
-  console.log(decodedToken);
+  // console.log(decodedToken);
   // const tokenExp = new Date(decodedToken.exp * 1000);
   useEffect(() => {
     const refresh = async () => {
@@ -112,7 +112,7 @@ const BasicTabs = () => {
         tokenExp = new Date(decodedToken.exp * 1000);
       }
       const now = new Date();
-      console.log(tokenExp);
+      // console.log(tokenExp);
 
       // Refresh token if it's about to expire
       if (tokenExp - now < 60 * 1000) {
@@ -120,7 +120,7 @@ const BasicTabs = () => {
       }
     }
   }, []);
-  console.log(isExpired);
+  // console.log(isExpired);
 
   useEffect(() => {
     const updateScreenSize = () => {
@@ -193,10 +193,10 @@ const BasicTabs = () => {
     // eslint-disable-next-line
   }, [value]);
 
-  console.log('Finished ?', finished);
+  // console.log('Finished ?', finished);
 
-  console.log(isAuthenticated.isLoggedIn);
-  console.log(location.state);
+  // console.log(isAuthenticated.isLoggedIn);
+  // console.log(location.state);
 
   return (
     <AuthProvider>

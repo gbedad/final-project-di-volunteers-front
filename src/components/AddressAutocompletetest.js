@@ -39,7 +39,7 @@ const AddressAutocomplete = (props) => {
         zipcodeSelected,
         countrySelected,
       });
-      console.log(response.data.message);
+      // console.log(response.data.message);
       if (response.status === 200) {
         setAddressSaved(true);
         setOpenAlert(true);
@@ -87,7 +87,7 @@ const AddressAutocomplete = (props) => {
     setCountrySelected('');
   }
 
-  console.log(streetSelected);
+  // console.log(streetSelected);
   return (
     <div>
       <Accordion>

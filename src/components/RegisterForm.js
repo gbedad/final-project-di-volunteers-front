@@ -95,7 +95,7 @@ const RegisterForm = ({ mission }) => {
   dayjs.locale('fr');
   dayjs.extend(utc);
   // dayjs.utc(); // results in date in correct timezone
-  console.log(propsData);
+  // console.log(propsData);
   const isStrongPassword = () => {
     // Define the criteria for a strong password
     const minLength = 8;

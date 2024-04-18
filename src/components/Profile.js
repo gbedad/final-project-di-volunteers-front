@@ -432,7 +432,7 @@ const ProfilePage = ({ status }) => {
           message,
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.message === 'Profile updated successfully') {
         setShowButton(false);
         setEdit(true);

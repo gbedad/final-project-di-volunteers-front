@@ -166,7 +166,7 @@ const PreInterviewComponent = ({ userId }) => {
       ...prevState,
       [field]: value,
     }));
-    console.log(preInterview);
+    // console.log(preInterview);
     if (
       preInterview.date !== '' &&
       preInterview.by !== '' &&
