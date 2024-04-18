@@ -234,7 +234,10 @@ const PreInterviewComponent = ({ userId }) => {
                 id="demo-simple-select-standard"
                 label="Réalisé par"
                 value={preInterview.by}
-                onChange={(e) => updatePreInterview('by', e.target.value)}>
+                onChange={(e) => updatePreInterview('by', e.target.value)}
+                isoptionequaltovalue={(option, value) =>
+                  value === '' || option.id === value.id
+                }>
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
@@ -273,7 +276,7 @@ const PreInterviewComponent = ({ userId }) => {
           </FormControl>
         </Grid>
 
-        <Grid item={12}>
+        <Grid item xs={12}>
           <Stack direction="row" spacing={2} mb={2} mt={2}>
             <FormControl required sx={{ m: 1, width: 300 }} size="small">
               <InputLabel shrink id="demo-simple-select-standard-label">
@@ -286,8 +289,9 @@ const PreInterviewComponent = ({ userId }) => {
                 id="demo-simple-select-standard"
                 label="Recommandation *"
                 value={preInterview.nextStep}
-                onChange={(e) =>
-                  updatePreInterview('nextStep', e.target.value)
+                onChange={(e) => updatePreInterview('nextStep', e.target.value)}
+                isoptionequaltovalue={(option, value) =>
+                  value === '' || option.id === value.id
                 }>
                 <MenuItem value="">
                   <em>None</em>

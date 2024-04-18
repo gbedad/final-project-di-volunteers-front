@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setToken(storedToken);
     }
-    console.log(storedToken);
+    // console.log(storedToken);
   }, []);
 
   // const login = (token) => {

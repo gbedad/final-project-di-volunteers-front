@@ -133,11 +133,7 @@ const MissionCard = (props) => {
           </Typography>
         </Box>
       </Modal> */}
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          maxWidth={'md'}
-          fullWidth={'lg'}>
+        <Dialog open={open} onClose={handleClose} maxWidth="md">
           <DialogTitle id="draggable-dialog-title">
             Détails de la mission
           </DialogTitle>

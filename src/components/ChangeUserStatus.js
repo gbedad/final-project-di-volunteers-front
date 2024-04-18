@@ -465,7 +465,10 @@ const ChangeUserStatus = () => {
                       id="demo-simple-select"
                       value={newStatus}
                       label="Change Status"
-                      onChange={handleStatusChange}>
+                      onChange={handleStatusChange}
+                      isoptionequaltovalue={(option, value) =>
+                        value === '' || option.id === value.id
+                      }>
                       <MenuItem value={'Compte créé'}>
                         <CustomWidthTooltip
                           placement="right"

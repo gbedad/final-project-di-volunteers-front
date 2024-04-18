@@ -210,7 +210,7 @@ const MissionForm = ({ userLogged }) => {
                     minRows={10}
                     label="Description de la mission"
                     required
-                    InputLabelProps={{
+                    inputlabelprops={{
                       shrink: true,
                     }}
                   />
