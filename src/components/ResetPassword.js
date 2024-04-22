@@ -103,7 +103,7 @@ const ResetPassword = () => {
           }
         );
         const data = await res.json();
-        // console.log(data);
+        console.log(data);
 
         if (data.status === 201) {
           setPassword('');
@@ -178,7 +178,7 @@ const ResetPassword = () => {
                     type="submit"
                     onClick={sendPassword}
                     fullWidth>
-                    Renouveller
+                    Renouveler
                   </Button>
                 </Box>
               </Box>
