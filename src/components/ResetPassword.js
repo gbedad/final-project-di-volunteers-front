@@ -45,33 +45,37 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [setMessage] = useState('');
-  // const [open, setOpen] = useState(false);
-  const [email] = useState('');
+  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [isTokenValid, setIsTokenValid] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
-  const userValid = async () => {
+  const validateUser = async () => {
     try {
-      const res = await fetch(
-        `reset-password/${id}/${token}`,
-
-        {
-          method: 'GET',
-
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      // console.log(res);
+      const res = await fetch(`/validate-user/${id}/${token}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (res.ok) {
-        // console.log('user valid');
+        const data = await res.json();
+        setEmail(data.email);
+        setIsTokenValid(true);
+        setIsNewUser(!data.hasPassword);
+        setIsEmailVerified(data.isEmailVerified);
       } else {
-        navigate('*');
+        setIsTokenValid(false);
+        setIsNewUser(false);
+        setIsEmailVerified(false);
       }
     } catch (error) {
       console.log(error);
-      navigate('*');
+      setIsTokenValid(false);
+      setIsNewUser(false);
+      setIsEmailVerified(false);
     } finally {
       setLoading(false);
     }
@@ -86,25 +90,21 @@ const ResetPassword = () => {
       return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
       console.log('Passwords must match');
+    } else if (!isEmailVerified) {
+      console.log('Email must be verified before resetting password');
     } else {
       try {
-        const res = await fetch(
-          `${BASE_URL}/reset-password/${id}/${token}`,
+        const res = await fetch(`/reset-password/${id}/${token}`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ password }),
+        });
 
-          {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
-
-            body: JSON.stringify({ password }),
-          }
-        );
         const data = await res.json();
-        // console.log(data);
-
         if (data.status === 201) {
           setPassword('');
           setConfirmPassword('');
@@ -114,7 +114,7 @@ const ResetPassword = () => {
             navigate('/login');
           }, 1000);
         } else {
-          console.log('Token expired, generate a new link');
+          console.log('Something went wrong');
         }
       } catch (error) {
         console.log(error);
@@ -124,70 +124,66 @@ const ResetPassword = () => {
   };
 
   useEffect(() => {
-    userValid();
+    validateUser();
   }, []);
 
   return (
     <>
       {!loading ? (
         <div>
-          <>
-            {/* <ThemeProvider theme={theme}> */}
-            <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 8,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}>
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                  <LockOpenIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                  Renouveler mon mot de passe
-                </Typography>
-                <Typography>{email}</Typography>
-                <Box sx={{ mt: 1 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <TextField
-                        type="password"
-                        label="New Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        type="password"
-                        label="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        fullWidth
-                      />
-                    </Grid>
+          {isTokenValid && isEmailVerified ? (
+            <Box>
+              <Typography component="h1" variant="h5">
+                {isNewUser ? 'Set a New Password' : 'Reset Your Password'}
+              </Typography>
+              <Typography>{email}</Typography>
+              <Box sx={{ mt: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      type="password"
+                      label="New Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      fullWidth
+                    />
                   </Grid>
-                  <Button
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    type="submit"
-                    onClick={sendPassword}
-                    fullWidth>
-                    Renouveller
-                  </Button>
-                </Box>
+                  <Grid item xs={12}>
+                    <TextField
+                      type="password"
+                      label="Confirm Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  type="submit"
+                  onClick={sendPassword}
+                  fullWidth>
+                  {isNewUser ? 'Set Password' : 'Reset Password'}
+                </Button>
               </Box>
-
-              <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
-            ,
-          </>
-          {/* </ThemeProvider> */}
+            </Box>
+          ) : (
+            <Box>
+              <Typography variant="h5">Invalid or Expired Link</Typography>
+              <Typography>
+                The password reset link you've provided is invalid or has
+                expired. Please request a new password reset link.
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={() => navigate('/forgot-password')}>
+                Request New Link
+              </Button>
+            </Box>
+          )}
         </div>
       ) : (
         <Box
