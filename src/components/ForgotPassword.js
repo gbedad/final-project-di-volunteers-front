@@ -41,25 +41,25 @@ export default function ForgotPassword() {
   const navigate = useNavigate();
   // const { updateUser } = useContext(AuthContext);
   // const [userConnected, setUserConnected] = useState({});
-  const [setIsLoading] = useState(true);
-  const [setOpen] = React.useState(false);
+
   const [email, setEmail] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // setIsLoading(true);
 
     try {
       const response = await axios.post(`${BASE_URL}/forgot-password`, {
         email,
       });
 
-      // console.log(response.data);
+      console.log(response.data);
       if (response.data.status === 201) {
         // localStorage.setItem("user", JSON.stringify(response.data))
         // localStorage.setItem('token', response.data.token);
         // console.log(response.data);
-        setIsLoading(false);
-        setOpen(true);
+        // setIsLoading(false);
+        // setOpen(true);
         toast.success(
           'Un email vous a été adressé pour renouveler votre mot de passe. Vérifiez votre boite mail',
           {
@@ -68,7 +68,7 @@ export default function ForgotPassword() {
         );
         setTimeout(() => {
           navigate('/');
-        }, 5000);
+        }, 3000);
       } else {
         toast.error('Invalid User', {
           position: 'top-center',
