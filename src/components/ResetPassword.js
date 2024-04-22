@@ -53,20 +53,22 @@ const ResetPassword = () => {
 
   const validateUser = async () => {
     try {
-      const res = await fetch(`/validate-user/${id}/${token}`, {
+      const res = await fetch(`/reset-password/${id}/${token}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (res.ok) {
+      if (res.headers.get('Content-Type')?.includes('application/json')) {
         const data = await res.json();
         setEmail(data.email);
         setIsTokenValid(true);
         setIsNewUser(!data.hasPassword);
         setIsEmailVerified(data.isEmailVerified);
       } else {
+        // Handle non-JSON response
+        console.error('Unexpected response format from server');
         setIsTokenValid(false);
         setIsNewUser(false);
         setIsEmailVerified(false);
@@ -104,17 +106,22 @@ const ResetPassword = () => {
           body: JSON.stringify({ password }),
         });
 
-        const data = await res.json();
-        if (data.status === 201) {
-          setPassword('');
-          setConfirmPassword('');
-          setMessage(true);
-          console.log('Votre mot de passe a été renouvelé');
-          setTimeout(() => {
-            navigate('/login');
-          }, 1000);
+        if (res.headers.get('Content-Type')?.includes('application/json')) {
+          const data = await res.json();
+          if (data.status === 201) {
+            setPassword('');
+            setConfirmPassword('');
+            setMessage(true);
+            console.log('Votre mot de passe a été renouvelé');
+            setTimeout(() => {
+              navigate('/login');
+            }, 1000);
+          } else {
+            console.log('Something went wrong');
+          }
         } else {
-          console.log('Something went wrong');
+          // Handle non-JSON response
+          console.error('Unexpected response format from server');
         }
       } catch (error) {
         console.log(error);
