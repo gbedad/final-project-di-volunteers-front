@@ -65,7 +65,7 @@ const ResetPassword = () => {
       // console.log(res);
 
       if (res.ok) {
-        // console.log('user valid');
+        console.log('user valid');
       } else {
         navigate('*');
       }
@@ -148,7 +148,7 @@ const ResetPassword = () => {
                 <Typography component="h1" variant="h5">
                   Renouveler mon mot de passe
                 </Typography>
-                <Typography>{email}</Typography>
+                {/* <Typography>{email}</Typography> */}
                 <Box sx={{ mt: 1 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
