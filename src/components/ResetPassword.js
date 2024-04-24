@@ -15,6 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Avatar from '@mui/material/Avatar';
 
+import PasswordInput from './PasswordInput';
 import { isStrongPassword } from '../js/isStrongPassword';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -152,23 +153,33 @@ const ResetPassword = () => {
                 <Box sx={{ mt: 1 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <TextField
+                      {/* <TextField
                         type="password"
                         label="New Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         fullWidth
+                      /> */}
+                      <PasswordInput
+                        password={password}
+                        handlePassword={(e) => setPassword(e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <TextField
+                      {/* <TextField
                         type="password"
                         label="Confirm Password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                         fullWidth
+                      /> */}
+                      <PasswordInput
+                        password={confirmPassword}
+                        handlePassword={(e) =>
+                          setConfirmPassword(e.target.value)
+                        }
                       />
                     </Grid>
                   </Grid>
