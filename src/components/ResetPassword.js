@@ -63,6 +63,7 @@ const ResetPassword = () => {
 
       if (res.headers.get('Content-Type')?.includes('application/json')) {
         const data = await res.json();
+        console.log(data);
         setEmail(data.email);
         setIsTokenValid(true);
         setIsNewUser(!data.hasPassword);
