@@ -47,39 +47,31 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [setMessage] = useState('');
   // const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [isTokenValid, setIsTokenValid] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [email] = useState('');
 
-  const validateUser = async () => {
+  const userValid = async () => {
     try {
-      const res = await fetch(`/reset-password/${id}/${token}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await fetch(
+        `reset-password/${id}/${token}`,
 
-      if (res.headers.get('Content-Type')?.includes('application/json')) {
-        const data = await res.json();
-        console.log(data);
-        setEmail(data.email);
-        setIsTokenValid(true);
-        setIsNewUser(!data.hasPassword);
-        setIsEmailVerified(data.isEmailVerified);
+        {
+          method: 'GET',
+
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(res);
+
+      if (res.ok) {
+        console.log('user valid');
       } else {
-        // Handle non-JSON response
-        console.error('Unexpected response format from server');
-        setIsTokenValid(false);
-        setIsNewUser(false);
-        setIsEmailVerified(false);
+        navigate('*');
       }
     } catch (error) {
       console.log(error);
-      setIsTokenValid(false);
-      setIsNewUser(false);
-      setIsEmailVerified(false);
+      navigate('*');
     } finally {
       setLoading(false);
     }
@@ -94,21 +86,25 @@ const ResetPassword = () => {
       return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
       console.log('Passwords must match');
-    } else if (!isEmailVerified) {
-      console.log('Email must be verified before resetting password');
     } else {
       try {
-        const res = await fetch(`${BASE_URL}/reset-password/${id}/${token}`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          body: JSON.stringify({ password }),
-        });
+        const res = await fetch(
+          `${BASE_URL}/reset-password/${id}/${token}`,
 
+          {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+
+            body: JSON.stringify({ password }),
+          }
+        );
         const data = await res.json();
+        console.log(data);
+
         if (data.status === 201) {
           setPassword('');
           setConfirmPassword('');
@@ -128,7 +124,7 @@ const ResetPassword = () => {
   };
 
   useEffect(() => {
-    validateUser();
+    userValid();
   }, []);
 
   return (
@@ -182,7 +178,7 @@ const ResetPassword = () => {
                     type="submit"
                     onClick={sendPassword}
                     fullWidth>
-                    {isNewUser ? 'Créer un mot de passe' : 'Renouveler'}
+                    Renouveler
                   </Button>
                 </Box>
               </Box>
