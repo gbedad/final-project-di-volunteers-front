@@ -153,28 +153,12 @@ const ResetPassword = () => {
                 <Box sx={{ mt: 1 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      {/* <TextField
-                        type="password"
-                        label="New Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        fullWidth
-                      /> */}
                       <PasswordInput
                         password={password}
                         handlePassword={(e) => setPassword(e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      {/* <TextField
-                        type="password"
-                        label="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        fullWidth
-                      /> */}
                       <PasswordInput
                         password={confirmPassword}
                         handlePassword={(e) =>
@@ -189,7 +173,7 @@ const ResetPassword = () => {
                     type="submit"
                     onClick={sendPassword}
                     fullWidth>
-                    Renouveler
+                    {token === null ? 'Créer un mot de passe' : 'Renouveler'}
                   </Button>
                 </Box>
               </Box>
