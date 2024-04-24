@@ -173,7 +173,7 @@ const ResetPassword = () => {
                     type="submit"
                     onClick={sendPassword}
                     fullWidth>
-                    {token === null ? 'Créer un mot de passe' : 'Renouveler'}
+                    {!token ? 'Créer un mot de passe' : 'Renouveler'}
                   </Button>
                 </Box>
               </Box>
