@@ -108,7 +108,7 @@ const ResetPassword = () => {
         if (data.status === 201) {
           setPassword('');
           setConfirmPassword('');
-          setMessage(true);
+          // setMessage(true);
           console.log('Votre mot de passe a été renouvelé');
           setTimeout(() => {
             navigate('/login');
