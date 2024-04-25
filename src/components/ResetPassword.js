@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
+import toast, { Toaster } from 'react-hot-toast';
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -83,10 +84,22 @@ const ResetPassword = () => {
 
     if (password === '') {
       console.log('Password is required!');
+      setMessage('Un mot de passe est requis');
+      toast.error('Un mot de passe est requis', {
+        position: 'top-center',
+      });
     } else if (!isStrongPassword(password)) {
+      setMessage("Votre mot de passe n'est pas assez sécurisé.");
+      toast.error("Votre mot de passe n'est pas assez sécurisé", {
+        position: 'top-center',
+      });
       return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
       console.log('Passwords must match');
+      setMessage('Les mots de passes doivent être identiques');
+      toast.error('Les mots de passes doivent être identiques', {
+        position: 'top-center',
+      });
     } else {
       try {
         const res = await fetch(
@@ -111,15 +124,27 @@ const ResetPassword = () => {
           setConfirmPassword('');
           // setMessage(true);
           console.log('Votre mot de passe a été renouvelé');
+          setMessage('Votre mot de passe a été renouvelé');
+          toast.success('Votre mot de passe a été re2initialisé', {
+            position: 'top-center',
+          });
           setTimeout(() => {
             navigate('/login');
           }, 1000);
         } else {
           console.log('Token expired, generate a new link');
+          setMessage('Votre token a expiré, générez un nouveau mot de passe');
+          toast.error('Votre token a expiré, générez un nouveau mot de passe', {
+            position: 'top-center',
+          });
         }
       } catch (error) {
         console.log(error);
         console.log('Something went wrong');
+        setMessage('Il semble y avoir eu un problème');
+        toast.error('Il semble y avoir eu un problème', {
+          position: 'top-center',
+        });
       }
     }
   };
@@ -133,6 +158,16 @@ const ResetPassword = () => {
       {!loading ? (
         <div>
           <>
+            <Toaster
+              toastOptions={{
+                success: {
+                  iconTheme: {
+                    primary: 'green',
+                    secondary: 'black',
+                  },
+                },
+              }}
+            />
             {/* <ThemeProvider theme={theme}> */}
             <Container component="main" maxWidth="xs">
               <CssBaseline />
@@ -147,7 +182,7 @@ const ResetPassword = () => {
                   <LockOpenIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                  Renouveler mon mot de passe
+                  Réinitialiser mon mot de passe
                 </Typography>
                 {/* <Typography>{email}</Typography> */}
                 <Box sx={{ mt: 1 }}>
@@ -173,7 +208,7 @@ const ResetPassword = () => {
                     type="submit"
                     onClick={sendPassword}
                     fullWidth>
-                    {!token ? 'Créer un mot de passe' : 'Renouveler'}
+                    Réinitialiser
                   </Button>
                 </Box>
               </Box>
