@@ -47,9 +47,9 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [setMessage] = useState('');
+  // const [setMessage] = useState('');
   // const [open, setOpen] = useState(false);
-  const [email] = useState('');
+  // const [email] = useState('');
 
   const userValid = async () => {
     try {
@@ -122,7 +122,7 @@ const ResetPassword = () => {
             body: JSON.stringify({ password }),
           }
         );
-        const data = await res.json();
+        // const data = await res.json();
         // console.log(data);
 
         if (res.status === 201) {
@@ -130,7 +130,7 @@ const ResetPassword = () => {
           setConfirmPassword('');
           // setMessage(true);
           console.log('Votre mot de passe a été renouvelé');
-          setMessage('Votre mot de passe a été renouvelé');
+
           toast.success('Votre mot de passe a été réinitialisé', {
             position: 'top-center',
           });
@@ -139,7 +139,7 @@ const ResetPassword = () => {
           }, 1000);
         } else {
           console.log('Token expired, generate a new link');
-          setMessage('Votre token a expiré, générez un nouveau mot de passe');
+
           toast.error('Votre token a expiré, générez un nouveau mot de passe', {
             position: 'top-center',
           });
@@ -147,7 +147,7 @@ const ResetPassword = () => {
       } catch (error) {
         console.log(error);
         console.log('Something went wrong');
-        setMessage('Il semble y avoir eu un problème');
+
         toast.error('Il semble y avoir eu un problème', {
           position: 'top-center',
         });
