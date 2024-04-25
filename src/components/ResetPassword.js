@@ -89,7 +89,7 @@ const ResetPassword = () => {
     event.preventDefault();
 
     if (password === '') {
-      console.log('Password is required!');
+      // console.log('Password is required!');
 
       toast.error('Un mot de passe est requis', {
         position: 'top-center',
@@ -100,7 +100,7 @@ const ResetPassword = () => {
       });
       return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
-      console.log('Passwords must match');
+      // console.log('Passwords must match');
 
       toast.error('Les mots de passes doivent être identiques', {
         position: 'top-center',
@@ -128,7 +128,7 @@ const ResetPassword = () => {
           setPassword('');
           setConfirmPassword('');
           // setMessage(true);
-          console.log('Votre mot de passe a été renouvelé');
+          // console.log('Votre mot de passe a été renouvelé');
 
           toast.success('Votre mot de passe a été réinitialisé', {
             position: 'top-center',
@@ -137,7 +137,7 @@ const ResetPassword = () => {
             navigate('/login');
           }, 1000);
         } else {
-          console.log('Token expired, generate a new link');
+          // console.log('Token expired, generate a new link');
 
           toast.error('Votre token a expiré, générez un nouveau mot de passe', {
             position: 'top-center',
