@@ -63,7 +63,7 @@ const ResetPassword = () => {
           },
         }
       );
-      console.log(res);
+      console.log(res.json);
 
       if (res.ok) {
         console.log('user valid');
