@@ -90,19 +90,18 @@ const ResetPassword = () => {
 
     if (password === '') {
       console.log('Password is required!');
-      setMessage('Un mot de passe est requis');
+
       toast.error('Un mot de passe est requis', {
         position: 'top-center',
       });
     } else if (!isStrongPassword(password)) {
-      setMessage("Votre mot de passe n'est pas assez sécurisé.");
       toast.error("Votre mot de passe n'est pas assez sécurisé", {
         position: 'top-center',
       });
       return console.log("Votre mot de passe n'est pas assez sécurisé.");
     } else if (password !== confirmPassword) {
       console.log('Passwords must match');
-      setMessage('Les mots de passes doivent être identiques');
+
       toast.error('Les mots de passes doivent être identiques', {
         position: 'top-center',
       });
