@@ -64,15 +64,21 @@ const ResetPassword = () => {
           },
         }
       );
-      console.log(res.json());
+      // console.log(res);
 
       if (res.ok) {
         console.log('user valid');
+        toast.success('Utilisateur reconnu', {
+          position: 'top-center',
+        });
       } else {
         navigate('*');
       }
     } catch (error) {
       console.log(error);
+      toast.error(error, {
+        position: 'top-center',
+      });
       navigate('*');
     } finally {
       setLoading(false);
@@ -117,7 +123,7 @@ const ResetPassword = () => {
           }
         );
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
 
         if (res.status === 201) {
           setPassword('');
@@ -125,7 +131,7 @@ const ResetPassword = () => {
           // setMessage(true);
           console.log('Votre mot de passe a été renouvelé');
           setMessage('Votre mot de passe a été renouvelé');
-          toast.success('Votre mot de passe a été re2initialisé', {
+          toast.success('Votre mot de passe a été réinitialisé', {
             position: 'top-center',
           });
           setTimeout(() => {
@@ -158,16 +164,6 @@ const ResetPassword = () => {
       {!loading ? (
         <div>
           <>
-            <Toaster
-              toastOptions={{
-                success: {
-                  iconTheme: {
-                    primary: 'green',
-                    secondary: 'black',
-                  },
-                },
-              }}
-            />
             {/* <ThemeProvider theme={theme}> */}
             <Container component="main" maxWidth="xs">
               <CssBaseline />
@@ -218,6 +214,16 @@ const ResetPassword = () => {
             ,
           </>
           {/* </ThemeProvider> */}
+          <Toaster
+            toastOptions={{
+              success: {
+                iconTheme: {
+                  primary: 'green',
+                  secondary: 'black',
+                },
+              },
+            }}
+          />
         </div>
       ) : (
         <Box
