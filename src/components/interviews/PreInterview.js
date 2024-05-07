@@ -222,7 +222,7 @@ const PreInterviewComponent = ({ userId }) => {
                 }}
               />
             </FormControl>
-            <FormControl required sx={{ m: 1, width: 300 }} size="small">
+            <FormControl required sx={{ m: 1, width: 250 }} size="small">
               <InputLabel shrink id="demo-simple-select-standard-label">
                 Réalisé par
               </InputLabel>
