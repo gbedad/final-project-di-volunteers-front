@@ -121,28 +121,26 @@ const PreInterviewComponent = ({ userId }) => {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
         );
-        // console.log('=====>', response.data);
+        console.log('=====>', response.data.pre_interview);
         let preInterviewdata;
         try {
           if (
             !response.data.pre_interview ||
-            typeof response.data.pre_interview !== 'object' ||
             Object.keys(response.data.pre_interview).length === 0 ||
             response.data.pre_interview === null
           ) {
-            preInterviewdata =
-              {
-                date: '',
-                by: '',
-                evaluation: '',
-                nextStep: '',
-              } || '';
-            setPreInterview(preInterviewdata);
+            preInterviewdata = {
+              date: '',
+              by: '',
+              evaluation: '',
+              nextStep: '',
+            };
           } else if (
             Object.keys(response.data.pre_interview) === null ||
             Object.keys(response.data.pre_interview).length !== 0
           ) {
             preInterviewdata = response.data.pre_interview;
+            console.log(preInterviewdata);
 
             setPreInterview(JSON.parse(preInterviewdata));
             setIsLoading(false);
@@ -154,6 +152,7 @@ const PreInterviewComponent = ({ userId }) => {
           console.log(error);
         }
       };
+      console.log(preInterview);
 
       getPreInterview();
     },
