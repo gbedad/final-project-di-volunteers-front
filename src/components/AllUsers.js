@@ -200,7 +200,7 @@ function DashboardContent() {
           <Toolbar />
           <Container maxWidth="xxl" sx={{ mt: 0, mb: 2 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={8} lg={8}>
+              <Grid item xs={12} md={10} lg={10}>
                 <Paper
                   sx={{
                     p: 2,
@@ -211,7 +211,7 @@ function DashboardContent() {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} md={4} lg={4}>
+              <Grid item xs={12} md={2} lg={2}>
                 <Paper
                   sx={{
                     p: 2,

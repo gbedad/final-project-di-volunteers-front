@@ -34,7 +34,7 @@ const title_theme = createTheme({
 function Title(props) {
   return (
     <ThemeProvider theme={title_theme}>
-      <Typography component="h2" variant="h2" color="primary" gutterBottom>
+      <Typography component="h3" variant="h2" color="primary" gutterBottom>
         {props.children}
       </Typography>
     </ThemeProvider>

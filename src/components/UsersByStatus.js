@@ -8,7 +8,7 @@ export default function UsersByStatusGrid(props) {
   const allStatus = props.data;
   return (
     <>
-      <Grid container spacing={2} sx={{ m: 0.5 }}>
+      <Grid container spacing={1} sx={{ m: 0.5 }}>
         <Grid item xs={2}>
           <Title>Compte créé</Title>
           <Typography component="p" variant="h4">
@@ -19,6 +19,12 @@ export default function UsersByStatusGrid(props) {
           <Title>A renseigner</Title>
           <Typography component="p" variant="h4">
             {allStatus['A renseigner'] ? allStatus['A renseigner'] : 0}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Title>A télécharger</Title>
+          <Typography component="p" variant="h4">
+            {allStatus['A télécharger'] ? allStatus['A télécharger'] : 0}
           </Typography>
         </Grid>
         <Grid item xs={2}>
@@ -39,12 +45,12 @@ export default function UsersByStatusGrid(props) {
             {allStatus['Validé'] ? allStatus['Validé'] : 0}
           </Typography>
         </Grid>
-        <Grid item xs={2}>
+        {/* <Grid item xs={1}>
           <Title>Décliné</Title>
           <Typography component="p" variant="h4">
             {allStatus['Décliné'] ? allStatus['Décliné'] : 0}
           </Typography>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );
