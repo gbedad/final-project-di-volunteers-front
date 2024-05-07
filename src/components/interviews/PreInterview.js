@@ -121,7 +121,7 @@ const PreInterviewComponent = ({ userId }) => {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
         );
-        console.log('=====>', response.data.pre_interview);
+        // console.log('=====>', response.data.pre_interview);
         let preInterviewdata;
         try {
           if (
@@ -152,7 +152,7 @@ const PreInterviewComponent = ({ userId }) => {
           console.log(error);
         }
       };
-      console.log(preInterview);
+      // console.log(preInterview);
 
       getPreInterview();
     },
