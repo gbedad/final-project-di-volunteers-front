@@ -202,7 +202,7 @@ const PreInterviewComponent = ({ userId }) => {
 
   return (
     <div>
-      <Grid spacing={2} pb={5} pt={2}>
+      <Grid pb={5} pt={2}>
         <Grid item xs={12}>
           <Stack direction="row" spacing={2} mb={2}>
             <FormControl>

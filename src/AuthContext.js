@@ -1,13 +1,32 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+import { isTokenExpired } from './js/auth';
 
 const AuthContext = createContext();
 
+export const useAuth = () => useContext(AuthContext);
+
 const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const checkTokenAndRedirect = (token) => {
+    if (!token || isTokenExpired(token)) {
+      logout();
+    } else {
+      setIsLoggedIn(true);
+      setToken(token);
+    }
+  };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    checkTokenAndRedirect(storedToken);
+  }, []);
 
   const updateToken = (newToken) => {
     setToken(newToken);
@@ -24,42 +43,63 @@ const AuthProvider = ({ children }) => {
     // console.log(storedToken);
   }, []);
 
-  // const login = (token) => {
-  //   setIsLoggedIn(true);
-  //   setToken(token);
-  //   localStorage.setItem('token', token);
-  // };
   const login = async (email, password) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/login`,
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
-      setUser(response.data);
+      localStorage.setItem('token', response.data.token); // Assume the token is returned here
+      checkTokenAndRedirect(response.data.token);
     } catch (error) {
       console.error(error);
     }
   };
-  // const logout = () => {
-  //   setIsLoggedIn(false);
-  //   setToken('');
-  //   localStorage.removeItem('token');
+  // const login = async (email, password) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_BASE_URL}/login`,
+  //       {
+  //         email,
+  //         password,
+  //       }
+  //     );
+  //     setUser(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
   // };
-  const logout = async () => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/logout`,
-        {},
-        { withCredentials: true }
-      );
-      setUser(null);
-    } catch (error) {
-      console.error(error);
-    }
+  const logout = () => {
+    setIsLoggedIn(false);
+    setToken('');
+    localStorage.removeItem('token');
+    localStorage.removeItem('token1');
+    localStorage.removeItem('user');
+    localStorage.removeItem('user-status');
+    localStorage.removeItem('refreshToken');
+
+    navigate('/login');
   };
+  // const logout = async () => {
+  //   try {
+  //     await axios.post(
+  //       `${process.env.REACT_APP_BASE_URL}/logout`,
+  //       {}
+  //       // { withCredentials: true }
+  //     );
+  //     setUser(null);
+  //     setIsLoggedIn(false);
+  //     setToken('');
+  //     localStorage.removeItem('token');
+  //     window.location.href = '/login';
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // const logout = useCallback(() => {
+  //   localStorage.removeItem('token'); // Remove the token from storage
+  //   window.location.href = '/login'; // Redirect to the login page
+  // }, []);
 
   const refreshToken = async () => {
     try {
@@ -83,6 +123,15 @@ const AuthProvider = ({ children }) => {
     const interval = setInterval(() => {
       refreshToken();
     }, 5 * 60 * 1000); // Refresh every 60 minutes
+
+    return () => clearInterval(interval);
+  }, [user]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentToken = localStorage.getItem('token');
+      checkTokenAndRedirect(currentToken);
+    }, 5 * 60 * 1000); // Refresh every 5 minutes
 
     return () => clearInterval(interval);
   }, [user]);

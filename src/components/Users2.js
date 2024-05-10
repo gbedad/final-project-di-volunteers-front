@@ -383,6 +383,8 @@ export default function DataGridDemo(props) {
           }}
           id="controllable-states-demo"
           options={subjects}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => (option ? option.label : '')}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField {...params} label="Saisir un sujet" size="small" />
@@ -394,7 +396,7 @@ export default function DataGridDemo(props) {
           Search
         </Button>
       </Stack>
-      <Box sx={{ height: 670, width: '100%' }}>
+      <Box sx={{ height: 720, width: '100%' }}>
         <DataGrid
           onRowClick={handleRowClick}
           {...rows}
@@ -406,11 +408,11 @@ export default function DataGridDemo(props) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 10,
+                pageSize: 12,
               },
             },
           }}
-          pageSizeOptions={[10]}
+          pageSizeOptions={[12]}
           disableRowSelectionOnClick
         />
       </Box>

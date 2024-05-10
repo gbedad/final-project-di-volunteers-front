@@ -40,23 +40,6 @@ import UsersByStatusGrid from './UsersByStatus';
 
 // import SearchBar from './SearchBar';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Association Séphora Berrebi by Gerald Berrebi
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 // const drawerWidth = 240;
 
 // const AppBar = styled(MuiAppBar, {
@@ -128,7 +111,7 @@ function DashboardContent() {
 
   // console.log(token);
   useEffect(() => {
-    const token = localStorage.getItem('token1');
+    const token = localStorage.getItem('token');
     const fetchUserList = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/all-users`, {
@@ -229,7 +212,6 @@ function DashboardContent() {
                 </Paper>
               </Grid>
             </Grid>
-            <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
       </Box>

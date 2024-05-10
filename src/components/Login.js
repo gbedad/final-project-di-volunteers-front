@@ -78,7 +78,7 @@ export default function SignIn() {
 
       // console.log('Handlesubmit token');
       updateToken(token);
-      localStorage.setItem('token1', response.data.token);
+      localStorage.setItem('token', response.data.token);
       localStorage.setItem('refreshToken', refreshToken);
 
       if (response.data) {

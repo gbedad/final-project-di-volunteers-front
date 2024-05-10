@@ -80,7 +80,7 @@ const DocumentCheckbox = ({ user }) => {
         <Grid container spacing={1}>
           <Grid item xs={8}>
             <FormControl component="fieldset">
-              <FormGroup aria-label="position" row>
+              <FormGroup aria-label="right" row>
                 <FormControlLabel
                   control={
                     <Checkbox

@@ -26,6 +26,11 @@ import ActiveUsers from './ActiveUsers';
 import UsersByStatusGrid from './UsersByStatus';
 
 import { UserContext } from '../UserContext';
+import { AuthProvider } from '../AuthContext';
+
+import { useAuth } from '../AuthContext.js';
+
+import { isTokenExpired } from './js/auth.js';
 
 function Copyright(props) {
   return (
@@ -107,6 +112,22 @@ function DashboardContent() {
   const [countUsersByStatus, setCountUsersByStatus] = useState({});
   // console.log(location.state);
   const userLogged = location.state.userLogged.user;
+
+  // const { logout } = useAuth();
+
+  // console.log(logout());
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const token = localStorage.getItem('token');
+  //     console.log(isTokenExpired(token));
+  //     if (!token || isTokenExpired(token)) {
+  //       logout();
+  //     }
+  //   }, 3600000); // Check every minute
+
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -225,7 +246,6 @@ function DashboardContent() {
                 </Paper>
               </Grid>
             </Grid>
-            <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
       </Box>

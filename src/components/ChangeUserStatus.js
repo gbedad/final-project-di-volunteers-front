@@ -457,7 +457,7 @@ const ChangeUserStatus = () => {
                 }}>
                 <Box sx={{ minWidth: 120 }}>
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="demo-simple-select-label">
+                    {/* <InputLabel id="demo-simple-select-label">
                       Changer le statut
                     </InputLabel>
                     <Select
@@ -560,10 +560,43 @@ const ChangeUserStatus = () => {
                           <span>Déclinée</span>
                         </CustomWidthTooltip>
                       </MenuItem>
-                      {/* <MenuItem value={'validé'}>Validé</MenuItem>
+                       <MenuItem value={'validé'}>Validé</MenuItem>
                     <MenuItem value={'created'}>Created</MenuItem>
                     <MenuItem value={'proposed'}>Proposed</MenuItem>
-                    <MenuItem value={'selected'}>Selected</MenuItem> */}
+                    <MenuItem value={'selected'}>Selected</MenuItem> 
+                    </Select> */}
+                    <InputLabel id="demo-simple-select-label">
+                      Change Status
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={newStatus}
+                      label="Change Status"
+                      onChange={handleStatusChange}>
+                      {[
+                        'Compte créé',
+                        'A renseigner',
+                        'A télécharger',
+                        'A interviewer',
+                        'A finaliser',
+                        'Validé',
+                        'Déclinée',
+                      ].map((status) => (
+                        <MenuItem key={status} value={status}>
+                          <Tooltip
+                            placement="right"
+                            title={
+                              <Typography
+                                sx={{ fontSize: '16px', padding: '5px' }}>
+                                {longDescription(status)}
+                              </Typography>
+                            }
+                            arrow>
+                            <span>{status}</span>
+                          </Tooltip>
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Box>

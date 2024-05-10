@@ -102,78 +102,71 @@ const theme = createTheme({
 });
 
 function App() {
-  // }
-
   return (
-    <AuthProvider>
-      <ThemeProvider theme={theme}>
-        <AppBarMenu />
-        {/* <AppLayout> */}
-        <Toaster />
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-          }}>
-          <Box sx={{ flexGrow: 1, paddingTop: '80px' }}>
-            <Routes>
-              <Route path="/courses" element={<CoursesModule />} />
-              <Route path="/register" element={<Register />} />
+    <ThemeProvider theme={theme}>
+      <AppBarMenu />
+      {/* <AppLayout> */}
+      <Toaster />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+        }}>
+        <Box sx={{ flexGrow: 1, paddingTop: '80px' }}>
+          <Routes>
+            <Route path="/courses" element={<CoursesModule />} />
+            <Route path="/register" element={<Register />} />
 
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
-                path="/reset-password/:id/:token"
-                element={<ResetPassword />}
-              />
-              <Route path="/cgu" element={<MentionsLegales />} />
-              <Route path="/faq" element={<Faq />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" />
-              <Route path="/stepper" element={<Stepper />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/create-skill" element={<DaySlotSkill />} />
-              <Route path="/create-skill" element={<TopicSkills />} />
-              <Route path="/upload" element={<Uploads />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/reset-password/:id/:token"
+              element={<ResetPassword />}
+            />
+            <Route path="/cgu" element={<MentionsLegales />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" />
+            <Route path="/stepper" element={<Stepper />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/create-skill" element={<DaySlotSkill />} />
+            <Route path="/create-skill" element={<TopicSkills />} />
+            <Route path="/upload" element={<Uploads />} />
 
-              <Route
-                path="/cancel-registration"
-                element={<AlertCancelRegistration />}
-              />
-              <Route path="/view-users" element={<AllUsers />} />
-              <Route path="/change-status" element={<ChangeUserStatus />} />
-              <Route
-                path="/update-files-received"
-                element={<DocumentCheckbox />}
-              />
-              <Route path="/add-activity" element={<SelectFormActivity />} />
-              <Route path="update-address" element={<AddressAutocomplete />} />
-              <Route
-                path="add-interviews"
-                element={<FormInterviewComponent />}
-              />
-              <Route
-                path="add-pre-interview"
-                element={<FormPreInterviewComponent />}
-              />
-              <Route path="/all-missions" element={<MissionsPage />} />
+            <Route
+              path="/cancel-registration"
+              element={<AlertCancelRegistration />}
+            />
+            <Route path="/view-users" element={<AllUsers />} />
+            <Route path="/change-status" element={<ChangeUserStatus />} />
+            <Route
+              path="/update-files-received"
+              element={<DocumentCheckbox />}
+            />
+            <Route path="/add-activity" element={<SelectFormActivity />} />
+            <Route path="update-address" element={<AddressAutocomplete />} />
+            <Route path="add-interviews" element={<FormInterviewComponent />} />
+            <Route
+              path="add-pre-interview"
+              element={<FormPreInterviewComponent />}
+            />
+            <Route path="/all-missions" element={<MissionsPage />} />
 
-              <Route path="/missions/update/:id" element={<MissionCard />} />
-              <Route path="/tutorat" element={<Tutorat />} />
-              <Route path="/missions" element={<CardList />} />
+            <Route path="/missions/update/:id" element={<MissionCard />} />
+            <Route path="/tutorat" element={<Tutorat />} />
+            <Route path="/missions" element={<CardList />} />
 
-              <Route path="/courses2" element={<VirtualizedTable />} />
+            <Route path="/courses2" element={<VirtualizedTable />} />
 
-              <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/" element={<HomePage />} />
 
-              <Route path="*" element={<Error404 />} />
-            </Routes>
-          </Box>
-          {/* </AppLayout> */}
-          <BottomNavigation />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
         </Box>
-      </ThemeProvider>
-    </AuthProvider>
+        {/* </AppLayout> */}
+        <BottomNavigation />
+      </Box>
+    </ThemeProvider>
   );
 }
 
