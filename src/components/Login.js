@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -73,12 +73,12 @@ export default function SignIn() {
       }
       const userLogged = response.data;
 
-      const token = response.data.token;
+      const token1 = response.data.token;
       const refreshToken = response.data.refreshToken;
 
       // console.log('Handlesubmit token');
-      updateToken(token);
-      localStorage.setItem('token', response.data.token);
+      updateToken(token1);
+      localStorage.setItem('token1', response.data.token);
       localStorage.setItem('refreshToken', refreshToken);
 
       if (response.data) {
@@ -192,14 +192,20 @@ export default function SignIn() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="/forgot-password" variant="body2">
+                  <Link
+                    component={RouterLink}
+                    to="/forgot-password"
+                    variant="body2">
                     Mot de passe oublié ?
                   </Link>
                 </Grid>
 
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  {/* <Link href="/register" variant="body2">
                     {"Vous n'avez pas de compte ?"}
+                  </Link> */}
+                  <Link component={RouterLink} to="/register" variant="body2">
+                    Vous n'avez pas de compte ?
                   </Link>
                 </Grid>
               </Grid>
