@@ -38,6 +38,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 // }));
 
 const FileDisplay = ({ s3FilePath, open, handleClose }) => {
+  console.log(s3FilePath);
   const renderFileContent = () => {
     s3FilePath = s3FilePath.toString();
     const fileExtension = s3FilePath.split('.').pop();
@@ -75,10 +76,23 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
   };
   const handleDownload = async () => {
     try {
-      const { url } = await s3FilePath;
-      // Fetch the file from the presigned URL
-      const response = await fetch(url, { mode: 'cors' });
+      const url = s3FilePath;
 
+      // Define headers based on the file type
+      const headers = {};
+      const fileExtension = s3FilePath.split('.').pop().toLowerCase();
+
+      if (fileExtension === 'pdf') {
+        headers['Content-Type'] = 'application/pdf';
+      } else if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+        headers['Content-Type'] = 'image/jpeg'; // Adjust as needed for PNG or other image types
+      }
+      // Fetch the file from the presigned URL
+      const response = await fetch(url, {
+        method: 'GET', // or 'POST', 'PUT', etc.
+        mode: 'cors',
+      });
+      console.log(response);
       if (!response.ok) {
         throw new Error(
           `Failed to fetch file (${response.status}: ${response.statusText})`
@@ -86,7 +100,8 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
       }
 
       const blob = await response.blob();
-      const fileExtension = s3FilePath.split('.').pop().toLowerCase();
+      console.log('Blob type', blob);
+      // fileExtension = s3FilePath.split('.').pop().toLowerCase();
 
       if (fileExtension === 'pdf') {
         saveAs(blob, 'downloaded_file.pdf');
