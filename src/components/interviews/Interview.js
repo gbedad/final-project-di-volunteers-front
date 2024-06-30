@@ -146,12 +146,19 @@ const FormInterviewComponent = ({ userId }) => {
       setIsLoading(false);
       if (response.data.interviews && response.data.interviews.length > 0) {
         setCountInterviews(response.data.interviews.length);
-        setConfirmed(true);
+        // setConfirmed(true);
       }
     };
 
     getInterviews();
   }, [userId, confirmed]);
+
+  // Check if all values are filled in interviews
+  const areAllKeysNonNullOrEmpty = (arr) => {
+    return arr.every((obj) =>
+      Object.values(obj).every((value) => value !== null && value !== '')
+    );
+  };
 
   const handleTitleChange = (value, index) => {
     const updatedInterviews = [...interviews];
@@ -255,6 +262,8 @@ const FormInterviewComponent = ({ userId }) => {
     setConfirmed(false);
     setShowButton(true);
   };
+  const result = areAllKeysNonNullOrEmpty(interviews);
+  console.log(result);
 
   const handleSaveInterviews = async () => {
     try {
@@ -269,9 +278,13 @@ const FormInterviewComponent = ({ userId }) => {
         }
       );
       setShowButton(false);
-      // console.log(response.data.message);
-      if (response.data.message) {
-        setConfirmed(true);
+      console.log(response.data);
+      if (response.data.message === 'Interviews saved successfully') {
+        // const result = areAllKeysNonNullOrEmpty(response.data);
+        // if (result) {
+        //   setConfirmed(true);
+        // }
+
         console.log('Interview saved successfully');
       } else {
         console.error('Failed to save interview');
@@ -286,6 +299,7 @@ const FormInterviewComponent = ({ userId }) => {
     icon: <AddIcon />,
     label: 'Add',
   };
+  console.log(interviews);
 
   return (
     <div>
@@ -545,52 +559,50 @@ const FormInterviewComponent = ({ userId }) => {
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Recommandation
                   </InputLabel>
-                  {interview.recommendation !== undefined && (
-                    <Select
-                      size="small"
-                      notched
-                      autoWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      label="Recommandation *"
-                      value={interview.recommendation}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'recommendation',
-                          e.target.value,
-                          index
-                        )
-                      }>
-                      <MenuItem value={'A recruter'}>A recruter</MenuItem>
-                      <MenuItem value={'A ne pas recruter'}>
-                        A ne pas recruter
-                      </MenuItem>
-                      <MenuItem value={'NSP'}>NSP</MenuItem>
-                    </Select>
-                  )}
+
+                  <Select
+                    size="small"
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Recommandation *"
+                    value={interview.recommendation}
+                    onChange={(e) =>
+                      handleInterviewChange(
+                        'recommendation',
+                        e.target.value,
+                        index
+                      )
+                    }>
+                    <MenuItem value={'A recruter'}>A recruter</MenuItem>
+                    <MenuItem value={'A ne pas recruter'}>
+                      A ne pas recruter
+                    </MenuItem>
+                    <MenuItem value={'NSP'}>NSP</MenuItem>
+                  </Select>
                 </FormControl>
                 <FormControl required sx={{ m: 1, width: 300 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Suivi d'élèves en grande difficulté
                   </InputLabel>
-                  {interview.followup !== undefined && (
-                    <Select
-                      size="small"
-                      notched
-                      autoWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      label="Suivi d'élèves en grande difficulté *"
-                      value={interview.followup}
-                      onChange={(e) =>
-                        handleInterviewChange('followup', e.target.value, index)
-                      }>
-                      <MenuItem value={'Oui'}>Oui</MenuItem>
-                      <MenuItem value={'Pourquoi pas'}>Pourquoi pas</MenuItem>
-                      <MenuItem value={'A éviter'}>A éviter</MenuItem>
-                      <MenuItem value={'Non'}>Non</MenuItem>
-                    </Select>
-                  )}
+
+                  <Select
+                    size="small"
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Suivi d'élèves en grande difficulté *"
+                    value={interview.followup}
+                    onChange={(e) =>
+                      handleInterviewChange('followup', e.target.value, index)
+                    }>
+                    <MenuItem value={'Oui'}>Oui</MenuItem>
+                    <MenuItem value={'Pourquoi pas'}>Pourquoi pas</MenuItem>
+                    <MenuItem value={'A éviter'}>A éviter</MenuItem>
+                    <MenuItem value={'Non'}>Non</MenuItem>
+                  </Select>
                 </FormControl>
               </Stack>
             </Grid>
@@ -600,76 +612,67 @@ const FormInterviewComponent = ({ userId }) => {
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Test français
                   </InputLabel>
-                  {interview.test !== undefined && (
-                    <Select
-                      size="small"
-                      notched
-                      autoWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      label="Test français *"
-                      value={interview.test}
-                      onChange={(e) =>
-                        handleInterviewChange('test', e.target.value, index)
-                      }>
-                      <MenuItem value={'Requis'}>Requis</MenuItem>
-                      <MenuItem value={'Pas nécessaire'}>
-                        Pas nécessaire
-                      </MenuItem>
-                    </Select>
-                  )}
+
+                  <Select
+                    size="small"
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Test français *"
+                    value={interview.test}
+                    onChange={(e) =>
+                      handleInterviewChange('test', e.target.value, index)
+                    }>
+                    <MenuItem value={'Requis'}>Requis</MenuItem>
+                    <MenuItem value={'Pas nécessaire'}>Pas nécessaire</MenuItem>
+                  </Select>
                 </FormControl>
                 <FormControl required sx={{ m: 1, width: 300 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Aptitudes pédagogiques
                   </InputLabel>
-                  {interview.aptitudes !== undefined && (
-                    <Select
-                      size="small"
-                      notched
-                      autoWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      label="Aptitudes pédagogiques *"
-                      value={interview.aptitudes}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'aptitudes',
-                          e.target.value,
-                          index
-                        )
-                      }>
-                      <MenuItem value={'Avérées'}>Avérées</MenuItem>
-                      <MenuItem value={'Probables'}>Probables</MenuItem>
-                      <MenuItem value={'A observer'}>A observer</MenuItem>
-                      <MenuItem value={'Insuffisantes'}>Insuffisantes</MenuItem>
-                    </Select>
-                  )}
+
+                  <Select
+                    size="small"
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Aptitudes pédagogiques *"
+                    value={interview.aptitudes}
+                    onChange={(e) =>
+                      handleInterviewChange('aptitudes', e.target.value, index)
+                    }>
+                    <MenuItem value={'Avérées'}>Avérées</MenuItem>
+                    <MenuItem value={'Probables'}>Probables</MenuItem>
+                    <MenuItem value={'A observer'}>A observer</MenuItem>
+                    <MenuItem value={'Insuffisantes'}>Insuffisantes</MenuItem>
+                  </Select>
                 </FormControl>
                 <FormControl required sx={{ m: 1, width: 300 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Formations
                   </InputLabel>
-                  {interview.training !== undefined && (
-                    <Select
-                      size="small"
-                      notched
-                      autoWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      label="Formations *"
-                      value={interview.training}
-                      onChange={(e) =>
-                        handleInterviewChange('training', e.target.value, index)
-                      }>
-                      <MenuItem value={'Requises'}>Requises</MenuItem>
-                      <MenuItem value={'A proposer'}>A proposer</MenuItem>
-                      <MenuItem value={'Pas nécessaires'}>
-                        Pas nécessaires
-                      </MenuItem>
-                      <MenuItem value={'NSP'}>NSP</MenuItem>
-                    </Select>
-                  )}
+
+                  <Select
+                    size="small"
+                    notched
+                    autoWidth
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Formations *"
+                    value={interview.training}
+                    onChange={(e) =>
+                      handleInterviewChange('training', e.target.value, index)
+                    }>
+                    <MenuItem value={'Requises'}>Requises</MenuItem>
+                    <MenuItem value={'A proposer'}>A proposer</MenuItem>
+                    <MenuItem value={'Pas nécessaires'}>
+                      Pas nécessaires
+                    </MenuItem>
+                    <MenuItem value={'NSP'}>NSP</MenuItem>
+                  </Select>
                 </FormControl>
               </Stack>
             </Grid>
@@ -687,7 +690,7 @@ const FormInterviewComponent = ({ userId }) => {
           </Grid>
         ))}
       <Button
-        disabled={!showButton}
+        // disabled={!showButton}
         startIcon={confirmed ? <CheckIcon /> : ''}
         variant="contained"
         color={confirmed ? 'primary' : 'primary'}
