@@ -51,7 +51,8 @@ function createData(
   status,
   is_active,
   trueValuesCount,
-  test_voltaire_passed
+  test_voltaire_passed,
+  interviews
 ) {
   return {
     userid,
@@ -65,6 +66,7 @@ function createData(
     is_active,
     trueValuesCount,
     test_voltaire_passed,
+    interviews,
   };
 }
 //Pagination
@@ -208,6 +210,7 @@ export default function Users(props) {
   // console.log(usersWithTrueValuesCount);
 
   const rows = usersWithTrueValuesCount.map((item, key = item.id) => {
+    console.log(item.interviews);
     return createData(
       item.id,
       item.first_name,
@@ -218,6 +221,7 @@ export default function Users(props) {
       item.created_at,
       item.status,
       item.is_active,
+      item.interviews,
       item.trueValuesCount,
       item.convention_received,
       item.test_voltaire_passed
@@ -251,6 +255,7 @@ export default function Users(props) {
             <TableCell>MISSION</TableCell>
             <TableCell>CREATED</TableCell>
             <TableCell>STATUS</TableCell>
+            <TableCell>INTERVIEWS</TableCell>
             <TableCell>DOCS.</TableCell>
             <TableCell>CONV.</TableCell>
             <TableCell align="right">ACTIVE</TableCell>
@@ -316,6 +321,9 @@ export default function Users(props) {
                   {row.status}
                 </TableCell>
               </Tooltip>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.interviews}
+              </TableCell>
               <TableCell style={{ width: 60 }} align="left">
                 <Badge
                   badgeContent={`${row.trueValuesCount}/4`}

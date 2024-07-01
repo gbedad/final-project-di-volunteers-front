@@ -113,6 +113,13 @@ const columns = [
     editable: true,
   },
   {
+    field: 'nb_interviews',
+    headerName: 'Interviews',
+
+    width: 110,
+    editable: true,
+  },
+  {
     field: 'trueValuesCount',
     headerName: 'Documents',
 
@@ -195,41 +202,41 @@ function renderRating(params) {
     />
   );
 }
-function createData(
-  id,
-  first_name,
-  last_name,
-  email,
-  phone,
-  mission,
-  mission_location,
-  skill,
-  created_at,
-  status,
-  is_active,
-  trueValuesCount,
-  test_voltaire_passed,
-  convention_received,
-  interviews
-) {
-  return {
-    id,
-    first_name,
-    last_name,
-    email,
-    phone,
-    mission,
-    mission_location,
-    skill,
-    created_at,
-    status,
-    is_active,
-    trueValuesCount,
-    test_voltaire_passed,
-    convention_received,
-    interviews,
-  };
-}
+// function createData(
+//   id,
+//   first_name,
+//   last_name,
+//   email,
+//   phone,
+//   mission,
+//   mission_location,
+//   skill,
+//   created_at,
+//   status,
+//   is_active,
+//   trueValuesCount,
+//   test_voltaire_passed,
+//   convention_received,
+//   nb_interviews
+// ) {
+//   return {
+//     id,
+//     first_name,
+//     last_name,
+//     email,
+//     phone,
+//     mission,
+//     mission_location,
+//     skill,
+//     created_at,
+//     status,
+//     is_active,
+//     trueValuesCount,
+//     test_voltaire_passed,
+//     convention_received,
+//     nb_interviews,
+//   };
+// }
 
 export default function DataGridDemo(props) {
   const navigate = useNavigate();
@@ -330,27 +337,69 @@ export default function DataGridDemo(props) {
   // }
   // console.log(filteredData);
 
-  const rows = filteredData.map((item, key = item.id) => {
-    if (item.mission === null) {
-      return [];
-    }
-    return createData(
-      item.id,
-      item.first_name,
-      item.last_name,
-      item.email,
-      item.phone,
-      item.mission.title || null,
-      item.mission.location || null,
-      item.skill,
-      item.created_at,
-      item.status,
-      item.is_active,
-      item.trueValuesCount,
-      item.test_voltaire_passed,
-      item.convention_received
-    );
-  });
+  const rows = filteredData
+    .map((item, key = item.id) => {
+      const nb_interviews = Array.isArray(item.interviews)
+        ? item.interviews.length
+        : 0;
+      console.log(nb_interviews);
+      if (item.mission === null) {
+        return [];
+      }
+      return createData(
+        item.id,
+        item.first_name,
+        item.last_name,
+        item.email,
+        item.phone,
+        item.mission.title || null,
+        item.mission.location || null,
+        item.skill,
+        item.created_at,
+        item.status,
+        item.is_active,
+        nb_interviews,
+        item.trueValuesCount,
+        item.test_voltaire_passed,
+        item.convention_received
+      );
+    })
+    .filter((item) => item !== null);
+  function createData(
+    id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    mission,
+    mission_location,
+    skill,
+    created_at,
+    status,
+    is_active,
+    nb_interviews,
+    trueValuesCount,
+    test_voltaire_passed,
+    convention_received
+  ) {
+    return {
+      id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      mission,
+      mission_location,
+      skill,
+      created_at,
+      status,
+      is_active,
+      nb_interviews,
+      trueValuesCount,
+      test_voltaire_passed,
+      convention_received,
+    };
+  }
   return (
     <>
       <Stack spacing={2} sx={{ width: 600, marginBottom: 2 }} direction="row">
