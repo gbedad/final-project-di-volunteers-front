@@ -19,7 +19,7 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import BorderedBoxWithLabel from '../borderedBox';
 
-import pdfFile from '../../assets/Charte_de_benevolat_2024-2025.pdf';
+import pdfFile from '../../assets/Charte_de_benevolat2024-2025.pdf';
 
 const InstructionCoventionComponent = () => {
   const handleDownload = () => {
