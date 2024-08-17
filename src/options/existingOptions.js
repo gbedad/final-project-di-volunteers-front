@@ -27,22 +27,22 @@ export const existingClasses = [
 ];
 
 export const existingSubjects = [
-  'Allemand',
-  'Anglais',
-  'Chinois',
-  'Espagnol',
-  'Français',
-  'Histoire-Géographie',
-  'Histoire',
-  'Géographie',
-  'Informatique',
-  'Mathématiques',
-  'Philosophie',
-  'Physique-Chimie',
-  'Physique',
-  'Chimie',
-  'SES',
-  'SVT',
+  { label: 'Allemand' },
+  { label: 'Anglais' },
+  { label: 'Chinois' },
+  { label: 'Espagnol' },
+  { label: 'Français' },
+  { label: 'Histoire-Géographie' },
+  { label: 'Histoire' },
+  { label: 'Géographie' },
+  { label: 'Informatique' },
+  { label: 'Mathématiques' },
+  { label: 'Philosophie' },
+  { label: 'Physique-Chimie' },
+  { label: 'Physique' },
+  { label: 'Chimie' },
+  { label: 'SES' },
+  { label: 'SVT' },
 ];
 
 export const existingRooms = ['Salle 1', 'Salle 2', 'Salle 3', 'Salle 4'];

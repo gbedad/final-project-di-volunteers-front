@@ -38,6 +38,16 @@ const columns = [
   },
   { field: 'id', headerName: 'ID', width: 90, hideable: true },
   {
+    field: 'created_at',
+    headerName: 'Inscription',
+    width: '150',
+    hideable: true,
+    valueFormatter: (params) => {
+      if (!params.value) return '';
+      return new Date(params.value).toLocaleDateString();
+    },
+  },
+  {
     field: 'first_name',
     headerName: 'Prénom',
     width: 150,
@@ -275,7 +285,10 @@ export default function DataGridDemo(props) {
     });
   }
   const handleSearch = () => {
-    const filteredResults = filterBySubject(cleanedArray, selectedSubject);
+    const filteredResults = filterBySubject(
+      cleanedArray,
+      selectedSubject.label
+    );
     if (filteredResults.length > 0) {
       setFilteredData(filteredResults);
     } else {
@@ -436,7 +449,7 @@ export default function DataGridDemo(props) {
           getOptionLabel={(option) => (option ? option.label : '')}
           sx={{ width: 300 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir un sujet" size="small" />
+            <TextField {...params} label="Saisir une matière" size="small" />
           )}
         />
         {/* </FormControl> */}
