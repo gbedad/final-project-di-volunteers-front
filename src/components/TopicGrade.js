@@ -204,7 +204,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                 >
                   {existingSubjects.map((subject) => (
                     <MenuItem key={subject.label} value={subject.label}>
-                      {subject}
+                      {subject.label}
                     </MenuItem>
                   ))}
                 </TextField>
