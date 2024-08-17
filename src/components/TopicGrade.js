@@ -202,9 +202,9 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                   //   !subjectClassRange.subject ? 'Ce champ est obligatoire' : ''
                   // }
                 >
-                  {existingSubjects.map((subject, idx) => (
-                    <MenuItem key={idx} value={subject}>
-                      {subject.label}
+                  {existingSubjects.map((subject) => (
+                    <MenuItem key={subject.label} value={subject.label}>
+                      {subject}
                     </MenuItem>
                   ))}
                 </TextField>

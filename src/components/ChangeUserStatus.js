@@ -647,8 +647,10 @@ const ChangeUserStatus = () => {
                         user.skill.topics !== null &&
                         user.skill.topics.map((topic, i) => (
                           <div key={i}>
-                            {JSON.parse(topic).subject} de{' '}
-                            {JSON.parse(topic).classStart} à{' '}
+                            {JSON.parse(topic).subject.label
+                              ? JSON.parse(topic).subject.label
+                              : JSON.parse(topic).subject}{' '}
+                            de {JSON.parse(topic).classStart} à{' '}
                             {JSON.parse(topic).classEnd}
                           </div>
                         ))}
