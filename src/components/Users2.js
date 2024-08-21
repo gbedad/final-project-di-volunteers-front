@@ -16,6 +16,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
+import DoneIcon from '@mui/icons-material/Done';
 import { existingSubjects } from '../options/existingOptions';
 
 import { formatPhoneNumber } from '../js/phoneNumbersSpace';
@@ -121,6 +122,22 @@ const columns = [
 
     width: 110,
     editable: true,
+  },
+  {
+    field: 'first_contact',
+    headerName: 'Premier contact',
+    editable: true,
+    renderCell: (params) => {
+      return params.value ? (
+        <DoneIcon
+          style={{
+            color: 'green',
+          }}
+        />
+      ) : (
+        ''
+      );
+    },
   },
   {
     field: 'nb_interviews',
@@ -353,8 +370,14 @@ export default function DataGridDemo(props) {
   const rows = filteredData
     .map((item, key = item.id) => {
       const nb_interviews = Array.isArray(item.interviews)
-        ? item.interviews.length
+        ? item.interviews.filter((element) => JSON.parse(element).isActive)
+            .length
         : 0;
+      const first_contact = item.pre_interview
+        ? JSON.parse(item.pre_interview).isActive
+        : null;
+
+      // console.log(item.pre_interview ? item.pre_interview : null);
       console.log(nb_interviews);
       if (item.mission === null) {
         return [];
@@ -371,6 +394,7 @@ export default function DataGridDemo(props) {
         item.created_at,
         item.status,
         item.is_active,
+        first_contact,
         nb_interviews,
         item.trueValuesCount,
         item.test_voltaire_passed,
@@ -390,6 +414,7 @@ export default function DataGridDemo(props) {
     created_at,
     status,
     is_active,
+    first_contact,
     nb_interviews,
     trueValuesCount,
     test_voltaire_passed,
@@ -407,6 +432,7 @@ export default function DataGridDemo(props) {
       created_at,
       status,
       is_active,
+      first_contact,
       nb_interviews,
       trueValuesCount,
       test_voltaire_passed,

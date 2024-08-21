@@ -34,6 +34,7 @@
     "moment": "^2.29.4",
     "mui-file-input": "^4.0.4",
     "react": "^18.2.0",
+    "react-autosave": "^0.4.4",
     "react-aws-s3": "^1.5.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",

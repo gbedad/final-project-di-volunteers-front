@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+
 import {
   TextField,
   Button,
@@ -12,6 +13,8 @@ import {
   Chip,
   FormControl,
   InputLabel,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 // import Zoom from '@mui/material/Zoom';
 import Fab from '@mui/material/Fab';
@@ -33,6 +36,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CallFeatureToggle from './CallfeatureToggle';
 
 // const blue = {
 //   100: '#DAECFF',
@@ -144,14 +148,19 @@ const FormInterviewComponent = ({ userId }) => {
         setShowButton(false);
       }
       setIsLoading(false);
-      if (response.data.interviews && response.data.interviews.length > 0) {
-        setCountInterviews(response.data.interviews.length);
+      if (interviews.length > 0) {
+        const activeItems = interviews.filter((item) => item.isActive);
+        const activeCount = activeItems.length;
+        console.log(activeCount);
+        setCountInterviews(activeCount);
         // setConfirmed(true);
       }
     };
 
     getInterviews();
   }, [userId, confirmed]);
+
+  console.log(countInterviews);
 
   // Check if all values are filled in interviews
   const areAllKeysNonNullOrEmpty = (arr) => {
@@ -257,6 +266,7 @@ const FormInterviewComponent = ({ userId }) => {
 
         content: '',
         by: userLogged,
+        isActive: false,
       },
     ]);
     setConfirmed(false);
@@ -374,6 +384,19 @@ const FormInterviewComponent = ({ userId }) => {
                   />
                 </FormControl>
               </Stack>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={interview.isActive}
+                    onChange={(e) =>
+                      handleInterviewChange('isActive', e.target.checked, index)
+                    }
+                    name="callFeatureToggle"
+                    color="primary"
+                  />
+                }
+                label="Entretien réalisé"
+              />
             </Grid>
             {/* <Grid item xs={12}>
               <FormControl sx={{ minWidth: '100%' }}>
@@ -689,6 +712,7 @@ const FormInterviewComponent = ({ userId }) => {
             <Grid item xs={12}></Grid>
           </Grid>
         ))}
+
       <Button
         // disabled={!showButton}
         startIcon={confirmed ? <CheckIcon /> : ''}

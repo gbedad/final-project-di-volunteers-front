@@ -10,9 +10,12 @@ import {
   Stack,
   FormControl,
   InputLabel,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 
 // import AddIcon from '@mui/icons-material/Add';
+import CallFeatureToggle from './CallfeatureToggle';
 
 import CheckIcon from '@mui/icons-material/Check';
 // import TextareaAutosize from '@mui/material/TextareaAutosize';
@@ -112,6 +115,8 @@ const PreInterviewComponent = ({ userId }) => {
   const [isDateValid, setIsDateValid] = useState(true);
   const [showButton, setShowButton] = useState(false);
 
+  const [isFeatureActive, setIsFeatureActive] = useState(false);
+
   const userToken = location.state.userLogged.token;
   // const userLogged = location.state.userLogged.user.first_name;
 
@@ -134,13 +139,14 @@ const PreInterviewComponent = ({ userId }) => {
               by: '',
               evaluation: '',
               nextStep: '',
+              isActive: false,
             };
           } else if (
             Object.keys(response.data.pre_interview) === null ||
             Object.keys(response.data.pre_interview).length !== 0
           ) {
             preInterviewdata = response.data.pre_interview;
-            // console.log(preInterviewdata);
+            console.log(preInterviewdata);
 
             setPreInterview(JSON.parse(preInterviewdata));
             setIsLoading(false);
@@ -173,6 +179,10 @@ const PreInterviewComponent = ({ userId }) => {
     ) {
       setShowButton(true);
     }
+  };
+
+  const handleToggle = (event) => {
+    setIsFeatureActive(event.target.checked);
   };
 
   const handleSavePreInterview = async () => {
@@ -248,6 +258,23 @@ const PreInterviewComponent = ({ userId }) => {
               </Select>
             </FormControl>
           </Stack>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={preInterview.isActive}
+                onChange={(e) =>
+                  updatePreInterview('isActive', e.target.checked)
+                }
+                name="callFeatureToggle"
+                color="primary"
+              />
+            }
+            label="Entretien réalisé"
+          />
+          {/* <CallFeatureToggle
+            isFeatureActive={isFeatureActive}
+            handleToggle={handleToggle}
+          /> */}
         </Grid>
 
         <Grid item xs={12}>
