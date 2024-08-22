@@ -8,7 +8,10 @@ import {
   TextField,
   Box,
   LinearProgress,
+  Snackbar,
+  SnackbarContent,
 } from '@mui/material';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
@@ -37,6 +40,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
 
   const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   // const subjectClassesRanges = userLogged.user.skill.topics
   // console.log(userSelected);
@@ -45,6 +49,14 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ? location.state.userLogged.user.id
       : userSelected;
   // console.log('USERID', userId);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   useEffect(() => {
     setIsLoading(false);
@@ -85,6 +97,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       { subject: '', classStart: '', classEnd: '' },
     ]);
     setShowButton(true);
+    setOpen(true);
   };
 
   const handleSubjectChange = (value, index) => {
@@ -269,6 +282,26 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
           </Button>
         )}
       </BorderedBoxWithLabel>
+      <Snackbar
+        open={open}
+        autoHideDuration={10000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <SnackbarContent
+          style={{
+            backgroundColor: 'white',
+            color: 'purple',
+            fontSize: '1rem',
+          }}
+          message={
+            <span id="client-snackbar">
+              Vous pouvez ajouter plusieurs créneaux [matières] en cliquant à
+              plusieurs reprises sur + avant de cliquer sur ENREGISTRER pour
+              sauvegarder toutes les possibilités saisies.
+            </span>
+          }
+        />
+      </Snackbar>
     </div>
   );
 };

@@ -62,9 +62,11 @@ import FormInterviewComponent from './interviews/Interview';
 
 // import TopicGradeComponent from '../components/TopicGrade';
 import PreInterviewComponent from './interviews/PreInterview';
+import DiscussionThread from './interviews/DiscussionThread';
 
 import Uploads from './FileUploader';
 import UploadConvention from './FileConventionUploader';
+import { DialogContentText } from '@mui/material';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -153,6 +155,7 @@ const ChangeUserStatus = () => {
   //   }
   // };
   // console.log("userId", state.userId);
+  console.log(userLogged.user.first_name);
 
   useEffect(() => {
     const getUser = async () => {
@@ -369,12 +372,14 @@ const ChangeUserStatus = () => {
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar>
-                      <CategoryIcon />
+                      {/* <CategoryIcon /> */}
+                      <TextSnippetIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={user.mission.title}
-                    secondary={user.mission.description}
+                    primary={user.message}
+                    // primary={user.mission.title}
+                    // secondary={user.mission.description}
                   />
                 </ListItem>
                 <ListItem>
@@ -400,7 +405,8 @@ const ChangeUserStatus = () => {
                 <ListItemButton onClick={handleClick}>
                   <ListItemAvatar>
                     <Avatar>
-                      <TextSnippetIcon />
+                      {/* <TextSnippetIcon /> */}
+                      <CategoryIcon />
                     </Avatar>
                   </ListItemAvatar>
 
@@ -425,26 +431,28 @@ const ChangeUserStatus = () => {
                             sx={{
                               p: 2,
                               minWidth: 420,
-                              maxWidth: 600,
+                              maxWidth: 420,
                               backgroundColor: '#d6f6f6',
                               color: 'primary.main',
                             }}>
-                            <Typography variant="h6" component="div">
+                            {/* <Typography variant="h6" component="div">
                               Motivation
-                            </Typography>
+                            </Typography> */}
                             <Typography
                               sx={{ fontStyle: 'italic' }}
                               variant="body1"
                               component="div">
-                              <ListItemText primary={user.message} />
+                              <ListItemText
+                                // primary={user.message}
+                                primary={user.mission.title}
+                                secondary={user.mission.description}
+                              />
                             </Typography>
                           </Paper>
                         </Fade>
                       )}
                     </Popper>
-                    <Typography>
-                      Cliquer ici pour voir le texte de motivation
-                    </Typography>
+                    <Typography>Cliquer ici pour voir la mission</Typography>
                     {/* <Button onClick={handleClick('top-start')}>top-end</Button> */}
                   </Box>
                 </ListItemButton>
@@ -718,6 +726,15 @@ const ChangeUserStatus = () => {
               label="Premier contact"
               sx={{ display: 'flex' }}>
               <PreInterviewComponent userId={user.id} />
+            </BorderedBoxWithLabel>
+            <BorderedBoxWithLabel
+              label="Fil de discussion"
+              sx={{ display: 'flex' }}>
+              <Box sx={{ height: 'calc(100% - 60px)' }}>
+                {' '}
+                {/* Adjust based on your header size */}
+                <DiscussionThread currentUser={userLogged.user.first_name} />
+              </Box>
             </BorderedBoxWithLabel>
           </Grid>
 

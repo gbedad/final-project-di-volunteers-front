@@ -11,6 +11,8 @@ import {
   TextField,
   Box,
   LinearProgress,
+  Snackbar,
+  SnackbarContent,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderedBoxWithLabel from './borderedBox';
@@ -34,6 +36,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
+  const [open, setOpen] = useState(false);
   // const { userLogged } = location.state && location.state.userLogged;
   // Check if location.state is not null before destructuring values
 
@@ -48,6 +51,14 @@ const DayTimeRangeComponent = ({ userSelected }) => {
       : userSelected;
   // console.log('USERID', userId);
   const token = location.state.userLogged.token;
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   //  const parsed_array = dayTimesRanges.map(string => JSON.parse(string));
   useEffect(() => {
@@ -90,6 +101,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
       { day: '', startTime: '08:00', endTime: '09:00' },
     ]);
     setShowButton(true);
+    setOpen(true);
   };
 
   const handleDayChange = (value, index) => {
@@ -278,6 +290,26 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             Enregistrer
           </Button>
         )}
+        <Snackbar
+          open={open}
+          autoHideDuration={10000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+          <SnackbarContent
+            style={{
+              backgroundColor: 'white',
+              color: 'purple',
+              fontSize: '1rem',
+            }}
+            message={
+              <span id="client-snackbar">
+                Vous pouvez ajouter plusieurs créneaux [matières] en cliquant à
+                plusieurs reprises sur + avant de cliquer sur ENREGISTRER pour
+                sauvegarder toutes les possibilités saisies.
+              </span>
+            }
+          />
+        </Snackbar>
       </BorderedBoxWithLabel>
     </div>
   );

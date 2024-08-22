@@ -71,7 +71,7 @@ const AuthProvider = ({ children }) => {
       } else {
         checkTokenAndRedirect(currentToken);
       }
-    }, 5 * 60 * 1000); // Check every 5 minutes
+    }, 10 * 60 * 1000); // Check every 10 minutes
 
     return () => clearInterval(interval);
   }, []);

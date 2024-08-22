@@ -32,6 +32,7 @@
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "moment": "^2.29.4",
+    "mui-datagrid-full-edit": "^1.2.7",
     "mui-file-input": "^4.0.4",
     "react": "^18.2.0",
     "react-autosave": "^0.4.4",

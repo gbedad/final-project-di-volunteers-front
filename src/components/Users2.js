@@ -8,6 +8,7 @@ import {
   GridToolbarExport,
   GRID_CHECKBOX_SELECTION_COL_DEF,
 } from '@mui/x-data-grid';
+import FullEditDataGrid from 'mui-datagrid-full-edit';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
@@ -17,7 +18,11 @@ import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import DoneIcon from '@mui/icons-material/Done';
-import { existingSubjects } from '../options/existingOptions';
+import {
+  existingDays,
+  existingSubjects,
+  existingTimes,
+} from '../options/existingOptions';
 
 import { formatPhoneNumber } from '../js/phoneNumbersSpace';
 import { parsePhoneNumber } from 'awesome-phonenumber';
@@ -31,6 +36,8 @@ const StyledRating = styled(Rating)({
   },
 });
 const subjects = existingSubjects;
+const days = existingDays;
+const times = existingTimes;
 
 const columns = [
   {
@@ -279,10 +286,16 @@ export default function DataGridDemo(props) {
   // const [activeUsers, setActiveUsers] = useState(null);
   // const [countUsersByStatus, setCountUsersByStatus] = useState({});
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedTimeStart, setSelectedTimeStart] = useState('');
+  const [selectedTimeEnd, setSelectedTimeEnd] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
   // const [value, setValue] = React.useState(subjects[0]);
-  const [inputValue, setInputValue] = React.useState('');
+  const [inputSubjectValue, setInputSubjectValue] = React.useState('');
+  const [inputDayValue, setInputDayValue] = React.useState('');
+  const [inputTimeStartValue, setInputTimeStartValue] = React.useState('');
+  const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
 
   // const [page, setPage] = React.useState(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -291,27 +304,83 @@ export default function DataGridDemo(props) {
   //   setSelectedSubject(event.target.value);
   // };
   // console.log(selectedSubject);
+  // ===================================================================================================
+  // function filterBySubject(users, subject) {
+  //   return users.filter((user) => {
+  //     const topics = user.skill?.topics || []; // Access the topics array and handle the case when it is undefined or null
 
-  function filterBySubject(users, subject) {
+  //     return topics.some((topic) =>
+  //       JSON.parse(topic).subject.includes(subject)
+  //     );
+  //   });
+  // }
+  // const handleSearch = () => {
+  //   const filteredResults = filterBySubject(
+  //     cleanedArray,
+  //     selectedSubject.label
+  //   );
+  //   if (filteredResults.length > 0) {
+  //     setFilteredData(filteredResults);
+  //   } else {
+  //     setFilteredData([]);
+  //   }
+  // };
+  // ===================================================================================================
+
+  function filterUsers(users, filters) {
     return users.filter((user) => {
-      const topics = user.skill?.topics || []; // Access the topics array and handle the case when it is undefined or null
+      const topics = user.skill?.topics || [];
+      const daytimes = user.skill?.when_day_slot || [];
 
-      return topics.some((topic) =>
-        JSON.parse(topic).subject.includes(subject)
-      );
+      // Subject filter
+      const subjectMatch =
+        !filters.subject ||
+        topics.some((topic) =>
+          JSON.parse(topic).subject.includes(filters.subject)
+        );
+
+      // Day filter
+      const dayMatch =
+        !filters.day ||
+        daytimes.some((daytime) =>
+          JSON.parse(daytime).day.includes(filters.day)
+        );
+
+      // Time range filter
+      const timeMatch =
+        !filters.timeStart ||
+        !filters.timeEnd ||
+        daytimes.some((daytime) => {
+          const start = new Date(`1970-01-01T${JSON.parse(daytime).startTime}`);
+          const end = new Date(`1970-01-01T${JSON.parse(daytime).endTime}`);
+          const filterStart = new Date(`1970-01-01T${filters.timeStart}`);
+          const filterEnd = new Date(`1970-01-01T${filters.timeEnd}`);
+
+          return start <= filterEnd && end >= filterStart;
+        });
+
+      return subjectMatch && dayMatch && timeMatch;
     });
   }
+
   const handleSearch = () => {
-    const filteredResults = filterBySubject(
-      cleanedArray,
-      selectedSubject.label
-    );
+    const filters = {
+      subject: selectedSubject ? selectedSubject.label : null,
+      day: selectedDay ? selectedDay['label'] : null,
+      timeStart: selectedTimeStart ? selectedTimeStart['label'] : null,
+      timeEnd: selectedTimeEnd ? selectedTimeEnd['label'] : null,
+    };
+    console.log(filters.timeEnd);
+
+    const filteredResults = filterUsers(cleanedArray, filters);
+
     if (filteredResults.length > 0) {
       setFilteredData(filteredResults);
     } else {
       setFilteredData([]);
     }
   };
+
   if (document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]) {
     const close = document.getElementsByClassName(
       'MuiAutocomplete-clearIndicator'
@@ -378,7 +447,7 @@ export default function DataGridDemo(props) {
         : null;
 
       // console.log(item.pre_interview ? item.pre_interview : null);
-      console.log(nb_interviews);
+      // console.log(nb_interviews);
       if (item.mission === null) {
         return [];
       }
@@ -439,9 +508,13 @@ export default function DataGridDemo(props) {
       convention_received,
     };
   }
+
   return (
     <>
-      <Stack spacing={2} sx={{ width: 600, marginBottom: 2 }} direction="row">
+      <Stack
+        spacing={2}
+        sx={{ width: 'auto', marginBottom: 2 }}
+        direction="row">
         {/* <FormControl sx={{ minWidth: 200 }} size="small"> */}
         {/* <InputLabel id="subject-select-label">Select Subject</InputLabel> */}
         {/* <Select
@@ -465,9 +538,9 @@ export default function DataGridDemo(props) {
           onChange={(event, newValue) => {
             setSelectedSubject(newValue);
           }}
-          inputValue={inputValue}
+          inputValue={inputSubjectValue}
           onInputChange={(event, newInputValue) => {
-            setInputValue(newInputValue);
+            setInputSubjectValue(newInputValue);
           }}
           id="controllable-states-demo"
           options={subjects}
@@ -478,29 +551,85 @@ export default function DataGridDemo(props) {
             <TextField {...params} label="Saisir une matière" size="small" />
           )}
         />
+        <Autocomplete
+          value={selectedDay}
+          onChange={(event, newValue) => {
+            setSelectedDay(newValue);
+          }}
+          inputValue={inputDayValue}
+          onInputChange={(event, newInputValue) => {
+            setInputDayValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={days}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => (option ? option.label : '')}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Saisir un jour" size="small" />
+          )}
+        />
+        <Autocomplete
+          value={selectedTimeStart}
+          onChange={(event, newValue) => {
+            setSelectedTimeStart(newValue);
+          }}
+          inputValue={inputTimeStartValue}
+          onInputChange={(event, newInputValue) => {
+            setInputTimeStartValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={times}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => (option ? option.label : '')}
+          sx={{ width: 200 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Saisir heure début" size="small" />
+          )}
+        />
+        <Autocomplete
+          value={selectedTimeEnd}
+          onChange={(event, newValue) => {
+            setSelectedTimeEnd(newValue);
+          }}
+          inputValue={inputTimeEndValue}
+          onInputChange={(event, newInputValue) => {
+            setInputTimeEndValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={times}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => (option ? option.label : '')}
+          sx={{ width: 200 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Saisir heure fin" size="small" />
+          )}
+        />
         {/* </FormControl> */}
 
         <Button variant="contained" onClick={handleSearch} color="primary">
-          Search
+          Filtrer
         </Button>
       </Stack>
-      <Box sx={{ height: 720, width: '100%' }}>
-        <DataGrid
+      <Box sx={{ height: 'auto', width: '100%' }}>
+        <FullEditDataGrid
           onRowClick={handleRowClick}
           {...rows}
-          slots={{
-            toolbar: CustomToolbar,
-          }}
+          // slots={{
+          //   toolbar: CustomToolbar,
+          // }}
+
           rows={rows}
           columns={columns}
+          noActionColumn
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 12,
+                pageSize: 15,
               },
             },
           }}
-          pageSizeOptions={[12]}
+          pageSizeOptions={[15]}
           disableRowSelectionOnClick
         />
       </Box>
