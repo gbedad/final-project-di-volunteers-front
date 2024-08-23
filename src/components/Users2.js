@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Button, Autocomplete, TextField } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Button,
+  Autocomplete,
+  TextField,
+  Chip,
+} from '@mui/material';
 import {
   DataGrid,
   GridToolbarContainer,
@@ -53,6 +60,23 @@ const columns = [
     valueFormatter: (params) => {
       if (!params.value) return '';
       return new Date(params.value).toLocaleDateString();
+    },
+  },
+  {
+    field: 'hasNewMessage',
+    headerName: 'Fil de discussion',
+    width: 130,
+    renderCell: (params) => {
+      if (params.value) {
+        return (
+          <Chip
+            label="New Message"
+            color="primary"
+            // onDelete={() => handleDismissNotification(params.row.id)}
+          />
+        );
+      }
+      return null;
     },
   },
   {
@@ -132,7 +156,7 @@ const columns = [
   },
   {
     field: 'first_contact',
-    headerName: 'Premier contact',
+    headerName: '1er contact',
     editable: true,
     renderCell: (params) => {
       return params.value ? (
@@ -297,6 +321,10 @@ export default function DataGridDemo(props) {
   const [inputTimeStartValue, setInputTimeStartValue] = React.useState('');
   const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
 
+  const [rows, setRows] = useState([]);
+  const prevMessageCountsRef = useRef({});
+  const [newMessageFlags, setNewMessageFlags] = useState({});
+
   // const [page, setPage] = React.useState(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -400,12 +428,58 @@ export default function DataGridDemo(props) {
   }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
-  const handleRowClick = (params) => {
+
+  const handleRowClick = useCallback((params) => {
+    const userId = params.row.id;
+
+    // Dismiss the new message notification
+    setNewMessageFlags((prev) => {
+      const updated = { ...prev, [userId]: false };
+      console.log('Updated newMessageFlags:', updated);
+      return updated;
+    });
+    // Update prevMessageCountsRef to current count
+    const currentUser = filteredData.find((item) => item.id === userId);
+    if (currentUser && currentUser.internal_thread) {
+      prevMessageCountsRef.current[userId] = currentUser.internal_thread.length;
+    }
+
+    // Immediately update the rows to reflect the change
+    setRows((currentRows) =>
+      currentRows.map((row) =>
+        row.id === userId ? { ...row, hasNewMessage: false } : row
+      )
+    );
+
+    // // Update the prevMessageCountsRef
+    // const currentUser = filteredData.find((item) => item.id === userId);
+
+    // if (currentUser && currentUser.internal_thread) {
+    //   prevMessageCountsRef.current[userId] = currentUser.internal_thread.length;
+    // }
+
+    // // Update the rows to reflect the change
+    // setRows((prevRows) => {
+    //   const updatedRows = prevRows.map((row) =>
+    //     row.id === userId ? { ...row, hasNewMessage: false } : row
+    //   );
+    //   console.log('Updated rows:', updatedRows);
+    //   return updatedRows;
+    // });
     setSelectedUser(params.row.id);
     navigate('/change-status', {
       state: { userId: params.row.id, userLogged: location.state.userLogged },
     });
-  };
+  });
+
+  useEffect(() => {
+    console.log('Rows updated:', rows);
+  }, [rows]);
+
+  // Effect to log newMessageFlags after it updates
+  // useEffect(() => {
+  //   console.log('Current newMessageFlags:', newMessageFlags);
+  // }, [newMessageFlags]);
 
   const calculateTrueValues = (users) => {
     return users.map((user) => {
@@ -436,61 +510,176 @@ export default function DataGridDemo(props) {
   // }
   // console.log(filteredData);
 
-  const rows = filteredData
-    .map((item, key = item.id) => {
-      const nb_interviews = Array.isArray(item.interviews)
-        ? item.interviews.filter((element) => JSON.parse(element).isActive)
-            .length
-        : 0;
-      const first_contact = item.pre_interview
-        ? JSON.parse(item.pre_interview).isActive
-        : null;
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // const rows = filteredData
+  //   .map((item, key = item.id) => {
+  //     let prevCount = prevMessageCountsRef[item.id] || 0;
 
-      // console.log(item.pre_interview ? item.pre_interview : null);
-      // console.log(nb_interviews);
-      if (item.mission === null) {
-        return [];
+  //     console.log(prevCount);
+  //     const nb_messages = Array.isArray(item.internal_thread)
+  //       ? item.internal_thread.length
+  //       : 0;
+  //     let hasNewMessage = nb_messages > prevCount;
+
+  //     console.log('nb messages', nb_messages, hasNewMessage);
+
+  //     //
+  //     prevMessageCountsRef[item.id] = nb_messages;
+
+  //     const nb_interviews = Array.isArray(item.interviews)
+  //       ? item.interviews.filter((element) => JSON.parse(element).isActive)
+  //           .length
+  //       : 0;
+  //     const first_contact = item.pre_interview
+  //       ? JSON.parse(item.pre_interview).isActive
+  //       : null;
+
+  //     // console.log(item.pre_interview ? item.pre_interview : null);
+  //     // console.log(nb_interviews);
+  //     if (item.mission === null) {
+  //       return [];
+  //     }
+
+  //     return createData(
+  //       item.id,
+  //       hasNewMessage,
+  //       item.first_name,
+  //       item.last_name,
+  //       item.email,
+  //       item.phone,
+  //       item.mission.title || null,
+  //       item.mission.location || null,
+  //       item.skill,
+  //       item.created_at,
+  //       item.status,
+  //       item.is_active,
+  //       first_contact,
+  //       nb_interviews,
+  //       item.trueValuesCount,
+  //       item.test_voltaire_passed,
+  //       item.convention_received
+  //     );
+  //   })
+  //   .filter((item) => item !== null);
+  // function createData(
+  //   id,
+  //   hasNewMessage,
+  //   first_name,
+  //   last_name,
+  //   email,
+  //   phone,
+  //   mission,
+  //   mission_location,
+  //   skill,
+  //   created_at,
+  //   status,
+  //   is_active,
+  //   first_contact,
+  //   nb_interviews,
+  //   trueValuesCount,
+  //   test_voltaire_passed,
+  //   convention_received
+  // ) {
+  //   return {
+  //     id,
+  //     hasNewMessage,
+  //     first_name,
+  //     last_name,
+  //     email,
+  //     phone,
+  //     mission,
+  //     mission_location,
+  //     skill,
+  //     created_at,
+  //     status,
+  //     is_active,
+  //     first_contact,
+  //     nb_interviews,
+  //     trueValuesCount,
+  //     test_voltaire_passed,
+  //     convention_received,
+  //   };
+  // }
+  // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  // --------------------------------------------------------------------------------------------------
+
+  // Effect to check for new messages and update flags
+  useEffect(() => {
+    const updatedFlags = {};
+    filteredData.forEach((item) => {
+      const prevCount = prevMessageCountsRef.current[item.id] || 0;
+      const currentCount = Array.isArray(item.internal_thread)
+        ? item.internal_thread.length
+        : 0;
+
+      if (currentCount > prevCount) {
+        updatedFlags[item.id] = true;
+        prevMessageCountsRef.current[item.id] = currentCount;
       }
-      return createData(
-        item.id,
-        item.first_name,
-        item.last_name,
-        item.email,
-        item.phone,
-        item.mission.title || null,
-        item.mission.location || null,
-        item.skill,
-        item.created_at,
-        item.status,
-        item.is_active,
-        first_contact,
-        nb_interviews,
-        item.trueValuesCount,
-        item.test_voltaire_passed,
-        item.convention_received
-      );
-    })
-    .filter((item) => item !== null);
-  function createData(
-    id,
-    first_name,
-    last_name,
-    email,
-    phone,
-    mission,
-    mission_location,
-    skill,
-    created_at,
-    status,
-    is_active,
-    first_contact,
-    nb_interviews,
-    trueValuesCount,
-    test_voltaire_passed,
-    convention_received
-  ) {
-    return {
+    });
+
+    setNewMessageFlags((prev) => {
+      const newFlags = { ...prev, ...updatedFlags };
+      console.log('Updated newMessageFlags:', newFlags);
+      return newFlags;
+    });
+  }, [filteredData]);
+
+  useEffect(() => {
+    const newRows = filteredData
+      .map((item) => {
+        const hasNewMessage = newMessageFlags[item.id] || false;
+        // const prevCount = prevMessageCountsRef.current[item.id] || 0;
+        // const nb_messages = Array.isArray(item.internal_thread)
+        //   ? item.internal_thread.length
+        //   : 0;
+
+        // const hasNewMessage =
+        //   nb_messages > prevCount || newMessageFlags[item.id] || false;
+
+        // // Only update the ref if there are no new messages
+        // if (!hasNewMessage) {
+        //   prevMessageCountsRef.current[item.id] = nb_messages;
+        // }
+
+        // Rest of your logic for creating the row data
+        const nb_interviews = Array.isArray(item.interviews)
+          ? item.interviews.filter((element) => JSON.parse(element).isActive)
+              .length
+          : 0;
+        const first_contact = item.pre_interview
+          ? JSON.parse(item.pre_interview).isActive
+          : null;
+
+        if (item.mission === null) {
+          return null;
+        }
+
+        return createData(
+          item.id,
+          hasNewMessage,
+          item.first_name,
+          item.last_name,
+          item.email,
+          item.phone,
+          item.mission.title || null,
+          item.mission.location || null,
+          item.skill,
+          item.created_at,
+          item.status,
+          item.is_active,
+          first_contact,
+          nb_interviews,
+          item.trueValuesCount,
+          item.test_voltaire_passed,
+          item.convention_received
+        );
+      })
+      .filter((item) => item !== null);
+    function createData(
       id,
+      hasNewMessage,
       first_name,
       last_name,
       email,
@@ -505,10 +694,33 @@ export default function DataGridDemo(props) {
       nb_interviews,
       trueValuesCount,
       test_voltaire_passed,
-      convention_received,
-    };
-  }
+      convention_received
+    ) {
+      return {
+        id,
+        hasNewMessage,
+        first_name,
+        last_name,
+        email,
+        phone,
+        mission,
+        mission_location,
+        skill,
+        created_at,
+        status,
+        is_active,
+        first_contact,
+        nb_interviews,
+        trueValuesCount,
+        test_voltaire_passed,
+        convention_received,
+      };
+    }
 
+    setRows(newRows);
+  }, [filteredData, newMessageFlags]);
+
+  // --------------------------------------------------------------------------------------------------
   return (
     <>
       <Stack

@@ -151,7 +151,7 @@ const FormInterviewComponent = ({ userId }) => {
       if (interviews.length > 0) {
         const activeItems = interviews.filter((item) => item.isActive);
         const activeCount = activeItems.length;
-        console.log(activeCount);
+        // console.log(activeCount);
         setCountInterviews(activeCount);
         // setConfirmed(true);
       }
@@ -159,8 +159,6 @@ const FormInterviewComponent = ({ userId }) => {
 
     getInterviews();
   }, [userId, confirmed]);
-
-  console.log(countInterviews);
 
   // Check if all values are filled in interviews
   const areAllKeysNonNullOrEmpty = (arr) => {
@@ -273,7 +271,7 @@ const FormInterviewComponent = ({ userId }) => {
     setShowButton(true);
   };
   const result = areAllKeysNonNullOrEmpty(interviews);
-  console.log(result);
+  // console.log(result);
 
   const handleSaveInterviews = async () => {
     try {
@@ -288,7 +286,7 @@ const FormInterviewComponent = ({ userId }) => {
         }
       );
       setShowButton(false);
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.message === 'Interviews saved successfully') {
         // const result = areAllKeysNonNullOrEmpty(response.data);
         // if (result) {
@@ -309,7 +307,7 @@ const FormInterviewComponent = ({ userId }) => {
     icon: <AddIcon />,
     label: 'Add',
   };
-  console.log(interviews);
+  // console.log(interviews);
 
   return (
     <div>

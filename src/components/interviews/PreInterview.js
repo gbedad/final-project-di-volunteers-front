@@ -146,7 +146,7 @@ const PreInterviewComponent = ({ userId }) => {
             Object.keys(response.data.pre_interview).length !== 0
           ) {
             preInterviewdata = response.data.pre_interview;
-            console.log(preInterviewdata);
+            // console.log(preInterviewdata);
 
             setPreInterview(JSON.parse(preInterviewdata));
             setIsLoading(false);

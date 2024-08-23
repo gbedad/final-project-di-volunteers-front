@@ -155,7 +155,7 @@ const ChangeUserStatus = () => {
   //   }
   // };
   // console.log("userId", state.userId);
-  console.log(userLogged.user.first_name);
+  // console.log(userLogged.user.first_name);
 
   useEffect(() => {
     const getUser = async () => {
@@ -728,12 +728,15 @@ const ChangeUserStatus = () => {
               <PreInterviewComponent userId={user.id} />
             </BorderedBoxWithLabel>
             <BorderedBoxWithLabel
-              label="Fil de discussion"
+              label="Fil de discussion interne"
               sx={{ display: 'flex' }}>
               <Box sx={{ height: 'calc(100% - 60px)' }}>
                 {' '}
                 {/* Adjust based on your header size */}
-                <DiscussionThread currentUser={userLogged.user.first_name} />
+                <DiscussionThread
+                  currentUser={userLogged.user.first_name}
+                  userId={user.id}
+                />
               </Box>
             </BorderedBoxWithLabel>
           </Grid>

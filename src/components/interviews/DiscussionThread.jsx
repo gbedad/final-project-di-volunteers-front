@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import {
   Box,
   Typography,
@@ -80,14 +82,17 @@ const StyledTextareaAutosize = styled(TextareaAutosize)(({ theme }) => ({
   },
 }));
 
-const DiscussionThread = ({ currentUser }) => {
-  const [messages, setMessages] = useState([
-    { sender: 'Emmanuelle', content: 'Test en dur', timestamp: new Date() },
-  ]);
+const DiscussionThread = ({ currentUser, userId }) => {
+  const location = useLocation();
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  const userToken = location.state.userLogged.token;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -95,7 +100,26 @@ const DiscussionThread = ({ currentUser }) => {
 
   useEffect(scrollToBottom, [messages]);
 
-  const handleSendMessage = () => {
+  useEffect(() => {
+    const getMessages = async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+      );
+      // console.log(response.data);
+      if (response.data.internal_thread) {
+        const parsed_array = response.data.internal_thread.map(
+          (string) => string
+        );
+        setMessages(parsed_array);
+        setIsLoading(false);
+      }
+      setIsLoading(false);
+    };
+
+    getMessages();
+  }, [userId]);
+
+  const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       const message = {
         id: Date.now(),
@@ -103,17 +127,59 @@ const DiscussionThread = ({ currentUser }) => {
         content: newMessage,
         timestamp: new Date(),
       };
+      const allMessages = [...messages, message];
       setMessages([...messages, message]);
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
+          allMessages,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': userToken,
+            },
+          }
+        );
+        // console.log(response.data.message);
+        if (response.data.message) {
+          console.log('Message saved successfully');
+        } else {
+          console.error('Failed to save message');
+        }
+      } catch (error) {
+        console.error('Failed to save message', error);
+      }
+
       setNewMessage('');
       if (inputRef.current) {
         inputRef.current.focus();
       }
     }
   };
-  console.log(messages);
 
-  const handleDeleteMessage = (messageId) => {
-    setMessages(messages.filter((message) => message.id !== messageId));
+  const handleDeleteMessage = async (messageId) => {
+    const allMessages = messages.filter((message) => message.id !== messageId);
+    setMessages(allMessages);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
+        allMessages,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': userToken,
+          },
+        }
+      );
+      // console.log(response.data.message);
+      if (response.data.message) {
+        console.log('Message saved successfully');
+      } else {
+        console.error('Failed to save message');
+      }
+    } catch (error) {
+      console.error('Failed to save message', error);
+    }
   };
 
   const handleKeyPress = (event) => {
@@ -129,40 +195,41 @@ const DiscussionThread = ({ currentUser }) => {
         {messages.map((message) => {
           const isCurrentUser = message.sender === currentUser;
           return (
-            <MessageContainer key={message.id} isCurrentUser={isCurrentUser}>
-              {!isCurrentUser && (
-                <Avatar sx={{ marginRight: 1 }}>
-                  {message.sender.charAt(0).toUpperCase()}
-                </Avatar>
+            <Box
+              key={message.id}
+              onMouseEnter={() => setHoveredMessageId(message.id)}
+              onMouseLeave={() => setHoveredMessageId(null)}
+              sx={{ position: 'relative' }}>
+              <MessageContainer isCurrentUser={isCurrentUser}>
+                <MessageBubble isCurrentUser={isCurrentUser}>
+                  {!isCurrentUser && (
+                    <MessageHeader variant="subtitle2">
+                      {message.sender}
+                    </MessageHeader>
+                  )}
+                  <Typography variant="body1">{message.content}</Typography>
+                  <MessageTimestamp variant="caption">
+                    {message.timestamp.toLocaleString()}
+                  </MessageTimestamp>
+                </MessageBubble>
+              </MessageContainer>
+              {isCurrentUser && (
+                <Fade in={hoveredMessageId === message.id}>
+                  <DeleteButton
+                    size="small"
+                    onClick={() => handleDeleteMessage(message.id)}>
+                    <DeleteOutlineIcon fontSize="small" />
+                  </DeleteButton>
+                </Fade>
               )}
-              <MessageBubble isCurrentUser={isCurrentUser}>
-                {!isCurrentUser && (
-                  <MessageHeader variant="subtitle2">
-                    {message.sender}
-                  </MessageHeader>
-                )}
-                <Typography variant="body1">{message.content}</Typography>
-                <MessageTimestamp variant="caption">
-                  {message.timestamp.toLocaleString()}
-                </MessageTimestamp>
-                {isCurrentUser && (
-                  <Fade in={hoveredMessageId === message.id}>
-                    <DeleteButton
-                      size="small"
-                      onClick={() => handleDeleteMessage(message.id)}>
-                      <DeleteOutlineIcon fontSize="small" />
-                    </DeleteButton>
-                  </Fade>
-                )}
-              </MessageBubble>
-            </MessageContainer>
+            </Box>
           );
         })}
         <div ref={messagesEndRef} />
       </Box>
       <InputContainer>
         <StyledTextareaAutosize
-          placeholder="Type a message"
+          placeholder="Message"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={handleKeyPress}
