@@ -64,6 +64,21 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken && storedUser) {
+      setIsLoggedIn(true);
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      console.log('User loaded from localStorage:', JSON.parse(storedUser));
+    } else {
+      console.log('No stored user data found');
+    }
+    setIsInitialLoad(false);
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const currentToken = localStorage.getItem('token');
       if (!currentToken) {

@@ -468,7 +468,7 @@ export default function DataGridDemo(props) {
       setJustViewedMessages(true);
 
       setSelectedUser(params.row.id);
-      navigate('/change-status', {
+      navigate('/admin/change-status', {
         state: { userId: params.row.id, userLogged: location.state.userLogged },
       });
     },

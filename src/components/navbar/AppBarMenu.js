@@ -124,7 +124,7 @@ function ResponsiveAppBar() {
       userLogged.user.role === 'admin' ||
       userLogged.user.role === 'interviewer'
     ) {
-      navigate(`/view-users`, { state: { userLogged } });
+      navigate(`/admin`, { state: { userLogged } });
     }
   };
 
@@ -549,7 +549,7 @@ function ResponsiveAppBar() {
                   onClick={handleCloseUserMenu}
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
-                    location.pathname === '/view-users') &&
+                    location.pathname === '/admin/') &&
                   (location.state.userLogged.user.role === 'admin' ||
                     location.state.userLogged.user.role === 'interviewer') ? (
                     <div>

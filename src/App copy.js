@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useJwt } from 'react-jwt';
 import './App.css';
@@ -50,10 +50,6 @@ import Error404 from './pages/404';
 import { Toaster } from 'react-hot-toast';
 
 import AppLayout from './components/navbar/AppBarLayout.js';
-import PrivateRoute from './modules/core/components/PrivateRoute/index.js';
-import AdminLanding from './modules/admin/components/AdminModule/AdminLanding.js';
-import UserModule from './modules/user/components/UserModule/route.js';
-import AdminModule from './modules/admin/components/AdminModule/routes.js';
 
 import {
   cyan,
@@ -117,7 +113,7 @@ function App() {
           minHeight: '100vh',
         }}>
         <Box sx={{ flexGrow: 1, paddingTop: '80px' }}>
-          {/* <Routes>
+          <Routes>
             <Route path="/register" element={<Register />} />
 
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -156,33 +152,9 @@ function App() {
             <Route path="/tutorat" element={<Tutorat />} />
             <Route path="/missions" element={<CardList />} />
 
-            // <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/" element={<HomePage />} />
 
             <Route path="*" element={<Error404 />} />
-          </Routes> */}
-          <Routes>
-            <Route exact path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} />
-            {/* Admin routes */}
-            <Route
-              path="/admin/*"
-              element={
-                <PrivateRoute requiredPermissions={['admin', 'interviewer']}>
-                  <AdminModule />
-                </PrivateRoute>
-              }
-            />
-
-            <Route
-              path="/*"
-              element={
-                <PrivateRoute requiredPermissions={['volunteer', 'admin']}>
-                  <Stepper />
-                </PrivateRoute>
-              }
-            />
-
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Box>
         {/* </AppLayout> */}

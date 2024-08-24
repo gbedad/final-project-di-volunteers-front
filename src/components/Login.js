@@ -114,7 +114,7 @@ export default function SignIn() {
           userLogged.user.role === 'admin' ||
           userLogged.user.role === 'interviewer'
         ) {
-          navigate('/view-users', { state: { userLogged } });
+          navigate('/admin', { state: { userLogged } });
         } else {
           console.log('Loading.....');
         }
