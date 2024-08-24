@@ -170,33 +170,19 @@ const columns = [
     headerName: 'Call',
     width: 80,
     headerAlign: 'left',
-    type: 'string',
+    type: 'date',
     editable: true,
   },
-  {
-    field: 'pre_interview_date',
-    headerName: 'Date',
-    width: 150,
-    headerAlign: 'left',
-    type: 'string',
-    editable: true,
-  },
+
   {
     field: 'interview',
     headerName: 'Enttretien',
     width: 150,
     headerAlign: 'left',
-    type: 'string',
+    type: 'date',
     editable: true,
   },
-  {
-    field: 'interview_date',
-    headerName: 'Date',
-    width: 150,
-    headerAlign: 'left',
-    type: 'string',
-    editable: true,
-  },
+
   {
     field: 'launched',
     headerName: 'Lancé le',
