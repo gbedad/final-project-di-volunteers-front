@@ -377,7 +377,8 @@ const ChangeUserStatus = () => {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={user.message}
+                    primary="Message de motivation"
+                    secondary={user.message}
                     // primary={user.mission.title}
                     // secondary={user.mission.description}
                   />
@@ -439,7 +440,7 @@ const ChangeUserStatus = () => {
                               Motivation
                             </Typography> */}
                             <Typography
-                              sx={{ fontStyle: 'italic' }}
+                              sx={{ fontStyle: 'regular' }}
                               variant="body1"
                               component="div">
                               <ListItemText

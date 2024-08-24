@@ -129,11 +129,11 @@ export default function DataGridDemo(props) {
     },
     {
       field: 'hasNewMessage',
-      headerName: 'Fil de discussion',
-      width: 130,
+      headerName: 'Fil ',
+      width: 80,
       renderCell: (params) => {
         return newMessageFlags[params.row.id] ? (
-          <Chip label="Nouveau" color="primary" />
+          <Chip label="New" color="primary" />
         ) : null;
       },
     },
