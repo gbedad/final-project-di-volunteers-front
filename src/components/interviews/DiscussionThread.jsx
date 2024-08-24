@@ -35,7 +35,7 @@ const MessageBubble = styled(Paper)(({ theme, isCurrentUser }) => ({
   //   ? theme.palette.primary.contrastText
   //   : theme.palette.text.primary,
   backgroundColor: isCurrentUser ? 'rgb(255, 255, 255)' : 'rgb( 199, 249, 204)',
-  color: isCurrentUser ? 'rgb(34, 87, 122)' : theme.palette.text.primary,
+  color: isCurrentUser ? 'rgb(0, 0, 0)' : theme.palette.text.primary,
   position: 'relative',
 }));
 
