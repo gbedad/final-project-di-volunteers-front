@@ -179,17 +179,22 @@ export default function DataGridDemo(props) {
     {
       field: 'mission',
       headerName: 'Mission',
-
+      valueFormatter: (params) => {
+        if (params.value) {
+          return params.value.replace(/^TUTORAT\s*/i, '').trim();
+        }
+        return '';
+      },
       width: 150,
       editable: true,
     },
-    {
-      field: 'mission_location',
-      headerName: 'Lieu',
+    // {
+    //   field: 'mission_location',
+    //   headerName: 'Lieu',
 
-      width: 150,
-      editable: true,
-    },
+    //   width: 150,
+    //   editable: true,
+    // },
     // {
     //   field: 'skill',
     //   headerName: 'Matières',
