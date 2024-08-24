@@ -46,220 +46,6 @@ const subjects = existingSubjects;
 const days = existingDays;
 const times = existingTimes;
 
-const columns = [
-  {
-    ...GRID_CHECKBOX_SELECTION_COL_DEF,
-    hideable: true,
-  },
-  { field: 'id', headerName: 'ID', width: 90, hideable: true },
-  {
-    field: 'created_at',
-    headerName: 'Inscription',
-    width: '150',
-    hideable: true,
-    valueFormatter: (params) => {
-      if (!params.value) return '';
-      return new Date(params.value).toLocaleDateString();
-    },
-  },
-  {
-    field: 'hasNewMessage',
-    headerName: 'Fil de discussion',
-    width: 130,
-    renderCell: (params) => {
-      if (params.value) {
-        return (
-          <Chip
-            label="New Message"
-            color="primary"
-            // onDelete={() => handleDismissNotification(params.row.id)}
-          />
-        );
-      }
-      return null;
-    },
-  },
-  {
-    field: 'first_name',
-    headerName: 'Prénom',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'last_name',
-    headerName: 'Nom',
-    width: 150,
-    editable: true,
-  },
-  // {
-  //   field: 'fullName',
-  //   headerName: 'Nom',
-  //   description: 'This column has a value getter and is not sortable.',
-  //   sortable: false,
-  //   width: 220,
-  //   valueGetter: (params) =>
-  //     `${params.row.first_name || ''} ${params.row.last_name || ''}`,
-  // },
-  {
-    field: 'email',
-    headerName: 'Email',
-
-    width: 250,
-    editable: true,
-  },
-  {
-    field: 'phone',
-    headerName: 'Téléphone',
-    valueGetter: (params) =>
-      params.row.phone
-        ? `${parsePhoneNumber(params.row.phone).number.international}`
-        : '',
-
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'mission',
-    headerName: 'Mission',
-
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'mission_location',
-    headerName: 'Lieu',
-
-    width: 150,
-    editable: true,
-  },
-  // {
-  //   field: 'skill',
-  //   headerName: 'Matières',
-  //   width: 300,
-  //   type: 'singleSelect',
-  //   // valueOptions: [...new Set(rows.map((o) => o.skill).flat())],
-  //   renderCell: (params) => (
-  //     <Stack direction="row" spacing={0.25}>
-  //       {params.value.skill.map((topic) => (
-  //         <Chip label={topic.subject} />
-  //       ))}
-  //     </Stack>
-  //   ),
-  // },
-
-  {
-    field: 'status',
-    headerName: 'Statut',
-
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'first_contact',
-    headerName: '1er contact',
-    editable: true,
-    renderCell: (params) => {
-      return params.value ? (
-        <DoneIcon
-          style={{
-            color: 'green',
-          }}
-        />
-      ) : (
-        ''
-      );
-    },
-  },
-  {
-    field: 'nb_interviews',
-    headerName: 'Interviews',
-
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'trueValuesCount',
-    headerName: 'Documents',
-
-    width: 130,
-    editable: true,
-    renderCell: renderRating,
-  },
-  {
-    field: 'test_voltaire_passed',
-    headerName: 'Test',
-
-    width: 70,
-    editable: true,
-    renderCell: (params) => {
-      return params.value ? (
-        <TypeSpecimenRoundedIcon
-          style={{
-            color: 'yellowgreen',
-          }}
-        />
-      ) : (
-        ''
-      );
-    },
-  },
-  {
-    field: 'convention_received',
-    headerName: 'Convention',
-
-    width: 100,
-
-    renderCell: (params) => {
-      return params.value ? (
-        <ReceiptLongIcon
-          style={{
-            color: 'purple',
-          }}
-        />
-      ) : (
-        ''
-      );
-    },
-  },
-  {
-    field: 'is_active',
-    headerName: 'Actif',
-
-    width: 70,
-    editable: true,
-    renderCell: (params) => {
-      return params.value ? (
-        <VerifiedUserIcon
-          style={{
-            color: 'green',
-          }}
-        />
-      ) : (
-        ''
-      );
-    },
-  },
-];
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
-
-function renderRating(params) {
-  return (
-    <StyledRating
-      readOnly
-      value={params.value}
-      getLabelText={(value) => `${value} ArticleIcon${value !== 1 ? 's' : ''}`}
-      icon={<FilePresentRoundedIcon fontSize="10" />}
-      emptyIcon={<FilePresentOutlinedIcon />}
-      max={3}
-    />
-  );
-}
 // function createData(
 //   id,
 //   first_name,
@@ -322,8 +108,218 @@ export default function DataGridDemo(props) {
   const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
 
   const [rows, setRows] = useState([]);
-  const prevMessageCountsRef = useRef({});
   const [newMessageFlags, setNewMessageFlags] = useState({});
+  const [justViewedMessages, setJustViewedMessages] = useState(false);
+
+  const columns = [
+    {
+      ...GRID_CHECKBOX_SELECTION_COL_DEF,
+      hideable: true,
+    },
+    { field: 'id', headerName: 'ID', width: 90, hideable: true },
+    {
+      field: 'created_at',
+      headerName: 'Inscription',
+      width: '150',
+      hideable: true,
+      valueFormatter: (params) => {
+        if (!params.value) return '';
+        return new Date(params.value).toLocaleDateString();
+      },
+    },
+    {
+      field: 'hasNewMessage',
+      headerName: 'Fil de discussion',
+      width: 130,
+      renderCell: (params) => {
+        return newMessageFlags[params.row.id] ? (
+          <Chip label="Nouveau" color="primary" />
+        ) : null;
+      },
+    },
+    {
+      field: 'first_name',
+      headerName: 'Prénom',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'last_name',
+      headerName: 'Nom',
+      width: 150,
+      editable: true,
+    },
+    // {
+    //   field: 'fullName',
+    //   headerName: 'Nom',
+    //   description: 'This column has a value getter and is not sortable.',
+    //   sortable: false,
+    //   width: 220,
+    //   valueGetter: (params) =>
+    //     `${params.row.first_name || ''} ${params.row.last_name || ''}`,
+    // },
+    {
+      field: 'email',
+      headerName: 'Email',
+
+      width: 250,
+      editable: true,
+    },
+    {
+      field: 'phone',
+      headerName: 'Téléphone',
+      valueGetter: (params) =>
+        params.row.phone
+          ? `${parsePhoneNumber(params.row.phone).number.international}`
+          : '',
+
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'mission',
+      headerName: 'Mission',
+
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'mission_location',
+      headerName: 'Lieu',
+
+      width: 150,
+      editable: true,
+    },
+    // {
+    //   field: 'skill',
+    //   headerName: 'Matières',
+    //   width: 300,
+    //   type: 'singleSelect',
+    //   // valueOptions: [...new Set(rows.map((o) => o.skill).flat())],
+    //   renderCell: (params) => (
+    //     <Stack direction="row" spacing={0.25}>
+    //       {params.value.skill.map((topic) => (
+    //         <Chip label={topic.subject} />
+    //       ))}
+    //     </Stack>
+    //   ),
+    // },
+
+    {
+      field: 'status',
+      headerName: 'Statut',
+
+      width: 110,
+      editable: true,
+    },
+    {
+      field: 'first_contact',
+      headerName: '1er contact',
+      editable: true,
+      renderCell: (params) => {
+        return params.value ? (
+          <DoneIcon
+            style={{
+              color: 'green',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
+    },
+    {
+      field: 'nb_interviews',
+      headerName: 'Interviews',
+
+      width: 110,
+      editable: true,
+    },
+    {
+      field: 'trueValuesCount',
+      headerName: 'Documents',
+
+      width: 130,
+      editable: true,
+      renderCell: renderRating,
+    },
+    {
+      field: 'test_voltaire_passed',
+      headerName: 'Test',
+
+      width: 70,
+      editable: true,
+      renderCell: (params) => {
+        return params.value ? (
+          <TypeSpecimenRoundedIcon
+            style={{
+              color: 'yellowgreen',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
+    },
+    {
+      field: 'convention_received',
+      headerName: 'Convention',
+
+      width: 100,
+
+      renderCell: (params) => {
+        return params.value ? (
+          <ReceiptLongIcon
+            style={{
+              color: 'purple',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
+    },
+    {
+      field: 'is_active',
+      headerName: 'Actif',
+
+      width: 70,
+      editable: true,
+      renderCell: (params) => {
+        return params.value ? (
+          <VerifiedUserIcon
+            style={{
+              color: 'green',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
+    },
+  ];
+  // function CustomToolbar() {
+  //   return (
+  //     <GridToolbarContainer>
+  //       <GridToolbarExport />
+  //     </GridToolbarContainer>
+  //   );
+  // }
+
+  function renderRating(params) {
+    return (
+      <StyledRating
+        readOnly
+        value={params.value}
+        getLabelText={(value) =>
+          `${value} ArticleIcon${value !== 1 ? 's' : ''}`
+        }
+        icon={<FilePresentRoundedIcon fontSize="10" />}
+        emptyIcon={<FilePresentOutlinedIcon />}
+        max={3}
+      />
+    );
+  }
 
   // const [page, setPage] = React.useState(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -428,58 +424,55 @@ export default function DataGridDemo(props) {
   }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
-
-  const handleRowClick = useCallback((params) => {
-    const userId = params.row.id;
-
-    // Dismiss the new message notification
-    setNewMessageFlags((prev) => {
-      const updated = { ...prev, [userId]: false };
-      console.log('Updated newMessageFlags:', updated);
-      return updated;
-    });
-    // Update prevMessageCountsRef to current count
-    const currentUser = filteredData.find((item) => item.id === userId);
-    if (currentUser && currentUser.internal_thread) {
-      prevMessageCountsRef.current[userId] = currentUser.internal_thread.length;
-    }
-
-    // Immediately update the rows to reflect the change
-    setRows((currentRows) =>
-      currentRows.map((row) =>
-        row.id === userId ? { ...row, hasNewMessage: false } : row
-      )
-    );
-
-    // // Update the prevMessageCountsRef
-    // const currentUser = filteredData.find((item) => item.id === userId);
-
-    // if (currentUser && currentUser.internal_thread) {
-    //   prevMessageCountsRef.current[userId] = currentUser.internal_thread.length;
-    // }
-
-    // // Update the rows to reflect the change
-    // setRows((prevRows) => {
-    //   const updatedRows = prevRows.map((row) =>
-    //     row.id === userId ? { ...row, hasNewMessage: false } : row
-    //   );
-    //   console.log('Updated rows:', updatedRows);
-    //   return updatedRows;
-    // });
-    setSelectedUser(params.row.id);
-    navigate('/change-status', {
-      state: { userId: params.row.id, userLogged: location.state.userLogged },
-    });
-  });
-
+  // Effect to check for new messages
   useEffect(() => {
-    console.log('Rows updated:', rows);
-  }, [rows]);
+    const updatedFlags = {};
+    filteredData.forEach((item) => {
+      const lastViewedCount =
+        parseInt(localStorage.getItem(`lastViewedCount_${item.id}`)) || 0;
+      const currentCount = Array.isArray(item.internal_thread)
+        ? item.internal_thread.length
+        : 0;
 
-  // Effect to log newMessageFlags after it updates
-  // useEffect(() => {
-  //   console.log('Current newMessageFlags:', newMessageFlags);
-  // }, [newMessageFlags]);
+      if (currentCount > lastViewedCount) {
+        updatedFlags[item.id] = true;
+      }
+    });
+
+    setNewMessageFlags((prev) => ({ ...prev, ...updatedFlags }));
+  }, [filteredData, justViewedMessages]);
+
+  const handleRowClick = useCallback(
+    (params) => {
+      const userId = params.row.id;
+      // If there was a new message flag, remove it
+      if (newMessageFlags[userId]) {
+        setNewMessageFlags((prev) => ({ ...prev, [userId]: false }));
+      }
+
+      // Update last viewed count in local storage
+      const currentUser = filteredData.find((item) => item.id === userId);
+      if (currentUser && currentUser.internal_thread) {
+        localStorage.setItem(
+          `lastViewedCount_${userId}`,
+          currentUser.internal_thread.length.toString()
+        );
+      }
+
+      setJustViewedMessages(true);
+
+      setSelectedUser(params.row.id);
+      navigate('/change-status', {
+        state: { userId: params.row.id, userLogged: location.state.userLogged },
+      });
+    },
+    [filteredData, newMessageFlags, navigate, location.state]
+  );
+
+  // Reset justViewedMessages when returning to this component
+  useEffect(() => {
+    setJustViewedMessages(false);
+  }, []);
 
   const calculateTrueValues = (users) => {
     return users.map((user) => {
@@ -604,46 +597,27 @@ export default function DataGridDemo(props) {
 
   // --------------------------------------------------------------------------------------------------
 
-  // Effect to check for new messages and update flags
-  useEffect(() => {
-    const updatedFlags = {};
-    filteredData.forEach((item) => {
-      const prevCount = prevMessageCountsRef.current[item.id] || 0;
-      const currentCount = Array.isArray(item.internal_thread)
-        ? item.internal_thread.length
-        : 0;
+  // // Effect to check for new messages and update flags
+  // useEffect(() => {
+  //   const updatedFlags = {};
+  //   filteredData.forEach((item) => {
+  //     const prevCount = prevMessageCountsRef.current[item.id] || 0;
+  //     const currentCount = Array.isArray(item.internal_thread)
+  //       ? item.internal_thread.length
+  //       : 0;
 
-      if (currentCount > prevCount) {
-        updatedFlags[item.id] = true;
-        prevMessageCountsRef.current[item.id] = currentCount;
-      }
-    });
+  //     if (currentCount > prevCount) {
+  //       updatedFlags[item.id] = true;
+  //       prevMessageCountsRef.current[item.id] = currentCount;
+  //     }
+  //   });
 
-    setNewMessageFlags((prev) => {
-      const newFlags = { ...prev, ...updatedFlags };
-      console.log('Updated newMessageFlags:', newFlags);
-      return newFlags;
-    });
-  }, [filteredData]);
+  //   setNewMessageFlags((prev) => ({ ...prev, ...updatedFlags }));
+  // }, [filteredData]);
 
   useEffect(() => {
     const newRows = filteredData
       .map((item) => {
-        const hasNewMessage = newMessageFlags[item.id] || false;
-        // const prevCount = prevMessageCountsRef.current[item.id] || 0;
-        // const nb_messages = Array.isArray(item.internal_thread)
-        //   ? item.internal_thread.length
-        //   : 0;
-
-        // const hasNewMessage =
-        //   nb_messages > prevCount || newMessageFlags[item.id] || false;
-
-        // // Only update the ref if there are no new messages
-        // if (!hasNewMessage) {
-        //   prevMessageCountsRef.current[item.id] = nb_messages;
-        // }
-
-        // Rest of your logic for creating the row data
         const nb_interviews = Array.isArray(item.interviews)
           ? item.interviews.filter((element) => JSON.parse(element).isActive)
               .length
@@ -658,7 +632,7 @@ export default function DataGridDemo(props) {
 
         return createData(
           item.id,
-          hasNewMessage,
+
           item.first_name,
           item.last_name,
           item.email,
@@ -677,9 +651,31 @@ export default function DataGridDemo(props) {
         );
       })
       .filter((item) => item !== null);
-    function createData(
+    setRows(newRows);
+  }, [filteredData, newMessageFlags]);
+
+  function createData(
+    id,
+
+    first_name,
+    last_name,
+    email,
+    phone,
+    mission,
+    mission_location,
+    skill,
+    created_at,
+    status,
+    is_active,
+    first_contact,
+    nb_interviews,
+    trueValuesCount,
+    test_voltaire_passed,
+    convention_received
+  ) {
+    return {
       id,
-      hasNewMessage,
+
       first_name,
       last_name,
       email,
@@ -694,31 +690,9 @@ export default function DataGridDemo(props) {
       nb_interviews,
       trueValuesCount,
       test_voltaire_passed,
-      convention_received
-    ) {
-      return {
-        id,
-        hasNewMessage,
-        first_name,
-        last_name,
-        email,
-        phone,
-        mission,
-        mission_location,
-        skill,
-        created_at,
-        status,
-        is_active,
-        first_contact,
-        nb_interviews,
-        trueValuesCount,
-        test_voltaire_passed,
-        convention_received,
-      };
-    }
-
-    setRows(newRows);
-  }, [filteredData, newMessageFlags]);
+      convention_received,
+    };
+  }
 
   // --------------------------------------------------------------------------------------------------
   return (
