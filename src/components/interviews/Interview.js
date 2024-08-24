@@ -417,7 +417,7 @@ const FormInterviewComponent = ({ userId }) => {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header">
-                <Typography>Détails (cliquer pour déplier ou plier)</Typography>
+                <Typography variant="h6">Détails</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12}>
