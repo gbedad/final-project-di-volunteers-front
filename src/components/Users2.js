@@ -9,6 +9,7 @@ import {
   TextField,
   Chip,
 } from '@mui/material';
+
 import {
   DataGrid,
   GridToolbarContainer,
@@ -219,7 +220,7 @@ export default function DataGridDemo(props) {
     },
     {
       field: 'first_contact',
-      headerName: '1er contact',
+      headerName: 'Call',
       editable: true,
       renderCell: (params) => {
         return params.value ? (
@@ -235,9 +236,9 @@ export default function DataGridDemo(props) {
     },
     {
       field: 'nb_interviews',
-      headerName: 'Interviews',
+      headerName: 'Entretiens',
 
-      width: 110,
+      width: 80,
       editable: true,
     },
     {
@@ -816,11 +817,11 @@ export default function DataGridDemo(props) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 15,
+                pageSize: 30,
               },
             },
           }}
-          pageSizeOptions={[15]}
+          pageSizeOptions={[30]}
           disableRowSelectionOnClick
         />
       </Box>
