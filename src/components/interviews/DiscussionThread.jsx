@@ -28,9 +28,13 @@ const MessageBubble = styled(Paper)(({ theme, isCurrentUser }) => ({
   borderRadius: 16,
   minWidth: '70%',
   maxWidth: '90%',
-  backgroundColor: isCurrentUser
-    ? theme.palette.primary.main
-    : theme.palette.grey[300],
+  // backgroundColor: isCurrentUser
+  //   ? theme.palette.primary.main
+  //   : theme.palette.grey[300],
+  // color: isCurrentUser
+  //   ? theme.palette.primary.contrastText
+  //   : theme.palette.text.primary,
+  backgroundColor: isCurrentUser ? 'rgb(87, 204, 153)' : 'rgb( 199, 249, 204)',
   color: isCurrentUser
     ? theme.palette.primary.contrastText
     : theme.palette.text.primary,
