@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { format } from 'date-fns';
 import {
   Box,
   Typography,
@@ -209,7 +210,10 @@ const DiscussionThread = ({ currentUser, userId }) => {
                   )}
                   <Typography variant="body1">{message.content}</Typography>
                   <MessageTimestamp variant="caption">
-                    {message.timestamp.toLocaleString()}
+                    {format(
+                      new Date(message.timestamp),
+                      "d/MM/yyyy 'à' h:mm:ss a"
+                    )}
                   </MessageTimestamp>
                 </MessageBubble>
               </MessageContainer>
