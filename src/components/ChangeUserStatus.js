@@ -260,7 +260,7 @@ const ChangeUserStatus = () => {
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }
-            label="Activer"
+            label="Tuteur actif"
           />
           <Button
             variant="contained"
@@ -731,7 +731,12 @@ const ChangeUserStatus = () => {
             <BorderedBoxWithLabel
               label="Fil de discussion interne"
               sx={{ display: 'flex' }}>
-              <Box sx={{ height: 'calc(100% - 60px)' }}>
+              <Box
+                sx={{
+                  height: 'calc(100% - 60px)',
+                  backgroundColor: '#F5F5F5',
+                  borderRadius: '7px',
+                }}>
                 {' '}
                 {/* Adjust based on your header size */}
                 <DiscussionThread
