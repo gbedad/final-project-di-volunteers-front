@@ -5,6 +5,15 @@ import sellerController from './details';
 import moment from 'moment';
 import { Typography } from '@mui/material';
 
+const EmailCell = (props) => {
+  const { value } = props;
+  return (
+    <a href={`mailto:${value}`} onClick={(e) => e.stopPropagation()}>
+      {value}
+    </a>
+  );
+};
+
 export default function ManageGrid() {
   const [rows, setRawRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,6 +71,7 @@ export default function ManageGrid() {
         Gestion des bénéficiares
       </Typography>
       <FullEditDataGrid
+        onRowDoubleClick={() => alert('Row clicked!')}
         columns={columns}
         rows={rows}
         onSaveRow={onSaveRow}
@@ -130,8 +140,9 @@ const columns = [
     headerName: 'Email',
     width: 200,
     headerAlign: 'left',
-    type: 'string',
+    type: 'email',
     editable: true,
+    renderCell: (params) => <EmailCell value={params.value} />,
   },
   {
     field: 'classe',
