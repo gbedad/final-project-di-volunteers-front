@@ -74,3 +74,21 @@ export const existingTimes = [
   { label: '21:00' },
   { label: '22:00' },
 ];
+
+export const existingLevels = JSON.stringify([
+  { label: 'CP' },
+  { label: 'CE1' },
+  { label: 'CE2' },
+  { label: 'CM1' },
+  { label: 'CM2' },
+  { label: '6ème' },
+  { label: '5ème' },
+  { label: '4ème' },
+  { label: '3ème' },
+  { label: 'Seconde' },
+  { label: 'Première' },
+  { label: 'Terminale' },
+  { label: 'L1' },
+  { label: 'L2' },
+  { label: 'L3' },
+]);

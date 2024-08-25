@@ -30,6 +30,7 @@ import {
   existingDays,
   existingSubjects,
   existingTimes,
+  existingLevels,
 } from '../options/existingOptions';
 
 import { formatPhoneNumber } from '../js/phoneNumbersSpace';
@@ -46,6 +47,7 @@ const StyledRating = styled(Rating)({
 const subjects = existingSubjects;
 const days = existingDays;
 const times = existingTimes;
+const levels = JSON.parse(existingLevels);
 
 // function createData(
 //   id,
@@ -97,6 +99,7 @@ export default function DataGridDemo(props) {
   // const [activeUsers, setActiveUsers] = useState(null);
   // const [countUsersByStatus, setCountUsersByStatus] = useState({});
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedTimeStart, setSelectedTimeStart] = useState('');
   const [selectedTimeEnd, setSelectedTimeEnd] = useState('');
@@ -104,6 +107,7 @@ export default function DataGridDemo(props) {
 
   // const [value, setValue] = React.useState(subjects[0]);
   const [inputSubjectValue, setInputSubjectValue] = React.useState('');
+  const [inputLevelValue, setInputLevelValue] = React.useState('');
   const [inputDayValue, setInputDayValue] = React.useState('');
   const [inputTimeStartValue, setInputTimeStartValue] = React.useState('');
   const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
@@ -369,6 +373,35 @@ export default function DataGridDemo(props) {
           JSON.parse(topic).subject.includes(filters.subject)
         );
 
+      // Level filter
+      const levelMatch =
+        !filters.level ||
+        topics.some((topic) => {
+          const startIndex = levels.findIndex(
+            (level) => level.label === JSON.parse(topic).classStart
+          );
+          const endIndex = levels.findIndex(
+            (level) => level.label === JSON.parse(topic).classEnd
+          );
+
+          console.log('Start Index:', startIndex, 'End Index:', endIndex);
+
+          if (startIndex === -1 || endIndex === -1) {
+            console.error('Invalid classStart or classEnd');
+            return false;
+          }
+
+          // Create an array of levels between classStart and classEnd
+          const levelsInRange = levels
+            .slice(startIndex, endIndex + 1)
+            .map((level) => level.label);
+
+          console.log('Levels in range:', levelsInRange);
+
+          // Check if the filteredLevel is in the levelsInRange array
+          return levelsInRange.includes(filters.level);
+        });
+
       // Day filter
       const dayMatch =
         !filters.day ||
@@ -389,13 +422,14 @@ export default function DataGridDemo(props) {
           return start <= filterEnd && end >= filterStart;
         });
 
-      return subjectMatch && dayMatch && timeMatch;
+      return subjectMatch && levelMatch && dayMatch && timeMatch;
     });
   }
 
   const handleSearch = () => {
     const filters = {
       subject: selectedSubject ? selectedSubject.label : null,
+      level: selectedLevel ? selectedLevel['label'] : null,
       day: selectedDay ? selectedDay['label'] : null,
       timeStart: selectedTimeStart ? selectedTimeStart['label'] : null,
       timeEnd: selectedTimeEnd ? selectedTimeEnd['label'] : null,
@@ -741,6 +775,24 @@ export default function DataGridDemo(props) {
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField {...params} label="Saisir une matière" size="small" />
+          )}
+        />
+        <Autocomplete
+          value={selectedLevel}
+          onChange={(event, newValue) => {
+            setSelectedLevel(newValue);
+          }}
+          inputValue={inputLevelValue}
+          onInputChange={(event, newInputValue) => {
+            setInputLevelValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={levels}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => (option ? option.label : '')}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Saisir un niveau" size="small" />
           )}
         />
         <Autocomplete
