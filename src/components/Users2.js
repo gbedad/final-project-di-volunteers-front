@@ -111,6 +111,7 @@ export default function DataGridDemo(props) {
   const [rows, setRows] = useState([]);
   const [newMessageFlags, setNewMessageFlags] = useState({});
   const [justViewedMessages, setJustViewedMessages] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const columns = [
     {
@@ -635,7 +636,7 @@ export default function DataGridDemo(props) {
         if (item.mission === null) {
           return null;
         }
-
+        setLoading(true);
         return createData(
           item.id,
 
@@ -658,6 +659,7 @@ export default function DataGridDemo(props) {
       })
       .filter((item) => item !== null);
     setRows(newRows);
+    setLoading(false);
   }, [filteredData, newMessageFlags]);
 
   function createData(
@@ -810,7 +812,7 @@ export default function DataGridDemo(props) {
           // slots={{
           //   toolbar: CustomToolbar,
           // }}
-
+          loading={loading}
           rows={rows}
           columns={columns}
           noActionColumn

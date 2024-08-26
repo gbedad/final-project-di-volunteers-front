@@ -6,7 +6,7 @@ const useStudentData = () => {
 
   const getAll = useCallback(() => {
     return axios
-      .get('http://localhost:3030/all-students')
+      .get('http://localhost:3030/students')
       .then((response) => {
         setRows(response.data);
         return response;
@@ -17,30 +17,40 @@ const useStudentData = () => {
       });
   }, []);
 
-  const saveRow = useCallback((row) => {
-    return new Promise((resolve) => {
-      setRows((prevRows) => {
-        let newRows;
-        if (row.isNew) {
-          newRows = [...prevRows, row];
-        } else {
-          newRows = prevRows.map((r) => (r.id === row.id ? row : r));
-        }
-        resolve({ data: row });
-        return newRows;
+  const saveRow = useCallback((updatedRow) => {
+    const url = updatedRow.isNew
+      ? 'http://localhost:3030/students'
+      : `http://localhost:3030/students/${updatedRow.id}`;
+    const method = updatedRow.isNew ? 'post' : 'patch';
+
+    return axios[method](url, updatedRow)
+      .then((response) => {
+        setRows((currentRows) =>
+          updatedRow.isNew
+            ? [...currentRows, response.data]
+            : currentRows.map((row) =>
+                row.id === updatedRow.id ? response.data : row
+              )
+        );
+        return response;
+      })
+      .catch((error) => {
+        console.error('Error saving student:', error);
+        throw error;
       });
-    });
   }, []);
 
-  const deleteRow = useCallback((rowId) => {
-    return new Promise((resolve) => {
-      setRows((prevRows) => {
-        const deletedRow = prevRows.find((r) => r.id === rowId);
-        const newRows = prevRows.filter((r) => r.id !== rowId);
-        resolve({ data: deletedRow });
-        return newRows;
+  const deleteRow = useCallback((id) => {
+    return axios
+      .delete(`http://localhost:3030/students/${id}`)
+      .then((response) => {
+        setRows((currentRows) => currentRows.filter((row) => row.id !== id));
+        return response;
+      })
+      .catch((error) => {
+        console.error('Error deleting student:', error);
+        throw error;
       });
-    });
   }, []);
 
   return {

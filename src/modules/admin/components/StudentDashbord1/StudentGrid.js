@@ -1,9 +1,14 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
 import useStudentData from './details';
 import moment from 'moment';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+
+import { PhoneInputCell } from '../../../core/utils/phoneFormatter';
+import { formatPhoneNumber } from '../../../core/utils/phoneFormatter';
 
 const EmailCell = (props) => {
   const { value } = props;
@@ -14,14 +19,30 @@ const EmailCell = (props) => {
   );
 };
 
-export default function ManageGrid() {
-  const { rows: rawRows, getAll, saveRow, deleteRow } = useStudentData();
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false);
+const capitalizeFamilyName = (fullname) => {
+  if (fullname == null) return '';
+  const nameParts = fullname.split(/[\s-]+/);
+  if (nameParts.length < 2) {
+    return fullname.charAt(0).toUpperCase() + fullname.slice(1).toLowerCase();
+  }
 
-  useEffect(() => {
-    setRows(rawRows.map((r, i) => ({ ...r, no: i + 1 })));
-  }, [rawRows]);
+  // Capitalize composed names
+  const capitalizedNames = nameParts.map(
+    (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+  );
+
+  // Reconstruct the name
+  const separator = fullname.includes('-') ? '-' : ' ';
+  const capitalizedFullname = capitalizedNames.join(separator);
+
+  return capitalizedFullname;
+};
+
+export default function ManageGrid() {
+  const { rows, setRows, getAll, saveRow, deleteRow } = useStudentData();
+  // const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -34,11 +55,7 @@ export default function ManageGrid() {
     saveRow(updatedRow)
       .then((res) => {
         const dbRow = res.data;
-        setRows(
-          oldRows.map((r) =>
-            r.id === updatedRow.id ? { ...dbRow, no: r.no } : r
-          )
-        );
+        setRows(dbRow);
       })
       .catch((err) => {
         setRows(oldRows);
@@ -67,18 +84,26 @@ export default function ManageGrid() {
 
   return (
     <>
-      <Typography variant="h4" mb={2} textAlign={'center'}>
-        Gestion des bénéficiares
-      </Typography>
-      <FullEditDataGrid
-        onRowDoubleClick={() => alert('Row clicked!')}
-        columns={columns}
-        rows={rows}
-        onSaveRow={onSaveRow}
-        onDeleteRow={onDeleteRow}
-        createRowData={createRowData}
-        loading={loading}
-      />
+      <Box m={2}>
+        <Box sx={{ verticalAlign: 'middle' }}>
+          <Typography fontSize="3rem" style={{ cursor: 'pointer' }}>
+            <ExitToAppIcon onClick={() => navigate('/admin')} color="primary" />
+          </Typography>
+        </Box>
+        <Typography variant="h4" mb={2} textAlign={'center'}>
+          Gestion des bénéficiares
+        </Typography>
+
+        <FullEditDataGrid
+          onRowDoubleClick={() => alert('Row clicked!')}
+          columns={columns}
+          rows={rows.map((r, i) => ({ ...r, no: i + 1 }))}
+          onSaveRow={onSaveRow}
+          onDeleteRow={onDeleteRow}
+          createRowData={createRowData}
+          loading={loading}
+        />
+      </Box>
     </>
   );
 }
@@ -118,6 +143,10 @@ const columns = [
     type: 'string',
     align: 'left',
     editable: true,
+    valueFormatter: (params) => {
+      if (params.value === null) return '';
+      return capitalizeFamilyName(params.value);
+    },
   },
   {
     field: 'last_name',
@@ -126,6 +155,7 @@ const columns = [
     headerAlign: 'left',
     type: 'string',
     editable: true,
+    valueFormatter: (params) => capitalizeFamilyName(params.value),
   },
   {
     field: 'phone',
@@ -134,6 +164,8 @@ const columns = [
     headerAlign: 'left',
     type: 'string',
     editable: true,
+    valueFormatter: (params) => formatPhoneNumber(params.value),
+    renderEditCell: (params) => <PhoneInputCell {...params} />,
   },
   {
     field: 'email',
