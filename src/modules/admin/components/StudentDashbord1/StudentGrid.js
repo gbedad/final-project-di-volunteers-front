@@ -1,7 +1,7 @@
 import * as React from 'react';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
-import sellerController from './details';
+import useStudentData from './details';
 import moment from 'moment';
 import { Typography } from '@mui/material';
 
@@ -15,31 +15,29 @@ const EmailCell = (props) => {
 };
 
 export default function ManageGrid() {
-  const [rows, setRawRows] = useState([]);
+  const { rows: rawRows, getAll, saveRow, deleteRow } = useStudentData();
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
-  };
+  useEffect(() => {
+    setRows(rawRows.map((r, i) => ({ ...r, no: i + 1 })));
+  }, [rawRows]);
+
   useEffect(() => {
     setLoading(true);
-    sellerController
-      .getAll()
-      .then((res) => {
-        setRows(res.data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    getAll().finally(() => {
+      setLoading(false);
+    });
+  }, [getAll]);
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
-    sellerController
-      .saveRow(updatedRow)
+    saveRow(updatedRow)
       .then((res) => {
         const dbRow = res.data;
         setRows(
-          oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
+          oldRows.map((r) =>
+            r.id === updatedRow.id ? { ...dbRow, no: r.no } : r
+          )
         );
       })
       .catch((err) => {
@@ -48,11 +46,13 @@ export default function ManageGrid() {
   };
 
   const onDeleteRow = (id, oldRow, oldRows) => {
-    sellerController
-      .deleteRow(id)
-      .then((res) => {
-        const dbRowId = res.data.id;
-        setRows(oldRows.filter((r) => r.id !== dbRowId));
+    deleteRow(id)
+      .then(() => {
+        setRows(
+          oldRows
+            .filter((r) => r.id !== id)
+            .map((r, i) => ({ ...r, no: i + 1 }))
+        );
       })
       .catch((err) => {
         setRows(oldRows);
