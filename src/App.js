@@ -160,30 +160,32 @@ function App() {
 
             <Route path="*" element={<Error404 />} />
           </Routes> */}
-          <Routes>
-            <Route exact path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} />
-            {/* Admin routes */}
-            <Route
-              path="/admin/*"
-              element={
-                <PrivateRoute requiredPermissions={['admin', 'interviewer']}>
-                  <AdminModule />
-                </PrivateRoute>
-              }
-            />
+          <AuthProvider>
+            <Routes>
+              <Route exact path="/" element={<HomePage />} />
+              <Route path="/login" element={<Login />} />
+              {/* Admin routes */}
+              <Route
+                path="/admin/*"
+                element={
+                  <PrivateRoute requiredPermissions={['admin', 'interviewer']}>
+                    <AdminModule />
+                  </PrivateRoute>
+                }
+              />
 
-            <Route
-              path="/*"
-              element={
-                <PrivateRoute requiredPermissions={['volunteer', 'admin']}>
-                  <Stepper />
-                </PrivateRoute>
-              }
-            />
+              <Route
+                path="/*"
+                element={
+                  <PrivateRoute requiredPermissions={['volunteer', 'admin']}>
+                    <Stepper />
+                  </PrivateRoute>
+                }
+              />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AuthProvider>
         </Box>
         {/* </AppLayout> */}
         <BottomNavigation />

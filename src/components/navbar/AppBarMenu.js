@@ -68,6 +68,8 @@ function ResponsiveAppBar() {
     }
   };
 
+  console.log(userLogged);
+
   const handleLogin = async () => {
     try {
       navigate('/login');
@@ -84,12 +86,12 @@ function ResponsiveAppBar() {
         navigate('/', { state: { userLogged } });
       } else if (
         page === 'Missions bénévoles' &&
-        (!userLogged || userLogged.user.role === 'volunteer')
+        (!userLogged || userLogged.role === 'volunteer')
       ) {
         navigate('/missions', { state: { userLogged } });
       } else if (
         page === 'Tableau de bord' &&
-        (!userLogged || userLogged.user.role === 'volunteer')
+        (!userLogged || userLogged.role === 'volunteer')
       ) {
         navigate(`/stepper`, { state: { userLogged } });
       } else if (
@@ -120,16 +122,13 @@ function ResponsiveAppBar() {
   };
 
   const handleViewUsers = () => {
-    if (
-      userLogged.user.role === 'admin' ||
-      userLogged.user.role === 'interviewer'
-    ) {
+    if (userLogged.role === 'admin' || userLogged.role === 'interviewer') {
       navigate(`/admin`, { state: { userLogged } });
     }
   };
 
   const handleEditMissions = () => {
-    if (userLogged.user.role === 'admin') {
+    if (userLogged.role === 'admin') {
       navigate(`/all-missions`, { state: { userLogged } });
     }
   };
@@ -460,7 +459,7 @@ function ResponsiveAppBar() {
             </Button>
             {location.state &&
               location.state.userLogged &&
-              location.state.userLogged.user.role === 'volunteer' && (
+              location.state.userLogged.role === 'volunteer' && (
                 <Button
                   onClick={() =>
                     navigate('/stepper', { state: { userLogged } })
@@ -519,17 +518,17 @@ function ResponsiveAppBar() {
                     }}>
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar sx={{ backgroundColor: 'success.main' }}>
-                        {location.state.userLogged.user.first_name
+                        {location.state.userLogged.first_name
                           .charAt(0)
                           .toUpperCase()}
-                        {location.state.userLogged.user.last_name
+                        {location.state.userLogged.last_name
                           .charAt(0)
                           .toUpperCase()}
                       </Avatar>
                     </IconButton>
 
                     <Typography sx={{ fontSize: '0.8rem', p: 1 }}>
-                      {location.state.userLogged.user.email}
+                      {location.state.userLogged.email}
                     </Typography>
                   </Box>
                 </Tooltip>
@@ -550,8 +549,8 @@ function ResponsiveAppBar() {
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
                     location.pathname === '/admin/') &&
-                  (location.state.userLogged.user.role === 'admin' ||
-                    location.state.userLogged.user.role === 'interviewer') ? (
+                  (userLogged.role === 'admin' ||
+                    userLogged.role === 'interviewer') ? (
                     <div>
                       <MenuItem onClick={handleViewUsers}>
                         <Typography textAlign="center">
@@ -562,8 +561,7 @@ function ResponsiveAppBar() {
                       <MenuItem
                         onClick={handleEditMissions}
                         sx={{
-                          display:
-                            userLogged.user.role === 'interviewer' && 'none',
+                          display: userLogged.role === 'interviewer' && 'none',
                         }}>
                         <Typography textAlign="center">Missions</Typography>
                       </MenuItem>
@@ -572,7 +570,7 @@ function ResponsiveAppBar() {
                       </MenuItem>
                     </div>
                   ) : location.pathname !== '/register' &&
-                    location.state.userLogged.user.role === 'volunteer' ? (
+                    userLogged.role === 'volunteer' ? (
                     <div>
                       <MenuItem onClick={handleProfile}>
                         <Typography textAlign="center">
