@@ -199,10 +199,10 @@ const ProfilePage = ({ status }) => {
   if (
     (location.state.userLogged &&
       userSelected &&
-      location.state.userLogged.user.id === userSelected.id) ||
+      location.state.userLogged.id === userSelected.id) ||
     !userSelected
   ) {
-    user = location.state.userLogged.user;
+    user = location.state.userLogged;
   } else {
     user = userSelected;
   }
@@ -829,8 +829,8 @@ const ProfilePage = ({ status }) => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="La mission">
             {/* Content for Box 2 */}
-            {location.state.userLogged.user.role === 'admin' ||
-            (location.state.userLogged.user.role === 'volunteer' &&
+            {location.state.userLogged.role === 'admin' ||
+            (location.state.userLogged.role === 'volunteer' &&
               setStatusStep(status).slice(
                 0,
                 setStatusStep(status).indexOf('/')

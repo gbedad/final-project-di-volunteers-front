@@ -39,8 +39,8 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
   // const userId = location.state.userLogged.user.id;
   const userId =
-    location.state.userLogged.user.id === userSelected
-      ? location.state.userLogged.user.id
+    location.state.userLogged.id === userSelected
+      ? location.state.userLogged.id
       : userSelected;
   // console.log('USERID', userId);
 
