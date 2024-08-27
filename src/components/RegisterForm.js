@@ -78,6 +78,8 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 dayjs.extend(customParseFormat);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+console.log(BASE_URL);
 // const theme = createTheme();
 
 const RegisterForm = ({ mission }) => {
@@ -148,9 +150,13 @@ const RegisterForm = ({ mission }) => {
       console.log('Veuillez sélectionner une date de naissance valide.');
       return;
     }
+    const api = axios.create({
+      baseURL: `${BASE_URL}`,
+      withCredentials: true, // This is important for CORS with credentials
+    });
 
     try {
-      const response = await axios.post(`${BASE_URL}/register`, {
+      const response = await api.post(`${BASE_URL}/register`, {
         email,
         password,
         first_name,
