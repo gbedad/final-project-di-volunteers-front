@@ -9,7 +9,7 @@
   }
   input[type=file]::file-selector-button {
     background-color: #ccc;
-    border: 1px solid #aaa;
+    border: 1px solid #c5c4c4;
     padding: 8px 16px;
     cursor: pointer;
   }
