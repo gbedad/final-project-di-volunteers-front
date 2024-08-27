@@ -123,7 +123,7 @@ const FormInterviewComponent = ({ userId }) => {
   const [isDateValid, setIsDateValid] = useState(true);
 
   const userToken = location.state.userLogged.token;
-  const userLogged = location.state.userLogged.user.first_name;
+  const userLogged = location.state.userLogged.first_name;
 
   //   const handleTitleChange = (event) => {
   //     setTitle(event.target.value);

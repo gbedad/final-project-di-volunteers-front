@@ -482,6 +482,8 @@ export default function DataGridDemo(props) {
   }, []);
 
   const calculateTrueValues = (users) => {
+    console.log(users.length);
+
     return users.map((user) => {
       const trueValues = [
         user.id_received,
@@ -623,67 +625,8 @@ export default function DataGridDemo(props) {
   // }, [filteredData]);
 
   useEffect(() => {
-    const newRows = filteredData
-      .map((item) => {
-        const nb_interviews = Array.isArray(item.interviews)
-          ? item.interviews.filter((element) => JSON.parse(element).isActive)
-              .length
-          : 0;
-        const first_contact = item.pre_interview
-          ? JSON.parse(item.pre_interview).isActive
-          : null;
-
-        if (item.mission === null) {
-          return null;
-        }
-        setLoading(true);
-        return createData(
-          item.id,
-
-          item.first_name,
-          item.last_name,
-          item.email,
-          item.phone,
-          item.mission.title || null,
-          item.mission.location || null,
-          item.skill,
-          item.created_at,
-          item.status,
-          item.is_active,
-          first_contact,
-          nb_interviews,
-          item.trueValuesCount,
-          item.test_voltaire_passed,
-          item.convention_received
-        );
-      })
-      .filter((item) => item !== null);
-    setRows(newRows);
-    setLoading(false);
-  }, [filteredData, newMessageFlags]);
-
-  function createData(
-    id,
-
-    first_name,
-    last_name,
-    email,
-    phone,
-    mission,
-    mission_location,
-    skill,
-    created_at,
-    status,
-    is_active,
-    first_contact,
-    nb_interviews,
-    trueValuesCount,
-    test_voltaire_passed,
-    convention_received
-  ) {
-    return {
+    function createData(
       id,
-
       first_name,
       last_name,
       email,
@@ -698,9 +641,90 @@ export default function DataGridDemo(props) {
       nb_interviews,
       trueValuesCount,
       test_voltaire_passed,
-      convention_received,
-    };
-  }
+      convention_received
+    ) {
+      // Check if any required fields are undefined
+      if (id === undefined) {
+        console.error('createData: id is undefined');
+        return null;
+      }
+      return {
+        id,
+        first_name,
+        last_name,
+        email,
+        phone,
+        mission,
+        mission_location,
+        skill,
+        created_at,
+        status,
+        is_active,
+        first_contact,
+        nb_interviews,
+        trueValuesCount,
+        test_voltaire_passed,
+        convention_received,
+      };
+    }
+    setLoading(true);
+    console.log('filteredData:', filteredData);
+    const newRows = filteredData
+      .map((item, index) => {
+        try {
+          const nb_interviews = Array.isArray(item.interviews)
+            ? item.interviews.filter((element) => JSON.parse(element).isActive)
+                .length
+            : 0;
+          const first_contact = item.pre_interview
+            ? JSON.parse(item.pre_interview).isActive
+            : null;
+
+          if (item.mission === null) {
+            return null;
+          }
+          console.log('Item form filteredData:', item);
+
+          const row = createData(
+            item.id,
+            item.first_name,
+            item.last_name,
+            item.email,
+            item.phone,
+            item.mission.title || null,
+            item.mission.location || null,
+            item.skill,
+            item.created_at,
+            item.status,
+            item.is_active,
+            first_contact,
+            nb_interviews,
+            item.trueValuesCount,
+            item.test_voltaire_passed,
+            item.convention_received
+          );
+          if (!row) {
+            console.log(
+              `createData returned null for item at index ${index}:`,
+              item
+            );
+          }
+
+          return row;
+        } catch (error) {
+          console.error(
+            `Error processing item at index ${index}:`,
+            error,
+            item
+          );
+          return null;
+        }
+      })
+      .filter((item) => item !== null);
+
+    setRows(newRows);
+    setLoading(false);
+  }, [filteredData, newMessageFlags]);
 
   // --------------------------------------------------------------------------------------------------
   return (

@@ -10,19 +10,24 @@ const AdminLanding = () => {
 
   console.log(user);
 
-  const dashboardItems = [
+  const dashboardItems_tutors = [
     {
-      title: 'Tuteurs',
-      description: 'Manage user accounts and permissions',
+      title: 'TUTEURS',
+      description:
+        "Module de recrutement des tuteurs depuis leur candidature jusq'à leur validation.",
       path: '/admin/view-users',
     },
+  ];
+
+  const dashboardItems_students = [
     {
-      title: 'Elèves',
-      description: 'Inscription des bénéficiaires',
+      title: 'INSCRIPTIONS ELEVES',
+      description:
+        "Module de saisie par l'administareur des informations requises la recherche d'un tuteur.",
       path: '/admin/student-grid',
     },
     {
-      title: 'Gestion',
+      title: 'SUIVI ADMINISTRATIF ELEVES',
       description: 'Gestion des bénéficiaires',
       path: '/admin',
     },
@@ -41,10 +46,10 @@ const AdminLanding = () => {
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Admin Dashboard
+          MODULES ADMIN
         </Typography>
         <Grid container spacing={3}>
-          {dashboardItems.map((item, index) => (
+          {dashboardItems_tutors.map((item, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Paper
                 elevation={3}
@@ -65,7 +70,7 @@ const AdminLanding = () => {
                   color="primary"
                   onClick={() => handleNavigation(item.path)}
                   fullWidth>
-                  Go to {item.title}
+                  Aller au module
                 </Button>
               </Paper>
             </Grid>

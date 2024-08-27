@@ -143,7 +143,7 @@ function DashboardContent() {
 
     fetchUserList();
   }, [BASE_URL]);
-
+  console.log(users);
   // console.log('Active Users', activeUsers);
   // console.log('By Status', countUsersByStatus);
 

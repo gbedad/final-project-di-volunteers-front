@@ -250,7 +250,7 @@ const ChangeUserStatus = () => {
           mt={2}
           sx={{
             visibility:
-              userLogged.user.role === 'interviewer' ? 'hidden' : 'visible',
+              userLogged.role === 'interviewer' ? 'hidden' : 'visible',
           }}>
           <FormControlLabel
             control={
@@ -460,8 +460,7 @@ const ChangeUserStatus = () => {
               </List>
               <Box
                 sx={{
-                  display:
-                    userLogged.user.role === 'interviewer' ? 'none' : 'flex',
+                  display: userLogged.role === 'interviewer' ? 'none' : 'flex',
                   flexDirection: 'column',
                 }}>
                 <Box sx={{ minWidth: 120 }}>
@@ -740,7 +739,7 @@ const ChangeUserStatus = () => {
                 {' '}
                 {/* Adjust based on your header size */}
                 <DiscussionThread
-                  currentUser={userLogged.user.first_name}
+                  currentUser={userLogged.first_name}
                   userId={user.id}
                 />
               </Box>
@@ -756,7 +755,7 @@ const ChangeUserStatus = () => {
             <BorderedBoxWithLabel label="Documents" sx={{ display: 'flex' }}>
               <Box
                 sx={{
-                  display: userLogged.user.role === 'interviewer' && 'none',
+                  display: userLogged.role === 'interviewer' && 'none',
                 }}>
                 <DocumentCheckbox user={user} />
               </Box>
@@ -764,7 +763,7 @@ const ChangeUserStatus = () => {
                 <Box mt={2}>
                   <Box
                     sx={{
-                      display: userLogged.user.role === 'interviewer' && 'none',
+                      display: userLogged.role === 'interviewer' && 'none',
                     }}>
                     {/* <Typography variant="title">
                       Rajouter la convention signée

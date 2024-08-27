@@ -110,11 +110,15 @@ const DiscussionThread = ({ currentUser, userId }) => {
       );
       // console.log(response.data);
       if (response.data.internal_thread) {
-        const parsed_array = response.data.internal_thread.map(
+        const fetchedMessages = response.data.internal_thread.map(
           (string) => string
         );
-        setMessages(parsed_array);
+        setMessages(fetchedMessages);
         setIsLoading(false);
+        localStorage.setItem(
+          `lastViewedCount_${userId}`,
+          fetchedMessages.length.toString()
+        );
       }
       setIsLoading(false);
     };
@@ -130,12 +134,16 @@ const DiscussionThread = ({ currentUser, userId }) => {
         content: newMessage,
         timestamp: new Date(),
       };
-      const allMessages = [...messages, message];
+      const updatedMessages = [...messages, message];
       setMessages([...messages, message]);
+      localStorage.setItem(
+        `lastViewedCount_${userId}`,
+        updatedMessages.length.toString()
+      );
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
-          allMessages,
+          updatedMessages,
           {
             headers: {
               'Content-Type': 'application/json',
