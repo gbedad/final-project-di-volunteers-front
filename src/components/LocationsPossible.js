@@ -94,7 +94,6 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-access-token': userLogged.token,
           },
         }
       );

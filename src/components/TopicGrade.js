@@ -36,7 +36,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // const { userLogged } = location.state;
-  const { token } = useContext(AuthContext);
+  // const { token } = useContext(AuthContext);
 
   const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
@@ -49,6 +49,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ? location.state.userLogged.user.id
       : userSelected;
   // console.log('USERID', userId);
+  const token = location.state.userLogged.token;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -136,7 +137,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token,
           },
         }
       );
