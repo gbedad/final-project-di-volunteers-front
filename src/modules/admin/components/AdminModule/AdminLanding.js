@@ -28,12 +28,14 @@ const AdminLanding = () => {
     },
     {
       title: 'SUIVI ADMINISTRATIF ELEVES',
-      description: 'Gestion des bénéficiaires',
+      description:
+        "Module de saisie par l'admisnistrateur des informations requises pour la signature de la convention et suivi des règlements.",
       path: '/admin',
     },
     {
-      title: 'Analytics',
-      description: 'Analyze system performance',
+      title: 'SUIVI PEDAGOGIQUE ELEVES',
+      description:
+        'Module de saisie du détail des cours mis en place, des comptes-rendus des entretiens trimestriels et des bilans annuel.',
       path: '/admin',
     },
   ];
@@ -43,13 +45,40 @@ const AdminLanding = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           MODULES ADMIN
         </Typography>
-        <Grid container spacing={3}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {dashboardItems_tutors.map((item, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                }}>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2, flexGrow: 1 }}>
+                  {item.description}
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleNavigation(item.path)}
+                  fullWidth>
+                  Aller au module
+                </Button>
+              </Paper>
+            </Grid>
+          ))}
+
+          {dashboardItems_students.map((item, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Paper
                 elevation={3}

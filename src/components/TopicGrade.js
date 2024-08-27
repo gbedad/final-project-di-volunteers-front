@@ -36,7 +36,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // const { userLogged } = location.state;
-  const { token } = useContext(AuthContext);
+  // const { token } = useContext(AuthContext);
 
   const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
@@ -49,6 +49,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ? location.state.userLogged.id
       : userSelected;
   // console.log('USERID', userId);
+  const token = location.state.userLogged.token;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -65,7 +66,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
       // console.log(response.data);
-      if (response.data.skill) {
+      if (response.data.skill && response.data.skill.topics) {
         const parsed_array = response.data.skill.topics.map((string) =>
           JSON.parse(string)
         );

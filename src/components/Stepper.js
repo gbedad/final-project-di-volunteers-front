@@ -161,7 +161,7 @@ const BasicTabs = () => {
     if (
       (location.state.userLogged &&
         location.state.userSelected &&
-        location.state.userLogged.user.id === location.state.userSelected.id) ||
+        location.state.userLogged.id === location.state.userSelected.id) ||
       !location.state.userSelected
     ) {
       userId = location.state.userLogged.id;
