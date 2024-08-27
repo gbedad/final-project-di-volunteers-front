@@ -164,7 +164,7 @@ const RegisterForm = ({ mission }) => {
         phone,
         birth_date,
         message,
-        mission_id: propsData,
+        mission_id: propsData !== null ? propsData : 1,
       });
       console.log(response.data);
       if (response.data.msg === 'Register Successful') {
