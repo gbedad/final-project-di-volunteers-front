@@ -281,7 +281,6 @@ const FormInterviewComponent = ({ userId }) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-access-token': userToken,
           },
         }
       );
