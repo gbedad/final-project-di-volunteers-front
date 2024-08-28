@@ -48,7 +48,7 @@ export const SchoolAutocomplete = () => {
       <Autocomplete
         options={options}
         getOptionLabel={(option) =>
-          `${option.nom_etablissement}, ${option.code_postal}`
+          `${option.nom_etablissement}, ${option.nom_commune}`
         }
         renderInput={(params) => (
           <TextField

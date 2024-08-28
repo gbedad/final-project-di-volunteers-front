@@ -18,6 +18,7 @@ import {
 import BorderBoxWithLabel from 'components/borderedBox'; // Assuming this is your custom component
 import { existingClasses } from '../../../../options/existingOptions';
 import { SchoolAutocomplete } from '../components/SchoolAutocomplete';
+import WhatWhen from '../StudentGrid';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -313,18 +314,7 @@ export default function BeneficiaryPage() {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Quoi & Quand">
-                    <TextField
-                      fullWidth
-                      label="Type de demande"
-                      margin="normal"
-                    />
-                    <TextField
-                      fullWidth
-                      label="Date de la demande"
-                      margin="normal"
-                      type="date"
-                      InputLabelProps={{ shrink: true }}
-                    />
+                    <WhatWhen />
                   </BorderBoxWithLabel>
                 </Grid>
                 <Grid item xs={12} md={4}>
