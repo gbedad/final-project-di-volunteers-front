@@ -2,15 +2,15 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
-import useStudentData from './details';
+import useStudentData from '../components/StudentDashbord1/details';
 import moment from 'moment';
 import { Typography, Box } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-import { PhoneInputCell } from '../../../core/utils/phoneFormatter';
-import { formatPhoneNumber } from '../../../core/utils/phoneFormatter';
+import { PhoneInputCell } from '../../core/utils/phoneFormatter';
+import { formatPhoneNumber } from '../../core/utils/phoneFormatter';
 
-import { useAuth } from '../../../../AuthContext';
+import { useAuth } from '../../../AuthContext';
 
 const EmailCell = (props) => {
   const { value } = props;
