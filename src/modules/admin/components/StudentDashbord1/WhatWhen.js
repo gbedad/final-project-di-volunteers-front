@@ -8,35 +8,15 @@ import {
   InputLabel,
   Grid,
   Typography,
+  Divider,
 } from '@mui/material';
 
+import SubjectPriority from 'modules/admin/StudentDashbord1/components/StudentTopics';
+import StudentDaytimes from 'modules/admin/StudentDashbord1/components/StudentDaytimes';
+import StudentsLocations from 'modules/admin/StudentDashbord1/components/StudentLocations';
 // Sample data - replace with your actual data
-const subjects = [
-  'Mathématiques',
-  'Français',
-  'Anglais',
-  'Histoire',
-  'Physique',
-];
-const priorities = [1, 2, 3];
-const days = [
-  'Lundi',
-  'Mardi',
-  'Mercredi',
-  'Jeudi',
-  'Vendredi',
-  'Samedi',
-  'Dimanche',
-];
-const locations = [
-  'Centre-ville',
-  'Banlieue Nord',
-  'Banlieue Sud',
-  'Banlieue Est',
-  'Banlieue Ouest',
-];
 
-const BeneficiaryPage = () => {
+const BeneficiaryWhatWhen = () => {
   const [subject, setSubject] = useState('');
   const [priority, setPriority] = useState('');
   const [day, setDay] = useState('');
@@ -50,12 +30,22 @@ const BeneficiaryPage = () => {
 
       <Grid container spacing={2}>
         {/* Matières demandées */}
-        <Grid item xs={12}>
+
+        <Grid item xs={12} mb={3} style={{ position: 'relative' }}>
+          {/* <Typography variant="subtitle1" gutterBottom>
+            Matières demandées
+          </Typography>
+          <SubjectPriority />
+          <Typography variant="subtitle1" gutterBottom>
+            Disponibilités
+          </Typography>
+          <StudentDaytimes /> */}
           <Typography variant="subtitle1" gutterBottom>
             Matières demandées
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={8}>
+          <Grid spacing={2}>
+            <SubjectPriority />
+            {/* <Grid item xs={8}>
               <FormControl fullWidth size="small" shrink>
                 <InputLabel>Matière</InputLabel>
                 <Select
@@ -84,76 +74,27 @@ const BeneficiaryPage = () => {
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
-
+        <Divider color="primary" />
         {/* Disponibilité */}
-        <Grid item xs={12}>
+
+        <Grid item xs={12} mb={3} style={{ position: 'relative' }}>
           <Typography variant="subtitle1" gutterBottom>
-            Disponibilité
+            Disponibilités
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Jour</InputLabel>
-                <Select
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
-                  label="Jour">
-                  {days.map((d) => (
-                    <MenuItem key={d} value={d}>
-                      {d}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                size="small"
-                fullWidth
-                label="Heure début"
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                inputProps={{ step: 300 }} // 5 min steps
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                size="small"
-                fullWidth
-                label="Heure fin"
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                inputProps={{ step: 300 }} // 5 min steps
-              />
-            </Grid>
+          <Grid spacing={2}>
+            <StudentDaytimes />
           </Grid>
         </Grid>
-
+        <Divider />
         {/* Lieux possibles */}
-        <Grid item xs={12}>
+        <Grid item xs={12} mb={3} style={{ position: 'relative' }}>
           <Typography variant="subtitle1" gutterBottom>
             Lieux possibles
           </Typography>
-          <FormControl fullWidth size="small">
-            <InputLabel>Lieu</InputLabel>
-            <Select
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              label="Lieu">
-              {locations.map((loc) => (
-                <MenuItem key={loc} value={loc}>
-                  {loc}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <StudentsLocations />
         </Grid>
       </Grid>
 
@@ -162,4 +103,4 @@ const BeneficiaryPage = () => {
   );
 };
 
-export default BeneficiaryPage;
+export default BeneficiaryWhatWhen;

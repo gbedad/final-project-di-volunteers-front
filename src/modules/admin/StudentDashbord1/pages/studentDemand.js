@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Grid,
@@ -20,6 +21,10 @@ import { existingClasses } from 'options/existingOptions';
 import { SchoolAutocomplete } from '../../components/SchoolAutocomplete';
 
 import WhatWhen from '../../components/StudentDashbord1/WhatWhen';
+import PreInterviewComponent from '../components/StudentPreInterview';
+import StudentDiscussionThread from '../components/StudentDiscussionThread';
+
+import { useAuth } from '../../../../AuthContext';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,6 +53,9 @@ export default function BeneficiaryPage() {
   const [academicYear, setAcademicYear] = useState(academicYears[0]);
   const [grade, setGrade] = useState('');
   const [selectedSchool, setSelectedSchool] = useState(null);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Extract school names from the JSON data
 
@@ -89,19 +97,7 @@ export default function BeneficiaryPage() {
                 type="date"
                 InputLabelProps={{ shrink: true }}
               />
-              {/* <TextField
-                size="small"
-                fullWidth
-                select
-                label="Classe"
-                margin="normal"
-                InputLabelProps={{ shrink: true }}>
-                {existingClasses.map((grade) => (
-                  <MenuItem key={grade} value={grade}>
-                    {grade}
-                  </MenuItem>
-                ))}
-              </TextField> */}
+
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <FormControl fullWidth margin="normal" size="small">
@@ -142,34 +138,7 @@ export default function BeneficiaryPage() {
                   </FormControl>
                 </Grid>
               </Grid>
-              {/* <Autocomplete
-                options={schoolOptions}
-                renderInput={(params) => (
-                  <TextField {...params} label="École" margin="normal" />
-                )}
-                value={selectedSchool}
-                onChange={(event, newValue) => {
-                  setSelectedSchool(newValue);
-                }}
-                fullWidth
-              />
-              <TextField
-                fullWidth
-                label="Adresse de l'école"
-                margin="normal"
-                multiline
-                rows={2}
-                value={
-                  selectedSchool
-                    ? schoolsData.find(
-                        (school) => school.nom_etablissement === selectedSchool
-                      )?.adresse_1
-                    : ''
-                }
-                InputProps={{
-                  readOnly: true,
-                }}
-              /> */}
+
               <SchoolAutocomplete />
             </BorderBoxWithLabel>
             <BorderBoxWithLabel label="Coordonnées">
@@ -311,15 +280,29 @@ export default function BeneficiaryPage() {
                 <Tab label="SUIVI PEDAGOGIQUE" />
               </Tabs>
             </Box>
+            {/* Bloc de droite */}
+            {/* --------------------------------- */}
             <TabPanel value={tabValue} index={0}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Quoi & Quand">
                     <WhatWhen />
                   </BorderBoxWithLabel>
+
+                  <BorderBoxWithLabel
+                    label="Premier contact"
+                    style={{ marginTop: '2rem' }}>
+                    <PreInterviewComponent user={user} />
+                  </BorderBoxWithLabel>
+                  <BorderBoxWithLabel
+                    label="Fil de discussion interne"
+                    style={{ marginTop: '2rem' }}>
+                    <StudentDiscussionThread currentUser={user} userId={1} />
+                  </BorderBoxWithLabel>
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Entretien initial">
+                    <PreInterviewComponent user={user} />
                     <TextField
                       fullWidth
                       label="Date de l'entretien"

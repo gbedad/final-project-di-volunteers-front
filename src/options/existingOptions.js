@@ -74,3 +74,17 @@ export const existingTimes = [
   { label: '21:00' },
   { label: '22:00' },
 ];
+
+export const existingPriorities = [
+  { label: 'TOP' },
+  { label: 'P1' },
+  { label: 'P2' },
+  { label: 'P3' },
+  { label: 'P4' },
+];
+
+export const existingSubjectsPriorities = [
+  { label: 1 },
+  { label: 2 },
+  { label: 3 },
+];
