@@ -84,26 +84,36 @@ function SchoolHistory() {
               <MenuItem value={'NSP'}>NSP</MenuItem>
             </Select>
           </FormControl>
-          <FormControl required sx={{ m: 1, minWdth: 300, width: 'auto' }}>
-            <InputLabel shrink id="demo-simple-select-standard-label">
-              Suivi orthophonique
-            </InputLabel>
+          <Stack spacing={1} direction={'row'}>
+            <FormControl required sx={{ m: 1, width: 450 }}>
+              <InputLabel shrink id="demo-simple-select-standard-label">
+                Suivi orthophonique
+              </InputLabel>
 
-            <Select
+              <Select
+                size="small"
+                notched
+                autoWidth
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Suivi orthophonique">
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'NSP'}>NSP</MenuItem>
+                <MenuItem value={'oui, terminé'}>Oui, terminé</MenuItem>
+                <MenuItem value={'oui, depuis'}>Oui, depuis</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
               size="small"
-              notched
               fullWidth
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              label="Suivi orthophonique">
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={'NSP'}>NSP</MenuItem>
-              <MenuItem value={'oui, terminé'}>Oui, terminé</MenuItem>
-              <MenuItem value={'oui, depuis'}>Oui, depuis</MenuItem>
-            </Select>
-          </FormControl>
+              label="Depuis le"
+              margin="normal"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Stack>
         </Stack>
       </Grid>
     </Grid>
