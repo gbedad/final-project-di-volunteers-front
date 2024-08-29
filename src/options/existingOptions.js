@@ -75,7 +75,7 @@ export const existingTimes = [
   { label: '22:00' },
 ];
 
-export const existingPriorities = [
+export const existingStudentPriorities = [
   { label: 'TOP' },
   { label: 'P1' },
   { label: 'P2' },

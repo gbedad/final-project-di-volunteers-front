@@ -23,6 +23,8 @@ import { SchoolAutocomplete } from '../../components/SchoolAutocomplete';
 import WhatWhen from '../../components/StudentDashbord1/WhatWhen';
 import PreInterviewComponent from '../components/StudentPreInterview';
 import StudentDiscussionThread from '../components/StudentDiscussionThread';
+import StudentInterview from '../components/StudentInterview';
+import SchoolHistory from '../components/SchoolHistory';
 
 import { useAuth } from '../../../../AuthContext';
 
@@ -302,20 +304,21 @@ export default function BeneficiaryPage() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Entretien initial">
-                    <PreInterviewComponent user={user} />
-                    <TextField
+                    <StudentInterview user={user} userId={1} />
+                    {/* <TextField
                       fullWidth
                       label="Date de l'entretien"
                       margin="normal"
                       type="date"
                       InputLabelProps={{ shrink: true }}
                     />
-                    <TextField fullWidth label="Intervenant" margin="normal" />
+                    <TextField fullWidth label="Intervenant" margin="normal" /> */}
                   </BorderBoxWithLabel>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <BorderBoxWithLabel label="Historique scolaire">
-                    <TextField
+                  <BorderBoxWithLabel label="Historique scolaire et le cas échéant médical">
+                    <SchoolHistory />
+                    {/* <TextField
                       fullWidth
                       label="Dernier diplôme"
                       margin="normal"
@@ -324,7 +327,7 @@ export default function BeneficiaryPage() {
                       fullWidth
                       label="Année d'obtention"
                       margin="normal"
-                    />
+                    /> */}
                   </BorderBoxWithLabel>
                 </Grid>
               </Grid>

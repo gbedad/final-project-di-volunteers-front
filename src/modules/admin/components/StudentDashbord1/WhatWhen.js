@@ -40,7 +40,7 @@ const BeneficiaryWhatWhen = () => {
             Disponibilités
           </Typography>
           <StudentDaytimes /> */}
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             Matières demandées
           </Typography>
           <Grid spacing={2}>
@@ -81,7 +81,7 @@ const BeneficiaryWhatWhen = () => {
         {/* Disponibilité */}
 
         <Grid item xs={12} mb={3} style={{ position: 'relative' }}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             Disponibilités
           </Typography>
           <Grid spacing={2}>
@@ -91,7 +91,7 @@ const BeneficiaryWhatWhen = () => {
         <Divider />
         {/* Lieux possibles */}
         <Grid item xs={12} mb={3} style={{ position: 'relative' }}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             Lieux possibles
           </Typography>
           <StudentsLocations />
