@@ -115,7 +115,7 @@ export default function DataGridDemo(props) {
   const [rows, setRows] = useState([]);
   const [newMessageFlags, setNewMessageFlags] = useState({});
   const [justViewedMessages, setJustViewedMessages] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const columns = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
@@ -485,11 +485,12 @@ export default function DataGridDemo(props) {
   const handleRowClick = useCallback(
     (params) => {
       const userId = params.row.id;
+
       // If there was a new message flag, remove it
       if (newMessageFlags[userId]) {
         setNewMessageFlags((prev) => ({ ...prev, [userId]: false }));
       }
-
+      console.log(newMessageFlags);
       // Update last viewed count in local storage
       const currentUser = filteredData.find((item) => item.id === userId);
       if (currentUser && currentUser.internal_thread) {
