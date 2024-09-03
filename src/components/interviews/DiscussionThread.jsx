@@ -133,13 +133,11 @@ const DiscussionThread = ({ currentUser, userId }) => {
         sender: currentUser,
         content: newMessage,
         timestamp: new Date(),
+        isRead: false,
       };
       const updatedMessages = [...messages, message];
       setMessages([...messages, message]);
-      localStorage.setItem(
-        `lastViewedCount_${userId}`,
-        updatedMessages.length.toString()
-      );
+
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
@@ -157,6 +155,11 @@ const DiscussionThread = ({ currentUser, userId }) => {
         } else {
           console.error('Failed to save message');
         }
+        // Update last viewed count in local storage
+        localStorage.setItem(
+          `lastViewedCount_${userId}`,
+          updatedMessages.length.toString()
+        );
       } catch (error) {
         console.error('Failed to save message', error);
       }
@@ -188,6 +191,11 @@ const DiscussionThread = ({ currentUser, userId }) => {
       } else {
         console.error('Failed to save message');
       }
+      // Update last viewed count in local storage
+      localStorage.setItem(
+        `lastViewedCount_${userId}`,
+        allMessages.length.toString()
+      );
     } catch (error) {
       console.error('Failed to save message', error);
     }
