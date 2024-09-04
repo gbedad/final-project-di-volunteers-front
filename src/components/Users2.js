@@ -26,6 +26,7 @@ import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import DoneIcon from '@mui/icons-material/Done';
+import MoodIcon from '@mui/icons-material/Mood';
 import {
   existingDays,
   existingSubjects,
@@ -221,6 +222,24 @@ export default function DataGridDemo(props) {
 
       width: 110,
       editable: true,
+    },
+    {
+      field: 'is_available',
+      headerName: 'Disponible',
+
+      width: 70,
+      editable: true,
+      renderCell: (params) => {
+        return params.value ? (
+          <MoodIcon
+            style={{
+              color: 'green',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
     },
     {
       field: 'first_contact',
@@ -528,6 +547,8 @@ export default function DataGridDemo(props) {
   };
   const usersWithTrueValuesCount = calculateTrueValues(users);
 
+  console.log(usersWithTrueValuesCount);
+
   const updateTopicsToEmptyArray = (data) => {
     return data.map((item) => {
       if (item.skill === null) {
@@ -688,7 +709,8 @@ export default function DataGridDemo(props) {
           nb_interviews,
           item.trueValuesCount,
           item.test_voltaire_passed,
-          item.convention_received
+          item.convention_received,
+          item.is_available
         );
       })
       .filter((item) => item !== null);
@@ -712,7 +734,8 @@ export default function DataGridDemo(props) {
     nb_interviews,
     trueValuesCount,
     test_voltaire_passed,
-    convention_received
+    convention_received,
+    is_available
   ) {
     return {
       id,
@@ -732,6 +755,7 @@ export default function DataGridDemo(props) {
       trueValuesCount,
       test_voltaire_passed,
       convention_received,
+      is_available,
     };
   }
 

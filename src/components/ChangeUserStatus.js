@@ -102,8 +102,11 @@ const ChangeUserStatus = () => {
   const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const userId = state.userId;
 
   // const [openPopper, setOpenPopper] = React.useState(false);
   // const [placement, setPlacement] = React.useState();
@@ -129,6 +132,37 @@ const ChangeUserStatus = () => {
       return true;
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const updateUserAvailability = async (event) => {
+    const newIsAvailable = event.target.checked;
+    setIsAvailable(newIsAvailable);
+
+    try {
+      const response = await axios.patch(`${BASE_URL}/update-availability`, {
+        userId,
+        isAvailable: newIsAvailable,
+      });
+
+      if (response.status === 200) {
+        console.log('Availability updated successfully:', response.data);
+      } else {
+        console.warn('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', error.message);
+      }
     }
   };
 
@@ -167,6 +201,7 @@ const ChangeUserStatus = () => {
         setUser(response.data);
         setStatus(response.data.status);
         setChecked(response.data.is_active);
+        setIsAvailable(response.data.is_available);
         // setNewIsActive(response.data.is_active)
         localStorage.setItem('user-status', response.data.status);
       } catch (err) {
@@ -245,7 +280,9 @@ const ChangeUserStatus = () => {
     // <ThemeProvider theme={lightTheme}>
     <>
       <Container maxWidth="l">
-        <Box
+        <Stack
+          direction={'row'}
+          spacing={5}
           mb={2}
           mt={2}
           sx={{
@@ -262,13 +299,24 @@ const ChangeUserStatus = () => {
             }
             label="Tuteur actif"
           />
+
           <Button
             variant="contained"
             disabled={!showActiveConfirm}
             onClick={handleSubmitActiveChange}>
             Enregistrer
           </Button>
-        </Box>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isAvailable}
+                onChange={updateUserAvailability}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label="Tuteur disponible"
+          />
+        </Stack>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={3}>
