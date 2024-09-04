@@ -227,8 +227,9 @@ export default function DataGridDemo(props) {
       field: 'is_available',
       headerName: 'Disponible',
 
-      width: 70,
+      width: 100,
       editable: true,
+      align: 'center',
       renderCell: (params) => {
         return params.value ? (
           <MoodIcon
@@ -263,6 +264,7 @@ export default function DataGridDemo(props) {
 
       width: 80,
       editable: true,
+      align: 'center',
     },
     {
       field: 'trueValuesCount',
@@ -314,6 +316,7 @@ export default function DataGridDemo(props) {
 
       width: 70,
       editable: true,
+      align: 'center',
       renderCell: (params) => {
         return params.value ? (
           <VerifiedUserIcon
