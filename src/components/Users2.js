@@ -31,6 +31,10 @@ import MessageIcon from '@mui/icons-material/Message';
 // import PersonPinIcon from '@mui/icons-material/PersonPin';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CallIcon from '@mui/icons-material/Call';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
+import LooksTwoIcon from '@mui/icons-material/LooksTwo';
+import Looks3Icon from '@mui/icons-material/Looks3';
+import Filter3Icon from '@mui/icons-material/Filter3';
 import {
   existingDays,
   existingSubjects,
@@ -239,7 +243,7 @@ export default function DataGridDemo(props) {
         return params.value ? (
           <EventAvailableIcon
             style={{
-              color: 'green',
+              color: 'yellowGreen',
             }}
           />
         ) : (
@@ -255,7 +259,7 @@ export default function DataGridDemo(props) {
         return params.value ? (
           <CallIcon
             style={{
-              color: 'green',
+              color: 'primary',
             }}
           />
         ) : (
@@ -270,6 +274,29 @@ export default function DataGridDemo(props) {
       width: 80,
       editable: true,
       align: 'center',
+      renderCell: (params) => {
+        return params.value === 1 ? (
+          <LooksOneIcon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : params.value === 2 ? (
+          <LooksTwoIcon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : params.value === 3 ? (
+          <Looks3Icon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
     },
     {
       field: 'trueValuesCount',
