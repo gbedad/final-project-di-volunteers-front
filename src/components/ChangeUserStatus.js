@@ -97,7 +97,7 @@ const ChangeUserStatus = () => {
   const [newStatus, setNewStatus] = useState('');
   const [isRegistered, setIsRegistered] = useState(true);
   const [resp, setResp] = useState(null);
-  const [checked, setChecked] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false);
   const [showActiveConfirm, setShowActiveConfirm] = useState(false);
   const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
@@ -117,23 +117,50 @@ const ChangeUserStatus = () => {
 
   const openPopper = Boolean(anchorEl);
 
-  const handleActiveChange = async (event) => {
+  const updateIsActive = async (event) => {
     // console.log('Checked state', event.target.checked);
-    setChecked(event.target.checked);
-    setShowActiveConfirm(true);
-  };
-
-  const handleSubmitActiveChange = async () => {
+    const newIsActive = event.target.checked;
+    setIsActive(newIsActive);
     try {
-      await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
-        newIsActive: checked,
-      });
-      setShowActiveConfirm(false);
-      return true;
-    } catch (err) {
-      console.log(err);
+      const response = await axios.patch(
+        `${BASE_URL}/update-active-user/${state.userId}`,
+        {
+          isActive: newIsActive,
+        }
+      );
+      if (response.status === 200) {
+        console.log('Availability updated successfully:', response.data);
+      } else {
+        console.warn('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', error.message);
+      }
     }
   };
+  // setShowActiveConfirm(true);
+
+  // const handleSubmitActiveChange = async () => {
+  //   try {
+  //     await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
+  //       newIsActive: checked,
+  //     });
+  //     setShowActiveConfirm(false);
+  //     return true;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const updateUserAvailability = async (event) => {
     const newIsAvailable = event.target.checked;
@@ -200,7 +227,7 @@ const ChangeUserStatus = () => {
         // console.log(response.data);
         setUser(response.data);
         setStatus(response.data.status);
-        setChecked(response.data.is_active);
+        setIsActive(response.data.is_active);
         setIsAvailable(response.data.is_available);
         // setNewIsActive(response.data.is_active)
         localStorage.setItem('user-status', response.data.status);
@@ -292,20 +319,20 @@ const ChangeUserStatus = () => {
           <FormControlLabel
             control={
               <Switch
-                checked={checked}
-                onChange={handleActiveChange}
+                checked={isActive}
+                onChange={updateIsActive}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }
             label="Tuteur actif"
           />
 
-          <Button
+          {/* <Button
             variant="contained"
             disabled={!showActiveConfirm}
             onClick={handleSubmitActiveChange}>
             Enregistrer
-          </Button>
+          </Button> */}
           <FormControlLabel
             control={
               <Switch
