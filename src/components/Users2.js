@@ -28,7 +28,8 @@ import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 // import DoneIcon from '@mui/icons-material/Done';
 // import MoodIcon from '@mui/icons-material/Mood';
 import MessageIcon from '@mui/icons-material/Message';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
+// import PersonPinIcon from '@mui/icons-material/PersonPin';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CallIcon from '@mui/icons-material/Call';
 import {
   existingDays,
@@ -236,7 +237,7 @@ export default function DataGridDemo(props) {
       align: 'center',
       renderCell: (params) => {
         return params.value ? (
-          <PersonPinIcon
+          <EventAvailableIcon
             style={{
               color: 'green',
             }}
