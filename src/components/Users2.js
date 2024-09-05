@@ -25,10 +25,11 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
-import DoneIcon from '@mui/icons-material/Done';
+// import DoneIcon from '@mui/icons-material/Done';
 // import MoodIcon from '@mui/icons-material/Mood';
 import MessageIcon from '@mui/icons-material/Message';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
+import CallIcon from '@mui/icons-material/Call';
 import {
   existingDays,
   existingSubjects,
@@ -251,7 +252,7 @@ export default function DataGridDemo(props) {
       editable: true,
       renderCell: (params) => {
         return params.value ? (
-          <DoneIcon
+          <CallIcon
             style={{
               color: 'green',
             }}
