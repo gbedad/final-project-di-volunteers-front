@@ -26,7 +26,9 @@ import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import DoneIcon from '@mui/icons-material/Done';
-import MoodIcon from '@mui/icons-material/Mood';
+// import MoodIcon from '@mui/icons-material/Mood';
+import MessageIcon from '@mui/icons-material/Message';
+import PersonPinIcon from '@mui/icons-material/PersonPin';
 import {
   existingDays,
   existingSubjects,
@@ -139,7 +141,8 @@ export default function DataGridDemo(props) {
       width: 80,
       renderCell: (params) => {
         return newMessageFlags[params.row.id] ? (
-          <Chip label="New" color="primary" />
+          // <Chip label="New" color="primary" />
+          <MessageIcon color="primary" />
         ) : null;
       },
     },
@@ -232,7 +235,7 @@ export default function DataGridDemo(props) {
       align: 'center',
       renderCell: (params) => {
         return params.value ? (
-          <MoodIcon
+          <PersonPinIcon
             style={{
               color: 'green',
             }}
