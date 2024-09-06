@@ -56,6 +56,8 @@ export default function ManageGrid() {
   }, [getAll]);
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
+    console.log(updatedRow);
+
     saveRow(updatedRow)
       .then((res) => {
         const dbRow = res.data;
@@ -81,11 +83,13 @@ export default function ManageGrid() {
   };
 
   const handleDoubleRowClick = (params) => {
-    const userId = params.row.id;
-    // If there was a new message flag, remove it
+    console.log('Double click detected');
+    console.log('Params:', params);
+    const studentId = params.row.id;
+    console.log('studentId:', studentId);
 
-    navigate(`/admin/student-demand/${userId}`, {
-      state: { userLogged: user },
+    navigate(`/admin/student-demand/${studentId}`, {
+      state: { userLogged: user, studentSelected: studentId },
     });
   };
 
@@ -109,17 +113,26 @@ export default function ManageGrid() {
           </Typography>
         </Box>
         <Typography variant="h4" mb={2} textAlign={'center'}>
-          Gestion des bénéficiares
+          Gestion des bénéficiaires
         </Typography>
 
         <FullEditDataGrid
-          onRowDoubleClick={handleDoubleRowClick}
+          onRowClick={handleDoubleRowClick}
           columns={columns}
           rows={rows.map((r, i) => ({ ...r, no: i + 1 }))}
           onSaveRow={onSaveRow}
           onDeleteRow={onDeleteRow}
           createRowData={createRowData}
           loading={loading}
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                // Hide columns status and traderName, the other columns will remain visible
+                no: true,
+                id: true,
+              },
+            },
+          }}
         />
       </Box>
     </>
@@ -131,7 +144,7 @@ const columns = [
     field: 'no',
     headerName: 'No',
     width: 50,
-    hide: true,
+    hideable: true,
     align: 'center',
     type: 'number',
     editable: false,
@@ -140,6 +153,7 @@ const columns = [
     field: 'id',
     headerName: 'Id',
     width: 50,
+    hideable: false,
     align: 'center',
     type: 'number',
     editable: false,
@@ -192,10 +206,19 @@ const columns = [
     headerAlign: 'left',
     type: 'email',
     editable: true,
-    renderCell: (params) => <EmailCell value={params.value} />,
+
+    renderCell: (params) => (
+      <EmailCell
+        value={params.value}
+        style={{
+          color: 'primary',
+        }}
+      />
+    ),
   },
+
   {
-    field: 'classe',
+    field: 'level',
     headerName: 'Classe',
     width: 150,
     headerAlign: 'left',
@@ -219,12 +242,32 @@ const columns = [
     editable: true,
   },
   {
-    field: 'priority',
+    field: 'interviews',
     headerName: 'Priorité',
     width: 80,
     headerAlign: 'left',
     type: 'string',
     editable: true,
+    valueGetter: (params) => {
+      if (typeof params.value === 'string') {
+        try {
+          const interviews = JSON.parse(params.value);
+          if (Array.isArray(interviews) && interviews.length > 0) {
+            const lastInterview = interviews[interviews.length - 1];
+            return lastInterview.priority || '';
+          }
+        } catch (error) {
+          console.error('Error parsing interviews:', error);
+        }
+      } else if (Array.isArray(params.value) && params.value.length > 0) {
+        const lastInterview = params.value[params.value.length - 1];
+        return lastInterview.priority || '';
+      }
+      return '';
+    },
+    renderCell: (params) => {
+      return params.value;
+    },
   },
   {
     field: 'pre_interview',
@@ -237,7 +280,7 @@ const columns = [
 
   {
     field: 'interview',
-    headerName: 'Enttretien',
+    headerName: 'Entretien',
     width: 150,
     headerAlign: 'left',
     type: 'date',
@@ -253,11 +296,11 @@ const columns = [
     editable: true,
   },
   {
-    field: 'dateCreated',
+    field: 'created_at',
     headerName: 'Date creation',
     width: 150,
     headerAlign: 'left',
-    type: 'date',
+    type: 'string',
     editable: false,
     align: 'center',
     renderCell: ({ value }) => moment(value).format('DD/MM//yyyy'),

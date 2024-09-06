@@ -89,7 +89,7 @@ export const existingSubjectsPriorities = [
   { label: 3 },
 ];
 
-export const existingLevels = [
+export const existingLevels = JSON.stringify([
   { label: 'CP' },
   { label: 'CE1' },
   { label: 'CE2' },
@@ -105,4 +105,4 @@ export const existingLevels = [
   { label: 'L1' },
   { label: 'L2' },
   { label: 'L3' },
-];
+]);

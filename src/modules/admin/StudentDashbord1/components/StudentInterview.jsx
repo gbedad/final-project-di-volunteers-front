@@ -43,17 +43,20 @@ import SubjectDecidedPriority from './StudentDecideTopic';
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const FormInterviewComponent = ({ userId, user }) => {
+const FormInterviewComponent = ({ studentId, user }) => {
   const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
 
   const [showButton, setShowButton] = useState(false);
+  console.log(studentId);
 
   const [interviews, setInterviews] = useState([
     {
-      date: '2024/08/24',
-      by: 'Emmanuelle Berrebi',
+      date: '',
+      by: '',
+      priority: '',
+      decision: '',
     },
   ]);
   const [confirmed, setConfirmed] = useState(false);
@@ -65,16 +68,16 @@ const FormInterviewComponent = ({ userId, user }) => {
   useEffect(() => {
     const getInterviews = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
-      // console.log(response.data);
+      console.log(response.data);
       if (response.data.interviews) {
-        const parsed_array = response.data.interviews.map((string) =>
-          JSON.parse(string)
-        );
+        const parsed_array = JSON.parse(response.data.interviews);
+
         // setInterviews(parsed_array);
         setIsLoading(false);
         setShowButton(false);
+        setInterviews(parsed_array);
       }
       setIsLoading(false);
       if (interviews.length > 0) {
@@ -85,15 +88,11 @@ const FormInterviewComponent = ({ userId, user }) => {
         // setConfirmed(true);
       }
     };
-    setInterviews([
-      {
-        date: '2024/08/24',
-        by: 'Emmanuelle Berrebi',
-      },
-    ]);
 
     getInterviews();
-  }, [userId, confirmed]);
+  }, [studentId, confirmed]);
+
+  console.log(interviews);
 
   // Check if all values are filled in interviews
   const areAllKeysNonNullOrEmpty = (arr) => {
@@ -102,11 +101,11 @@ const FormInterviewComponent = ({ userId, user }) => {
     );
   };
 
-  const handleTitleChange = (value, index) => {
-    const updatedInterviews = [...interviews];
-    updatedInterviews[index].title = value;
-    setInterviews(updatedInterviews);
-  };
+  // const handleByChange = (value, index) => {
+  //   const updatedInterviews = [...interviews];
+  //   updatedInterviews[index].by = value;
+  //   setInterviews(updatedInterviews);
+  // };
 
   const handleDateChange = (value, index) => {
     const updatedInterviews = [...interviews];
@@ -132,6 +131,8 @@ const FormInterviewComponent = ({ userId, user }) => {
       return updatedInterviews;
     });
   };
+
+  console.log(interviews);
 
   // function parseInterviews(data) {
   //   const parsedData = data.map((interview) => {
@@ -194,6 +195,7 @@ const FormInterviewComponent = ({ userId, user }) => {
       ...interviews,
       {
         date: '',
+        priority: '',
 
         by: '',
         isActive: false,
@@ -207,8 +209,8 @@ const FormInterviewComponent = ({ userId, user }) => {
 
   const handleSaveInterviews = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/add-interviews/${userId}`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/students-interview/${studentId}`,
         { interviews },
         {
           headers: {
@@ -240,7 +242,6 @@ const FormInterviewComponent = ({ userId, user }) => {
   //     label: 'Add',
   //   };
   // console.log(interviews);
-  console.log(interviews);
 
   return (
     <div>
@@ -285,7 +286,7 @@ const FormInterviewComponent = ({ userId, user }) => {
                     size="small"
                     label="Date de l'entretien"
                     type="date"
-                    defaultValue={new Date().toISOString()}
+                    // defaultValue={new Date().toISOString()}
                     value={interview.date}
                     error={!isDateValid}
                     helperText={!isDateValid && 'Please select a valid date.'}
@@ -306,7 +307,9 @@ const FormInterviewComponent = ({ userId, user }) => {
                     id="demo-simple-select-standard"
                     label="Réalisé par"
                     value={interview.by}
-                    onChange={(e) => handleAddInterview('by', e.target.value)}
+                    onChange={(e) =>
+                      handleInterviewChange('by', e.target.value, index)
+                    }
                     isoptionequaltovalue={(option, value) =>
                       value === '' || option.id === value.id
                     }>
@@ -558,9 +561,9 @@ const FormInterviewComponent = ({ userId, user }) => {
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     label="Décision *"
-                    value={interview.student_decision}
+                    value={interview.decision}
                     onChange={(e) =>
-                      handleInterviewChange('décision', e.target.value, index)
+                      handleInterviewChange('decision', e.target.value, index)
                     }>
                     <MenuItem value="">
                       <em>None</em>
@@ -585,9 +588,9 @@ const FormInterviewComponent = ({ userId, user }) => {
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     label="Priorité *"
-                    value={interview.student_priority}
+                    value={interview.priority}
                     onChange={(e) =>
-                      handleInterviewChange('followup', e.target.value, index)
+                      handleInterviewChange('priority', e.target.value, index)
                     }>
                     {existingStudentPriorities.map((priority) => (
                       <MenuItem key={priority.label} value={priority.label}>

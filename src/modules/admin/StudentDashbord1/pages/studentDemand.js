@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import {
+  Button,
   Container,
   Grid,
   Box,
@@ -28,6 +29,11 @@ import SchoolHistory from '../components/SchoolHistory';
 
 import { useAuth } from '../../../../AuthContext';
 
+import {
+  fetchStudentById,
+  updateStudentFields,
+} from '../../api/studentsById.js';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -53,16 +59,100 @@ const academicYears = Array.from({ length: 6 }, (_, index) => {
 export default function BeneficiaryPage() {
   const [tabValue, setTabValue] = useState(0);
   const [academicYear, setAcademicYear] = useState(academicYears[0]);
-  const [grade, setGrade] = useState('');
+  const [level, setLevel] = useState('');
   const [selectedSchool, setSelectedSchool] = useState(null);
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [parent1_firstname, setParent1_firstname] = useState('');
+  const [parent1_lastname, setParent1_lastname] = useState('');
+  const [parent1_email, setParent1_email] = useState('');
+  const [parent1_phone, setParent1_phone] = useState('');
 
-  const navigate = useNavigate();
+  const [parent2_firstname, setParent2_firstname] = useState('');
+  const [parent2_lastname, setParent2_lastname] = useState('');
+  const [parent2_email, setparent2_email] = useState('');
+  const [parent2_phone, setParent2_phone] = useState('');
+  const [other_firstname, setOther_firstname] = useState('');
+  const [other_lastname, setOther_lastname] = useState('');
+  const [other_email, setOther_email] = useState('');
+  const [other_phone, setOther_phone] = useState('');
+  const [isFamily, setFamily] = useState(false);
+  const [student, setStudent] = useState(null);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
+
+  // const location = useLocation();
+  // const { userLogged, userSelected } = location.state || {};
+
+  // const navigate = useNavigate();
   const { user } = useAuth();
+
+  // console.log(userSelected);
 
   // Extract school names from the JSON data
 
+  useEffect(() => {
+    const getStudent = async () => {
+      try {
+        const data = await fetchStudentById(id);
+        setStudent(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    getStudent();
+  }, [id]);
+
+  if (error) return <div>Error: {error}</div>;
+  if (!student) return <div>Loading...</div>;
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handleConfirmClick = async () => {
+    try {
+      const updatedFields = {
+        level,
+        academicYear,
+        selectedSchool,
+        birthdate,
+        isFamily,
+        email,
+        phone,
+        address,
+        parent1_firstname,
+        parent1_lastname,
+        parent1_phone,
+        parent1_email,
+
+        parent2_firstname,
+        parent2_lastname,
+        parent2_phone,
+        parent2_email,
+
+        other_firstname,
+        other_lastname,
+        other_phone,
+        other_email,
+      };
+
+      // Only include fields that have been changed
+      const fieldsToUpdate = Object.entries(updatedFields)
+        .filter(([key, value]) => value !== '')
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+      const updatedStudent = await updateStudentFields(id, fieldsToUpdate);
+
+      // Handle successful update (e.g., show a success message, update local state, etc.)
+      console.log('Updated student:', updatedStudent);
+    } catch (error) {
+      // Handle error (e.g., show error message to user)
+      console.error('Failed to update student:', error);
+    }
   };
 
   return (
@@ -82,6 +172,7 @@ export default function BeneficiaryPage() {
                 fullWidth
                 label="Nom"
                 margin="normal"
+                value={student.last_name}
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
@@ -89,6 +180,7 @@ export default function BeneficiaryPage() {
                 fullWidth
                 label="Prénom"
                 margin="normal"
+                value={student.first_name}
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
@@ -96,7 +188,12 @@ export default function BeneficiaryPage() {
                 fullWidth
                 label="Date de naissance"
                 margin="normal"
-                type="date"
+                type="date-local"
+                value={
+                  birthdate ||
+                  new Date(student.birth_date).toLocaleString().slice(0, 10)
+                }
+                onChange={(e) => setBirthdate(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
 
@@ -108,11 +205,10 @@ export default function BeneficiaryPage() {
                     </InputLabel>
                     <Select
                       labelId="grade-label"
-                      value={grade}
+                      value={level || student.level}
                       label="Classe"
-                      displayEmpty
                       notched
-                      onChange={(e) => setGrade(e.target.value)}>
+                      onChange={(e) => setLevel(e.target.value)}>
                       {existingClasses.map((g) => (
                         <MenuItem key={g} value={g}>
                           {g}
@@ -151,6 +247,8 @@ export default function BeneficiaryPage() {
                 label="Mail"
                 margin="normal"
                 type="email"
+                value={student.email}
+                onChange={(e) => setEmail(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
@@ -158,6 +256,8 @@ export default function BeneficiaryPage() {
                 fullWidth
                 label="Téléphone"
                 margin="normal"
+                value={student.phone}
+                onChange={(e) => setPhone(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
@@ -265,6 +365,14 @@ export default function BeneficiaryPage() {
                 margin="normal"
                 type="email"
               />
+              <Button
+                sx={{ width: 'fit-content' }}
+                variant="contained"
+                // disabled={!showConfirm}
+                onClick={handleConfirmClick}
+                mb={3}>
+                Enregistrer
+              </Button>
             </BorderBoxWithLabel>
           </Box>
         </Grid>
@@ -294,17 +402,20 @@ export default function BeneficiaryPage() {
                   <BorderBoxWithLabel
                     label="Premier contact"
                     style={{ marginTop: '2rem' }}>
-                    <PreInterviewComponent user={user} />
+                    <PreInterviewComponent user={user} studentId={id} />
                   </BorderBoxWithLabel>
                   <BorderBoxWithLabel
                     label="Fil de discussion interne"
                     style={{ marginTop: '2rem' }}>
-                    <StudentDiscussionThread currentUser={user} userId={1} />
+                    <StudentDiscussionThread
+                      currentUser={user}
+                      studentId={id}
+                    />
                   </BorderBoxWithLabel>
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Entretien initial">
-                    <StudentInterview user={user} userId={1} />
+                    <StudentInterview user={user} studentId={id} />
                     {/* <TextField
                       fullWidth
                       label="Date de l'entretien"

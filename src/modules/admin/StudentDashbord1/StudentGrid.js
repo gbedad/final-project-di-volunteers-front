@@ -85,7 +85,7 @@ export default function ManageGrid() {
     // If there was a new message flag, remove it
 
     navigate(`/admin/student-demand/${userId}`, {
-      state: { userLogged: user },
+      state: { userLogged: user, userId },
     });
   };
 
@@ -140,6 +140,7 @@ const columns = [
     field: 'id',
     headerName: 'Id',
     width: 50,
+    hide: false,
     align: 'center',
     type: 'number',
     editable: false,
@@ -253,7 +254,7 @@ const columns = [
     editable: true,
   },
   {
-    field: 'dateCreated',
+    field: 'created_at',
     headerName: 'Date creation',
     width: 150,
     headerAlign: 'left',

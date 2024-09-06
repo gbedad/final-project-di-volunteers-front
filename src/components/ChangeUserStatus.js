@@ -97,11 +97,12 @@ const ChangeUserStatus = () => {
   const [newStatus, setNewStatus] = useState('');
   const [isRegistered, setIsRegistered] = useState(true);
   const [resp, setResp] = useState(null);
-  const [checked, setChecked] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false);
   const [showActiveConfirm, setShowActiveConfirm] = useState(false);
   const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -113,24 +114,82 @@ const ChangeUserStatus = () => {
   };
 
   const openPopper = Boolean(anchorEl);
+  const userId = state.userId;
 
-  const handleActiveChange = async (event) => {
+  const updateIsActive = async (event) => {
     // console.log('Checked state', event.target.checked);
-    setChecked(event.target.checked);
-    setShowActiveConfirm(true);
-  };
-
-  const handleSubmitActiveChange = async () => {
+    const newIsActive = event.target.checked;
+    setIsActive(newIsActive);
     try {
-      await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
-        newIsActive: checked,
-      });
-      setShowActiveConfirm(false);
-      return true;
-    } catch (err) {
-      console.log(err);
+      const response = await axios.patch(
+        `${BASE_URL}/update-active-user/${state.userId}`,
+        {
+          isActive: newIsActive,
+        }
+      );
+      if (response.status === 200) {
+        console.log('Availability updated successfully:', response.data);
+      } else {
+        console.warn('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', error.message);
+      }
     }
   };
+
+  const updateUserAvailability = async (event) => {
+    const newIsAvailable = event.target.checked;
+    setIsAvailable(newIsAvailable);
+
+    try {
+      const response = await axios.patch(`${BASE_URL}/update-availability`, {
+        userId,
+        isAvailable: newIsAvailable,
+      });
+
+      if (response.status === 200) {
+        console.log('Availability updated successfully:', response.data);
+      } else {
+        console.warn('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', error.message);
+      }
+    }
+  };
+
+  // const handleSubmitActiveChange = async () => {
+  //   try {
+  //     await axios.patch(`${BASE_URL}/update-active-user/${state.userId}`, {
+  //       newIsActive: checked,
+  //     });
+  //     setShowActiveConfirm(false);
+  //     return true;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   // console.log(userLogged, state);
   // const handleEditUserProfile = () => {
@@ -166,7 +225,8 @@ const ChangeUserStatus = () => {
         // console.log(response.data);
         setUser(response.data);
         setStatus(response.data.status);
-        setChecked(response.data.is_active);
+        setIsActive(response.data.is_active);
+        setIsAvailable(response.data.is_available);
         // setNewIsActive(response.data.is_active)
         localStorage.setItem('user-status', response.data.status);
       } catch (err) {
@@ -245,7 +305,9 @@ const ChangeUserStatus = () => {
     // <ThemeProvider theme={lightTheme}>
     <>
       <Container maxWidth="l">
-        <Box
+        <Stack
+          direction={'row'}
+          spacing={5}
           mb={2}
           mt={2}
           sx={{
@@ -255,20 +317,30 @@ const ChangeUserStatus = () => {
           <FormControlLabel
             control={
               <Switch
-                checked={checked}
-                onChange={handleActiveChange}
+                checked={isActive}
+                onChange={updateIsActive}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }
             label="Tuteur actif"
           />
-          <Button
+          {/* <Button
             variant="contained"
             disabled={!showActiveConfirm}
             onClick={handleSubmitActiveChange}>
             Enregistrer
-          </Button>
-        </Box>
+          </Button> */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isAvailable}
+                onChange={updateUserAvailability}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
+            label="Tuteur disponible"
+          />
+        </Stack>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={3}>

@@ -26,6 +26,14 @@ import Rating from '@mui/material/Rating';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
 import DoneIcon from '@mui/icons-material/Done';
+import MessageIcon from '@mui/icons-material/Message';
+// import PersonPinIcon from '@mui/icons-material/PersonPin';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import CallIcon from '@mui/icons-material/Call';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
+import LooksTwoIcon from '@mui/icons-material/LooksTwo';
+import Looks3Icon from '@mui/icons-material/Looks3';
+import Filter3Icon from '@mui/icons-material/Filter3';
 import {
   existingDays,
   existingSubjects,
@@ -47,7 +55,7 @@ const StyledRating = styled(Rating)({
 const subjects = existingSubjects;
 const days = existingDays;
 const times = existingTimes;
-const levels = existingLevels;
+const levels = JSON.parse(existingLevels);
 
 // function createData(
 //   id,
@@ -139,7 +147,8 @@ export default function DataGridDemo(props) {
       width: 80,
       renderCell: (params) => {
         return newMessageFlags[params.row.id] ? (
-          <Chip label="New" color="primary" />
+          // <Chip label="New" color="primary" />
+          <MessageIcon color="primary" />
         ) : null;
       },
     },
@@ -224,14 +233,33 @@ export default function DataGridDemo(props) {
       editable: true,
     },
     {
+      field: 'is_available',
+      headerName: 'Disponible',
+
+      width: 100,
+      editable: true,
+      align: 'center',
+      renderCell: (params) => {
+        return params.value ? (
+          <EventAvailableIcon
+            style={{
+              color: 'yellowGreen',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
+    },
+    {
       field: 'first_contact',
       headerName: 'Call',
       editable: true,
       renderCell: (params) => {
         return params.value ? (
-          <DoneIcon
+          <CallIcon
             style={{
-              color: 'green',
+              color: 'primary',
             }}
           />
         ) : (
@@ -245,6 +273,30 @@ export default function DataGridDemo(props) {
 
       width: 80,
       editable: true,
+      align: 'center',
+      renderCell: (params) => {
+        return params.value === 1 ? (
+          <LooksOneIcon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : params.value === 2 ? (
+          <LooksTwoIcon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : params.value === 3 ? (
+          <Looks3Icon
+            style={{
+              color: 'primary',
+            }}
+          />
+        ) : (
+          ''
+        );
+      },
     },
     {
       field: 'trueValuesCount',
@@ -260,17 +312,6 @@ export default function DataGridDemo(props) {
 
       width: 70,
       editable: true,
-      renderCell: (params) => {
-        return params.value ? (
-          <TypeSpecimenRoundedIcon
-            style={{
-              color: 'yellowgreen',
-            }}
-          />
-        ) : (
-          ''
-        );
-      },
     },
     {
       field: 'convention_received',
@@ -296,6 +337,7 @@ export default function DataGridDemo(props) {
 
       width: 70,
       editable: true,
+      align: 'center',
       renderCell: (params) => {
         return params.value ? (
           <VerifiedUserIcon
@@ -670,7 +712,8 @@ export default function DataGridDemo(props) {
       nb_interviews,
       trueValuesCount,
       test_voltaire_passed,
-      convention_received
+      convention_received,
+      is_available
     ) {
       // Check if any required fields are undefined
       if (id === undefined) {
@@ -694,6 +737,7 @@ export default function DataGridDemo(props) {
         trueValuesCount,
         test_voltaire_passed,
         convention_received,
+        is_available,
       };
     }
     setLoading(true);
@@ -730,7 +774,8 @@ export default function DataGridDemo(props) {
             nb_interviews,
             item.trueValuesCount,
             item.test_voltaire_passed,
-            item.convention_received
+            item.convention_received,
+            item.is_available
           );
           if (!row) {
             console.log(
