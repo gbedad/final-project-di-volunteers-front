@@ -191,18 +191,19 @@ export default function DataGridDemo(props) {
       width: 150,
       editable: true,
     },
-    {
-      field: 'mission',
-      headerName: 'Mission',
-      valueFormatter: (params) => {
-        if (params.value) {
-          return params.value.replace(/^TUTORAT\s*/i, '').trim();
-        }
-        return '';
-      },
-      width: 150,
-      editable: true,
-    },
+    // {
+    //   field: 'mission',
+    //   headerName: 'Mission',
+    //   valueFormatter: (params) => {
+    //     if (params.value) {
+    //       return params.value.replace(/^TUTORAT\s*/i, '').trim();
+    //     }
+    //     return '';
+    //   },
+    //   width: 150,
+    //   editable: true,
+    // },
+
     // {
     //   field: 'mission_location',
     //   headerName: 'Lieu',
@@ -210,6 +211,12 @@ export default function DataGridDemo(props) {
     //   width: 150,
     //   editable: true,
     // },
+    {
+      field: 'site',
+      headerName: 'Mode',
+      width: 120,
+      editable: false,
+    },
     // {
     //   field: 'skill',
     //   headerName: 'Matières',
@@ -592,6 +599,31 @@ export default function DataGridDemo(props) {
       return item;
     });
   };
+  function checkLocation(values) {
+    const onsiteLocations = [
+      'Aubervilliers',
+      'Paris 12ème',
+      '22 rue Gabriel Lamé, Paris 12ème',
+      '181 avenue Daumesnil, Paris 12ème',
+      'Paris 18ème',
+    ];
+
+    // Check if the array contains only "dist"
+    if (values.length === 1 && values[0] === 'A distance') {
+      return 'Distanciel';
+    } else if (
+      values.length === 1 &&
+      values[0] === 'Présentiel ou distanciel'
+    ) {
+      return 'Bi-modal';
+    }
+
+    // Check if all values in the array are in the onsiteLocations array
+    const isOnsite = values.every((value) => onsiteLocations.includes(value));
+
+    return isOnsite ? 'Présentiel' : null;
+  }
+
   let cleanedArray = updateTopicsToEmptyArray(usersWithTrueValuesCount);
   // console.log(usersWithTrueValuesCount);
   // cleanedArray = filteredData;
@@ -722,6 +754,8 @@ export default function DataGridDemo(props) {
         const first_contact = item.pre_interview
           ? JSON.parse(item.pre_interview).isActive
           : null;
+        const site =
+          item.skill.where_location && checkLocation(item.skill.where_location);
 
         if (item.mission === null) {
           return null;
@@ -736,6 +770,7 @@ export default function DataGridDemo(props) {
           item.phone,
           item.mission.title || null,
           item.mission.location || null,
+          site,
           item.skill,
           item.created_at,
           item.status,
@@ -761,6 +796,7 @@ export default function DataGridDemo(props) {
     phone,
     mission,
     mission_location,
+    site,
     skill,
     created_at,
     status,
@@ -781,6 +817,7 @@ export default function DataGridDemo(props) {
       phone,
       mission,
       mission_location,
+      site,
       skill,
       created_at,
       status,
