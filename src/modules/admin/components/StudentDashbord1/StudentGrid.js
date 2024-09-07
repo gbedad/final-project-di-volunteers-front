@@ -242,49 +242,90 @@ const columns = [
     editable: true,
   },
   {
-    field: 'interviews',
+    field: 'interviewPriority',
     headerName: 'Priorité',
     width: 80,
     headerAlign: 'left',
     type: 'string',
     editable: true,
     valueGetter: (params) => {
-      if (typeof params.value === 'string') {
+      const interviews = params.row.interviews;
+      if (typeof interviews === 'string') {
         try {
-          const interviews = JSON.parse(params.value);
-          if (Array.isArray(interviews) && interviews.length > 0) {
-            const lastInterview = interviews[interviews.length - 1];
+          const parsedInterviews = JSON.parse(interviews);
+          if (Array.isArray(parsedInterviews) && parsedInterviews.length > 0) {
+            const lastInterview = parsedInterviews[parsedInterviews.length - 1];
             return lastInterview.priority || '';
           }
         } catch (error) {
           console.error('Error parsing interviews:', error);
         }
-      } else if (Array.isArray(params.value) && params.value.length > 0) {
-        const lastInterview = params.value[params.value.length - 1];
+      } else if (Array.isArray(interviews) && interviews.length > 0) {
+        const lastInterview = interviews[interviews.length - 1];
         return lastInterview.priority || '';
       }
       return '';
     },
-    renderCell: (params) => {
-      return params.value;
-    },
   },
   {
-    field: 'pre_interview',
+    field: 'preInterviewDate',
     headerName: 'Call',
-    width: 80,
+    width: 100,
     headerAlign: 'left',
+    align: 'left',
     type: 'date',
     editable: true,
+    valueGetter: (params) => {
+      const preinterview = params.row.pre_interview;
+
+      try {
+        const parsedInterview = JSON.parse(preinterview);
+
+        return parsedInterview.date ? new Date(parsedInterview.date) : null;
+      } catch (error) {
+        console.error('Error parsing interviews:', error);
+      }
+    },
+    valueFormatter: (params) => {
+      if (params.value) {
+        return params.value.toLocaleDateString();
+      }
+      return '';
+    },
   },
 
   {
-    field: 'interview',
-    headerName: 'Entretien',
+    field: 'interviewDate',
+    headerName: "Date d'entretien",
     width: 150,
     headerAlign: 'left',
     type: 'date',
     editable: true,
+    align: 'left',
+    valueGetter: (params) => {
+      const interviews = params.row.interviews;
+      if (typeof interviews === 'string') {
+        try {
+          const parsedInterviews = JSON.parse(interviews);
+          if (Array.isArray(parsedInterviews) && parsedInterviews.length > 0) {
+            const lastInterview = parsedInterviews[parsedInterviews.length - 1];
+            return lastInterview.date ? new Date(lastInterview.date) : null;
+          }
+        } catch (error) {
+          console.error('Error parsing interviews:', error);
+        }
+      } else if (Array.isArray(interviews) && interviews.length > 0) {
+        const lastInterview = interviews[interviews.length - 1];
+        return lastInterview.date ? new Date(lastInterview.date) : null;
+      }
+      return null;
+    },
+    valueFormatter: (params) => {
+      if (params.value) {
+        return params.value.toLocaleDateString();
+      }
+      return '';
+    },
   },
 
   {

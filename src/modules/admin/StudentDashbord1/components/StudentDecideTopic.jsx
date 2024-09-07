@@ -32,7 +32,7 @@ const fabStyle = {
   right: 0,
 };
 
-const SubjectDecidedPriority = ({ userSelected }) => {
+const SubjectDecidedPriority = ({ studentId }) => {
   //   const location = useLocation();
   const [subjectPriorities, setSubjectPriorities] = useState([
     { subject: 'Mathématiques', priority: 1 },
@@ -67,7 +67,7 @@ const SubjectDecidedPriority = ({ userSelected }) => {
     setIsLoading(false);
     const getSubjects = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
       // console.log(response.data);
       if (response.data.skill && response.data.skill.topics) {

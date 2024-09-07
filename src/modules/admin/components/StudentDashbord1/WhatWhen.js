@@ -16,7 +16,7 @@ import StudentDaytimes from 'modules/admin/StudentDashbord1/components/StudentDa
 import StudentsLocations from 'modules/admin/StudentDashbord1/components/StudentLocations';
 // Sample data - replace with your actual data
 
-const BeneficiaryWhatWhen = () => {
+const BeneficiaryWhatWhen = ({ studentId }) => {
   const [subject, setSubject] = useState('');
   const [priority, setPriority] = useState('');
   const [day, setDay] = useState('');
@@ -44,7 +44,7 @@ const BeneficiaryWhatWhen = () => {
             Matières demandées
           </Typography>
           <Grid spacing={2}>
-            <SubjectPriority />
+            <SubjectPriority studentId={studentId} />
             {/* <Grid item xs={8}>
               <FormControl fullWidth size="small" shrink>
                 <InputLabel>Matière</InputLabel>

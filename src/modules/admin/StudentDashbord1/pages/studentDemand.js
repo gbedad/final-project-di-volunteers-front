@@ -396,7 +396,7 @@ export default function BeneficiaryPage() {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Quoi & Quand">
-                    <WhatWhen />
+                    <WhatWhen user={user} studentId={id} />
                   </BorderBoxWithLabel>
 
                   <BorderBoxWithLabel

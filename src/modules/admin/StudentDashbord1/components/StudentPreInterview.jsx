@@ -94,7 +94,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const PreInterviewComponent = ({ user }) => {
+const PreInterviewComponent = ({ studentId, user }) => {
   const location = useLocation();
   // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
@@ -105,7 +105,7 @@ const PreInterviewComponent = ({ user }) => {
     date: '',
     by: '',
     evaluation: '',
-    nextStep: '',
+    isActive: false,
   });
   const [confirmed, setConfirmed] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -117,51 +117,47 @@ const PreInterviewComponent = ({ user }) => {
   //   const userToken = location.state.userLogged.token;
   // const userLogged = location.state.userLogged.user.first_name;
 
-  useEffect(
-    () => {
-      const getPreInterview = async () => {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/user-by-id/${user.id}`
-        );
-        // console.log('=====>', response.data.pre_interview);
-        let preInterviewdata;
-        try {
-          if (
-            !response.data.pre_interview ||
-            Object.keys(response.data.pre_interview).length === 0 ||
-            response.data.pre_interview === null
-          ) {
-            preInterviewdata = {
-              date: '',
-              by: '',
-              evaluation: '',
-              nextStep: '',
-              isActive: false,
-            };
-          } else if (
-            Object.keys(response.data.pre_interview) === null ||
-            Object.keys(response.data.pre_interview).length !== 0
-          ) {
-            preInterviewdata = response.data.pre_interview;
-            // console.log(preInterviewdata);
+  useEffect(() => {
+    const getPreInterview = async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
+      );
+      // console.log('=====>', response.data.pre_interview);
+      let preInterviewdata;
+      try {
+        if (
+          !response.data.pre_interview ||
+          Object.keys(response.data.pre_interview).length === 0 ||
+          response.data.pre_interview === null
+        ) {
+          preInterviewdata = {
+            date: '',
+            by: '',
+            evaluation: '',
+            isActive: false,
+          };
+        } else if (
+          Object.keys(response.data.pre_interview) !== null ||
+          Object.keys(response.data.pre_interview).length !== 0
+        ) {
+          preInterviewdata = response.data.pre_interview;
+          // console.log(preInterviewdata);
 
-            setPreInterview(JSON.parse(preInterviewdata));
-            setIsLoading(false);
-          } else {
-            setIsLoading(false);
-            return true;
-          }
-        } catch (error) {
-          console.log(error);
+          setPreInterview(JSON.parse(preInterviewdata));
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          return true;
         }
-      };
-      // console.log(preInterview);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // console.log(preInterview);
 
-      getPreInterview();
-    },
-    [user.id],
-    confirmed
-  );
+    getPreInterview();
+  }, [studentId, confirmed]);
+  console.log(preInterview);
 
   const updatePreInterview = (field, value) => {
     setPreInterview((prevState) => ({
@@ -177,15 +173,15 @@ const PreInterviewComponent = ({ user }) => {
       setShowButton(true);
     }
   };
-
-  const handleToggle = (event) => {
-    setIsFeatureActive(event.target.checked);
-  };
+  // console.log(preInterview);
+  // const handleToggle = (event) => {
+  //   setIsFeatureActive(event.target.checked);
+  // };
 
   const handleSavePreInterview = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/add-pre-interview/${user.id}`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/students-preinterview/${studentId}`,
         { preInterview },
         {
           headers: {
@@ -195,15 +191,15 @@ const PreInterviewComponent = ({ user }) => {
         }
       );
       // console.log(response.data.message);
-      if (response.data.message) {
+      if (response.data) {
         setConfirmed(true);
         console.log('Pre Interview saved successfully');
         setShowButton(false);
       } else {
-        console.error('Failed to save interview');
+        console.error('Failed to save pre interview');
       }
     } catch (error) {
-      console.error('Failed to save interview', error);
+      console.error('Failed to save pre interview', error);
     }
   };
 
@@ -219,7 +215,7 @@ const PreInterviewComponent = ({ user }) => {
                 size="small"
                 label="Date de l'entretien"
                 type="date"
-                defaultValue={new Date().toISOString()}
+                // defaultValue={new Date().toISOString()}
                 value={preInterview.date}
                 error={!isDateValid}
                 helperText={!isDateValid && 'Please select a valid date.'}
@@ -300,32 +296,7 @@ const PreInterviewComponent = ({ user }) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Stack direction="row" spacing={2} mb={2} mt={2}>
-            {/* <FormControl required sx={{ m: 1, width: 300 }} size="small">
-              <InputLabel shrink id="demo-simple-select-standard-label">
-                Prochaine étape
-              </InputLabel>
-              <Select
-                notched
-                autoWidth
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Recommandation *"
-                value={preInterview.nextStep}
-                onChange={(e) => updatePreInterview('nextStep', e.target.value)}
-                isoptionequaltovalue={(option, value) =>
-                  value === '' || option.id === value.id
-                }>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={'A interviewer'}>A interviewer</MenuItem>
-                <MenuItem value={'Ne pas donner suite'}>
-                  Ne pas donner suite
-                </MenuItem>
-              </Select>
-            </FormControl> */}
-          </Stack>
+          <Stack direction="row" spacing={2} mb={2} mt={2}></Stack>
         </Grid>
 
         <Grid item xs={12}></Grid>
@@ -337,7 +308,7 @@ const PreInterviewComponent = ({ user }) => {
         variant="contained"
         color={confirmed ? 'primary' : 'primary'}
         onClick={handleSavePreInterview}>
-        {confirmed ? 'RÉALISÉ(S)' : 'CONFIRMER'}
+        {confirmed ? 'RÉALISÉ' : 'CONFIRMER'}
       </Button>
     </div>
   );

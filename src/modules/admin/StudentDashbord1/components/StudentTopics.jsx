@@ -32,7 +32,7 @@ const fabStyle = {
   right: 5,
 };
 
-const SubjectPriority = ({ userSelected }) => {
+const SubjectPriority = ({ studentId }) => {
   //   const location = useLocation();
   const [subjectPriorities, setSubjectPriorities] = useState([
     { subject: 'Mathématiques', priority: 1 },
@@ -52,6 +52,8 @@ const SubjectPriority = ({ userSelected }) => {
   // const subjectClassesRanges = userLogged.user.skill.topics
   // console.log(userSelected);
   const userId = user.id;
+
+  console.log(studentId);
   // console.log('USERID', userId);
   //   const token = location.state.userLogged.token;
 
@@ -67,13 +69,14 @@ const SubjectPriority = ({ userSelected }) => {
     setIsLoading(false);
     const getSubjects = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
-      // console.log(response.data);
-      if (response.data.skill && response.data.skill.topics) {
-        const parsed_array = response.data.skill.topics.map((string) =>
+      console.log(response.data.topics);
+      if (response.data.topics) {
+        const parsed_array = response.data.topics.map((string) =>
           JSON.parse(string)
         );
+        console.log(parsed_array);
         setSubjectPriorities(parsed_array);
         setIsLoading(false);
         setShowButton(false);
@@ -119,11 +122,13 @@ const SubjectPriority = ({ userSelected }) => {
     setShowButton(true);
   };
 
+  console.log(subjectPriorities);
+
   const handleSaveSubjectPriorities = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { topics: JSON.stringify(subjectPriorities) },
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/students-topics/${studentId}`,
+        { topics: subjectPriorities },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -131,8 +136,8 @@ const SubjectPriority = ({ userSelected }) => {
           },
         }
       );
-      // console.log(response.data.message, subjectClassRanges);
-      if (response.data.message) {
+      console.log(response.data);
+      if (response.data) {
         // console.log('Subject and class ranges saved successfully');
         // toast.success(response.data.message, {
         //   position: 'top-center',
@@ -171,7 +176,7 @@ const SubjectPriority = ({ userSelected }) => {
           color={fab.color}
           onClick={() => handleAddSubjectPriority()}
           component="button"
-          disabled={!showButton}>
+          disabled={showButton}>
           {fab.icon}
         </Fab>
       </label>

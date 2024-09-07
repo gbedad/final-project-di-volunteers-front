@@ -103,28 +103,28 @@ const DiscussionThread = ({ currentUser, userId }) => {
 
   useEffect(scrollToBottom, [messages]);
 
-  useEffect(() => {
-    const getMessages = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
-      );
-      // console.log(response.data);
-      if (response.data.internal_thread) {
-        const fetchedMessages = response.data.internal_thread.map(
-          (string) => string
-        );
-        setMessages(fetchedMessages);
-        setIsLoading(false);
-        localStorage.setItem(
-          `lastViewedCount_${userId}`,
-          fetchedMessages.length.toString()
-        );
-      }
-      setIsLoading(false);
-    };
+  // useEffect(() => {
+  //   const getMessages = async () => {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+  //     );
+  //     // console.log(response.data);
+  //     if (response.data.internal_thread) {
+  //       const fetchedMessages = response.data.internal_thread.map(
+  //         (string) => string
+  //       );
+  //       setMessages(fetchedMessages);
+  //       setIsLoading(false);
+  //       localStorage.setItem(
+  //         `lastViewedCount_${userId}`,
+  //         fetchedMessages.length.toString()
+  //       );
+  //     }
+  //     setIsLoading(false);
+  //   };
 
-    getMessages();
-  }, [userId]);
+  //   getMessages();
+  // }, [userId]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {

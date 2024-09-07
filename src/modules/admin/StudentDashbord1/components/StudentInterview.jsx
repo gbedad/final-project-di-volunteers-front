@@ -57,6 +57,7 @@ const FormInterviewComponent = ({ studentId, user }) => {
       by: '',
       priority: '',
       decision: '',
+      subjects: [],
     },
   ]);
   const [confirmed, setConfirmed] = useState(false);
@@ -70,29 +71,34 @@ const FormInterviewComponent = ({ studentId, user }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
-      console.log(response.data);
-      if (response.data.interviews) {
+      const isInterviewsEmpty =
+        !response.data.interviews ||
+        (typeof response.data.interviews === 'object' &&
+          Object.keys(response.data.interviews).length === 0);
+      // console.log(isInterviewsEmpty);
+      // Check if the response data is an empty object
+      if (isInterviewsEmpty) {
+        // Initialize with a default array containing one empty interview object
+
+        setInterviews([
+          { date: '', by: '', priority: '', decision: '', subjects: [] },
+        ]);
+      } else {
         const parsed_array = JSON.parse(response.data.interviews);
 
         // setInterviews(parsed_array);
         setIsLoading(false);
-        setShowButton(false);
-        setInterviews(parsed_array);
-      }
-      setIsLoading(false);
-      if (interviews.length > 0) {
-        const activeItems = interviews.filter((item) => item.isActive);
-        const activeCount = activeItems.length;
-        // console.log(activeCount);
-        setCountInterviews(activeCount);
-        // setConfirmed(true);
+        // setShowButton(false);
+
+        setInterviews(Array.from(parsed_array));
+
+        setIsLoading(false);
       }
     };
-
     getInterviews();
   }, [studentId, confirmed]);
 
-  console.log(interviews);
+  // console.log(interviews);
 
   // Check if all values are filled in interviews
   const areAllKeysNonNullOrEmpty = (arr) => {
@@ -132,7 +138,7 @@ const FormInterviewComponent = ({ studentId, user }) => {
     });
   };
 
-  console.log(interviews);
+  // console.log(interviews);
 
   // function parseInterviews(data) {
   //   const parsedData = data.map((interview) => {
@@ -182,29 +188,29 @@ const FormInterviewComponent = ({ studentId, user }) => {
   //     }
   //   };
 
-  const handleAddInterview = () => {
-    let count = 1;
-    if (interviews.length > 0) {
-      count = interviews.length + 1;
-    }
-    // console.log(count);
-    // const dateToday = new Date().toLocaleDateString();
-    // console.log(dateToday);
+  // const handleAddInterview = () => {
+  //   let count = 1;
+  //   if (interviews.length > 0) {
+  //     count = interviews.length + 1;
+  //   }
+  //   // console.log(count);
+  //   // const dateToday = new Date().toLocaleDateString();
+  //   // console.log(dateToday);
 
-    setInterviews([
-      ...interviews,
-      {
-        date: '',
-        priority: '',
+  //   setInterviews([
+  //     ...interviews,
+  //     {
+  //       date: '',
+  //       priority: '',
 
-        by: '',
-        isActive: false,
-      },
-    ]);
-    setConfirmed(false);
-    setShowButton(true);
-  };
-  const result = areAllKeysNonNullOrEmpty(interviews);
+  //       by: '',
+  //       isActive: false,
+  //     },
+  //   ]);
+  //   setConfirmed(false);
+  //   setShowButton(true);
+  // };
+  // const result = areAllKeysNonNullOrEmpty(interviews);
   // console.log(result);
 
   const handleSaveInterviews = async () => {
@@ -235,17 +241,17 @@ const FormInterviewComponent = ({ studentId, user }) => {
       console.error('Failed to save interview', error);
     }
   };
-  //   const fab = {
-  //     color: 'primary',
-  //     sx: fabStyle,
-  //     icon: <AddIcon />,
-  //     label: 'Add',
-  //   };
+  // const fab = {
+  //   color: 'primary',
+  //   sx: fabStyle,
+  //   icon: <AddIcon />,
+  //   label: 'Add',
+  // };
   // console.log(interviews);
 
   return (
     <div>
-      <Typography
+      {/* <Typography
         variant="h6"
         component="h6"
         align="center"
@@ -261,7 +267,7 @@ const FormInterviewComponent = ({ studentId, user }) => {
             size="normal"
           />
         )}
-      </Typography>
+      </Typography> */}
       <label>
         {/* <Fab
           sx={fab.sx}
@@ -274,340 +280,323 @@ const FormInterviewComponent = ({ studentId, user }) => {
         </Fab> */}
       </label>
 
-      {interviews &&
-        interviews.map((interview, index) => (
-          <Grid spacing={2} pb={5}>
-            <Grid item xs={12} key={index}>
-              <Stack direction="row" spacing={2} mb={2}>
-                <FormControl>
-                  <InputLabel id="demo-simple-select-helper-label"></InputLabel>
+      {interviews.map((interview, index) => (
+        <Grid spacing={2} pb={5}>
+          <Grid item xs={12} key={index}>
+            <Stack direction="row" spacing={2} mb={2}>
+              <FormControl>
+                <InputLabel id="demo-simple-select-helper-label"></InputLabel>
+                <TextField
+                  required={true}
+                  size="small"
+                  label="Date de l'entretien"
+                  type="date"
+                  // defaultValue={new Date().toISOString()}
+                  value={interview.date}
+                  error={!isDateValid}
+                  helperText={!isDateValid && 'Please select a valid date.'}
+                  onChange={(e) => handleDateChange(e.target.value, index)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </FormControl>
+              <FormControl required sx={{ m: 1, width: 250 }} size="small">
+                <InputLabel shrink id="demo-simple-select-standard-label">
+                  Réalisé par
+                </InputLabel>
+                <Select
+                  notched
+                  autoWidth
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Réalisé par"
+                  value={'' || interview.by}
+                  onChange={(e) =>
+                    handleInterviewChange('by', e.target.value, index)
+                  }
+                  isoptionequaltovalue={(option, value) =>
+                    value === '' || option.id === value.id
+                  }>
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={'Noemie Rolland'}>Noemie Rolland</MenuItem>
+                  <MenuItem value={'Corinne Zuili'}>Corinne Zuili</MenuItem>
+                  <MenuItem value={'Emmanuelle Berrebi'}>
+                    Emmanuelle Berrebi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={interview.isActive}
+                  onChange={(e) =>
+                    handleInterviewChange('isActive', e.target.checked, index)
+                  }
+                  name="callFeatureToggle"
+                  color="primary"
+                />
+              }
+              label="Entretien réalisé"
+            />
+          </Grid>
+
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header">
+              <Typography variant="h6">
+                Selon le(s) parent(s) et l'élève
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    // mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                  }}>
                   <TextField
-                    required={true}
-                    size="small"
-                    label="Date de l'entretien"
-                    type="date"
-                    // defaultValue={new Date().toISOString()}
-                    value={interview.date}
-                    error={!isDateValid}
-                    helperText={!isDateValid && 'Please select a valid date.'}
-                    onChange={(e) => handleDateChange(e.target.value, index)}
+                    id="outlined-multiline-static"
+                    label="Quel est le motif de la demande d'accompagnement ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.student_view_motivation}
+                    onChange={(e) =>
+                      handleInterviewChange('motivation', e.target.value, index)
+                    }
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
                 </FormControl>
-                <FormControl required sx={{ m: 1, width: 250 }} size="small">
-                  <InputLabel shrink id="demo-simple-select-standard-label">
-                    Réalisé par
-                  </InputLabel>
-                  <Select
-                    notched
-                    autoWidth
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    label="Réalisé par"
-                    value={interview.by}
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '0.4rem',
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+                  }}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Quelle est la nature des difficultés rencontrées ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.student_view_difficulty}
                     onChange={(e) =>
-                      handleInterviewChange('by', e.target.value, index)
+                      handleInterviewChange('experience', e.target.value, index)
                     }
-                    isoptionequaltovalue={(option, value) =>
-                      value === '' || option.id === value.id
-                    }>
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={'Noemie Rolland'}>Noemie Rolland</MenuItem>
-                    <MenuItem value={'Corinne Zuili'}>Corinne Zuili</MenuItem>
-                    <MenuItem value={'Emmanuelle Berrebi'}>
-                      Emmanuelle Berrebi
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={interview.isActive}
-                    onChange={(e) =>
-                      handleInterviewChange('isActive', e.target.checked, index)
-                    }
-                    name="callFeatureToggle"
-                    color="primary"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
-                }
-                label="Entretien réalisé"
-              />
-            </Grid>
-
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header">
-                <Typography variant="h6">
-                  Selon le(s) parent(s) et l'élève
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      // mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '12px',
-                      fontWeight: '400',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Quel est le motif de la demande d'accompagnement ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.student_view_motivation}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'motivation',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '0.4rem',
-                      fontWeight: '400',
-                      lineHeight: '1.5',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Quelle est la nature des difficultés rencontrées ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.student_view_difficulty}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'experience',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '0.4rem',
-                      fontWeight: '400',
-                      lineHeight: '1.5',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Autre ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.student_view_other}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'how_tutoring',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header">
-                <Typography variant="h6">Selon l'interviewer'</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      // mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '12px',
-                      fontWeight: '400',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Quel serait l'objecti de l'accompagnement ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.interviewer_view_objective}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'motivation',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '0.4rem',
-                      fontWeight: '400',
-                      lineHeight: '1.5',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Quelle est la nature des difficultés rencontrées ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.interviewer_view_difficulty}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'experience',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      // value={interview.motivation}
-                      // onChange={(e) =>
-                      //   handleContentChange(e.target.value, index)
-                      // }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    sx={{
-                      minWidth: '100%',
-                      mt: 2,
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '0.4rem',
-                      fontWeight: '400',
-                      lineHeight: '1.5',
-                    }}>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Quelles autres observations (timidité, difficultés de concentration...) ?"
-                      multiline
-                      minRows={1}
-                      placeholder=""
-                      value={interview.interviewer_view_other}
-                      onChange={(e) =>
-                        handleInterviewChange(
-                          'how_tutoring',
-                          e.target.value,
-                          index
-                        )
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Divider />
-            <Grid item={12}>
-              <Typography p={2} variant="h6">
-                Décision
-              </Typography>
-              <Stack direction="row" spacing={2} mb={2} mt={2}>
-                <FormControl required sx={{ m: 1, width: 300 }}>
-                  <InputLabel shrink id="demo-simple-select-standard-label">
-                    Décision
-                  </InputLabel>
-
-                  <Select
-                    size="small"
-                    notched
-                    autoWidth
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    label="Décision *"
-                    value={interview.decision}
-                    onChange={(e) =>
-                      handleInterviewChange('decision', e.target.value, index)
-                    }>
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={'Chercher un tuteur'}>
-                      Chercher un tuteur
-                    </MenuItem>
-                    <MenuItem value={'temporiser'}>Temporiser</MenuItem>
-                    <MenuItem value={'Décliner'}>Décliner</MenuItem>
-                  </Select>
                 </FormControl>
-
-                <FormControl required sx={{ m: 1, width: 150 }}>
-                  <InputLabel shrink id="demo-simple-select-standard-label">
-                    Priorité
-                  </InputLabel>
-
-                  <Select
-                    size="small"
-                    notched
-                    autoWidth
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    label="Priorité *"
-                    value={interview.priority}
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '0.4rem',
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+                  }}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Autre ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.student_view_other}
                     onChange={(e) =>
-                      handleInterviewChange('priority', e.target.value, index)
-                    }>
-                    {existingStudentPriorities.map((priority) => (
-                      <MenuItem key={priority.label} value={priority.label}>
-                        {priority.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                      handleInterviewChange(
+                        'how_tutoring',
+                        e.target.value,
+                        index
+                      )
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
                 </FormControl>
-              </Stack>
-            </Grid>
-            <Divider />
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header">
+              <Typography variant="h6">Selon l'interviewer'</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    // mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                  }}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Quel serait l'objecti de l'accompagnement ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.interviewer_view_objective}
+                    onChange={(e) =>
+                      handleInterviewChange('motivation', e.target.value, index)
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '0.4rem',
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+                  }}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Quelle est la nature des difficultés rencontrées ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.interviewer_view_difficulty}
+                    onChange={(e) =>
+                      handleInterviewChange('experience', e.target.value, index)
+                    }
+                    // value={interview.motivation}
+                    // onChange={(e) =>
+                    //   handleContentChange(e.target.value, index)
+                    // }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  sx={{
+                    minWidth: '100%',
+                    mt: 2,
+                    fontFamily: 'IBM Plex Sans, sans-serif',
+                    fontSize: '0.4rem',
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+                  }}>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Quelles autres observations (timidité, difficultés de concentration...) ?"
+                    multiline
+                    minRows={1}
+                    placeholder=""
+                    value={interview.interviewer_view_other}
+                    onChange={(e) =>
+                      handleInterviewChange(
+                        'how_tutoring',
+                        e.target.value,
+                        index
+                      )
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+          <Divider />
+          <Grid item={12}>
+            <Typography p={2} variant="h6">
+              Décision
+            </Typography>
+            <Stack direction="row" spacing={2} mb={2} mt={2}>
+              <FormControl required sx={{ m: 1, width: 300 }}>
+                <InputLabel shrink id="demo-simple-select-standard-label">
+                  Décision
+                </InputLabel>
 
-            <Grid item xs={12} sx={{ position: 'relative' }}>
-              <SubjectDecidedPriority />
-            </Grid>
+                <Select
+                  size="small"
+                  notched
+                  autoWidth
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Décision *"
+                  value={interview.decision}
+                  onChange={(e) =>
+                    handleInterviewChange('decision', e.target.value, index)
+                  }>
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={'Chercher un tuteur'}>
+                    Chercher un tuteur
+                  </MenuItem>
+                  <MenuItem value={'temporiser'}>Temporiser</MenuItem>
+                  <MenuItem value={'Décliner'}>Décliner</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl required sx={{ m: 1, width: 150 }}>
+                <InputLabel shrink id="demo-simple-select-standard-label">
+                  Priorité
+                </InputLabel>
+
+                <Select
+                  size="small"
+                  notched
+                  autoWidth
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Priorité *"
+                  value={interview.priority}
+                  onChange={(e) =>
+                    handleInterviewChange('priority', e.target.value, index)
+                  }>
+                  {existingStudentPriorities.map((priority) => (
+                    <MenuItem key={priority.label} value={priority.label}>
+                      {priority.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
           </Grid>
-        ))}
+          <Divider />
+
+          <Grid item xs={12} sx={{ position: 'relative' }}>
+            <SubjectDecidedPriority studentId={studentId} />
+          </Grid>
+        </Grid>
+      ))}
       <Box mt={3} mb={3}>
         <Divider />
       </Box>
