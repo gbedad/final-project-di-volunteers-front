@@ -85,7 +85,7 @@ const BeneficiaryWhatWhen = ({ studentId }) => {
             Disponibilités
           </Typography>
           <Grid spacing={2}>
-            <StudentDaytimes />
+            <StudentDaytimes studentId={studentId} />
           </Grid>
         </Grid>
         <Divider />
@@ -94,7 +94,7 @@ const BeneficiaryWhatWhen = ({ studentId }) => {
           <Typography variant="h6" gutterBottom>
             Lieux possibles
           </Typography>
-          <StudentsLocations />
+          <StudentsLocations studentId={studentId} />
         </Grid>
       </Grid>
 

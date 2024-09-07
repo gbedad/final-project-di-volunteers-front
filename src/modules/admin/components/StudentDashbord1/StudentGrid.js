@@ -240,6 +240,25 @@ const columns = [
     headerAlign: 'left',
     type: 'string',
     editable: true,
+    valueGetter: (params) => {
+      const topics = params.row.topics;
+
+      try {
+        const parsedTopics = JSON.parse(topics);
+        console.log(parsedTopics);
+
+        // Filter subjects with priority 1
+        const filteredSubjects = parsedTopics
+          .filter((item) => item.priority === 1)
+          .map((item) => item.subject); // Return only the 'subject' values
+
+        // Return the filtered subjects as a comma-separated string
+        return filteredSubjects.join(', ');
+      } catch (error) {
+        console.error('Error parsing topics:', error);
+        return ''; // Return an empty string in case of an error
+      }
+    },
   },
   {
     field: 'interviewPriority',

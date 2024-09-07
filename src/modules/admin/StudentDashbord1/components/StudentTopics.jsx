@@ -34,9 +34,7 @@ const fabStyle = {
 
 const SubjectPriority = ({ studentId }) => {
   //   const location = useLocation();
-  const [subjectPriorities, setSubjectPriorities] = useState([
-    { subject: 'Mathématiques', priority: 1 },
-  ]);
+  const [subjectPriorities, setSubjectPriorities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // const { userLogged } = location.state;
@@ -66,25 +64,54 @@ const SubjectPriority = ({ studentId }) => {
   };
 
   useEffect(() => {
-    setIsLoading(false);
+    let isMounted = true;
+    setIsLoading(true);
+
     const getSubjects = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
-      );
-      console.log(response.data.topics);
-      if (response.data.topics) {
-        const parsed_array = response.data.topics.map((string) =>
-          JSON.parse(string)
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
         );
-        console.log(parsed_array);
-        setSubjectPriorities(parsed_array);
-        setIsLoading(false);
-        setShowButton(false);
+
+        console.log('Raw topics data:', response.data.topics);
+
+        if (isMounted && response.data.topics) {
+          let parsedTopics;
+
+          if (typeof response.data.topics === 'string') {
+            // If topics is a JSON string, parse it once
+            parsedTopics = JSON.parse(response.data.topics);
+          } else if (Array.isArray(response.data.topics)) {
+            // If topics is already an array, map through and parse each item if needed
+            parsedTopics = response.data.topics.map((topic) =>
+              typeof topic === 'string' ? JSON.parse(topic) : topic
+            );
+          } else {
+            console.error('Unexpected topics format:', response.data.topics);
+            parsedTopics = [];
+          }
+
+          console.log('Parsed topics:', parsedTopics);
+          setSubjectPriorities(parsedTopics);
+          setShowButton(false);
+        }
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
+        // Optionally set an error state here
+        // setError('Failed to fetch subjects');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     getSubjects();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [studentId]);
 
   useEffect(() => {
     // Check if all values in all objects in dayTimeRanges are filled
@@ -136,7 +163,7 @@ const SubjectPriority = ({ studentId }) => {
           },
         }
       );
-      console.log(response.data);
+      console.log(response.data.updatedStudent);
       if (response.data) {
         // console.log('Subject and class ranges saved successfully');
         // toast.success(response.data.message, {
@@ -253,8 +280,7 @@ const SubjectPriority = ({ studentId }) => {
           sx={{ marginTop: '10px' }}
           variant="contained"
           color="primary"
-          onClick={handleSaveSubjectPriorities}
-          disabled={!allValuesFilled || !showButton}>
+          onClick={handleSaveSubjectPriorities}>
           Enregistrer
         </Button>
       )}

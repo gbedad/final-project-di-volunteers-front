@@ -3,28 +3,30 @@ const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 module.exports = {
   module: {
     rules: [
+      // Handle images and SVGs
       {
         test: /\.(png|jpe?g|gif|svg|pdf)$/i,
-        type: 'assets',
-        use: [
-          {
-            loader: 'file-loader',
+        type: 'asset', // Use Webpack 5 built-in asset type
+        parser: {
+          dataUrlCondition: {
+            maxSize: 100 * 1024, // Adjust limit based on your preference (100KB here)
           },
-        ],
+        },
+      },
+      // Babel loader for JS files
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'], // 'es2015' is deprecated, use '@babel/preset-env'
+            compact: true,
+          },
+        },
       },
     ],
   },
-  loaders: [
-    {
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        presets: ['es2015'],
-        compact: true,
-      },
-    },
-  ],
   optimization: {
     minimizer: [
       '...',
@@ -33,13 +35,8 @@ module.exports = {
           implementation: ImageMinimizerPlugin.svgoMinify,
           options: {
             encodeOptions: {
-              // Pass over SVGs multiple times to ensure all optimizations are applied. False by default
               multipass: true,
-              plugins: [
-                // set of built-in plugins enabled by default
-                // see: https://github.com/svg/svgo#default-preset
-                'preset-default',
-              ],
+              plugins: ['preset-default'],
             },
           },
         },

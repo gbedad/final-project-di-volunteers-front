@@ -31,10 +31,10 @@ const fabStyle = {
   right: 5,
 };
 
-const DayTimeRangeComponent = ({ userSelected }) => {
+const DayTimeRangeComponent = ({ studentId }) => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([
-    { subject: '', startTime: '', endTime: '' },
+    { day: '', startTime: '08:00', endTime: '09:00' },
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -67,12 +67,12 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     setIsLoading(false);
     const getDays = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
       // console.log(response.data);
 
-      if (response.data.skill && response.data.skill.when_day_slot) {
-        const parsed_array = response.data.skill.when_day_slot.map((string) =>
+      if (response.data && response.data.when_day_slot) {
+        const parsed_array = response.data.when_day_slot.map((string) =>
           JSON.parse(string)
         );
         setDayTimeRanges(parsed_array);
@@ -136,8 +136,8 @@ const DayTimeRangeComponent = ({ userSelected }) => {
 
   const handleSaveDayTimeRanges = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/students-availabilities/${studentId}`,
         { when_day_slot: JSON.stringify(dayTimeRanges) },
         {
           headers: {

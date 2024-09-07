@@ -26,37 +26,29 @@ const fabStyle = {
   right: 5,
 };
 
-const LocationsPossibleComponent = ({ userSelected }) => {
+const LocationsPossibleComponent = ({ studentId }) => {
   const location = useLocation();
-  const [locationsPossible, setLocationsPossible] = useState([
-    { location: '' },
-  ]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [locationsPossible, setLocationsPossible] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [disableSave, setDisableSave] = useState(true);
   //   const { userLogged } = location.state;
   // const token = useContext(AuthContext);
-  //  const subjectClassesRanges = userLogged.user.skill.topics
-
-  // const userId = location.state.userLogged.user.id;
-  const userId = '1';
-
-  // console.log('USERID', userId);
 
   useEffect(() => {
     const getLocations = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
       // console.log(response.data.skill.where_location);
-      const skills = response.data.skill;
+      const locations = response.data.where_location;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
-      if (skills && skills.where_location) {
-        setLocationsPossible(skills.where_location);
+      if (response.data && response.data.where_location) {
+        setLocationsPossible(locations);
         setIsLoading(false);
         setShowButton(false);
       }
-      if (response.data.skill === null) setIsLoading(false);
+      if (response.data.where_location === null) setIsLoading(false);
     };
 
     getLocations();
@@ -87,8 +79,8 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
   const handleSaveLocationsPossible = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/students-locations/${studentId}`,
         { where_location: locationsPossible },
         {
           headers: {
@@ -151,7 +143,8 @@ const LocationsPossibleComponent = ({ userSelected }) => {
           color={fab.color}
           onClick={() => handleAddLocation()}
           component="button"
-          disabled={!showButton}>
+          // disabled={showButton}
+        >
           {fab.icon}
         </Fab>
       </label>
@@ -210,7 +203,8 @@ const LocationsPossibleComponent = ({ userSelected }) => {
           variant="contained"
           color="primary"
           onClick={handleSaveLocationsPossible}
-          disabled={disableSave || !showButton}>
+          // disabled={disableSave || !showButton}
+        >
           Enregistrer
         </Button>
       )}
