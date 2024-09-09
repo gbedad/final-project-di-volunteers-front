@@ -41,6 +41,7 @@ import {
   existingLevels,
 } from '../options/existingOptions';
 
+
 import { formatPhoneNumber } from '../js/phoneNumbersSpace';
 import { parsePhoneNumber } from 'awesome-phonenumber';
 
@@ -124,6 +125,7 @@ export default function DataGridDemo(props) {
   const [newMessageFlags, setNewMessageFlags] = useState({});
   const [justViewedMessages, setJustViewedMessages] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectionModel, setSelectionModel] = useState([])
 
   const columns = [
     {
@@ -484,6 +486,7 @@ export default function DataGridDemo(props) {
 
     if (filteredResults.length > 0) {
       setFilteredData(filteredResults);
+    
     } else {
       setFilteredData([]);
     }
@@ -840,6 +843,31 @@ export default function DataGridDemo(props) {
     setLoading(false);
   }, [filteredData, newMessageFlags]);
 
+
+  const handleCopyEmails = () => {
+    console.log("Reached copy?");
+    
+  const selectedEmails = selectionModel
+    .map(id => rows.find(row => row.id === id)?.email)
+    .filter(Boolean)
+    .join(', ');
+
+    console.log(selectedEmails);
+    
+
+  if (selectedEmails) {
+    navigator.clipboard.writeText(selectedEmails)
+      .then(() => {
+        alert('Emails copied to clipboard!');
+      })
+      .catch(err => {
+        console.error('Failed to copy emails: ', err);
+      });
+  } else {
+    alert('No emails selected');
+  }
+};
+
   // --------------------------------------------------------------------------------------------------
   return (
     <>
@@ -960,6 +988,9 @@ export default function DataGridDemo(props) {
         <Button variant="contained" onClick={handleSearch} color="primary">
           Filtrer
         </Button>
+        <Button onClick={handleCopyEmails} variant="contained">
+        Copy Filtered Emails
+      </Button>
       </Stack>
       <Box sx={{ height: 'auto', width: '100%' }}>
         <FullEditDataGrid
@@ -981,6 +1012,12 @@ export default function DataGridDemo(props) {
           }}
           pageSizeOptions={[30]}
           disableRowSelectionOnClick
+          checkboxSelection
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setSelectionModel(newRowSelectionModel);
+          }}
+          selectionModel={selectionModel}s
+      
         />
       </Box>
     </>
