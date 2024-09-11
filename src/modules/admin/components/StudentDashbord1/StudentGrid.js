@@ -4,7 +4,7 @@ import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
 import useStudentData from './details';
 import moment from 'moment';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { PhoneInputCell } from '../../../core/utils/phoneFormatter';
@@ -115,25 +115,28 @@ export default function ManageGrid() {
         <Typography variant="h4" mb={2} textAlign={'center'}>
           Gestion des bénéficiaires
         </Typography>
-
-        <FullEditDataGrid
-          onRowClick={handleDoubleRowClick}
-          columns={columns}
-          rows={rows.map((r, i) => ({ ...r, no: i + 1 }))}
-          onSaveRow={onSaveRow}
-          onDeleteRow={onDeleteRow}
-          createRowData={createRowData}
-          loading={loading}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                // Hide columns status and traderName, the other columns will remain visible
-                no: true,
-                id: true,
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <FullEditDataGrid
+            onRowClick={handleDoubleRowClick}
+            columns={columns}
+            rows={rows.map((r, i) => ({ ...r, no: i + 1 }))}
+            onSaveRow={onSaveRow}
+            onDeleteRow={onDeleteRow}
+            createRowData={createRowData}
+            loading={loading}
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  // Hide columns status and traderName, the other columns will remain visible
+                  no: true,
+                  id: true,
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        )}
       </Box>
     </>
   );
@@ -242,22 +245,41 @@ const columns = [
     editable: true,
     valueGetter: (params) => {
       const topics = params.row.topics;
+      let parsedTopics = [];
 
-      try {
-        const parsedTopics = JSON.parse(topics);
-        console.log(parsedTopics);
-
-        // Filter subjects with priority 1
-        const filteredSubjects = parsedTopics
-          .filter((item) => item.priority === 1)
-          .map((item) => item.subject); // Return only the 'subject' values
-
-        // Return the filtered subjects as a comma-separated string
-        return filteredSubjects.join(', ');
-      } catch (error) {
-        console.error('Error parsing topics:', error);
-        return ''; // Return an empty string in case of an error
+      if (typeof topics === 'string') {
+        try {
+          parsedTopics = JSON.parse(topics);
+        } catch (error) {
+          console.error(
+            `Error parsing topics for row ${params.row.id}:`,
+            error
+          );
+        }
+      } else if (Array.isArray(topics)) {
+        parsedTopics = topics;
+      } else if (topics && typeof topics === 'object') {
+        parsedTopics = [topics]; // If it's a single object, wrap it in an array
       }
+
+      if (!Array.isArray(parsedTopics)) {
+        console.warn(
+          `Unexpected topics data type for row ${params.row.id}:`,
+          typeof topics
+        );
+        return '';
+      }
+
+      // Filter subjects with priority 1
+      const filteredSubjects = parsedTopics
+        .filter(
+          (item) => item && typeof item === 'object' && item.priority === 1
+        )
+        .map((item) => item.subject)
+        .filter((subject) => subject); // Remove any undefined or null subjects
+
+      // Return the filtered subjects as a comma-separated string
+      return filteredSubjects.join(', ');
     },
   },
   {
@@ -269,20 +291,26 @@ const columns = [
     editable: true,
     valueGetter: (params) => {
       const interviews = params.row.interviews;
+      let parsedInterviews = [];
+
       if (typeof interviews === 'string') {
         try {
-          const parsedInterviews = JSON.parse(interviews);
-          if (Array.isArray(parsedInterviews) && parsedInterviews.length > 0) {
-            const lastInterview = parsedInterviews[parsedInterviews.length - 1];
-            return lastInterview.priority || '';
-          }
+          parsedInterviews = JSON.parse(interviews);
         } catch (error) {
-          console.error('Error parsing interviews:', error);
+          console.error(
+            `Error parsing interviews for row ${params.row.id}:`,
+            error
+          );
         }
-      } else if (Array.isArray(interviews) && interviews.length > 0) {
-        const lastInterview = interviews[interviews.length - 1];
-        return lastInterview.priority || '';
+      } else if (Array.isArray(interviews)) {
+        parsedInterviews = interviews;
       }
+
+      if (Array.isArray(parsedInterviews) && parsedInterviews.length > 0) {
+        const lastInterview = parsedInterviews[parsedInterviews.length - 1];
+        return lastInterview?.priority || 'No priority';
+      }
+
       return '';
     },
   },
@@ -297,16 +325,29 @@ const columns = [
     valueGetter: (params) => {
       const preinterview = params.row.pre_interview;
 
-      try {
-        const parsedInterview = JSON.parse(preinterview);
-
-        return parsedInterview.date ? new Date(parsedInterview.date) : null;
-      } catch (error) {
-        console.error('Error parsing interviews:', error);
+      if (!preinterview) {
+        return null;
       }
+
+      if (typeof preinterview === 'string') {
+        try {
+          const parsedInterview = JSON.parse(preinterview);
+          return parsedInterview?.date ? new Date(parsedInterview.date) : null;
+        } catch (error) {
+          console.error(
+            `Error parsing pre_interview for row ${params.row.id}:`,
+            error
+          );
+          return null;
+        }
+      } else if (typeof preinterview === 'object') {
+        return preinterview?.date ? new Date(preinterview.date) : null;
+      }
+
+      return null;
     },
     valueFormatter: (params) => {
-      if (params.value) {
+      if (params.value instanceof Date) {
         return params.value.toLocaleDateString();
       }
       return '';
@@ -352,7 +393,7 @@ const columns = [
     headerName: 'Lancé le',
     width: 150,
     headerAlign: 'left',
-    type: 'string',
+    type: 'date',
     editable: true,
   },
   {
