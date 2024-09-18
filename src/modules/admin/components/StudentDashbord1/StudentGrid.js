@@ -42,7 +42,8 @@ const capitalizeFamilyName = (fullname) => {
 
 export default function ManageGrid() {
   const { rows, setRows, getAll, saveRow, deleteRow } = useStudentData();
-  // const [rows, setRows] = useState([]);
+  const [localRows, setLocalRows] = useState(rows);
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -60,11 +61,23 @@ export default function ManageGrid() {
 
     saveRow(updatedRow)
       .then((res) => {
-        const dbRow = res.data;
-        setRows(dbRow);
+        const dbRow = res.data; // This is an object
+
+        setLocalRows((currentRows) => {
+          const updatedRows = currentRows.map((row) =>
+            row.id === dbRow.id ? dbRow : row
+          );
+
+          if (updatedRow.isNew) {
+            return [...updatedRows, dbRow];
+          }
+
+          return updatedRows;
+        });
       })
       .catch((err) => {
-        setRows(oldRows);
+        console.error(err);
+        setLocalRows(oldRows); // Restore old rows in case of error
       });
   };
 
