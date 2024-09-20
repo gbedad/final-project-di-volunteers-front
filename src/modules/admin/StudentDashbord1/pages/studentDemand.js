@@ -26,6 +26,7 @@ import PreInterviewComponent from '../components/StudentPreInterview';
 import StudentDiscussionThread from '../components/StudentDiscussionThread';
 import StudentInterview from '../components/StudentInterview';
 import SchoolHistory from '../components/SchoolHistory';
+import StudentFileUploader from '../components/StudentFileUploader';
 
 import { useAuth } from '../../../../AuthContext';
 
@@ -73,7 +74,7 @@ export default function BeneficiaryPage() {
 
   const [parent2_firstname, setParent2_firstname] = useState('');
   const [parent2_lastname, setParent2_lastname] = useState('');
-  const [parent2_email, setparent2_email] = useState('');
+  const [parent2_email, setParent2_email] = useState('');
   const [parent2_phone, setParent2_phone] = useState('');
   const [other_firstname, setOther_firstname] = useState('');
   const [other_lastname, setOther_lastname] = useState('');
@@ -82,6 +83,7 @@ export default function BeneficiaryPage() {
   const [isFamily, setFamily] = useState(false);
   const [student, setStudent] = useState(null);
   const [error, setError] = useState(null);
+  const [actualize, setActualize] = useState(false);
   const { id } = useParams();
 
   // const location = useLocation();
@@ -103,9 +105,9 @@ export default function BeneficiaryPage() {
         setError(err.message);
       }
     };
-
+    setActualize(false);
     getStudent();
-  }, [id]);
+  }, [id, actualize]);
 
   if (error) return <div>Error: {error}</div>;
   if (!student) return <div>Loading...</div>;
@@ -166,6 +168,7 @@ export default function BeneficiaryPage() {
 
       // Handle successful update (e.g., show a success message, update local state, etc.)
       console.log('Updated student:', updatedStudent);
+      setActualize(true);
     } catch (error) {
       // Handle error (e.g., show error message to user)
       console.error('Failed to update student:', error);
@@ -187,19 +190,20 @@ export default function BeneficiaryPage() {
               <TextField
                 size="small"
                 fullWidth
-                label="Nom"
-                margin="normal"
-                value={student.last_name}
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                size="small"
-                fullWidth
                 label="Prénom"
                 margin="normal"
                 value={student.first_name}
                 InputLabelProps={{ shrink: true }}
               />
+              <TextField
+                size="small"
+                fullWidth
+                label="Nom"
+                margin="normal"
+                value={student.last_name}
+                InputLabelProps={{ shrink: true }}
+              />
+
               <TextField
                 size="small"
                 fullWidth
@@ -312,7 +316,8 @@ export default function BeneficiaryPage() {
                 margin="normal"
                 size="small"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => e.target.value}
+                value={student.parent1_firstname}
+                onChange={(e) => setParent1_firstname(e.target.value)}
               />
               <TextField
                 fullWidth
@@ -320,6 +325,8 @@ export default function BeneficiaryPage() {
                 margin="normal"
                 size="small"
                 InputLabelProps={{ shrink: true }}
+                value={student.parent1_lastname}
+                onChange={(e) => setParent1_lastname(e.target.value)}
               />
               <TextField
                 size="small"
@@ -327,6 +334,8 @@ export default function BeneficiaryPage() {
                 label="Téléphone du parent 1"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                value={student.parent1_phone}
+                onChange={(e) => setParent1_phone(e.target.value)}
               />
               <TextField
                 size="small"
@@ -335,6 +344,8 @@ export default function BeneficiaryPage() {
                 margin="normal"
                 type="email"
                 InputLabelProps={{ shrink: true }}
+                value={student.parent1_email}
+                onChange={(e) => setParent1_email(e.target.value)}
               />
               <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
                 Parent 2
@@ -345,6 +356,8 @@ export default function BeneficiaryPage() {
                 label="Prénom du parent 2"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                value={student.parent2_firstname}
+                onChange={(e) => setParent2_firstname(e.target.value)}
               />
               <TextField
                 size="small"
@@ -352,6 +365,8 @@ export default function BeneficiaryPage() {
                 label="Nom du parent 2"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                value={student.parent2_lastname}
+                onChange={(e) => setParent2_lastname(e.target.value)}
               />
               <TextField
                 size="small"
@@ -359,15 +374,20 @@ export default function BeneficiaryPage() {
                 fullWidth
                 label="Téléphone du parent 2"
                 margin="normal"
+                type="email"
+                value={student.parent2_phone}
+                onChange={(e) => setParent2_phone(e.target.value)}
               />
               <TextField
                 size="small"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
-                label="Mail du parent 2"
+                label="Email du parent 2"
                 margin="normal"
-                type="email"
+                value={student.parent2_email}
+                onChange={(e) => setParent2_email(e.target.value)}
               />
+
               <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
                 Autre
               </Typography>
@@ -377,6 +397,8 @@ export default function BeneficiaryPage() {
                 label="Prénom de autre"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                value={student.other_firstname}
+                onChange={(e) => setOther_firstname(e.target.value)}
               />
               <TextField
                 size="small"
@@ -384,13 +406,18 @@ export default function BeneficiaryPage() {
                 label="Nom de autre"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
+                value={student.other_lastname}
+                onChange={(e) => setOther_lastname(e.target.value)}
               />
+
               <TextField
                 size="small"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 label="Téléphone de autre"
                 margin="normal"
+                value={student.other_phone}
+                onChange={(e) => setOther_phone(e.target.value)}
               />
               <TextField
                 size="small"
@@ -399,6 +426,8 @@ export default function BeneficiaryPage() {
                 label="Mail de autre"
                 margin="normal"
                 type="email"
+                value={student.other_email}
+                onChange={(e) => setOther_email(e.target.value)}
               />
               <Button
                 sx={{ width: 'fit-content' }}
@@ -464,16 +493,9 @@ export default function BeneficiaryPage() {
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Historique scolaire et le cas échéant médical">
                     <SchoolHistory user={user} studentId={id} />
-                    {/* <TextField
-                      fullWidth
-                      label="Dernier diplôme"
-                      margin="normal"
-                    />
-                    <TextField
-                      fullWidth
-                      label="Année d'obtention"
-                      margin="normal"
-                    /> */}
+                  </BorderBoxWithLabel>
+                  <BorderBoxWithLabel label="Fichiers">
+                    <StudentFileUploader user={user} studentId={id} />
                   </BorderBoxWithLabel>
                 </Grid>
               </Grid>

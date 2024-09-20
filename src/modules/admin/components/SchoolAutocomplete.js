@@ -58,7 +58,7 @@ export const SchoolAutocomplete = ({ onSchoolSelect }) => {
             label="Chercher un établissement"
             margin="normal"
             variant="standard"
-            InputLabelProps={{ shrink: false }}
+            // InputLabelProps={{ shrink: true }}
             InputProps={{
               ...params.InputProps,
               endAdornment: (

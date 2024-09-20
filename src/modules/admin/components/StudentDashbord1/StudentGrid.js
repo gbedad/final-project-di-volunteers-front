@@ -4,6 +4,7 @@ import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
 import useStudentData from './details';
 import moment from 'moment';
+import { parse, isValid, format } from 'date-fns';
 import { Typography, Box, CircularProgress } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
@@ -101,6 +102,8 @@ export default function ManageGrid() {
     const studentId = params.row.id;
     console.log('studentId:', studentId);
 
+    console.log('address:', params.row);
+
     navigate(`/admin/student-demand/${studentId}`, {
       state: { userLogged: user, studentSelected: studentId },
     });
@@ -143,8 +146,9 @@ export default function ManageGrid() {
               columns: {
                 columnVisibilityModel: {
                   // Hide columns status and traderName, the other columns will remain visible
-                  no: true,
+                  no: false,
                   id: true,
+                  created_at: false,
                 },
               },
             }}
@@ -224,30 +228,43 @@ const columns = [
     editable: true,
 
     renderCell: (params) => (
-      <EmailCell
-        value={params.value}
-        style={{
-          color: 'primary',
-        }}
-      />
+      <EmailCell value={params.value} style={{ color: 'primary' }} />
     ),
   },
 
   {
     field: 'level',
     headerName: 'Classe',
-    width: 150,
+    width: 120,
     headerAlign: 'left',
     type: 'string',
     editable: true,
   },
   {
-    field: 'city',
+    field: 'address',
     headerName: 'Ville',
     width: 150,
     headerAlign: 'left',
     type: 'string',
     editable: true,
+    valueGetter: (params) => {
+      const address = params.row.address;
+
+      // Check if address is undefined, null, or an empty string
+      if (!address) {
+        return '';
+      }
+
+      // Regex to match zipcode and city
+      const match = address.match(/(\d{5})\s+([^\d]+)$/);
+
+      if (match) {
+        const [, zipcode, city] = match;
+        return `${zipcode} ${city.trim()}`;
+      } else {
+        return 'N/A';
+      }
+    },
   },
   {
     field: 'topic',
@@ -402,12 +419,43 @@ const columns = [
   },
 
   {
-    field: 'launched',
+    field: 'launched_on',
     headerName: 'Lancé le',
     width: 150,
     headerAlign: 'left',
     type: 'date',
     editable: true,
+    valueGetter: (params) => {
+      console.log('Raw value:', params.value);
+      if (params.value) {
+        // If it's in 'yyyy-MM-dd' format
+        if (
+          typeof params.value === 'string' &&
+          /^\d{4}-\d{2}-\d{2}$/.test(params.value)
+        ) {
+          // Parse the date string and set the time to noon to avoid timezone issues
+          const date = parse(params.value, 'yyyy-MM-dd', new Date());
+          date.setHours(24, 0, 0, 0);
+          console.log('Parsed date:', date.toISOString());
+          return date;
+        }
+
+        // If it's already a Date object
+        if (params.value instanceof Date) {
+          console.log('Date object:', params.value.toISOString());
+          return params.value;
+        }
+      }
+      console.log('Invalid or null date');
+      return null;
+    },
+    valueFormatter: (params) => {
+      if (params.value instanceof Date) {
+        // Format the date using the local timezone
+        return format(params.value, 'dd/MM/yyyy');
+      }
+      return '';
+    },
   },
   {
     field: 'created_at',
@@ -416,6 +464,7 @@ const columns = [
     headerAlign: 'left',
     type: 'string',
     editable: false,
+    hide: true,
     align: 'center',
     renderCell: ({ value }) => moment(value).format('DD/MM//yyyy'),
   },

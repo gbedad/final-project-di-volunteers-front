@@ -23,7 +23,7 @@ import Avatar from '@mui/material/Avatar';
 // import { FixedSizeList } from 'react-window';
 
 // import Alert from '@mui/material/Alert';
-import FileDisplay from './FileDisplay';
+import FileDisplay from 'components/FileDisplay';
 
 import Typography from '@mui/material/Typography';
 
@@ -32,7 +32,7 @@ import { MuiFileInput } from 'mui-file-input';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
-import './fileInputStyle.css';
+// import './fileInputStyle.css';
 
 // const fabStyle = {
 //   position: 'absolute',
@@ -42,7 +42,7 @@ import './fileInputStyle.css';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export default function Uploads({ userSelected }) {
+export default function Uploads({ studentId, user }) {
   const location = useLocation();
   const containerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -76,15 +76,10 @@ export default function Uploads({ userSelected }) {
 
   // console.log(location.state.userLogged.user.id);
   // const userId = location.state.userLogged.user.id;
-  const userId =
-    location.state.userLogged.id === userSelected
-      ? location.state.userLogged.id
-      : userSelected;
-  // console.log('USERID', userId);
-
-  // const Alert = React.forwardRef(function Alert(props, ref) {
-  //   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  // });
+  //   const userId =
+  //     location.state.userLogged.id === userSelected
+  //       ? location.state.userLogged.id
+  //       : userSelected;
 
   const checkFileType = (mime) => {
     switch (mime) {
@@ -102,13 +97,15 @@ export default function Uploads({ userSelected }) {
 
   useEffect(() => {
     const getFiles = async () => {
-      const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
+      const response = await axios.get(`${BASE_URL}/students/${studentId}`);
+      console.log('---->>>>', response.data.student_files);
 
-      console.log(response.data);
-      if (response.data.file) {
-        const filteredFiles = response.data.file.filter((file) =>
-          file.path.includes('/documents/')
+      if (response.data.student_files) {
+        const filteredFiles = response.data.student_files.filter((file) =>
+          file.path.includes('/student-documents/')
         );
+        console.log(filteredFiles);
+
         setFilesUploaded(filteredFiles);
         setIsLoading(false);
         setShowUploadButton(false);
@@ -119,6 +116,8 @@ export default function Uploads({ userSelected }) {
     setChangeFileList(false);
     getFiles();
   }, [changeFileList]);
+
+  console.log(filesUploaded);
 
   // const handleFileChange = (event) => {
   //   setSelectedFile(event.target.files[0]);
@@ -134,11 +133,11 @@ export default function Uploads({ userSelected }) {
   const handleFileUpload = async () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
-    // console.log(formData);
+    console.log(formData);
     setLoading(true);
     try {
       const response = await axios.post(
-        `${BASE_URL}/upload/${userId}`,
+        `${BASE_URL}/students/upload/${studentId}`,
         formData,
         {
           headers: {
@@ -175,17 +174,11 @@ export default function Uploads({ userSelected }) {
     setOpen(false);
   };
 
-  // const handleAlertClose = (event, reason) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-
-  //   setOpenAlert(false);
-  // };
-
   const handleDeleteFile = async (fileId) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/files/cancel/${fileId}`);
+      const response = await axios.delete(
+        `${BASE_URL}/students/files/cancel/${fileId}`
+      );
       // console.log(response.data); // Optional: Log the response if needed
       // Add any additional logic or state updates upon successful file deletion
       if (response.statusText === 'OK') {
@@ -197,18 +190,8 @@ export default function Uploads({ userSelected }) {
     } catch (error) {
       console.error(error);
       toast.error(error);
-      // Handle any error cases, such as displaying an error message
     }
   };
-  // console.log(filesUploaded);
-
-  // const fab = {
-  //   color: '#fff',
-  //   backGroundColor: 'primary.main',
-  //   sx: fabStyle,
-  //   icon: <AddIcon />,
-  //   label: 'Add',
-  // };
 
   return (
     <>
@@ -230,19 +213,10 @@ export default function Uploads({ userSelected }) {
             value={selectedFile}
             variant="outlined"
             color="primary"
-            // onChange={handleFileChange}
             onChange={handleChange}
           />
 
           {showUploadButton && (
-            // <Button
-            //   onClick={() => handleFileUpload()}
-            //   component="label"
-            //   // startIcon={<AddCircleIcon />}
-            //   variant="contained">
-            //   AJOUTER
-            // </Button>
-            //========== Button hidden ========================
             <LoadingButton
               color="primary"
               onClick={handleFileUpload}
@@ -250,20 +224,8 @@ export default function Uploads({ userSelected }) {
               loadingPosition="start"
               startIcon={<SaveIcon />}
               variant="contained">
-              <span>Enregistrer</span>
+              {/* <span>Enregistrer</span> */}
             </LoadingButton>
-
-            //========== Button hiddenend ========================
-            // <label>
-            //   <Fab
-            //     sx={fab.sx}
-            //     aria-label={fab.label}
-            //     // color="primary.main"
-            //     onClick={() => handleFileUpload()}
-            //     component="button">
-            //     {fab.icon}
-            //   </Fab>
-            // </label>
           )}
         </Stack>
       </Box>

@@ -67,7 +67,7 @@ const FormInterviewComponent = ({ studentId, user }) => {
     },
   ]);
   const [confirmed, setConfirmed] = useState(false);
-  const [countInterviews, setCountInterviews] = useState(0);
+
   const [isDateValid, setIsDateValid] = useState(true);
 
   const userLogged = user.first_name;
