@@ -33,6 +33,7 @@ import {
   fetchStudentById,
   updateStudentFields,
 } from '../../api/studentsById.js';
+import AddressAutocomplete from '../../components/AddressAutocomplete';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,7 +61,7 @@ export default function BeneficiaryPage() {
   const [tabValue, setTabValue] = useState(0);
   const [academicYear, setAcademicYear] = useState(academicYears[0]);
   const [level, setLevel] = useState('');
-  const [selectedSchool, setSelectedSchool] = useState(null);
+  const [school, setSchool] = useState(null);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -112,13 +113,29 @@ export default function BeneficiaryPage() {
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+  const handleAddressSelect = (address) => {
+    setAddress(address.properties.label);
+  };
+  const handleSchoolSelect = (school) => {
+    setSchool(
+      school.identifiant_de_l_etablissement +
+        ',\n' +
+        school.nom_etablissement +
+        ', ' +
+        school.nom_commune +
+        ',\n' +
+        school.adresse_1 +
+        ', ' +
+        school.code_postal
+    );
+  };
 
   const handleConfirmClick = async () => {
     try {
       const updatedFields = {
         level,
         academicYear,
-        selectedSchool,
+        school,
         birthdate,
         isFamily,
         email,
@@ -237,7 +254,19 @@ export default function BeneficiaryPage() {
                 </Grid>
               </Grid>
 
-              <SchoolAutocomplete />
+              <SchoolAutocomplete onSchoolSelect={handleSchoolSelect} />
+              {student.school && (
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Etablissement"
+                  margin="normal"
+                  multiline
+                  rows={3}
+                  InputLabelProps={{ shrink: true }}
+                  value={student.school}
+                />
+              )}
             </BorderBoxWithLabel>
             <BorderBoxWithLabel label="Coordonnées">
               <FormControlLabel control={<Checkbox />} label="Famille" />
@@ -260,15 +289,20 @@ export default function BeneficiaryPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
-              <TextField
-                size="small"
-                fullWidth
-                label="Adresse"
-                margin="normal"
-                multiline
-                rows={2}
-                InputLabelProps={{ shrink: true }}
-              />
+              <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+
+              {student.address && (
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Adresse"
+                  margin="normal"
+                  multiline
+                  rows={1}
+                  InputLabelProps={{ shrink: true }}
+                  value={student.address}
+                />
+              )}
               <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
                 Parent 1
               </Typography>
@@ -278,6 +312,7 @@ export default function BeneficiaryPage() {
                 margin="normal"
                 size="small"
                 InputLabelProps={{ shrink: true }}
+                onChange={(e) => e.target.value}
               />
               <TextField
                 fullWidth
@@ -428,7 +463,7 @@ export default function BeneficiaryPage() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <BorderBoxWithLabel label="Historique scolaire et le cas échéant médical">
-                    <SchoolHistory />
+                    <SchoolHistory user={user} studentId={id} />
                     {/* <TextField
                       fullWidth
                       label="Dernier diplôme"

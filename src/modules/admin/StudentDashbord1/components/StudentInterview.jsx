@@ -55,6 +55,12 @@ const FormInterviewComponent = ({ studentId, user }) => {
     {
       date: '',
       by: '',
+      motivation_student: '',
+      difficulties_student: '',
+      other_oservations_student: '',
+      motivation: '',
+      difficulties: '',
+      other_oservations: '',
       priority: '',
       decision: '',
       subjects: [],
@@ -81,7 +87,19 @@ const FormInterviewComponent = ({ studentId, user }) => {
         // Initialize with a default array containing one empty interview object
 
         setInterviews([
-          { date: '', by: '', priority: '', decision: '', subjects: [] },
+          {
+            date: '',
+            by: '',
+            motivation_student: '',
+            difficulties_student: '',
+            other_obbservations_student: '',
+            motivation: '',
+            difficulties: '',
+            other_oservations: '',
+            priority: '',
+            decision: '',
+            subjects: [],
+          },
         ]);
       } else {
         const parsed_array = JSON.parse(response.data.interviews);
@@ -369,9 +387,13 @@ const FormInterviewComponent = ({ studentId, user }) => {
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.student_view_motivation}
+                    value={interview.motivation_student}
                     onChange={(e) =>
-                      handleInterviewChange('motivation', e.target.value, index)
+                      handleInterviewChange(
+                        'motivation_student',
+                        e.target.value,
+                        index
+                      )
                     }
                     InputLabelProps={{
                       shrink: true,
@@ -395,9 +417,13 @@ const FormInterviewComponent = ({ studentId, user }) => {
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.student_view_difficulty}
+                    value={interview.difficulties_student}
                     onChange={(e) =>
-                      handleInterviewChange('experience', e.target.value, index)
+                      handleInterviewChange(
+                        'difficulties_student',
+                        e.target.value,
+                        index
+                      )
                     }
                     InputLabelProps={{
                       shrink: true,
@@ -421,10 +447,10 @@ const FormInterviewComponent = ({ studentId, user }) => {
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.student_view_other}
+                    value={interview.other_student}
                     onChange={(e) =>
                       handleInterviewChange(
-                        'how_tutoring',
+                        'other_student',
                         e.target.value,
                         index
                       )
@@ -456,11 +482,11 @@ const FormInterviewComponent = ({ studentId, user }) => {
                   }}>
                   <TextField
                     id="outlined-multiline-static"
-                    label="Quel serait l'objecti de l'accompagnement ?"
+                    label="Quel serait l'object de l'accompagnement ?"
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.interviewer_view_objective}
+                    value={interview.motivation}
                     onChange={(e) =>
                       handleInterviewChange('motivation', e.target.value, index)
                     }
@@ -486,9 +512,13 @@ const FormInterviewComponent = ({ studentId, user }) => {
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.interviewer_view_difficulty}
+                    value={interview.difficulties}
                     onChange={(e) =>
-                      handleInterviewChange('experience', e.target.value, index)
+                      handleInterviewChange(
+                        'difficulties',
+                        e.target.value,
+                        index
+                      )
                     }
                     // value={interview.motivation}
                     // onChange={(e) =>
@@ -516,10 +546,10 @@ const FormInterviewComponent = ({ studentId, user }) => {
                     multiline
                     minRows={1}
                     placeholder=""
-                    value={interview.interviewer_view_other}
+                    value={interview.other_observations}
                     onChange={(e) =>
                       handleInterviewChange(
-                        'how_tutoring',
+                        'other_observations',
                         e.target.value,
                         index
                       )
@@ -591,15 +621,15 @@ const FormInterviewComponent = ({ studentId, user }) => {
             </Stack>
           </Grid>
           <Divider />
-
+          {/* 
           <Grid item xs={12} sx={{ position: 'relative' }}>
             <SubjectDecidedPriority studentId={studentId} />
-          </Grid>
+          </Grid> */}
         </Grid>
       ))}
-      <Box mt={3} mb={3}>
+      {/* <Box mt={3} mb={3}>
         <Divider />
-      </Box>
+      </Box> */}
       <Button
         // disabled={!showButton}
         startIcon={confirmed ? <CheckIcon /> : ''}

@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-export const SchoolAutocomplete = () => {
+export const SchoolAutocomplete = ({ onSchoolSelect }) => {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,6 +43,8 @@ export const SchoolAutocomplete = () => {
     }
   }, [inputValue]);
 
+  console.log(selectedSchool);
+
   return (
     <Box>
       <Autocomplete
@@ -53,9 +55,10 @@ export const SchoolAutocomplete = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Établissement"
+            label="Chercher un établissement"
             margin="normal"
-            InputLabelProps={{ shrink: true }}
+            variant="standard"
+            InputLabelProps={{ shrink: false }}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -73,14 +76,15 @@ export const SchoolAutocomplete = () => {
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
+        value={selectedSchool}
         onChange={(event, newValue) => {
-          setSelectedSchool(newValue);
+          onSchoolSelect(newValue);
         }}
         loading={loading}
         loadingText="Chargement..."
         noOptionsText="Aucune école trouvée"
       />
-      {selectedSchool && (
+      {/* {selectedSchool && (
         <Box mt={2}>
           <Typography variant="subtitle2">
             Identifiant: {selectedSchool.identifiant_de_l_etablissement}
@@ -91,7 +95,7 @@ export const SchoolAutocomplete = () => {
               'Non spécifiée'}
           </Typography>
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };

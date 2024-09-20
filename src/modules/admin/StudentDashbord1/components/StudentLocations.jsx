@@ -40,8 +40,8 @@ const LocationsPossibleComponent = ({ studentId }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
-      // console.log(response.data.skill.where_location);
-      const locations = response.data.where_location;
+      console.log(response.data.where_location);
+      const locations = JSON.parse(response.data.where_location);
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       if (response.data && response.data.where_location) {
         setLocationsPossible(locations);
@@ -92,11 +92,12 @@ const LocationsPossibleComponent = ({ studentId }) => {
 
       // console.log(response.data);
 
-      if (response.data.message) {
+      if (response.data) {
         // toast.success(response.data.message, {
         //   position: 'top-center',
         // });
         // console.log('Locations saved successfully');
+        console.log(response.data.updatedStudent);
         setShowButton(false);
       } else {
         console.error('Failed to save locations');
@@ -108,22 +109,6 @@ const LocationsPossibleComponent = ({ studentId }) => {
       console.error('Failed to save locations', error);
 
       // Check if the error is from the server response
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        // toast.error(error.response.data.message, {
-        //   position: 'top-center',
-        // });
-      } else {
-        // Handle other types of errors (e.g., network issues)
-        // toast.error('Failed to save location', {
-        //   position: 'top-center',
-        // });
-      }
-    } finally {
-      // console.log('Saving locations: ', locationsPossible);
     }
   };
 

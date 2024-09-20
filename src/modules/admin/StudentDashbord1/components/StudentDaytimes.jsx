@@ -72,9 +72,7 @@ const DayTimeRangeComponent = ({ studentId }) => {
       // console.log(response.data);
 
       if (response.data && response.data.when_day_slot) {
-        const parsed_array = response.data.when_day_slot.map((string) =>
-          JSON.parse(string)
-        );
+        const parsed_array = JSON.parse(response.data.when_day_slot);
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
         setShowButton(false);
@@ -184,8 +182,7 @@ const DayTimeRangeComponent = ({ studentId }) => {
           aria-label={fab.label}
           color={fab.color}
           onClick={() => handleAddDayTimeRange()}
-          component="button"
-          disabled={!showButton}>
+          component="button">
           {fab.icon}
         </Fab>
       </label>
@@ -286,7 +283,7 @@ const DayTimeRangeComponent = ({ studentId }) => {
           variant="contained"
           color="primary"
           onClick={handleSaveDayTimeRanges}
-          disabled={!allValuesFilled || !showButton}>
+          disabled={!allValuesFilled}>
           Enregistrer
         </Button>
       )}
