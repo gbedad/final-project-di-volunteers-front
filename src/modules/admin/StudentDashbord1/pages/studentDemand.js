@@ -472,7 +472,12 @@ export default function BeneficiaryPage() {
                     label="Fil de discussion interne"
                     style={{ marginTop: '2rem' }}>
                     <StudentDiscussionThread
-                      currentUser={user}
+                      currentUser={{
+                        id: user.id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        email: user.email,
+                      }}
                       studentId={id}
                     />
                   </BorderBoxWithLabel>

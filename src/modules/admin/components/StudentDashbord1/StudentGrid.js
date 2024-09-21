@@ -4,7 +4,7 @@ import FullEditDataGrid from 'mui-datagrid-full-edit';
 import { useEffect, useState } from 'react';
 import useStudentData from './details';
 import moment from 'moment';
-import { parse, isValid, format } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import { Typography, Box, CircularProgress } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
@@ -419,42 +419,46 @@ const columns = [
   },
 
   {
+    // Column definition
     field: 'launched_on',
     headerName: 'Lancé le',
     width: 150,
     headerAlign: 'left',
     type: 'date',
     editable: true,
-    valueGetter: (params) => {
-      console.log('Raw value:', params.value);
-      if (params.value) {
-        // If it's in 'yyyy-MM-dd' format
-        if (
-          typeof params.value === 'string' &&
-          /^\d{4}-\d{2}-\d{2}$/.test(params.value)
-        ) {
-          // Parse the date string and set the time to noon to avoid timezone issues
-          const date = parse(params.value, 'yyyy-MM-dd', new Date());
-          date.setHours(24, 0, 0, 0);
-          console.log('Parsed date:', date.toISOString());
-          return date;
-        }
 
-        // If it's already a Date object
-        if (params.value instanceof Date) {
-          console.log('Date object:', params.value.toISOString());
-          return params.value;
-        }
-      }
-      console.log('Invalid or null date');
-      return null;
+    // Value Getter: just return the value as-is (no Date object creation)
+    valueGetter: (params) => {
+      return params.value ? params.value : null;
     },
+
+    // Value Setter: store the date in 'yyyy-MM-dd' format as a string
+    valueSetter: (params) => {
+      if (!params.value) return null;
+
+      const selectedDate = new Date(params.value);
+
+      // Format the date as yyyy-MM-dd string without creating a Date object
+      const formattedDate = `${selectedDate.getFullYear()}-${(
+        selectedDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, '0')}-${selectedDate
+        .getDate()
+        .toString()
+        .padStart(2, '0')}`;
+
+      return { ...params.row, launched_on: formattedDate };
+    },
+
+    // Value Formatter: display the date in dd/MM/yyyy format (convert the string)
     valueFormatter: (params) => {
-      if (params.value instanceof Date) {
-        // Format the date using the local timezone
-        return format(params.value, 'dd/MM/yyyy');
-      }
-      return '';
+      if (!params.value) return '';
+
+      // Parse the ISO date string and format it for display
+      const formattedDate = format(parseISO(params.value), 'dd/MM/yyyy');
+
+      return formattedDate;
     },
   },
   {

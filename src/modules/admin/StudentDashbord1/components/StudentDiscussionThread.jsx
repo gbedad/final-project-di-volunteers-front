@@ -85,7 +85,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)(({ theme }) => ({
   },
 }));
 
-const DiscussionThread = ({ currentUser, userId }) => {
+const DiscussionThread = ({ currentUser, studentId }) => {
   const location = useLocation();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -103,28 +103,28 @@ const DiscussionThread = ({ currentUser, userId }) => {
 
   useEffect(scrollToBottom, [messages]);
 
-  // useEffect(() => {
-  //   const getMessages = async () => {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
-  //     );
-  //     // console.log(response.data);
-  //     if (response.data.internal_thread) {
-  //       const fetchedMessages = response.data.internal_thread.map(
-  //         (string) => string
-  //       );
-  //       setMessages(fetchedMessages);
-  //       setIsLoading(false);
-  //       localStorage.setItem(
-  //         `lastViewedCount_${userId}`,
-  //         fetchedMessages.length.toString()
-  //       );
-  //     }
-  //     setIsLoading(false);
-  //   };
+  useEffect(() => {
+    const getMessages = async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
+      );
+      // console.log(response.data);
+      if (response.data.internal_thread) {
+        const fetchedMessages = response.data.internal_thread.map(
+          (string) => string
+        );
+        setMessages(fetchedMessages);
+        setIsLoading(false);
+        localStorage.setItem(
+          `lastViewedCount_student_${studentId}`,
+          fetchedMessages.length.toString()
+        );
+      }
+      setIsLoading(false);
+    };
 
-  //   getMessages();
-  // }, [userId]);
+    getMessages();
+  }, [studentId]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
@@ -137,13 +137,13 @@ const DiscussionThread = ({ currentUser, userId }) => {
       const updatedMessages = [...messages, message];
       setMessages([...messages, message]);
       localStorage.setItem(
-        `lastViewedCount_${userId}`,
+        `lastViewedCount_student_${studentId}`,
         updatedMessages.length.toString()
       );
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
-          updatedMessages,
+          `${process.env.REACT_APP_BASE_URL}/student-demand/add-internalthread/${studentId}`,
+          { message_thread: JSON.stringify(updatedMessages) },
           {
             headers: {
               'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ const DiscussionThread = ({ currentUser, userId }) => {
         );
         // console.log(response.data.message);
         if (response.data.message) {
-          console.log('Message saved successfully');
+          console.log('Message saved successfully', response.data.message);
         } else {
           console.error('Failed to save message');
         }
@@ -169,27 +169,36 @@ const DiscussionThread = ({ currentUser, userId }) => {
   };
 
   const handleDeleteMessage = async (messageId) => {
+    const originalMessages = [...messages];
     const allMessages = messages.filter((message) => message.id !== messageId);
-    setMessages(allMessages);
+
+    setMessages(allMessages); // Optimistically update UI
+
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
-        allMessages,
+        `${process.env.REACT_APP_BASE_URL}/student-demand/add-internalthread/${studentId}`,
+        { message_thread: JSON.stringify(allMessages) },
         {
           headers: {
             'Content-Type': 'application/json',
-            // 'x-access-token': userToken,
           },
         }
       );
-      // console.log(response.data.message);
+
       if (response.data.message) {
         console.log('Message saved successfully');
+        // Update last viewed count in local storage
+        localStorage.setItem(
+          `lastViewedCount_student_${studentId}`,
+          allMessages.length.toString()
+        );
       } else {
-        console.error('Failed to save message');
+        throw new Error('Failed to save message');
       }
     } catch (error) {
       console.error('Failed to save message', error);
+      setMessages(originalMessages); // Revert UI on error
+      // Optionally show an error message to the user
     }
   };
 
@@ -199,12 +208,14 @@ const DiscussionThread = ({ currentUser, userId }) => {
       handleSendMessage();
     }
   };
+  console.log(messages);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ flexGrow: 1, overflowY: 'auto', padding: 2 }}>
         {messages.map((message) => {
-          const isCurrentUser = message.sender === currentUser;
+          const isCurrentUser = message.sender.id === currentUser.id;
+          console.log('MESSAGES', message);
           return (
             <Box
               key={message.id}
