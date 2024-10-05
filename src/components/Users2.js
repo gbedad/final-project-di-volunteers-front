@@ -598,10 +598,12 @@ export default function DataGridDemo(props) {
   function checkLocation(values) {
     const onsiteLocations = [
       'Aubervilliers',
+      'A distance',
       'Paris 12ème',
       '22 rue Gabriel Lamé, Paris 12ème',
       '181 avenue Daumesnil, Paris 12ème',
       'Paris 18ème',
+      'Présentiel ou distanciel',
     ];
 
     // Check if the array contains only "dist"
