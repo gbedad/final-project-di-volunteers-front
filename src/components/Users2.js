@@ -611,7 +611,7 @@ export default function DataGridDemo(props) {
       return 'Distanciel';
     } else if (
       values.length === 1 &&
-      values[0] === 'Présentiel ou distanciel'
+      values[0] === 'Présentiel ou distanciel' || values.includes('Présentiel ou distanciel')
     ) {
       return 'Bi-modal';
     }
