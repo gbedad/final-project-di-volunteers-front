@@ -1,4 +1,4 @@
-export const existingLocations = [
+export const existingLocations = [ 
   'Aubervilliers',
   'A distance',
   'Paris 12ème',

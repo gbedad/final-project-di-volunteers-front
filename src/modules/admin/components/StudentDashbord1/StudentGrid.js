@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import useStudentData from './details';
 import moment from 'moment';
 import { parseISO, format } from 'date-fns';
@@ -82,19 +82,19 @@ export default function ManageGrid() {
       });
   };
 
-  const onDeleteRow = (id, oldRow, oldRows) => {
+  const onDeleteRow = useCallback((id, oldRow, oldRows) => {
     deleteRow(id)
       .then(() => {
-        setRows(
-          oldRows
-            .filter((r) => r.id !== id)
-            .map((r, i) => ({ ...r, no: i + 1 }))
+        setRows((currentRows) => 
+          currentRows.map((r, i) => ({ ...r, no: i + 1 }))
         );
       })
       .catch((err) => {
-        setRows(oldRows);
+        console.error('Error in onDeleteRow:', err);
       });
-  };
+  }, [deleteRow, setRows]);
+  
+  
 
   const handleDoubleRowClick = (params) => {
     console.log('Double click detected');

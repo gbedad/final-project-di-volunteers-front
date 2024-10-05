@@ -100,7 +100,8 @@ const useStudentData = () => {
         console.error('Error deleting student:', error);
         throw error;
       });
-  }, []);
+  }, [setRows]); // Add setRows to the dependency array
+  
 
   return {
     rows,

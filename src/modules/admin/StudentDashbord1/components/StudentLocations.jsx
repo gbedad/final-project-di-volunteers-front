@@ -40,7 +40,7 @@ const LocationsPossibleComponent = ({ studentId }) => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/students/${studentId}`
       );
-      console.log(response.data.where_location);
+      console.log(JSON.parse(response.data.where_location));
       const locations = JSON.parse(response.data.where_location);
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       if (response.data && response.data.where_location) {
@@ -52,7 +52,8 @@ const LocationsPossibleComponent = ({ studentId }) => {
     };
 
     getLocations();
-  }, []);
+  }, [studentId]);
+  
 
   const handleAddLocation = () => {
     setLocationsPossible([...locationsPossible, '']);
@@ -97,7 +98,7 @@ const LocationsPossibleComponent = ({ studentId }) => {
         //   position: 'top-center',
         // });
         // console.log('Locations saved successfully');
-        console.log(response.data.updatedStudent);
+        // console.log(response.data.updatedStudent);
         setShowButton(false);
       } else {
         console.error('Failed to save locations');

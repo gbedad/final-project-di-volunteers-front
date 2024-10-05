@@ -72,7 +72,7 @@ const DayTimeRangeComponent = ({ studentId }) => {
       // console.log(response.data);
 
       if (response.data && response.data.when_day_slot) {
-        const parsed_array = JSON.parse(response.data.when_day_slot);
+        const parsed_array =response.data.when_day_slot;
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
         setShowButton(false);
@@ -136,7 +136,7 @@ const DayTimeRangeComponent = ({ studentId }) => {
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/students-availabilities/${studentId}`,
-        { when_day_slot: JSON.stringify(dayTimeRanges) },
+        { when_day_slot: dayTimeRanges },
         {
           headers: {
             'Content-Type': 'application/json',
