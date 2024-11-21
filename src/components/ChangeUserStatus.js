@@ -68,6 +68,8 @@ import Uploads from './FileUploader';
 import UploadConvention from './FileConventionUploader';
 import { DialogContentText } from '@mui/material';
 
+import { existingStatuses } from '../options/existingOptions';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // const Item = styled(Paper)(({ theme }) => ({
@@ -658,15 +660,7 @@ const ChangeUserStatus = () => {
                       value={newStatus}
                       label="Change Status"
                       onChange={handleStatusChange}>
-                      {[
-                        'Compte créé',
-                        'A renseigner',
-                        'A télécharger',
-                        'A interviewer',
-                        'A finaliser',
-                        'Validé',
-                        'Déclinée',
-                      ].map((status) => (
+                      {existingStatuses.map((status) => (
                         <MenuItem key={status} value={status}>
                           <Tooltip
                             placement="right"

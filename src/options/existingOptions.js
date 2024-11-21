@@ -1,3 +1,14 @@
+export const existingStatuses = [
+  'Compte créé',
+  'A renseigner',
+  'A télécharger',
+  'A interviewer',
+  'A finaliser',
+  'Validé',
+  'A conserver',
+  'Déclinée',
+];
+
 export const existingLocations = [
   'Aubervilliers',
   'A distance',
