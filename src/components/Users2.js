@@ -984,7 +984,7 @@ export default function DataGridDemo(props) {
       </Stack>
       <Box sx={{ height: 'auto', width: '100%' }}>
         <FullEditDataGrid
-          onRowClick={handleRowClick}
+          onRowDoubleClick={handleRowClick}
           {...rows}
           // slots={{
           //   toolbar: CustomToolbar,
