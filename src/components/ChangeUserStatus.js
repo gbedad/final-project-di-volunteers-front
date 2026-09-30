@@ -69,6 +69,7 @@ import UploadConvention from './FileConventionUploader';
 import { DialogContentText } from '@mui/material';
 
 import { existingStatuses } from '../options/existingOptions';
+import CohortTransferList from './Cohorts';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -819,6 +820,9 @@ const ChangeUserStatus = () => {
           <Grid item xs={12} md={4} lg={3}>
             <BorderedBoxWithLabel label="Entretiens" sx={{ display: 'flex' }}>
               <FormInterviewComponent userId={user.id} />
+            </BorderedBoxWithLabel>
+            <BorderedBoxWithLabel label="Cohortes" sx={{ display: 'flex' }}>
+              <CohortTransferList userId={user.id} />
             </BorderedBoxWithLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>

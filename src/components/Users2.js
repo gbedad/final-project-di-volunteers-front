@@ -832,6 +832,7 @@ export default function DataGridDemo(props) {
       is_available,
     };
   }
+  
 
   const handleCopyEmails = () => {
    console.log("Reached copy?");
@@ -989,6 +990,7 @@ export default function DataGridDemo(props) {
           // slots={{
           //   toolbar: CustomToolbar,
           // }}
+          editMode="row"
 
           rows={rows}
           columns={columns}

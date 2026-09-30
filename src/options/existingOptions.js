@@ -11,13 +11,23 @@ export const existingStatuses = [
 
 export const existingLocations = [
   'Aubervilliers',
-  'A distance',
   'Paris 12ème',
+  'Paris 14ème',
+  'Paris 17ème',
+  'Paris 18ème',
+  '-------------',
+  'A distance',
   '22 rue Gabriel Lamé, Paris 12ème',
   '181 avenue Daumesnil, Paris 12ème',
-  'Paris 18ème',
   'Présentiel ou distanciel',
 ];
+
+export const existingModalities = [
+  'Sur site',
+  'A distance',
+  'Sur site ou à distance',
+  'Hybride (alternance sur site et à distance)'
+]
 
 export const existingClasses = [
   'CP',

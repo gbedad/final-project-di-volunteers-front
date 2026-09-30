@@ -19,7 +19,7 @@ import BorderedBoxWithLabel from './borderedBox';
 
 // import { AuthContext } from '../AuthContext';
 
-import { existingLocations } from '../options/existingOptions';
+import { existingLocations, existingModalities } from '../options/existingOptions';
 
 const fabStyle = {
   position: 'absolute',
@@ -30,6 +30,8 @@ const fabStyle = {
 const LocationsPossibleComponent = ({ userSelected }) => {
   const location = useLocation();
   const [locationsPossible, setLocationsPossible] = useState([]);
+  const [selectedModality, setSelectedModality] = useState('');
+
   const [isLoading, setIsLoading] = useState(true);
   const [showButton, setShowButton] = useState(false);
   const [disableSave, setDisableSave] = useState(true);
@@ -53,6 +55,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
       const skills = response.data.skill;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       if (skills && skills.where_location) {
+        setSelectedModality(skills.how_location);
         setLocationsPossible(skills.where_location);
         setIsLoading(false);
         setShowButton(false);
@@ -62,6 +65,11 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
     getLocations();
   }, []);
+
+  const handleModalityChange = (value) => {
+  setSelectedModality(value);
+};
+
 
   const handleAddLocation = () => {
     setLocationsPossible([...locationsPossible, '']);
@@ -90,7 +98,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { where_location: locationsPossible },
+        { how_location: selectedModality, where_location: locationsPossible },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -144,78 +152,96 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
   return (
     <div>
-      <BorderedBoxWithLabel label="Lieux" sx={{ display: 'flex' }}>
-        <label>
-          <Fab
-            sx={fab.sx}
-            aria-label={fab.label}
-            color={fab.color}
-            onClick={() => handleAddLocation()}
-            component="button"
-            disabled={showButton}>
-            {fab.icon}
-          </Fab>
-        </label>
+      <BorderedBoxWithLabel label="Modalités et lieux" sx={{ display: 'flex' }}>
+  <Grid container spacing={1} style={{marginTop:'16px'}}>
+    <Grid item xs={12}>
+      <TextField
+        size="small"
+        fullWidth
+        variant="outlined"
+        label="Modalités"
+        select
+        value={selectedModality}
+        onChange={(e) => handleModalityChange(e.target.value)}
+      >
+        {existingModalities.map((modality, idx) => (
+          <MenuItem key={idx} value={modality}>
+            {modality}
+          </MenuItem>
+        ))}
+      </TextField>
+    </Grid>
+
+    {selectedModality !== 'A distance' && (
+      <>
+        <Grid item xs={12}>
+          <label>
+            <Fab
+              sx={fab.sx}
+              aria-label={fab.label}
+              color={fab.color}
+              onClick={() => handleAddLocation()}
+              component="button"
+              // disabled={showButton}
+            >
+              {fab.icon}
+            </Fab>
+          </label>
+        </Grid>
+
         {isLoading ? (
-          <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
+          <Grid item xs={12}>
+            <Box sx={{ width: '100%' }}>
+              <LinearProgress />
+            </Box>
+          </Grid>
         ) : (
           locationsPossible &&
           locationsPossible.map((loc, index) => (
-            <Grid
-              mb={2}
-              container
-              spacing={1}
-              key={index}
-              style={{ marginTop: '16px' }}>
-              <Grid item xs={9}>
-                <TextField
-                  size="small"
-                  fullWidth
-                  variant="outlined"
-                  label="Site"
-                  select
-                  value={loc}
-                  onChange={(e) => handleLocationChange(e.target.value, index)}
-                  // error={!loc} // Add error prop
-                  // helperText={!loc ? 'Ce champ est obligatoire' : ''}
-                >
-                  {existingLocations.map((location, idx) => (
-                    <MenuItem key={idx} value={location}>
-                      {location}
-                    </MenuItem>
-                  ))}
-                  {/* <MenuItem value="Maison des Associations">
-                    Maison des Associations
-                  </MenuItem>
-                  <MenuItem value="Gabriel Lamé">Gabriel Lamé</MenuItem>
-                  <MenuItem value="Kiosque Paris 12">Kiosque Paris 12</MenuItem>
-                  <MenuItem value="Aubervilliers">Aubervilliers</MenuItem>
-                  <MenuItem value="Bercy">Bercy</MenuItem> */}
-                  {/* Add more subjects as needed */}
-                </TextField>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Button onClick={() => handleRemoveLocation(index)}>
-                  <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
-                </Button>
+            <Grid item xs={12} key={index}>
+              <Grid container spacing={1} style={{ marginTop: '16px' }}>
+                <Grid item xs={9}>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    label="Site"
+                    select
+                    value={loc}
+                    onChange={(e) => handleLocationChange(e.target.value, index)}
+                  >
+                    {existingLocations.map((location, idx) => (
+                      <MenuItem key={idx} value={location}>
+                        {location}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={2}>
+                  <Button onClick={() => handleRemoveLocation(index)}>
+                    <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           ))
-        )}
-        {locationsPossible && (
-          <Button
-            sx={{ marginTop: '10px' }}
-            variant="contained"
-            color="primary"
-            onClick={handleSaveLocationsPossible}
-            disabled={disableSave || !showButton}>
-            Enregistrer
-          </Button>
-        )}
-      </BorderedBoxWithLabel>
+        )}            
+      </>
+    )}
+     <Grid item xs={12}>
+            <Button
+              sx={{ marginTop: '10px' }}
+              variant="contained"
+              color="primary"
+              onClick={handleSaveLocationsPossible}
+              // disabled={disableSave || !showButton}
+            >
+              Enregistrer
+            </Button>
+          </Grid>
+  </Grid>
+</BorderedBoxWithLabel>
+
     </div>
   );
 };
