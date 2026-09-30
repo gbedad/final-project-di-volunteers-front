@@ -24,7 +24,6 @@ import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import Typography from '@mui/material/Typography';
 
-import Divider from '@mui/material/Divider';
 
 // import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 // import DraftsIcon from '@mui/icons-material/Drafts';
@@ -66,7 +65,6 @@ import DiscussionThread from './interviews/DiscussionThread';
 
 import Uploads from './FileUploader';
 import UploadConvention from './FileConventionUploader';
-import { DialogContentText } from '@mui/material';
 
 import { existingStatuses } from '../options/existingOptions';
 import CohortTransferList from './Cohorts';
@@ -84,6 +82,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 // const darkTheme = createTheme({ palette: { mode: 'dark' } });
 // const lightTheme = createTheme({ palette: { mode: 'light' } });
 
+// Used by the commented-out status <Select> below
+// eslint-disable-next-line no-unused-vars
 const CustomWidthTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))({
@@ -98,10 +98,7 @@ const ChangeUserStatus = () => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState('');
   const [newStatus, setNewStatus] = useState('');
-  const [isRegistered, setIsRegistered] = useState(true);
-  const [resp, setResp] = useState(null);
   const [isActive, setIsActive] = React.useState(false);
-  const [showActiveConfirm, setShowActiveConfirm] = useState(false);
   const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -256,10 +253,8 @@ const ChangeUserStatus = () => {
     axios
       .delete(`${BASE_URL}/delete-registration/${user.id}`)
       .then((response) => {
-        setIsRegistered(false);
         // console.log(response.data);
         // console.log('Registration cancelled successfully');
-        setResp(response.data.msg);
         setTimeout(() => {
           navigate('/view-users', {
             state: { userSelected: user, userLogged },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import {
@@ -7,15 +7,9 @@ import {
   Button,
   Autocomplete,
   TextField,
-  Chip,
 } from '@mui/material';
 
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport,
-  GRID_CHECKBOX_SELECTION_COL_DEF,
-} from '@mui/x-data-grid';
+import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
@@ -34,7 +28,6 @@ import CallIcon from '@mui/icons-material/Call';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksTwoIcon from '@mui/icons-material/LooksTwo';
 import Looks3Icon from '@mui/icons-material/Looks3';
-import Filter3Icon from '@mui/icons-material/Filter3';
 import {
   existingDays,
   existingSubjects,
@@ -42,7 +35,6 @@ import {
   existingLevels,
 } from '../options/existingOptions';
 
-import { formatPhoneNumber } from '../js/phoneNumbersSpace';
 import { parsePhoneNumber } from 'awesome-phonenumber';
 
 const StyledRating = styled(Rating)({
@@ -124,7 +116,6 @@ export default function DataGridDemo(props) {
   const [rows, setRows] = useState([]);
   const [newMessageFlags, setNewMessageFlags] = useState({});
   const [justViewedMessages, setJustViewedMessages] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [selectionModel, setSelectionModel] = useState([])
 
   const columns = [

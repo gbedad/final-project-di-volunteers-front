@@ -33,9 +33,6 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const [selectedModality, setSelectedModality] = useState('');
 
   const [isLoading, setIsLoading] = useState(true);
-  const [showButton, setShowButton] = useState(false);
-  const [disableSave, setDisableSave] = useState(true);
-  const { userLogged } = location.state;
   // const token = useContext(AuthContext);
   //  const subjectClassesRanges = userLogged.user.skill.topics
 
@@ -58,13 +55,12 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         setSelectedModality(skills.how_location);
         setLocationsPossible(skills.where_location);
         setIsLoading(false);
-        setShowButton(false);
       }
       if (response.data.skill === null) setIsLoading(false);
     };
 
     getLocations();
-  }, []);
+  }, [userId]);
 
   const handleModalityChange = (value) => {
   setSelectedModality(value);
@@ -73,14 +69,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
   const handleAddLocation = () => {
     setLocationsPossible([...locationsPossible, '']);
-    setShowButton(true);
   };
-  useEffect(() => {
-    // Check if any location field is empty
-    const hasEmptyLocation = locationsPossible.some((loc) => loc === '');
-    // Disable the "Enregistrer" button if any location field is empty
-    setDisableSave(hasEmptyLocation);
-  }, [locationsPossible]);
   const handleLocationChange = (value, index) => {
     const updatedLocationsPossible = [...locationsPossible];
     updatedLocationsPossible[index] = value;
@@ -91,7 +80,6 @@ const LocationsPossibleComponent = ({ userSelected }) => {
     const updatedLocationsPossible = [...locationsPossible];
     updatedLocationsPossible.splice(index, 1);
     setLocationsPossible(updatedLocationsPossible);
-    setShowButton(true);
   };
 
   const handleSaveLocationsPossible = async () => {
@@ -113,7 +101,6 @@ const LocationsPossibleComponent = ({ userSelected }) => {
         //   position: 'top-center',
         // });
         // console.log('Locations saved successfully');
-        setShowButton(false);
       } else {
         console.error('Failed to save locations');
         // toast.error('Failed to save location', {

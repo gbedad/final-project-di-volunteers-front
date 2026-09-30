@@ -73,7 +73,13 @@ const DocumentCheckbox = ({ user }) => {
     setB3Received(user.b3_received);
     setConventionReceived(user.convention_received);
     setTestVoltairePassed(user.test_voltaire_passed);
-  }, []);
+  }, [
+    user.cv_received,
+    user.id_received,
+    user.b3_received,
+    user.convention_received,
+    user.test_voltaire_passed,
+  ]);
 
   return (
     <>
