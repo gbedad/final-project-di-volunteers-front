@@ -21,8 +21,6 @@ import {
   DataGrid,
   GridRowModes,
   GridActionsCellItem,
-  GridRowsProp,
-  GridColDef,
   GridCellParams,
   GridEditCellPropsParams,
 } from '@mui/x-data-grid';

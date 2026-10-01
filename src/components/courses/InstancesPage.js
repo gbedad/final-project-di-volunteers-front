@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 
 const InstancesPage = () => {
   //   const courses = JSON.parse(localStorage.getItem('instances'));

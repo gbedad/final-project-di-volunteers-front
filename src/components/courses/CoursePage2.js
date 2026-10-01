@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { Edit } from '@mui/icons-material';
 
 const NUMBER_OF_ROWS = 2;
