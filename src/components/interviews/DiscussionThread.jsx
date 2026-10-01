@@ -10,7 +10,6 @@ import {
   TextField,
   TextareaAutosize,
   IconButton,
-  Text,
   Fade,
 } from '@mui/material';
 import { styled } from '@mui/system';
