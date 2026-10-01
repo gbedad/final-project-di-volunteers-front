@@ -16,6 +16,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import FlagIcon from '@mui/icons-material/Flag';
+import FolderIcon from '@mui/icons-material/Folder';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
@@ -127,6 +134,17 @@ function ResponsiveAppBar() {
       navigate(`/view-users`, { state: { userLogged } });
     }
   };
+
+  // Highlight the menu entry of the section currently displayed
+  const sectionPaths = {
+    dashboard: ['/view-users', '/change-status', '/stepper', '/profile'],
+    missions: ['/all-missions', '/missions/update'],
+    documents: ['/documents'],
+  };
+  const isCurrent = (section) =>
+    sectionPaths[section].some((p) => location.pathname.startsWith(p));
+  const currentProps = (section) =>
+    isCurrent(section) ? { selected: true, 'aria-current': 'page' } : {};
 
   const handleAdminFiles = () => {
     navigate(`/documents`, { state: { userLogged } });
@@ -512,33 +530,69 @@ function ResponsiveAppBar() {
               </MenuItem>
             ) : (
               <>
-                <Tooltip
-                  title="Ouvrir le menu"
-                  sx={{ backgroundColor: 'secondary' }}>
-                  <Box
+                <Tooltip title={location.state.userLogged.user.email} describeChild>
+                  <Button
+                    onClick={handleOpenUserMenu}
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    aria-expanded={Boolean(anchorElUser)}
+                    endIcon={
+                      <KeyboardArrowDownIcon
+                        sx={{
+                          transition: 'transform 0.2s',
+                          transform: anchorElUser ? 'rotate(180deg)' : 'none',
+                        }}
+                      />
+                    }
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+                      color: 'white',
+                      textTransform: 'none',
+                      borderRadius: 5,
+                      pl: 0.5,
+                      pr: 1.5,
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                        borderColor: 'white',
+                      },
                     }}>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar sx={{ backgroundColor: 'success.main' }}>
-                        {location.state.userLogged.user.first_name
-                          .charAt(0)
-                          .toUpperCase()}
-                        {location.state.userLogged.user.last_name
-                          .charAt(0)
-                          .toUpperCase()}
-                      </Avatar>
-                    </IconButton>
-
-                    <Typography sx={{ fontSize: '0.8rem', p: 1 }}>
-                      {location.state.userLogged.user.email}
+                    <Avatar
+                      sx={{
+                        backgroundColor: 'success.main',
+                        width: 32,
+                        height: 32,
+                        fontSize: '0.9rem',
+                        mr: 1,
+                      }}>
+                      {location.state.userLogged.user.first_name
+                        .charAt(0)
+                        .toUpperCase()}
+                      {location.state.userLogged.user.last_name
+                        .charAt(0)
+                        .toUpperCase()}
+                    </Avatar>
+                    <Typography
+                      sx={{
+                        fontSize: '0.9rem',
+                        display: { xs: 'none', sm: 'block' },
+                      }}>
+                      {location.state.userLogged.user.first_name}
                     </Typography>
-                  </Box>
+                  </Button>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={{
+                    mt: '45px',
+                    '& .MuiMenuItem-root': {
+                      borderLeft: '4px solid transparent',
+                    },
+                    '& .MuiMenuItem-root.Mui-selected': {
+                      borderLeftColor: 'primary.main',
+                      fontWeight: 600,
+                      color: 'primary.main',
+                      '& .MuiListItemIcon-root': { color: 'primary.main' },
+                    },
+                  }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -557,43 +611,68 @@ function ResponsiveAppBar() {
                   (location.state.userLogged.user.role === 'admin' ||
                     location.state.userLogged.user.role === 'interviewer') ? (
                     <div>
-                      <MenuItem onClick={handleViewUsers}>
-                        <Typography textAlign="center">
-                          Tableau de bord
-                        </Typography>
+                      <MenuItem
+                        onClick={handleViewUsers}
+                        {...currentProps('dashboard')}>
+                        <ListItemIcon>
+                          <DashboardIcon fontSize="small" />
+                        </ListItemIcon>
+                        Tableau de bord
                       </MenuItem>
 
                       <MenuItem
                         onClick={handleEditMissions}
+                        {...currentProps('missions')}
                         sx={{
                           display:
                             userLogged.user.role === 'interviewer' && 'none',
                         }}>
-                        <Typography textAlign="center">Missions</Typography>
+                        <ListItemIcon>
+                          <FlagIcon fontSize="small" />
+                        </ListItemIcon>
+                        Missions
                       </MenuItem>
-                      <MenuItem onClick={handleAdminFiles}>
-                        <Typography textAlign="center">Documents</Typography>
+                      <MenuItem
+                        onClick={handleAdminFiles}
+                        {...currentProps('documents')}>
+                        <ListItemIcon>
+                          <FolderIcon fontSize="small" />
+                        </ListItemIcon>
+                        Documents
                       </MenuItem>
+                      <Divider />
                       <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center">Déconnexion</Typography>
+                        <ListItemIcon>
+                          <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        Déconnexion
                       </MenuItem>
                     </div>
                   ) : location.pathname !== '/register' &&
                     location.state.userLogged.user.role === 'volunteer' ? (
                     <div>
-                      <MenuItem onClick={handleProfile}>
-                        <Typography textAlign="center">
-                          Tableau de bord
-                        </Typography>
+                      <MenuItem
+                        onClick={handleProfile}
+                        {...currentProps('dashboard')}>
+                        <ListItemIcon>
+                          <DashboardIcon fontSize="small" />
+                        </ListItemIcon>
+                        Tableau de bord
                       </MenuItem>
-
+                      <Divider />
                       <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center">Déconnexion</Typography>
+                        <ListItemIcon>
+                          <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        Déconnexion
                       </MenuItem>
                     </div>
                   ) : (
                     <MenuItem onClick={handleLogout}>
-                      <Typography textAlign="center">Déconnexion</Typography>
+                      <ListItemIcon>
+                        <LogoutIcon fontSize="small" />
+                      </ListItemIcon>
+                      Déconnexion
                     </MenuItem>
                   )}
                 </Menu>
