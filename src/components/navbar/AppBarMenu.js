@@ -128,6 +128,10 @@ function ResponsiveAppBar() {
     }
   };
 
+  const handleAdminFiles = () => {
+    navigate(`/documents`, { state: { userLogged } });
+  };
+
   const handleEditMissions = () => {
     if (userLogged.user.role === 'admin') {
       navigate(`/all-missions`, { state: { userLogged } });
@@ -566,6 +570,9 @@ function ResponsiveAppBar() {
                             userLogged.user.role === 'interviewer' && 'none',
                         }}>
                         <Typography textAlign="center">Missions</Typography>
+                      </MenuItem>
+                      <MenuItem onClick={handleAdminFiles}>
+                        <Typography textAlign="center">Documents</Typography>
                       </MenuItem>
                       <MenuItem onClick={handleLogout}>
                         <Typography textAlign="center">Déconnexion</Typography>

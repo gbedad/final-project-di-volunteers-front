@@ -23,6 +23,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 
 import FileDisplay from './FileDisplay';
+import { isInFolder, getFileUrl, fileNameOf } from '../js/fileUrl';
 
 import Typography from '@mui/material/Typography';
 
@@ -103,7 +104,7 @@ export default function Uploads({ userSelected, s3FilePath }) {
 
       if (response.data.file) {
         const filteredFiles = response.data.file.filter((file) =>
-          file.path.includes('/conventions/')
+          isInFolder(file.path, 'conventions')
         );
         setFilesUploaded(filteredFiles);
         setIsLoading(false);
@@ -199,43 +200,18 @@ export default function Uploads({ userSelected, s3FilePath }) {
   };
   // console.log(filesUploaded);
 
-  const handleDownload = async () => {
+  const handleDownload = async (path) => {
     try {
-      const { url } = await selectedFile;
-      // Fetch the file from the presigned URL
-      const response = await fetch(url, { mode: 'cors' });
-
+      const response = await fetch(await getFileUrl(path), { mode: 'cors' });
       if (!response.ok) {
         throw new Error(
           `Failed to fetch file (${response.status}: ${response.statusText})`
         );
       }
-
-      const blob = await response.blob();
-      const fileExtension = selectedFile.split('.').pop().toLowerCase();
-
-      if (fileExtension === 'pdf') {
-        saveAs(blob, 'downloaded_file.pdf');
-      } else if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
-        // No need to convert to base64, use the blob directly
-        saveAs(blob, `downloaded_file.${fileExtension}`);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch file (${response.status}: ${response.statusText})`
-          );
-        }
-      } else {
-        // Unsupported file type
-        console.error('Unsupported file type:', fileExtension);
-      }
-
-      // Use FileSaver.js to save the Blob as a file
+      saveAs(await response.blob(), fileNameOf(path));
     } catch (error) {
       console.error('Error downloading file:', error);
-      // Handle error appropriately (e.g., show a message to the user)
     }
-    // console.log('Download button clicked for:', s3FilePath);
   };
 
   return (
@@ -340,7 +316,7 @@ export default function Uploads({ userSelected, s3FilePath }) {
                     variant="outlined"
                     color="secondary"
                     size="small"
-                    onClick={handleDownload}>
+                    onClick={() => handleDownload(f.path)}>
                     Télécharger
                   </Button>
                 </ListItem>

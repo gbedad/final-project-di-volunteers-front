@@ -24,6 +24,7 @@ import Avatar from '@mui/material/Avatar';
 
 // import Alert from '@mui/material/Alert';
 import FileDisplay from './FileDisplay';
+import { isInFolder } from '../js/fileUrl';
 
 import Typography from '@mui/material/Typography';
 
@@ -105,7 +106,7 @@ export default function Uploads({ userSelected }) {
       const response = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
       if (response.data.file) {
         const filteredFiles = response.data.file.filter((file) =>
-          file.path.includes('/documents/')
+          isInFolder(file.path, 'documents')
         );
         setFilesUploaded(filteredFiles);
         setIsLoading(false);

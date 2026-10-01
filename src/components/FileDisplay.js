@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 // import { makeStyles } from '@mui/styles';
 
 import {
@@ -8,10 +8,12 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material';
 import { Document, Page, pdfjs } from 'react-pdf';
 // import AWS from 'aws-sdk';
 import { saveAs } from 'file-saver';
+import { getFileUrl, fileNameOf } from '../js/fileUrl';
 
 // Provide the path to the PDF.js worker file
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -38,16 +40,28 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 // }));
 
 const FileDisplay = ({ s3FilePath, open, handleClose }) => {
-  console.log(s3FilePath);
-  const renderFileContent = () => {
-    s3FilePath = s3FilePath.toString();
-    const fileExtension = s3FilePath.split('.').pop();
+  const [url, setUrl] = useState(null);
+  const [error, setError] = useState(false);
+  const path = s3FilePath ? s3FilePath.toString() : '';
+  const fileExtension = path.split('.').pop().toLowerCase();
 
-    if (
-      fileExtension === 'jpeg' ||
-      fileExtension.toLowerCase() === 'jpg' ||
-      fileExtension === 'png'
-    ) {
+  useEffect(() => {
+    if (!open || !path) return;
+    setUrl(null);
+    setError(false);
+    getFileUrl(path)
+      .then(setUrl)
+      .catch(() => setError(true));
+  }, [open, path]);
+
+  const renderFileContent = () => {
+    if (error) {
+      return <Typography>Impossible d'ouvrir ce fichier.</Typography>;
+    }
+    if (!url) {
+      return <CircularProgress />;
+    }
+    if (['jpeg', 'jpg', 'png'].includes(fileExtension)) {
       return (
         <Box
           component="div"
@@ -59,81 +73,42 @@ const FileDisplay = ({ s3FilePath, open, handleClose }) => {
             width: '100%',
             border: `1px solid `,
           }}>
-          <img src={s3FilePath} alt="File" />;
+          <img src={url} alt="File" style={{ maxWidth: '100%' }} />
         </Box>
       );
     } else if (fileExtension === 'pdf') {
       return (
         <div>
-          <Document file={s3FilePath}>
+          <Document file={url}>
             <Page pageNumber={1} />
           </Document>
         </div>
       );
     }
-    // return <Typography>Unsupported File Type</Typography>;
     return <Typography>Unsupported File Type</Typography>;
   };
+
   const handleDownload = async () => {
     try {
-      const url = s3FilePath;
-
-      // Define headers based on the file type
-      const headers = {};
-      const fileExtension = s3FilePath.split('.').pop().toLowerCase();
-
-      if (fileExtension === 'pdf') {
-        headers['Content-Type'] = 'application/pdf';
-      } else if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
-        headers['Content-Type'] = 'image/jpeg'; // Adjust as needed for PNG or other image types
-      }
-      // Fetch the file from the presigned URL
-      const response = await fetch(url, {
-        method: 'GET', // or 'POST', 'PUT', etc.
-        mode: 'cors',
-      });
-      console.log(response);
+      const response = await fetch(url, { mode: 'cors' });
       if (!response.ok) {
         throw new Error(
           `Failed to fetch file (${response.status}: ${response.statusText})`
         );
       }
-
-      const blob = await response.blob();
-      console.log('Blob type', blob);
-      // fileExtension = s3FilePath.split('.').pop().toLowerCase();
-
-      if (fileExtension === 'pdf') {
-        saveAs(blob, 'downloaded_file.pdf');
-      } else if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
-        // No need to convert to base64, use the blob directly
-        saveAs(blob, `downloaded_file.${fileExtension}`);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch file (${response.status}: ${response.statusText})`
-          );
-        }
-      } else {
-        // Unsupported file type
-        console.error('Unsupported file type:', fileExtension);
-      }
-
-      // Use FileSaver.js to save the Blob as a file
+      saveAs(await response.blob(), fileNameOf(path));
     } catch (error) {
       console.error('Error downloading file:', error);
-      // Handle error appropriately (e.g., show a message to the user)
     }
-    // console.log('Download button clicked for:', s3FilePath);
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>File Preview</DialogTitle>
+      <DialogTitle>{fileNameOf(path)}</DialogTitle>
       <DialogContent>
         {renderFileContent()}
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleDownload}>
+          <Button variant="contained" onClick={handleDownload} disabled={!url}>
             Télécharger le fichier
           </Button>
         </Box>
