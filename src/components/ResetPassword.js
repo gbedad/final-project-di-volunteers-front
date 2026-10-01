@@ -54,7 +54,7 @@ const ResetPassword = () => {
   const userValid = async () => {
     try {
       const res = await fetch(
-        `reset-password/${id}/${token}`,
+        `${BASE_URL}/reset-password/${id}/${token}`,
 
         {
           method: 'GET',
