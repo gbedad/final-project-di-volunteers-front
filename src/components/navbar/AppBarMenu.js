@@ -22,12 +22,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FlagIcon from '@mui/icons-material/Flag';
 import FolderIcon from '@mui/icons-material/Folder';
+import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
 
 import logo from '../../assets/mycogniverse3.gif';
+import { isStaff, isManager } from '../../js/roles';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 // const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
@@ -101,7 +103,7 @@ function ResponsiveAppBar() {
         navigate(`/stepper`, { state: { userLogged } });
       } else if (
         page === 'Missions bénévoles' &&
-        userLogged.user.role === 'admin'
+        isManager(userLogged.user.role)
       ) {
         navigate('/all-missions', { state: { userLogged } });
       } else if (page === 'A propos') {
@@ -128,8 +130,7 @@ function ResponsiveAppBar() {
 
   const handleViewUsers = () => {
     if (
-      userLogged.user.role === 'admin' ||
-      userLogged.user.role === 'interviewer'
+      isStaff(userLogged.user.role)
     ) {
       navigate(`/view-users`, { state: { userLogged } });
     }
@@ -140,18 +141,23 @@ function ResponsiveAppBar() {
     dashboard: ['/view-users', '/change-status', '/stepper', '/profile'],
     missions: ['/all-missions', '/missions/update'],
     documents: ['/documents'],
+    team: ['/equipe'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
   const currentProps = (section) =>
     isCurrent(section) ? { selected: true, 'aria-current': 'page' } : {};
 
+  const handleTeam = () => {
+    navigate(`/equipe`, { state: { userLogged } });
+  };
+
   const handleAdminFiles = () => {
     navigate(`/documents`, { state: { userLogged } });
   };
 
   const handleEditMissions = () => {
-    if (userLogged.user.role === 'admin') {
+    if (isManager(userLogged.user.role)) {
       navigate(`/all-missions`, { state: { userLogged } });
     }
   };
@@ -608,8 +614,7 @@ function ResponsiveAppBar() {
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
                     location.pathname === '/view-users') &&
-                  (location.state.userLogged.user.role === 'admin' ||
-                    location.state.userLogged.user.role === 'interviewer') ? (
+                  isStaff(location.state.userLogged.user.role) ? (
                     <div>
                       <MenuItem
                         onClick={handleViewUsers}
@@ -640,6 +645,16 @@ function ResponsiveAppBar() {
                         </ListItemIcon>
                         Documents
                       </MenuItem>
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleTeam}
+                          {...currentProps('team')}>
+                          <ListItemIcon>
+                            <GroupIcon fontSize="small" />
+                          </ListItemIcon>
+                          Équipe
+                        </MenuItem>
+                      )}
                       <Divider />
                       <MenuItem onClick={handleLogout}>
                         <ListItemIcon>

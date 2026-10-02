@@ -85,6 +85,7 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 
 import { setStatusStep } from '../js/statusDescription';
 import AddressAutocomplete from './AddressAutocomplete';
+import { isManager } from '../js/roles';
 // import AutofillCheckoutDemo from './AddressAutocomplete2';
 // import SelectFormActivity from './SelectActivity';
 // import ImageDisplay from './ImageDisplay';
@@ -829,7 +830,7 @@ const ProfilePage = ({ status }) => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <BorderedBoxWithLabel label="La mission">
             {/* Content for Box 2 */}
-            {location.state.userLogged.user.role === 'admin' ||
+            {isManager(location.state.userLogged.user.role) ||
             (location.state.userLogged.user.role === 'volunteer' &&
               setStatusStep(status).slice(
                 0,

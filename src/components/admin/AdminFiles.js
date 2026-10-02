@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { saveAs } from 'file-saver';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { saveAs } from "file-saver";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Box,
   Button,
@@ -19,28 +19,29 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-} from '@mui/material';
-import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DownloadIcon from '@mui/icons-material/Download';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+} from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DownloadIcon from "@mui/icons-material/Download";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
-import FileDisplay from '../FileDisplay';
-import { getFileUrl, fileNameOf } from '../../js/fileUrl';
+import FileDisplay from "../FileDisplay";
+import { getFileUrl, fileNameOf } from "../../js/fileUrl";
+import { isManager } from "../../js/roles";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const gridToolbar = {
   slots: { toolbar: GridToolbar },
   slotProps: {
-    toolbar: { showQuickFilter: true, csvOptions: { delimiter: ';' } },
+    toolbar: { showQuickFilter: true, csvOptions: { delimiter: ";" } },
   },
 };
 
 const formatDate = (value) =>
-  value ? new Date(value).toLocaleDateString('fr-FR') : '—';
+  value ? new Date(value).toLocaleDateString("fr-FR") : "—";
 
 const Received = ({ value }) =>
   value ? (
@@ -53,12 +54,17 @@ const AdminFiles = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userLogged = location.state?.userLogged;
+  // Interviewers can view documents but not delete them
+  const canDelete = isManager(
+    userLogged?.user?.role ||
+      JSON.parse(localStorage.getItem("user") || "{}").user?.role,
+  );
 
   const [tab, setTab] = useState(0);
   const [files, setFiles] = useState([]);
   const [missing, setMissing] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState("all");
   const [hideDeclined, setHideDeclined] = useState(true);
   const [previewPath, setPreviewPath] = useState(null);
   const [fileToDelete, setFileToDelete] = useState(null);
@@ -74,8 +80,8 @@ const AdminFiles = () => {
       setMissing(missingRes.data);
     } catch (err) {
       console.error(err);
-      toast.error('Impossible de charger les documents', {
-        position: 'top-center',
+      toast.error("Impossible de charger les documents", {
+        position: "top-center",
       });
     } finally {
       setLoading(false);
@@ -87,16 +93,16 @@ const AdminFiles = () => {
   }, [loadData]);
 
   const openProfile = (userId) =>
-    navigate('/change-status', { state: { userId, userLogged } });
+    navigate("/change-status", { state: { userId, userLogged } });
 
   const handleDownload = async (path) => {
     try {
-      const response = await fetch(await getFileUrl(path), { mode: 'cors' });
+      const response = await fetch(await getFileUrl(path), { mode: "cors" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       saveAs(await response.blob(), fileNameOf(path));
     } catch (err) {
       console.error(err);
-      toast.error('Téléchargement impossible', { position: 'top-center' });
+      toast.error("Téléchargement impossible", { position: "top-center" });
     }
   };
 
@@ -104,10 +110,10 @@ const AdminFiles = () => {
     try {
       await axios.delete(`${BASE_URL}/admin/files/${fileToDelete.id}`);
       setFiles((prev) => prev.filter((f) => f.id !== fileToDelete.id));
-      toast.success('Document supprimé', { position: 'top-center' });
+      toast.success("Document supprimé", { position: "top-center" });
     } catch (err) {
       console.error(err);
-      toast.error('Suppression impossible', { position: 'top-center' });
+      toast.error("Suppression impossible", { position: "top-center" });
     } finally {
       setFileToDelete(null);
     }
@@ -119,40 +125,40 @@ const AdminFiles = () => {
         {`${user.first_name} ${user.last_name}`}
       </Link>
     ) : (
-      '—'
+      "—"
     );
 
   const fileColumns = [
     {
-      field: 'volunteer',
-      headerName: 'Bénévole',
+      field: "volunteer",
+      headerName: "Bénévole",
       flex: 1,
       minWidth: 160,
       valueGetter: ({ row }) =>
-        row.user ? `${row.user.first_name} ${row.user.last_name}` : '',
+        row.user ? `${row.user.first_name} ${row.user.last_name}` : "",
       renderCell: ({ row }) => volunteerCell(row.user),
     },
     {
-      field: 'email',
-      headerName: 'Email',
+      field: "email",
+      headerName: "Email",
       flex: 1,
       minWidth: 180,
-      valueGetter: ({ row }) => row.user?.email || '',
+      valueGetter: ({ row }) => row.user?.email || "",
     },
-    { field: 'filename', headerName: 'Document', flex: 1.2, minWidth: 180 },
-    { field: 'type', headerName: 'Type', width: 120 },
+    { field: "filename", headerName: "Document", flex: 1.2, minWidth: 180 },
+    { field: "type", headerName: "Type", width: 120 },
     {
-      field: 'uploaded_at',
-      headerName: 'Déposé le',
+      field: "uploaded_at",
+      headerName: "Déposé le",
       width: 120,
-      type: 'date',
+      type: "date",
       valueGetter: ({ value }) => (value ? new Date(value) : null),
       valueFormatter: ({ value }) => formatDate(value),
     },
     {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
       width: 130,
       getActions: ({ row }) => [
         <GridActionsCellItem
@@ -167,58 +173,62 @@ const AdminFiles = () => {
           label="Télécharger"
           onClick={() => handleDownload(row.path)}
         />,
-        <GridActionsCellItem
-          key="delete"
-          icon={<DeleteIcon color="error" />}
-          label="Supprimer"
-          onClick={() => setFileToDelete(row)}
-        />,
+        ...(canDelete
+          ? [
+              <GridActionsCellItem
+                key="delete"
+                icon={<DeleteIcon color="error" />}
+                label="Supprimer"
+                onClick={() => setFileToDelete(row)}
+              />,
+            ]
+          : []),
       ],
     },
   ];
 
   const missingColumns = [
     {
-      field: 'name',
-      headerName: 'Bénévole',
+      field: "name",
+      headerName: "Bénévole",
       flex: 1,
       minWidth: 160,
       valueGetter: ({ row }) => `${row.first_name} ${row.last_name}`,
       renderCell: ({ row }) => volunteerCell(row),
     },
-    { field: 'email', headerName: 'Email', flex: 1, minWidth: 180 },
-    { field: 'phone', headerName: 'Téléphone', width: 130 },
-    { field: 'status', headerName: 'Statut', width: 130 },
+    { field: "email", headerName: "Email", flex: 1, minWidth: 180 },
+    { field: "phone", headerName: "Téléphone", width: 130 },
+    { field: "status", headerName: "Statut", width: 130 },
     ...[
-      ['cv_received', 'CV'],
-      ['id_received', "Pièce d'identité"],
-      ['b3_received', 'B3'],
-      ['convention_received', 'Convention'],
+      ["cv_received", "CV"],
+      ["id_received", "Pièce d'identité"],
+      ["b3_received", "B3"],
+      ["convention_received", "Convention"],
     ].map(([field, headerName]) => ({
       field,
       headerName,
       width: 120,
-      type: 'boolean',
+      type: "boolean",
       renderCell: ({ value }) => <Received value={value} />,
     })),
     {
-      field: 'files_uploaded',
-      headerName: 'Fichiers déposés',
-      type: 'number',
+      field: "files_uploaded",
+      headerName: "Fichiers déposés",
+      type: "number",
       width: 130,
     },
   ];
 
   const visibleFiles = useMemo(
     () =>
-      typeFilter === 'all' ? files : files.filter((f) => f.type === typeFilter),
-    [files, typeFilter]
+      typeFilter === "all" ? files : files.filter((f) => f.type === typeFilter),
+    [files, typeFilter],
   );
 
   const visibleMissing = useMemo(
     () =>
-      hideDeclined ? missing.filter((u) => u.status !== 'Déclinée') : missing,
-    [missing, hideDeclined]
+      hideDeclined ? missing.filter((u) => u.status !== "Déclinée") : missing,
+    [missing, hideDeclined],
   );
 
   return (
@@ -239,19 +249,22 @@ const AdminFiles = () => {
             exclusive
             value={typeFilter}
             onChange={(e, value) => value && setTypeFilter(value)}
-            sx={{ mb: 2 }}>
+            sx={{ mb: 2 }}
+          >
             <ToggleButton value="all">Tous</ToggleButton>
             <ToggleButton value="Document">Documents</ToggleButton>
             <ToggleButton value="Convention">Conventions</ToggleButton>
           </ToggleButtonGroup>
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: 600, width: "100%" }}>
             <DataGrid
               rows={visibleFiles}
               columns={fileColumns}
               loading={loading}
               disableRowSelectionOnClick
               initialState={{
-                sorting: { sortModel: [{ field: 'uploaded_at', sort: 'desc' }] },
+                sorting: {
+                  sortModel: [{ field: "uploaded_at", sort: "desc" }],
+                },
               }}
               {...gridToolbar}
             />
@@ -271,7 +284,7 @@ const AdminFiles = () => {
             }
             label="Masquer les candidatures déclinées"
           />
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: 600, width: "100%" }}>
             <DataGrid
               rows={visibleMissing}
               columns={missingColumns}

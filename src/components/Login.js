@@ -1,5 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  Link as RouterLink,
+} from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -47,11 +52,15 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const location = useLocation();
+  // ?candidat=<id>: link from the new-registration email to the admins
+  const [searchParams] = useSearchParams();
+  const candidateId = Number(searchParams.get('candidat')) || null;
   const { updateToken } = useContext(AuthContext);
   // const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(location.state?.email || '');
 
   // const user = updateUser(userConnected);
   // console.log(user);
@@ -111,10 +120,15 @@ export default function SignIn() {
         if (userLogged.user.role === 'volunteer') {
           navigate('/stepper', { state: { userLogged } });
         } else if (
-          userLogged.user.role === 'admin' ||
-          userLogged.user.role === 'interviewer'
+          ['superadmin', 'admin', 'interviewer'].includes(userLogged.user.role)
         ) {
-          navigate('/view-users', { state: { userLogged } });
+          if (candidateId) {
+            navigate('/change-status', {
+              state: { userId: candidateId, userLogged },
+            });
+          } else {
+            navigate('/view-users', { state: { userLogged } });
+          }
         } else {
           console.log('Loading.....');
         }

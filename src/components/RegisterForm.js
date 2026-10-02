@@ -24,7 +24,10 @@ import Input from 'react-phone-number-input/input';
 import CustomPhoneNumber from '../components/phone-numbers/PhoneNumber';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-import { InputLabel } from '@mui/material';
+import { Alert, FormHelperText, InputLabel } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { Link as RouterLink } from 'react-router-dom';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -91,105 +94,97 @@ const RegisterForm = ({ mission }) => {
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
   const [phone, setPhone] = useState('');
-  const [birth_date, setBirthDate] = useState(new Date());
+  const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
+  const [emailTaken, setEmailTaken] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   dayjs.locale('fr');
   dayjs.extend(utc);
-  // dayjs.utc(); // results in date in correct timezone
-  // console.log(propsData);
-  const isStrongPassword = () => {
-    // Define the criteria for a strong password
-    const minLength = 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
 
-    // Check if the password meets all criteria
-    return (
-      password.length >= minLength &&
-      hasUppercase &&
-      hasLowercase &&
-      hasNumber &&
-      hasSpecialChar
-    );
-  };
-  const isEmailValid = () => {
-    return email.includes('@');
-  };
+  const passwordRules = [
+    { label: '8 caractères minimum', ok: password.length >= 8 },
+    { label: 'une majuscule', ok: /[A-Z]/.test(password) },
+    { label: 'une minuscule', ok: /[a-z]/.test(password) },
+    { label: 'un chiffre', ok: /\d/.test(password) },
+    {
+      label: 'un caractère spécial (!@#$%…)',
+      ok: /[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]/.test(password),
+    },
+  ];
+  const isStrongPassword = () => passwordRules.every((rule) => rule.ok);
 
-  const isPhoneValid = () => {
-    return phone.trim() !== '';
-  };
+  const ageOf = (date) => dayjs().diff(dayjs(date), 'year');
 
-  const isBirthDateValid = () => {
-    return birth_date.trim() !== '';
+  // Returns a message per invalid field, empty object if the form is valid
+  const validate = () => {
+    const found = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      found.email = 'Adresse e-mail invalide';
+    }
+    if (!first_name.trim()) found.first_name = 'Prénom requis';
+    if (!last_name.trim()) found.last_name = 'Nom requis';
+    if (!phone || phone.replace(/\D/g, '').length < 9) {
+      found.phone = 'Numéro de téléphone invalide';
+    }
+    if (!birth_date) {
+      found.birth_date = 'Date de naissance requise';
+    } else if (ageOf(birth_date) < 18) {
+      found.birth_date = 'Vous devez avoir au moins 18 ans';
+    } else if (ageOf(birth_date) > 100) {
+      found.birth_date = 'Date de naissance invalide';
+    }
+    if (!isStrongPassword()) {
+      found.password = 'Le mot de passe ne respecte pas toutes les règles';
+    }
+    if (message.trim().length < 20) {
+      found.message = 'Dites-nous en quelques mots pourquoi vous postulez';
+    }
+    return found;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setEmailTaken(false);
 
-    if (!isEmailValid()) {
-      toast.error('Veuillez saisir une adresse e-mail valide.');
-      console.log('Veuillez saisir une adresse e-mail valide.');
+    const found = validate();
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      toast.error('Merci de corriger les champs indiqués en rouge.', {
+        position: 'top-center',
+      });
       return;
     }
 
-    if (!isStrongPassword()) {
-      console.log("Votre mot de passe n'est pas assez sécurisé.");
-      return;
-    }
-
-    if (!isPhoneValid()) {
-      console.log('Veuillez saisir un numéro de téléphone valide.');
-      return;
-    }
-
-    if (!isBirthDateValid()) {
-      console.log('Veuillez sélectionner une date de naissance valide.');
-      return;
-    }
-    const api = axios.create({
-      baseURL: `${BASE_URL}`,
-      withCredentials: true, // This is important for CORS with credentials
-    });
-
+    setSubmitting(true);
     try {
-      const response = await api.post(`${BASE_URL}/register`, {
-        email,
+      await axios.post(`${BASE_URL}/register`, {
+        email: email.trim(),
         password,
-        first_name,
-        last_name,
+        first_name: first_name.trim(),
+        last_name: last_name.trim(),
         phone,
         birth_date,
         message,
-        mission_id: propsData !== null ? propsData : 1,
+        mission_id: typeof propsData === 'number' ? propsData : 1,
       });
-      console.log(response.data);
-      if (response.data.msg === 'Register Successful') {
-        toast.success('Votre compte est créé; vous pouvez vous connecter.', {
-          duration: 6000,
-          position: 'top-center',
-        });
-      }
-
-      if (!isStrongPassword) {
-        toast.error("Votre mot de passe n'est pas assez sécurisé");
-        return console.log("Votre mot de passe n'est pas assez sécurisé.");
-      }
-      // console.log(response.data); // Handle successful response here
-      navigate('/login');
+      toast.success('Votre compte est créé, vous pouvez vous connecter.', {
+        duration: 6000,
+        position: 'top-center',
+      });
+      navigate('/login', { state: { email: email.trim() } });
     } catch (error) {
-      console.error(error); // Handle error here
-      if (error) {
-        // Assuming 409 is the status code for email already existing
-        console.log('Email already exists. Please use a different email.');
+      if (error.response?.status === 409) {
+        setEmailTaken(true);
       } else {
-        toast.error('An error occurred. Please try again later.', {
-          position: 'top-center',
-        });
+        toast.error(
+          'Une erreur est survenue. Merci de réessayer dans quelques instants.',
+          { position: 'top-center' }
+        );
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -231,7 +226,22 @@ const RegisterForm = ({ mission }) => {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    error={!!errors.email}
+                    helperText={errors.email}
                   />
+                  {emailTaken && (
+                    <Alert severity="warning" sx={{ mt: 1 }}>
+                      Un compte existe déjà avec cet e-mail.{' '}
+                      <Link component={RouterLink} to="/login">
+                        Se connecter
+                      </Link>{' '}
+                      ou{' '}
+                      <Link component={RouterLink} to="/forgot-password">
+                        réinitialiser le mot de passe
+                      </Link>
+                      .
+                    </Alert>
+                  )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -243,6 +253,8 @@ const RegisterForm = ({ mission }) => {
                     label="Prénom"
                     value={first_name}
                     onChange={(e) => setFirstName(e.target.value)}
+                    error={!!errors.first_name}
+                    helperText={errors.first_name}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -255,6 +267,8 @@ const RegisterForm = ({ mission }) => {
                     autoComplete="family-name"
                     value={last_name}
                     onChange={(e) => setLastName(e.target.value)}
+                    error={!!errors.last_name}
+                    helperText={errors.last_name}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -269,6 +283,9 @@ const RegisterForm = ({ mission }) => {
                     style={{ innerHeight: '40px' }}
                     inputComponent={CustomPhoneNumber}
                   />
+                  {errors.phone && (
+                    <FormHelperText error>{errors.phone}</FormHelperText>
+                  )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <InputLabel id="demo-simple-select-helper-label"></InputLabel>
@@ -285,6 +302,8 @@ const RegisterForm = ({ mission }) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    error={!!errors.birth_date}
+                    helperText={errors.birth_date}
                   />
                 </Grid>
 
@@ -293,13 +312,31 @@ const RegisterForm = ({ mission }) => {
                     password={password}
                     handlePassword={(e) => setPassword(e.target.value)}
                   />
-                  <Typography
-                    color={isStrongPassword() ? 'success' : 'secondary'}
-                    variant={'body2'}>
-                    {isStrongPassword()
-                      ? 'Mot de passe valide'
-                      : 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un caractère spécial'}
-                  </Typography>
+                  <Box component="ul" sx={{ listStyle: 'none', pl: 0, mt: 1, mb: 0 }}>
+                    {passwordRules.map((rule) => (
+                      <Box
+                        component="li"
+                        key={rule.label}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          fontSize: '0.85rem',
+                          color: rule.ok
+                            ? 'success.main'
+                            : errors.password
+                            ? 'error.main'
+                            : 'text.secondary',
+                        }}>
+                        {rule.ok ? (
+                          <CheckCircleIcon sx={{ fontSize: 16 }} />
+                        ) : (
+                          <RadioButtonUncheckedIcon sx={{ fontSize: 16 }} />
+                        )}
+                        {rule.label}
+                      </Box>
+                    ))}
+                  </Box>
                 </Grid>
                 <Grid item xs={12}>
                   <Textarea
@@ -313,6 +350,9 @@ const RegisterForm = ({ mission }) => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
+                  {errors.message && (
+                    <FormHelperText error>{errors.message}</FormHelperText>
+                  )}
                 </Grid>
                 {/* <Grid item xs={12}>
                   <Box sx={{ fontSize: '12px' }}>
@@ -331,6 +371,7 @@ const RegisterForm = ({ mission }) => {
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled={submitting}
                 sx={{ mt: 3, mb: 2 }}>
                 Créer mon compte pour postuler
               </Button>
