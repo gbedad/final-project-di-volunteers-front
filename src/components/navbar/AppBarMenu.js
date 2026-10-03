@@ -36,16 +36,27 @@ const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+const savedSession = () => {
+  try {
+    const token = localStorage.getItem('token');
+    const session = JSON.parse(localStorage.getItem('user'));
+    if (!token || !session?.user) return null;
+    const { exp } = JSON.parse(atob(token.split('.')[1]));
+    return exp * 1000 > Date.now() ? session : null;
+  } catch {
+    return null;
+  }
+};
+
 function ResponsiveAppBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  let userLogged = '';
-  if (location.state) {
-    userLogged = location.state.userLogged;
-  }
+  // Pages don't always pass the session along: fall back to the one saved
+  // at login, as long as its token has not expired
+  const userLogged = location.state?.userLogged || savedSession() || '';
   // console.log('=======>', userLogged);
 
   const handleOpenNavMenu = (event) => {
@@ -66,14 +77,18 @@ function ResponsiveAppBar() {
   const handleLogout = async () => {
     try {
       await axios.get(`${BASE_URL}/logout`);
-      localStorage.removeItem('token');
-      localStorage.removeItem('token1');
-      localStorage.removeItem('users');
-      localStorage.removeItem('user');
-      localStorage.removeItem('refreshToken');
-      navigate('/');
     } catch (err) {
       console.log(err);
+    } finally {
+      [
+        'token',
+        'token1',
+        'users',
+        'user',
+        'user-status',
+        'refreshToken',
+      ].forEach((key) => localStorage.removeItem(key));
+      navigate('/');
     }
   };
 
@@ -129,9 +144,7 @@ function ResponsiveAppBar() {
   };
 
   const handleViewUsers = () => {
-    if (
-      isStaff(userLogged.user.role)
-    ) {
+    if (isStaff(userLogged.user.role)) {
       navigate(`/view-users`, { state: { userLogged } });
     }
   };
@@ -214,7 +227,7 @@ function ResponsiveAppBar() {
   //                 <Typography textAlign="center">{page}</Typography>
   //               </MenuItem>
   //             ))}
-  //             {!location.state || !location.state.userLogged ? (
+  //             {!userLogged ? (
   //               <MenuItem onClick={handleLogin}>
   //                 <Typography textAlign="center">Login</Typography>
   //               </MenuItem>
@@ -273,10 +286,10 @@ function ResponsiveAppBar() {
   //             <Tooltip title="Open settings">
   //               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
   //                 <Avatar>
-  //                   {location.state.userLogged.user.first_name
+  //                   {userLogged.user.first_name
   //                     .charAt(0)
   //                     .toUpperCase()}
-  //                   {location.state.userLogged.user.last_name
+  //                   {userLogged.user.last_name
   //                     .charAt(0)
   //                     .toUpperCase()}
   //                 </Avatar>
@@ -303,7 +316,7 @@ function ResponsiveAppBar() {
   //               {(location.pathname !== '/register' ||
   //                 location.pathname === '/view-users') &&
   //               location.state.userLogged &&
-  //               location.state.userLogged.user.role === 'admin' ? (
+  //               userLogged.user.role === 'admin' ? (
   //                 <div>
   //                   <MenuItem onClick={handleViewUsers}>
   //                     <Typography textAlign="center">Dashboard</Typography>
@@ -318,8 +331,8 @@ function ResponsiveAppBar() {
   //               ) : location.pathname !== '/profile' &&
   //                 location.pathname !== '/register' &&
   //                 location.state &&
-  //                 location.state.userLogged.user &&
-  //                 location.state.userLogged.user.role === 'volunteer' ? (
+  //                 userLogged.user &&
+  //                 userLogged.user.role === 'volunteer' ? (
   //                 <div>
   //                   {/* <MenuItem onClick={handleProfile}>
   //                     <Typography textAlign="center">Profile</Typography>
@@ -398,12 +411,12 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-              {!location.state || !location.state.userLogged ? (
+              {!userLogged ? (
                 <MenuItem onClick={() => navigate('/register', { state: 1 })}>
                   <Typography textAlign="center">Créer un compte</Typography>
                 </MenuItem>
               ) : null}
-              {!location.state || !location.state.userLogged ? (
+              {!userLogged ? (
                 <MenuItem onClick={handleLogin}>
                   <Typography textAlign="center">Se connecter</Typography>
                 </MenuItem>
@@ -486,27 +499,23 @@ function ResponsiveAppBar() {
               }}>
               Missions bénévoles
             </Button>
-            {location.state &&
-              location.state.userLogged &&
-              location.state.userLogged.user.role === 'volunteer' && (
-                <Button
-                  onClick={() =>
-                    navigate('/stepper', { state: { userLogged } })
-                  }
-                  sx={{
-                    my: 2,
-                    pl: 2,
-                    pr: 2,
-                    color: 'white',
-                    display: 'block',
-                  }}>
-                  Tableau de bord
-                </Button>
-              )}
+            {userLogged && userLogged.user.role === 'volunteer' && (
+              <Button
+                onClick={() => navigate('/stepper', { state: { userLogged } })}
+                sx={{
+                  my: 2,
+                  pl: 2,
+                  pr: 2,
+                  color: 'white',
+                  display: 'block',
+                }}>
+                Tableau de bord
+              </Button>
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {!location.state || !location.state.userLogged ? (
+            {!userLogged ? (
               <MenuItem>
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                   <Button
@@ -536,7 +545,7 @@ function ResponsiveAppBar() {
               </MenuItem>
             ) : (
               <>
-                <Tooltip title={location.state.userLogged.user.email} describeChild>
+                <Tooltip title={userLogged.user.email} describeChild>
                   <Button
                     onClick={handleOpenUserMenu}
                     aria-controls="menu-appbar"
@@ -570,19 +579,15 @@ function ResponsiveAppBar() {
                         fontSize: '0.9rem',
                         mr: 1,
                       }}>
-                      {location.state.userLogged.user.first_name
-                        .charAt(0)
-                        .toUpperCase()}
-                      {location.state.userLogged.user.last_name
-                        .charAt(0)
-                        .toUpperCase()}
+                      {userLogged.user.first_name.charAt(0).toUpperCase()}
+                      {userLogged.user.last_name.charAt(0).toUpperCase()}
                     </Avatar>
                     <Typography
                       sx={{
                         fontSize: '0.9rem',
                         display: { xs: 'none', sm: 'block' },
                       }}>
-                      {location.state.userLogged.user.first_name}
+                      {userLogged.user.first_name}
                     </Typography>
                   </Button>
                 </Tooltip>
@@ -614,7 +619,7 @@ function ResponsiveAppBar() {
                   onClose={handleCloseUserMenu}>
                   {(location.pathname !== '/register' ||
                     location.pathname === '/view-users') &&
-                  isStaff(location.state.userLogged.user.role) ? (
+                  isStaff(userLogged.user.role) ? (
                     <div>
                       <MenuItem
                         onClick={handleViewUsers}
@@ -664,7 +669,7 @@ function ResponsiveAppBar() {
                       </MenuItem>
                     </div>
                   ) : location.pathname !== '/register' &&
-                    location.state.userLogged.user.role === 'volunteer' ? (
+                    userLogged.user.role === 'volunteer' ? (
                     <div>
                       <MenuItem
                         onClick={handleProfile}
