@@ -55,7 +55,6 @@ export default function Uploads({ userSelected, s3FilePath }) {
 
   const [changeFileList, setChangeFileList] = useState(false);
   const [showUploadButton, setShowUploadButton] = useState(false);
-  const [conventionReceived, setConventionReceived] = useState(false);
   const [isColumnDirection, setIsColumnDirection] = useState(false);
 
   // Define component width for Stack direction
@@ -110,7 +109,6 @@ export default function Uploads({ userSelected, s3FilePath }) {
         setIsLoading(false);
         setShowUploadButton(false);
 
-        setConventionReceived(true);
       } else {
         setIsLoading(false);
       }
@@ -155,18 +153,6 @@ export default function Uploads({ userSelected, s3FilePath }) {
         setChangeFileList(true);
         setSelectedFile(null);
         setLoading(false);
-        await fetch(`${BASE_URL}/update-files-received/${userId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({
-            userId: userId,
-
-            conventionReceived,
-          }),
-        });
       } else {
         // console.log('Error uploading file:', response.status);
       }

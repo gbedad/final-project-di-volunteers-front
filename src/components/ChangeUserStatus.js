@@ -63,7 +63,7 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 
-import Uploads from './FileUploader';
+import DocumentSlots from './application/DocumentSlots';
 import UploadConvention from './FileConventionUploader';
 
 import { existingStatuses } from '../options/existingOptions';
@@ -828,27 +828,11 @@ const ChangeUserStatus = () => {
                 }}>
                 <DocumentCheckbox user={user} />
               </Box>
-              {user.file.length !== 0 ? (
-                <Box mt={2}>
-                  <Box
-                    sx={{
-                      display: userLogged.user.role === 'interviewer' && 'none',
-                    }}>
-                    {/* <Typography variant="title">
-                      Rajouter la convention signée
-                    </Typography> */}
-                    {/* <Typography variant="body2">
-                      (par l'association Séphora Berrebi)
-                    </Typography> */}
-                  </Box>
-                  <UploadConvention userSelected={user.id} />
-                  <Uploads userSelected={user.id} />
-                </Box>
-              ) : (
-                <Typography component="div" sx={{ minWidth: 275, mt: 2 }}>
-                  Aucun fichier n'a été téléchargé.
-                </Typography>
-              )}
+              {/* Typed slots are always shown, so admins can upload too */}
+              <Box mt={2}>
+                <UploadConvention userSelected={user.id} />
+                <DocumentSlots userId={user.id} />
+              </Box>
             </BorderedBoxWithLabel>
           </Grid>
         </Grid>

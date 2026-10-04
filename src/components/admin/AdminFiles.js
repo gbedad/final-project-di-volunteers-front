@@ -221,7 +221,9 @@ const AdminFiles = () => {
 
   const visibleFiles = useMemo(
     () =>
-      typeFilter === 'all' ? files : files.filter((f) => f.type === typeFilter),
+      typeFilter === 'all'
+        ? files
+        : files.filter((f) => (f.doc_type || 'other') === typeFilter),
     [files, typeFilter]
   );
 
@@ -249,10 +251,13 @@ const AdminFiles = () => {
             exclusive
             value={typeFilter}
             onChange={(e, value) => value && setTypeFilter(value)}
-            sx={{ mb: 2 }}>
+            sx={{ mb: 2, flexWrap: 'wrap' }}>
             <ToggleButton value="all">Tous</ToggleButton>
-            <ToggleButton value="Document">Documents</ToggleButton>
-            <ToggleButton value="Convention">Conventions</ToggleButton>
+            <ToggleButton value="cv">CV</ToggleButton>
+            <ToggleButton value="id">Pièce d'identité</ToggleButton>
+            <ToggleButton value="b3">Casier judiciaire</ToggleButton>
+            <ToggleButton value="convention">Conventions</ToggleButton>
+            <ToggleButton value="other">Autres</ToggleButton>
           </ToggleButtonGroup>
           <Box sx={{ height: 600, width: '100%' }}>
             <DataGrid

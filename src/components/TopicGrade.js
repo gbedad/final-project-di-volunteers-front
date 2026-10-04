@@ -23,6 +23,8 @@ import BorderedBoxWithLabel from './borderedBox';
 import { AuthContext } from '../AuthContext';
 
 import { existingSubjects, existingClasses } from '../options/existingOptions';
+import { useAutoSave } from '../js/useAutoSave';
+import SaveStatus from './application/SaveStatus';
 
 const fabStyle = {
   position: 'absolute',
@@ -38,7 +40,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
   // const { userLogged } = location.state;
   // const { token } = useContext(AuthContext);
 
-  const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -48,6 +49,13 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     location.state.userLogged.user.id === userSelected
       ? location.state.userLogged.user.id
       : userSelected;
+  const [saveState, scheduleSave] = useAutoSave(userId, 'topics');
+
+  // A subject is saved as soon as the subject and both levels are chosen
+  const isComplete = (range) =>
+    !!range.subject && !!range.classStart && !!range.classEnd;
+  const persist = (ranges) =>
+    scheduleSave(JSON.stringify(ranges.filter(isComplete)));
   // console.log('USERID', userId);
   const token = location.state.userLogged.token;
 
@@ -72,7 +80,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         );
         setSubjectClassRanges(parsed_array);
         setIsLoading(false);
-        setShowButton(false);
       }
     };
 
@@ -97,7 +104,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       ...subjectClassRanges,
       { subject: '', classStart: '', classEnd: '' },
     ]);
-    setShowButton(true);
     setOpen(true);
   };
 
@@ -105,61 +111,28 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     const updatedSubjectClassRanges = [...subjectClassRanges];
     updatedSubjectClassRanges[index].subject = value;
     setSubjectClassRanges(updatedSubjectClassRanges);
-    setShowButton(true);
+    persist(updatedSubjectClassRanges);
   };
 
   const handleClassStartChange = (value, index) => {
     const updatedSubjectClassRanges = [...subjectClassRanges];
     updatedSubjectClassRanges[index].classStart = value;
     setSubjectClassRanges(updatedSubjectClassRanges);
-    setShowButton(true);
+    persist(updatedSubjectClassRanges);
   };
 
   const handleClassEndChange = (value, index) => {
     const updatedSubjectClassRanges = [...subjectClassRanges];
     updatedSubjectClassRanges[index].classEnd = value;
     setSubjectClassRanges(updatedSubjectClassRanges);
-    setShowButton(true);
+    persist(updatedSubjectClassRanges);
   };
 
   const handleRemoveSubjectClassRange = (index) => {
     const updatedSubjectClassRanges = [...subjectClassRanges];
     updatedSubjectClassRanges.splice(index, 1);
     setSubjectClassRanges(updatedSubjectClassRanges);
-    setShowButton(true);
-  };
-
-  const handleSaveSubjectClassRanges = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { topics: JSON.stringify(subjectClassRanges) },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      // console.log(response.data.message, subjectClassRanges);
-      if (response.data.message) {
-        // console.log('Subject and class ranges saved successfully');
-        // toast.success(response.data.message, {
-        //   position: 'top-center',
-        // });
-        setShowButton(false);
-      } else {
-        console.error('Failed to save subjects');
-        // toast.error('Failed to save subjects', {
-        //   position: 'top-center',
-        // });
-      }
-    } catch (error) {
-      // toast.error('Failed to save subjects', {
-      //   position: 'top-center',
-      // });
-      console.error('Failed to save subject and class ranges', error);
-    }
-    // console.log('Saving subject and class ranges: ', subjectClassRanges);
+    persist(updatedSubjectClassRanges);
   };
 
   const fab = {
@@ -182,7 +155,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             color={fab.color}
             onClick={() => handleAddSubjectClassRange()}
             component="button"
-            disabled={showButton}>
+            disabled={!allValuesFilled}>
             {fab.icon}
           </Fab>
         </label>
@@ -271,16 +244,9 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
             </Grid>
           ))
         )}
-        {subjectClassRanges && (
-          <Button
-            sx={{ marginTop: '10px' }}
-            variant="contained"
-            color="primary"
-            onClick={handleSaveSubjectClassRanges}
-            disabled={!allValuesFilled || !showButton}>
-            Enregistrer
-          </Button>
-        )}
+        <Box sx={{ mt: 1, minHeight: 20 }}>
+          <SaveStatus state={saveState} />
+        </Box>
       </BorderedBoxWithLabel>
       <Snackbar
         open={open}
@@ -295,9 +261,8 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
           }}
           message={
             <span id="client-snackbar">
-              Vous pouvez ajouter plusieurs créneaux [matières] en cliquant à
-              plusieurs reprises sur + avant de cliquer sur ENREGISTRER pour
-              sauvegarder toutes les possibilités saisies.
+              Choisissez la matière et les niveaux : elle est enregistrée
+              automatiquement. Cliquez sur + pour en ajouter une autre.
             </span>
           }
         />

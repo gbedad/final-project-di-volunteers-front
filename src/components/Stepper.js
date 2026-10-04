@@ -18,7 +18,6 @@ import Avatar from '@mui/material/Avatar';
 
 import Profile from './Profile';
 import Skills from './Skills';
-import Uploads from './FileUploader';
 import InstructionComponent from '../components/files/Instructions';
 import ConventionComponent from './ConventionReciproqueComponent';
 
@@ -28,7 +27,10 @@ import StepperStatusTimeline from './StepperStatusTimeline';
 // import { setStatusStep } from '../js/statusDescription';
 import { setStatusStep } from '../js/statusDescription';
 import UploadConventionComponent from './FileConventionUploader';
-import FloatingButton from './FloatingButton';
+import ApplicationChecklist from './application/ApplicationChecklist';
+import DocumentSlots from './application/DocumentSlots';
+import Button from '@mui/material/Button';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Error404 from '../pages/404';
@@ -243,30 +245,16 @@ const BasicTabs = () => {
                 centered>
                 <Tab label="MON STATUT" {...a11yProps(0)} />
                 <Tab label="MON PROFIL" {...a11yProps(0)} />
+                {/* Profile, wishes and documents can be filled in any order */}
                 <Tab
                   label="MES DISPONIBILITÉS"
                   {...a11yProps(1)}
                   disabled={status === 'Déclinée'}
-                  style={{
-                    color:
-                      status === 'Compte créé' ||
-                      (status === 'Déclinée' && 'text.disabled'),
-                  }}
                 />
                 <Tab
                   label="MES DOCUMENTS"
                   {...a11yProps(2)}
-                  disabled={
-                    status === 'Compte créé' ||
-                    status === 'A renseigner' ||
-                    status === 'Déclinée'
-                  }
-                  style={{
-                    color:
-                      status === 'Compte créé' ||
-                      status === 'A renseigner' ||
-                      (status === 'Déclinée' && 'text.disabled'),
-                  }}
+                  disabled={status === 'Déclinée'}
                 />
                 <Tab
                   label="MA CONVENTION"
@@ -334,6 +322,13 @@ const BasicTabs = () => {
             }}>
             {/* <StatusTimelineComponent userStatusStep={setStatusStep(status)} /> */}
 
+            <Box sx={{ width: '100%' }}>
+              <ApplicationChecklist
+                userId={userId}
+                onGoToTab={setValue}
+                onStatusChange={setStatus}
+              />
+            </Box>
             <StepperStatusTimeline
               userStatusStep={setStatusStep(status)}
               handleChange={handleChange}
@@ -349,7 +344,7 @@ const BasicTabs = () => {
           <TabPanel value={value} index={3}>
             <div>
               <InstructionComponent />
-              <Uploads userSelected={userId} />
+              <DocumentSlots userId={userId} />
             </div>
           </TabPanel>
           <TabPanel value={value} index={4}>
@@ -358,10 +353,12 @@ const BasicTabs = () => {
           </TabPanel>
           {value > 0 && (
             <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>
-              <FloatingButton
-                handleChange={handleChange}
-                setFinished={setFinished}
-              />
+              <Button
+                variant="contained"
+                startIcon={<AssignmentIcon />}
+                onClick={() => setValue(0)}>
+                Voir mon dossier
+              </Button>
             </Box>
           )}
         </div>

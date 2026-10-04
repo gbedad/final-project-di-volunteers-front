@@ -1,75 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import Slider from '@mui/material/Slider';
 
-import { Typography, Button, Box } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import BorderedBoxWithLabel from './borderedBox';
+import { useAutoSave } from '../js/useAutoSave';
+import SaveStatus from './application/SaveStatus';
 
 function valuetext(value) {
   return `${value}heures`;
 }
 
-const TimeRangeSlider = ({ userSelected, userLogged }) => {
+const TimeRangeSlider = ({ userSelected }) => {
   const userId = userSelected;
-  // console.log(userSelected);
   const [value, setValue] = React.useState([1, 1]);
-  const [showButton, setShowButton] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [saveState, scheduleSave] = useAutoSave(userId, 'availability', {
+    delay: 300,
+  });
 
   useEffect(() => {
-    const getLocations = async () => {
+    const getAvailability = async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
       );
-      // console.log(response.data.skill.where_location);
       const skills = response.data.skill;
-      //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       if (skills && skills.availability) {
         setValue([skills.availability.min, skills.availability.max]);
-        setIsLoading(false);
-        setShowButton(false);
       }
-      if (response.data.skill === null) setIsLoading(false);
     };
 
-    getLocations();
-  }, []);
+    getAvailability();
+  }, [userId]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    setShowButton(true);
-    // console.log(newValue);
   };
 
-  //   const handleChange = (values) => {
-  //     setSelectedRange(values);
-  //   };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { availability: { min: value[0], max: value[1] } },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': userLogged.token,
-          },
-        }
-      );
-      // console.log(value);
-      if (response.data.message) {
-        // console.log('Subject and class ranges saved successfully');
-
-        setShowButton(false);
-      } else {
-        console.error('Failed to save subjects');
-      }
-      // console.log('Response from server:', response.data);
-    } catch (error) {
-      console.error('Error sending request:', error);
-      // Handle error appropriately, e.g., display an error message to the user
-    }
+  // Saved when the handle is released, not on every move
+  const handleChangeCommitted = (event, newValue) => {
+    scheduleSave({ min: newValue[0], max: newValue[1] });
   };
 
   return (
@@ -90,15 +59,11 @@ const TimeRangeSlider = ({ userSelected, userLogged }) => {
             getAriaLabel={() => 'Heures de tutorat'}
             value={value}
             onChange={handleChange}
+            onChangeCommitted={handleChangeCommitted}
             valueLabelDisplay="on"
             getAriaValueText={valuetext}
           />
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={!showButton}>
-            Enregistrer
-          </Button>
+          <SaveStatus state={saveState} />
         </Box>
       </BorderedBoxWithLabel>
     </>

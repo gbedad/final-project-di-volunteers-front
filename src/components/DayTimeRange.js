@@ -18,6 +18,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import BorderedBoxWithLabel from './borderedBox';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { useAutoSave } from '../js/useAutoSave';
+import SaveStatus from './application/SaveStatus';
 
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
@@ -34,7 +36,6 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   const location = useLocation();
   const [dayTimeRanges, setDayTimeRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showButton, setShowButton] = useState(false);
   const [allValuesFilled, setAllValuesFilled] = useState(false);
   const [open, setOpen] = useState(false);
   // const { userLogged } = location.state && location.state.userLogged;
@@ -51,6 +52,16 @@ const DayTimeRangeComponent = ({ userSelected }) => {
       : userSelected;
   // console.log('USERID', userId);
   const token = location.state.userLogged.token;
+  const [saveState, scheduleSave] = useAutoSave(userId, 'when_day_slot');
+
+  // A slot is saved as soon as it is complete
+  const isComplete = (range) =>
+    !!range.day &&
+    !!range.startTime &&
+    !!range.endTime &&
+    range.startTime < range.endTime;
+  const persist = (ranges) =>
+    scheduleSave(JSON.stringify(ranges.filter(isComplete)));
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -75,7 +86,6 @@ const DayTimeRangeComponent = ({ userSelected }) => {
         );
         setDayTimeRanges(parsed_array);
         setIsLoading(false);
-        setShowButton(false);
       }
     };
 
@@ -100,7 +110,6 @@ const DayTimeRangeComponent = ({ userSelected }) => {
       ...dayTimeRanges,
       { day: '', startTime: '08:00', endTime: '09:00' },
     ]);
-    setShowButton(true);
     setOpen(true);
   };
 
@@ -108,62 +117,30 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].day = value;
     setDayTimeRanges(updatedDayTimeRanges);
-    setShowButton(true);
+    persist(updatedDayTimeRanges);
   };
 
   const handleStartTimeChange = (value, index) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].startTime = value;
     setDayTimeRanges(updatedDayTimeRanges);
-    setShowButton(true);
+    persist(updatedDayTimeRanges);
   };
 
   const handleEndTimeChange = (value, index) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges[index].endTime = value;
     setDayTimeRanges(updatedDayTimeRanges);
-    setShowButton(true);
+    persist(updatedDayTimeRanges);
   };
 
   const handleRemoveDayTimeRange = (index) => {
     const updatedDayTimeRanges = [...dayTimeRanges];
     updatedDayTimeRanges.splice(index, 1);
     setDayTimeRanges(updatedDayTimeRanges);
-    setShowButton(true);
+    persist(updatedDayTimeRanges);
   };
 
-  const handleSaveDayTimeRanges = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/create-skill/${userId}`,
-        { when_day_slot: JSON.stringify(dayTimeRanges) },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      // console.log(response.data.message);
-      if (response.data.message) {
-        // console.log('Day and time ranges saved successfully');
-        // toast.success(response.data.message, {
-        //   position: 'top-center',
-        // });
-        setShowButton(false);
-      } else {
-        // toast.error('Failed to save Day and time ranges', {
-        //   position: 'top-center',
-        // });
-        console.error('Failed to save day and time ranges');
-      }
-    } catch (error) {
-      // toast.error('Failed to save Day and time ranges', {
-      //   position: 'top-center',
-      // });
-      console.error('Failed to save day and time ranges', error);
-    }
-  };
   const fab = {
     color: 'primary',
     sx: fabStyle,
@@ -182,7 +159,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             color={fab.color}
             onClick={() => handleAddDayTimeRange()}
             component="button"
-            disabled={showButton}>
+            disabled={!allValuesFilled}>
             {fab.icon}
           </Fab>
         </label>
@@ -203,14 +180,13 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                   style={{ marginTop: '16px' }}>
                   <Grid item xs={4} md={4} lg={4}>
                     <FormControl fullWidth variant="outlined">
-                      <InputLabel>Jour</InputLabel>
+                      <InputLabel id={`day-label-${index}`}>Jour</InputLabel>
                       <Select
                         size="small"
                         label="Jour"
+                        labelId={`day-label-${index}`}
                         value={dayTimeRange ? dayTimeRange.day : ''}
-                        onChange={(e) =>
-                          handleDayChange(e.target.value || '08:00', index)
-                        }
+                        onChange={(e) => handleDayChange(e.target.value, index)}
                         // error={!dayTimeRange.day} // Add error prop
                         // helpertext={
                         //   !dayTimeRange.day ? 'Ce champ est obligatoire' : ''
@@ -279,16 +255,9 @@ const DayTimeRangeComponent = ({ userSelected }) => {
               )
           )
         )}
-        {dayTimeRanges && (
-          <Button
-            sx={{ marginTop: '10px' }}
-            variant="contained"
-            color="primary"
-            onClick={handleSaveDayTimeRanges}
-            disabled={!allValuesFilled || !showButton}>
-            Enregistrer
-          </Button>
-        )}
+        <Box sx={{ mt: 1, minHeight: 20 }}>
+          <SaveStatus state={saveState} />
+        </Box>
         <Snackbar
           open={open}
           autoHideDuration={10000}
@@ -302,9 +271,8 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             }}
             message={
               <span id="client-snackbar">
-                Vous pouvez ajouter plusieurs créneaux [matières] en cliquant à
-                plusieurs reprises sur + avant de cliquer sur ENREGISTRER pour
-                sauvegarder toutes les possibilités saisies.
+                Choisissez le jour et les heures : le créneau est enregistré
+                automatiquement. Cliquez sur + pour en ajouter un autre.
               </span>
             }
           />

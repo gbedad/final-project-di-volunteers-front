@@ -14,4 +14,7 @@ export const getFileUrl = async (path) => {
 };
 
 export const fileNameOf = (path) =>
-  decodeURIComponent(path.split('/').pop()).replace(/^\d{13}-/, '');
+  decodeURIComponent(path.split('/').pop()).replace(
+    /^(?:(?:cv|id|b3|autre|convention)-)?\d{13}-/,
+    ''
+  );
