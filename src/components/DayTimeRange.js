@@ -151,7 +151,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
   return (
     <div>
       {/* <ToastContainer /> */}
-      <BorderedBoxWithLabel label="Jours et heures" sx={{ display: 'flex' }}>
+      <BorderedBoxWithLabel label="Jours et heures *" sx={{ display: 'flex' }}>
         <label>
           <Fab
             sx={fab.sx}

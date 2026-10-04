@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { notifyApplicationChanged } from './applicationProgress';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -21,6 +22,7 @@ export const useAutoSave = (userId, field, { delay = 700 } = {}) => {
           [field]: value,
         });
         setState('saved');
+        notifyApplicationChanged();
       } catch (err) {
         console.error(err);
         setState('error');

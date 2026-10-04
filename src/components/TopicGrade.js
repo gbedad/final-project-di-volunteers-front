@@ -146,7 +146,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     <div>
       {/* <ToastContainer /> */}
       <BorderedBoxWithLabel
-        label="Matières et classes"
+        label="Matières et classes *"
         sx={{ display: 'flex' }}>
         <label>
           <Fab

@@ -113,7 +113,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
   return (
     <div>
-      <BorderedBoxWithLabel label="Modalités et lieux" sx={{ display: 'flex' }}>
+      <BorderedBoxWithLabel label="Modalités et lieux *" sx={{ display: 'flex' }}>
         <Grid container spacing={1} style={{ marginTop: '16px' }}>
           <Grid item xs={12}>
             <TextField

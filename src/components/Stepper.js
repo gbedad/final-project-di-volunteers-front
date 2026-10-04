@@ -29,6 +29,13 @@ import { setStatusStep } from '../js/statusDescription';
 import UploadConventionComponent from './FileConventionUploader';
 import ApplicationChecklist from './application/ApplicationChecklist';
 import DocumentSlots from './application/DocumentSlots';
+import MissingBanner from './application/MissingBanner';
+import {
+  useApplicationProgress,
+  missingItems,
+} from '../js/applicationProgress';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import Button from '@mui/material/Button';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { styled } from '@mui/material/styles';
@@ -176,6 +183,27 @@ const BasicTabs = () => {
   //   setFinished(newState);
   // };
 
+  // What is missing, to guide the volunteer on each tab
+  const [progress] = useApplicationProgress(userId);
+  const missing = progress ? missingItems(progress) : null;
+  const tabState = (items) =>
+    !items || status === 'Déclinée'
+      ? {}
+      : {
+          icon: items.length ? (
+            <FiberManualRecordIcon
+              sx={{ fontSize: 12, color: 'warning.main' }}
+              titleAccess="Informations manquantes"
+            />
+          ) : (
+            <CheckCircleIcon
+              sx={{ fontSize: 16, color: 'success.main' }}
+              titleAccess="Complet"
+            />
+          ),
+          iconPosition: 'end',
+        };
+
   const getUser = async () => {
     try {
       const response = await axios.get(
@@ -244,16 +272,22 @@ const BasicTabs = () => {
                 aria-label="basic tabs example"
                 centered>
                 <Tab label="MON STATUT" {...a11yProps(0)} />
-                <Tab label="MON PROFIL" {...a11yProps(0)} />
+                <Tab
+                  label="MON PROFIL"
+                  {...a11yProps(0)}
+                  {...tabState(missing?.profile)}
+                />
                 {/* Profile, wishes and documents can be filled in any order */}
                 <Tab
                   label="MES DISPONIBILITÉS"
                   {...a11yProps(1)}
+                  {...tabState(missing?.wishes)}
                   disabled={status === 'Déclinée'}
                 />
                 <Tab
                   label="MES DOCUMENTS"
                   {...a11yProps(2)}
+                  {...tabState(missing?.documents)}
                   disabled={status === 'Déclinée'}
                 />
                 <Tab
@@ -336,13 +370,29 @@ const BasicTabs = () => {
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
+            <MissingBanner
+              items={missing?.profile}
+              done="Votre profil est complet."
+            />
             <Profile status={status} />
           </TabPanel>
           <TabPanel value={value} index={2}>
+            <MissingBanner
+              items={missing?.wishes}
+              done="Vos souhaits et disponibilités sont complets."
+            />
             <Skills userId={userId} />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div>
+              <MissingBanner
+                items={missing?.documents}
+                done={
+                  progress?.documents.b3
+                    ? 'Tous vos documents sont déposés.'
+                    : "CV et pièce d'identité déposés. Le casier judiciaire (B3) sera demandé avant la validation finale."
+                }
+              />
               <InstructionComponent />
               <DocumentSlots userId={userId} />
             </div>

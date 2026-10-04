@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
@@ -17,6 +17,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SendIcon from '@mui/icons-material/Send';
+import {
+  useApplicationProgress,
+  missingItems,
+  joinFrench,
+} from '../../js/applicationProgress';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -53,22 +58,12 @@ const Item = ({ done, optional, title, detail, action, onAction }) => (
 );
 
 const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
-  const [progress, setProgress] = useState(null);
+  const [progress, refresh] = useApplicationProgress(userId);
   const [sending, setSending] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${BASE_URL}/application/${userId}`);
-      setProgress(data);
-      onStatusChange?.(data.status);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [userId, onStatusChange]);
-
   useEffect(() => {
-    if (userId) load();
-  }, [userId, load]);
+    if (progress) onStatusChange?.(progress.status);
+  }, [progress, onStatusChange]);
 
   const send = async () => {
     setSending(true);
@@ -78,7 +73,7 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
         "Votre dossier est envoyé ! Nous vous contacterons pour l'entretien.",
         { position: 'top-center', duration: 6000 }
       );
-      load();
+      refresh();
     } catch (err) {
       toast.error(err.response?.data?.error || 'Envoi impossible', {
         position: 'top-center',
@@ -92,6 +87,8 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
   if (progress.status === 'Déclinée') return null;
 
   const { profile, wishes, documents } = progress;
+  const missing = missingItems(progress);
+  const toFill = (items) => `À indiquer : ${joinFrench(items)}`;
   const sent = !EARLY_STATUSES.includes(progress.status);
   const steps = [profile, wishes, documents.cv && documents.id, sent];
   const done = steps.filter(Boolean).length;
@@ -119,18 +116,14 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
         <Item
           done={profile}
           title="Mon profil"
-          detail={profile ? 'Rempli' : 'Votre adresse et votre activité'}
+          detail={profile ? 'Rempli' : toFill(missing.profile)}
           action="Compléter"
           onAction={() => onGoToTab(1)}
         />
         <Item
           done={wishes}
           title="Mes souhaits et disponibilités"
-          detail={
-            wishes
-              ? 'Remplis'
-              : 'Matières et niveaux, créneaux, lieux ou distanciel'
-          }
+          detail={wishes ? 'Remplis' : toFill(missing.wishes)}
           action="Compléter"
           onAction={() => onGoToTab(2)}
         />

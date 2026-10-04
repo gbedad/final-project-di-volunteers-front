@@ -86,6 +86,7 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 import { setStatusStep } from '../js/statusDescription';
 import AddressAutocomplete from './AddressAutocomplete';
 import { isManager } from '../js/roles';
+import { notifyApplicationChanged } from '../js/applicationProgress';
 // import AutofillCheckoutDemo from './AddressAutocomplete2';
 // import SelectFormActivity from './SelectActivity';
 // import ImageDisplay from './ImageDisplay';
@@ -272,6 +273,7 @@ const ProfilePage = ({ status }) => {
       );
       // console.log(response.data.message);
       if (response.data.message === 'Profile updated successfully') {
+        notifyApplicationChanged();
         setShowProfileButton(false);
         // Perform any desired actions after successful submission
         toast.success('Le profil a été completé');
@@ -435,6 +437,7 @@ const ProfilePage = ({ status }) => {
       );
       // console.log(response.data);
       if (response.data.message === 'Profile updated successfully') {
+        notifyApplicationChanged();
         setShowButton(false);
         setEdit(true);
         toast.success('Modification effectuée');

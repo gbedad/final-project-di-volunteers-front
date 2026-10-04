@@ -19,6 +19,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import FileDisplay from '../FileDisplay';
 import { isManager } from '../../js/roles';
+import { notifyApplicationChanged } from '../../js/applicationProgress';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -190,6 +191,7 @@ const DocumentSlots = ({ userId, onChanged }) => {
 
   const changed = () => {
     load();
+    notifyApplicationChanged();
     onChanged?.();
   };
 
