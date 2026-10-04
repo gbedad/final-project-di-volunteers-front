@@ -89,7 +89,7 @@ const HomePage = () => {
         <Box mt={-8} maxWidth={'50%'}>
           <Typography variant="h6" component="h5" color="primary.main" mt={6}>
             Pour nous aider à mieux vous connaître avant de vous proposer des
-            élèves à accompagner.
+            élèves à accompagner
           </Typography>
         </Box>
       </div>
