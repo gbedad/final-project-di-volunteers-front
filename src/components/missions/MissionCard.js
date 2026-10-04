@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { MissionsContext } from './MissionsContext';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import CardActions from '@mui/material/CardActions';
 import Grid from '@mui/material/Grid';
@@ -78,8 +77,9 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const MissionCard = ({ mission, userLogged }) => {
-  const navigate = useNavigate();
+// toolbarOnly: only the admin actions (visibility switch, edit button),
+// shown under the public mission card
+const MissionCard = ({ mission, userLogged, toolbarOnly }) => {
   const { dispatch } = useContext(MissionsContext);
 
   const [open, setOpen] = useState(false);
@@ -111,7 +111,6 @@ const MissionCard = ({ mission, userLogged }) => {
       const updatedMission = response.data.data;
 
       handleClose();
-      navigate('/all-missions', { state: { userLogged } });
       dispatch({ type: 'UPDATE_MISSION', payload: updatedMission });
     } catch (error) {
       console.error('Error creating mission:', error);
@@ -162,7 +161,6 @@ const MissionCard = ({ mission, userLogged }) => {
       const updatedMission = response.data.data;
       setImageSrc(updatedMission.image_data);
       handleClose();
-      navigate('/all-missions', { state: { userLogged } });
       dispatch({ type: 'UPDATE_MISSION', payload: updatedMission });
     } catch (error) {
       console.error('Error creating mission:', error);
@@ -170,29 +168,40 @@ const MissionCard = ({ mission, userLogged }) => {
     }
   };
 
+  const actions = (
+    <CardActions sx={{ justifyContent: 'space-between' }}>
+      <FormControlLabel
+        control={<Switch checked={isSwitchOn} onChange={handleSwitchToggle} />}
+        label={toolbarOnly ? (isSwitchOn ? 'Visible' : 'Masquée') : 'Activer'}
+      />
+      <Button
+        size="small"
+        variant={toolbarOnly ? 'outlined' : 'text'}
+        onClick={handleOpen}>
+        {toolbarOnly ? 'Modifier' : 'Editer'}
+      </Button>
+    </CardActions>
+  );
+
   return (
-    <div className="card">
-      <img src={imageSrc} alt={title} />
-      <div className="card-body">
-        <h2 className="card-title">{title}</h2>
-        <p className="card-text">{location}</p>
-        <CardActions sx={{ justifyContent: 'space-between' }}>
-          <FormControlLabel
-            control={
-              <Switch checked={isSwitchOn} onChange={handleSwitchToggle} />
-            }
-            label="Activer"
-          />
-          <Button size="small" onClick={handleOpen}>
-            Editer
-          </Button>
-        </CardActions>
-      </div>
+    <div className={toolbarOnly ? undefined : 'card'}>
+      {toolbarOnly ? (
+        actions
+      ) : (
+        <>
+          <img src={imageSrc} alt={title} />
+          <div className="card-body">
+            <h2 className="card-title">{title}</h2>
+            <p className="card-text">{location}</p>
+            {actions}
+          </div>
+        </>
+      )}
 
       <Dialog
         open={open}
         onClose={handleClose}
-        fullWidth={'md'}
+        fullWidth
         maxWidth={'lg'}>
         <DialogTitle id="draggable-dialog-title">
           Modifier la mission

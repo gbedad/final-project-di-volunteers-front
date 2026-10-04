@@ -46,11 +46,10 @@ export const MissionsProvider = ({ children }) => {
   useEffect(() => {
     const fetchMissions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/all-missions`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${BASE_URL}/all-missions`,
+          token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        );
         const missions = response.data;
 
         dispatch({ type: 'SET_MISSIONS', payload: missions });

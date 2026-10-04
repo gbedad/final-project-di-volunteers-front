@@ -20,7 +20,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import FlagIcon from '@mui/icons-material/Flag';
 import FolderIcon from '@mui/icons-material/Folder';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -106,21 +105,14 @@ function ResponsiveAppBar() {
         navigate('/faq', { state: { userLogged } });
       } else if (page === 'Accueil') {
         navigate('/', { state: { userLogged } });
-      } else if (
-        page === 'Missions bénévoles' &&
-        (!userLogged || userLogged.user.role === 'volunteer')
-      ) {
+      } else if (page === 'Missions bénévoles') {
+        // One missions page for everyone; admins get the tools on it
         navigate('/missions', { state: { userLogged } });
       } else if (
         page === 'Tableau de bord' &&
         (!userLogged || userLogged.user.role === 'volunteer')
       ) {
         navigate(`/stepper`, { state: { userLogged } });
-      } else if (
-        page === 'Missions bénévoles' &&
-        isManager(userLogged.user.role)
-      ) {
-        navigate('/all-missions', { state: { userLogged } });
       } else if (page === 'A propos') {
         navigate('/tutorat', { state: { userLogged } });
       }
@@ -152,7 +144,6 @@ function ResponsiveAppBar() {
   // Highlight the menu entry of the section currently displayed
   const sectionPaths = {
     dashboard: ['/view-users', '/change-status', '/stepper', '/profile'],
-    missions: ['/all-missions', '/missions/update'],
     documents: ['/documents'],
     team: ['/equipe'],
   };
@@ -167,12 +158,6 @@ function ResponsiveAppBar() {
 
   const handleAdminFiles = () => {
     navigate(`/documents`, { state: { userLogged } });
-  };
-
-  const handleEditMissions = () => {
-    if (isManager(userLogged.user.role)) {
-      navigate(`/all-missions`, { state: { userLogged } });
-    }
   };
 
   // return (
@@ -628,19 +613,6 @@ function ResponsiveAppBar() {
                           <DashboardIcon fontSize="small" />
                         </ListItemIcon>
                         Tableau de bord
-                      </MenuItem>
-
-                      <MenuItem
-                        onClick={handleEditMissions}
-                        {...currentProps('missions')}
-                        sx={{
-                          display:
-                            userLogged.user.role === 'interviewer' && 'none',
-                        }}>
-                        <ListItemIcon>
-                          <FlagIcon fontSize="small" />
-                        </ListItemIcon>
-                        Missions
                       </MenuItem>
                       <MenuItem
                         onClick={handleAdminFiles}

@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { MissionsContext } from './MissionsContext';
 
@@ -84,8 +83,6 @@ const MissionForm = ({ userLogged }) => {
   const [image, setImage] = useState(null);
   const { dispatch } = useContext(MissionsContext);
 
-  const navigate = useNavigate();
-
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -122,7 +119,6 @@ const MissionForm = ({ userLogged }) => {
       setDescription('');
       setImage(null);
       handleClose();
-      navigate('/all-missions', { state: { userLogged } });
       dispatch({ type: 'ADD_MISSION', payload: newMission });
       // Mission created successfully
       // Reset the form fields
@@ -134,15 +130,14 @@ const MissionForm = ({ userLogged }) => {
 
   return (
     <>
-      <Fab
-        color="primary"
-        sx={{ position: 'sticky', top: 16, right: 16 }}
-        aria-label="add"
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
         onClick={handleClickOpen}>
-        <AddIcon />
-      </Fab>
+        Nouvelle mission
+      </Button>
       <Dialog
-        fullWidth={'lg'}
+        fullWidth
         maxWidth={'lg'}
         open={open}
         onClose={handleClose}
