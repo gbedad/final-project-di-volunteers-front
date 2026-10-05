@@ -63,6 +63,7 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
+import toast from 'react-hot-toast';
 import { isManager } from '../js/roles';
 
 import DocumentSlots from './application/DocumentSlots';
@@ -282,10 +283,16 @@ const ChangeUserStatus = () => {
       if (response.data) {
         setStatus(response.data.status);
         setShowConfirm(false);
+        toast.success(`Statut enregistré : ${response.data.status}`, {
+          position: 'bottom-left',
+        });
         return true;
       }
     } catch (error) {
       console.error(error);
+      toast.error("Le statut n'a pas pu être enregistré", {
+        position: 'bottom-left',
+      });
     }
   };
   // const handleOpen = (file) => {

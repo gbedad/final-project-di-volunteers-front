@@ -110,6 +110,10 @@ function DashboardContent() {
   // const userLogged = location.state.userLogged;
 
   // console.log(token);
+  // Also called by the dashboard after a bulk change
+  const [reloadKey, setReloadKey] = useState(0);
+  const reload = () => setReloadKey((k) => k + 1);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const fetchUserList = async () => {
@@ -142,7 +146,7 @@ function DashboardContent() {
     };
 
     fetchUserList();
-  }, [BASE_URL]);
+  }, [BASE_URL, reloadKey]);
 
   // console.log('Active Users', activeUsers);
   // console.log('By Status', countUsersByStatus);
@@ -208,7 +212,7 @@ function DashboardContent() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   {/* <Users data={users} /> */}
-                  <Users2 data={users} />
+                  <Users2 data={users} onChanged={reload} />
                 </Paper>
               </Grid>
             </Grid>

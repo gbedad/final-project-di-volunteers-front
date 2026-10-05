@@ -38,6 +38,8 @@ import {
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
+import BulkActions from './admin/BulkActions';
+import DashboardToolbar from './admin/DashboardToolbar';
 import { isManager } from '../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -154,13 +156,11 @@ export default function DataGridDemo(props) {
       field: 'first_name',
       headerName: 'Prénom',
       width: 150,
-      editable: true,
     },
     {
       field: 'last_name',
       headerName: 'Nom',
       width: 150,
-      editable: true,
     },
     // {
     //   field: 'fullName',
@@ -176,7 +176,6 @@ export default function DataGridDemo(props) {
       headerName: 'Email',
 
       width: 250,
-      editable: true,
     },
     {
       field: 'phone',
@@ -192,7 +191,6 @@ export default function DataGridDemo(props) {
         </>
       ),
       width: 190,
-      editable: true,
     },
     // {
     //   field: 'mission',
@@ -240,14 +238,12 @@ export default function DataGridDemo(props) {
       headerName: 'Statut',
 
       width: 110,
-      editable: true,
     },
     {
       field: 'is_available',
       headerName: 'Disponible',
 
       width: 100,
-      editable: true,
       align: 'center',
       renderCell: (params) => {
         return params.value ? (
@@ -264,7 +260,6 @@ export default function DataGridDemo(props) {
     {
       field: 'first_contact',
       headerName: 'Call',
-      editable: true,
       renderCell: (params) => {
         return params.value ? (
           <CallIcon
@@ -282,7 +277,6 @@ export default function DataGridDemo(props) {
       headerName: 'Entretiens',
 
       width: 80,
-      editable: true,
       align: 'center',
       renderCell: (params) => {
         return params.value === 1 ? (
@@ -321,7 +315,6 @@ export default function DataGridDemo(props) {
       headerName: 'Test',
 
       width: 70,
-      editable: true,
       renderCell: (params) => {
         return params.value ? (
           <TypeSpecimenRoundedIcon
@@ -374,7 +367,6 @@ export default function DataGridDemo(props) {
       headerName: 'Actif',
 
       width: 70,
-      editable: true,
       align: 'center',
       renderCell: (params) => {
         return params.value ? (
@@ -851,29 +843,10 @@ export default function DataGridDemo(props) {
   }
   
 
-  const handleCopyEmails = () => {
-   console.log("Reached copy?");
-    
-  const selectedEmails = selectionModel
-    .map(id => rows.find(row => row.id === id)?.email)
-    .filter(Boolean)
-    .join(', ');
-
-    console.log(selectedEmails);
-    
-
-  if (selectedEmails) {
-    navigator.clipboard.writeText(selectedEmails)
-      .then(() => {
-        alert('Emails copied to clipboard!');
-      })
-      .catch(err => {
-        console.error('Failed to copy emails: ', err);
-      });
-  } else {
-    alert('No emails selected');
-}
-  }
+  // Ticked rows, for the bulk actions bar
+  const selectedRows = selectionModel
+    .map((id) => rows.find((row) => row.id === id))
+    .filter(Boolean);
 
   // --------------------------------------------------------------------------------------------------
   return (
@@ -1004,11 +977,15 @@ export default function DataGridDemo(props) {
         <Button variant="contained" onClick={handleSearch} color="primary">
           Filtrer
         </Button>
-               <Button onClick={handleCopyEmails} variant="contained">
-        Copy Filtered Emails
-      </Button>
 
       </Stack>
+      <BulkActions
+        rows={selectedRows}
+        onDone={() => {
+          setSelectionModel([]);
+          props.onChanged?.();
+        }}
+      />
       <Box sx={{ height: 'auto', width: '100%' }}>
         <FullEditDataGrid
           onRowDoubleClick={handleRowClick}
@@ -1020,6 +997,7 @@ export default function DataGridDemo(props) {
 
           rows={rows}
           columns={columns}
+          slots={{ toolbar: DashboardToolbar }}
           noActionColumn
           initialState={{
             pagination: {
@@ -1034,7 +1012,7 @@ export default function DataGridDemo(props) {
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setSelectionModel(newRowSelectionModel);
           }}
-          selectionModel={selectionModel}
+          rowSelectionModel={selectionModel}
         />
       </Box>
     </>
