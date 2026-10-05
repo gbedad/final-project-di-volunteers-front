@@ -104,6 +104,7 @@ export default function DataGridDemo(props) {
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedTimeStart, setSelectedTimeStart] = useState('');
   const [selectedTimeEnd, setSelectedTimeEnd] = useState('');
+  const [selectedCohort, setSelectedCohort] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
   // const [value, setValue] = React.useState(subjects[0]);
@@ -343,6 +344,23 @@ export default function DataGridDemo(props) {
       },
     },
     {
+      field: 'cohorte_year',
+      headerName: 'Cohorte',
+      width: 110,
+      // Sort/filter/export on the latest year; all years in the tooltip
+      valueGetter: ({ value }) =>
+        value && value.length ? [...value].sort()[value.length - 1] : '',
+      renderCell: ({ row, value }) =>
+        value ? (
+          <span title={[...row.cohorte_year].sort().join(', ')}>
+            {value}
+            {row.cohorte_year.length > 1 ? ` (+${row.cohorte_year.length - 1})` : ''}
+          </span>
+        ) : (
+          ''
+        ),
+    },
+    {
       field: 'is_active',
       headerName: 'Actif',
 
@@ -476,7 +494,11 @@ export default function DataGridDemo(props) {
           return start <= filterEnd && end >= filterStart;
         });
 
-      return subjectMatch && levelMatch && dayMatch && timeMatch;
+      // Cohort filter: member during that academic year
+      const cohortMatch =
+        !filters.cohort || (user.cohorte_year || []).includes(filters.cohort);
+
+      return subjectMatch && levelMatch && dayMatch && timeMatch && cohortMatch;
     });
   }
 
@@ -487,6 +509,7 @@ export default function DataGridDemo(props) {
       day: selectedDay ? selectedDay['label'] : null,
       timeStart: selectedTimeStart ? selectedTimeStart['label'] : null,
       timeEnd: selectedTimeEnd ? selectedTimeEnd['label'] : null,
+      cohort: selectedCohort,
     };
     console.log(filters.timeEnd);
 
@@ -618,6 +641,13 @@ export default function DataGridDemo(props) {
   }
 
   let cleanedArray = updateTopicsToEmptyArray(usersWithTrueValuesCount);
+
+  // Cohort filter options: every academic year present, newest first
+  const cohortOptions = [
+    ...new Set(cleanedArray.flatMap((u) => u.cohorte_year || [])),
+  ]
+    .sort()
+    .reverse();
   // console.log(usersWithTrueValuesCount);
   // cleanedArray = filteredData;
   // if (filteredData.length > 0) {
@@ -773,7 +803,8 @@ export default function DataGridDemo(props) {
           item.trueValuesCount,
           item.test_voltaire_passed,
           item.convention_received,
-          item.is_available
+          item.is_available,
+          item.cohorte_year || []
         );
       })
       .filter((item) => item !== null);
@@ -799,7 +830,8 @@ export default function DataGridDemo(props) {
     trueValuesCount,
     test_voltaire_passed,
     convention_received,
-    is_available
+    is_available,
+    cohorte_year
   ) {
     return {
       id,
@@ -821,6 +853,7 @@ export default function DataGridDemo(props) {
       test_voltaire_passed,
       convention_received,
       is_available,
+      cohorte_year,
     };
   }
   
@@ -962,6 +995,15 @@ export default function DataGridDemo(props) {
           sx={{ width: 200 }}
           renderInput={(params) => (
             <TextField {...params} label="Saisir heure fin" size="small" />
+          )}
+        />
+        <Autocomplete
+          value={selectedCohort}
+          onChange={(event, newValue) => setSelectedCohort(newValue)}
+          options={cohortOptions}
+          sx={{ width: 160 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Cohorte" size="small" />
           )}
         />
         {/* </FormControl> */}
