@@ -22,6 +22,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderIcon from '@mui/icons-material/Folder';
 import GroupIcon from '@mui/icons-material/Group';
+import InsightsIcon from '@mui/icons-material/Insights';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import SvgIcon from '@mui/material/SvgIcon';
@@ -146,6 +147,7 @@ function ResponsiveAppBar() {
     dashboard: ['/view-users', '/change-status', '/stepper', '/profile'],
     documents: ['/documents'],
     team: ['/equipe'],
+    analysis: ['/analyse'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -154,6 +156,10 @@ function ResponsiveAppBar() {
 
   const handleTeam = () => {
     navigate(`/equipe`, { state: { userLogged } });
+  };
+
+  const handleAnalysis = () => {
+    navigate(`/analyse`, { state: { userLogged } });
   };
 
   const handleAdminFiles = () => {
@@ -622,6 +628,16 @@ function ResponsiveAppBar() {
                         </ListItemIcon>
                         Documents
                       </MenuItem>
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleAnalysis}
+                          {...currentProps('analysis')}>
+                          <ListItemIcon>
+                            <InsightsIcon fontSize="small" />
+                          </ListItemIcon>
+                          Analyse
+                        </MenuItem>
+                      )}
                       {isManager(userLogged.user.role) && (
                         <MenuItem
                           onClick={handleTeam}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 // import { useLocation, useNavigate } from 'react-router-dom';
 // import { styled, createTheme } from '@mui/material/styles';
@@ -102,14 +102,31 @@ function DashboardContent() {
 
   const [users, setUsers] = useState([]);
   // const [selectedUser, setSelectedUser] = useState(null);
-  // eslint-disable-next-line
-  const [dataActive, setDataActive] = useState([]);
-  const [activeUsers, setActiveUsers] = useState(null);
-  const [countUsersByStatus, setCountUsersByStatus] = useState({});
+  // Volunteers left in the table after its filters (null: not known yet)
+  const [visibleIds, setVisibleIds] = useState(null);
   // console.log(location.state);
   // const userLogged = location.state.userLogged;
 
   // console.log(token);
+  // Counters follow the volunteers shown in the table
+  const shown = useMemo(() => {
+    if (!visibleIds) return users;
+    const ids = new Set(visibleIds);
+    return users.filter((u) => ids.has(u.id));
+  }, [users, visibleIds]);
+  const countUsersByStatus = useMemo(
+    () =>
+      shown.reduce((acc, { status }) => {
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {}),
+    [shown]
+  );
+  const activeUsers = users.length
+    ? shown.filter((u) => u.is_active === true).length
+    : null;
+  const isFiltered = !!visibleIds && shown.length < users.length;
+
   // Also called by the dashboard after a bulk change
   const [reloadKey, setReloadKey] = useState(0);
   const reload = () => setReloadKey((k) => k + 1);
@@ -125,19 +142,7 @@ function DashboardContent() {
         });
         // console.log("Response",response)
         // console.log(response.data);
-        const filteredData = response.data.filter(
-          (item) => item.is_active === true
-        );
-        const rowCounts = response.data.reduce((acc, item) => {
-          const { status } = item;
-          acc[status] = (acc[status] || 0) + 1;
-          return acc;
-        }, {});
-
         setUsers(response.data);
-        setDataActive(filteredData);
-        setActiveUsers(filteredData.length);
-        setCountUsersByStatus(rowCounts);
         return true;
         //   return response.data;
       } catch (error) {
@@ -195,6 +200,12 @@ function DashboardContent() {
                     flexDirection: 'column',
                   }}>
                   <UsersByStatusGrid data={countUsersByStatus} />
+                  {isFiltered && (
+                    <Typography variant="body2" color="primary" sx={{ ml: 1 }}>
+                      Chiffres des {shown.length} bénévoles filtrés (sur{' '}
+                      {users.length})
+                    </Typography>
+                  )}
                 </Paper>
               </Grid>
 
@@ -212,7 +223,11 @@ function DashboardContent() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   {/* <Users data={users} /> */}
-                  <Users2 data={users} onChanged={reload} />
+                  <Users2
+                    data={users}
+                    onChanged={reload}
+                    onVisibleChange={setVisibleIds}
+                  />
                 </Paper>
               </Grid>
             </Grid>

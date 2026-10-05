@@ -140,6 +140,14 @@ export default function DataGridDemo(props) {
 
 
   const [rows, setRows] = useState([]);
+  // Ids of the rows left after every filter (search fields, column filters,
+  // quick search), sent to the page so its counters follow the table
+  const [visibleKey, setVisibleKey] = useState(null);
+  const onVisibleChange = props.onVisibleChange;
+  useEffect(() => {
+    if (visibleKey === null) return;
+    onVisibleChange?.(visibleKey ? visibleKey.split(',').map(Number) : []);
+  }, [visibleKey, onVisibleChange]);
   // Unread messages of the internal discussion, per volunteer
   const [unread, setUnread] = useState({});
   const [selectionModel, setSelectionModel] = useState([])
@@ -965,6 +973,14 @@ export default function DataGridDemo(props) {
           columns={columns}
           slots={{ toolbar: DashboardToolbar }}
           noActionColumn
+          onStateChange={(state) => {
+            const lookup = state.filter?.filteredRowsLookup || {};
+            const key = rows
+              .filter((row) => lookup[row.id] !== false)
+              .map((row) => row.id)
+              .join(',');
+            if (key !== visibleKey) setVisibleKey(key);
+          }}
           sortModel={sortModel}
           onSortModelChange={setSortModel}
           filterModel={gridFilterModel}
