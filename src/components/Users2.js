@@ -1005,6 +1005,14 @@ export default function DataGridDemo(props) {
                 pageSize: 30,
               },
             },
+            // Hidden by default, shown on demand with the "Columns" button
+            columns: {
+              columnVisibilityModel: {
+                first_contact: false,
+                nb_interviews: false,
+                test_voltaire_passed: false,
+              },
+            },
           }}
           pageSizeOptions={[30]}
           disableRowSelectionOnClick
