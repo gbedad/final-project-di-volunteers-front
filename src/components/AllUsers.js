@@ -9,6 +9,8 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 // import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // import Divider from '@mui/material/Divider';
 // import IconButton from '@mui/material/IconButton';
 // import Badge from '@mui/material/Badge';
@@ -198,13 +200,18 @@ function DashboardContent() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
+                    position: 'relative',
                   }}>
                   <UsersByStatusGrid data={countUsersByStatus} />
+                  {/* Over the corner of the block: its height doesn't change */}
                   {isFiltered && (
-                    <Typography variant="body2" color="primary" sx={{ ml: 1 }}>
-                      Chiffres des {shown.length} bénévoles filtrés (sur{' '}
-                      {users.length})
-                    </Typography>
+                    <Chip
+                      size="small"
+                      color="primary"
+                      icon={<FilterAltIcon />}
+                      label={`Filtré : ${shown.length} sur ${users.length}`}
+                      sx={{ position: 'absolute', top: 8, right: 8 }}
+                    />
                   )}
                 </Paper>
               </Grid>
