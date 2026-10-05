@@ -40,6 +40,7 @@ import {
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
+import { isManager } from '../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -559,8 +560,13 @@ export default function DataGridDemo(props) {
   }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
-  // Unread counts, refreshed when coming back to the tab
+  // Unread counts (admins only), refreshed when coming back to the tab
   useEffect(() => {
+    let role;
+    try {
+      role = JSON.parse(localStorage.getItem('user'))?.user?.role;
+    } catch {}
+    if (!isManager(role)) return;
     const loadUnread = () =>
       axios
         .get(`${BASE_URL}/admin/thread/unread`)

@@ -63,6 +63,7 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
+import { isManager } from '../js/roles';
 
 import DocumentSlots from './application/DocumentSlots';
 import UploadConvention from './FileConventionUploader';
@@ -799,20 +800,21 @@ const ChangeUserStatus = () => {
               sx={{ display: 'flex' }}>
               <PreInterviewComponent userId={user.id} />
             </BorderedBoxWithLabel>
-            <BorderedBoxWithLabel
-              label="Fil de discussion interne"
-              sx={{ display: 'flex' }}>
-              <Box
-                sx={{
-                  height: 'calc(100% - 60px)',
-                  backgroundColor: '#F5F5F5',
-                  borderRadius: '7px',
-                }}>
-                {' '}
-                {/* Adjust based on your header size */}
-                <DiscussionThread userId={user.id} />
-              </Box>
-            </BorderedBoxWithLabel>
+            {/* Discussion between admins about this volunteer */}
+            {isManager(userLogged.user.role) && (
+              <BorderedBoxWithLabel
+                label="Fil de discussion interne"
+                sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    height: 'calc(100% - 60px)',
+                    backgroundColor: '#F5F5F5',
+                    borderRadius: '7px',
+                  }}>
+                  <DiscussionThread userId={user.id} />
+                </Box>
+              </BorderedBoxWithLabel>
+            )}
           </Grid>
 
           <Grid item xs={12} md={4} lg={3}>

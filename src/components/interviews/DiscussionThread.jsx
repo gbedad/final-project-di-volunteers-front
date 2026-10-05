@@ -256,8 +256,8 @@ const DiscussionThread = ({ userId }) => {
         sx={{ flexGrow: 1, overflowY: 'auto', maxHeight: 420, padding: 2 }}>
         {messages.length === 0 && (
           <Typography variant="body2" color="text.secondary">
-            Aucun message. Tapez @ pour mentionner un membre de l'équipe : il
-            sera prévenu par e-mail.
+            Aucun message. Tapez @ pour mentionner un autre admin : il sera
+            prévenu par e-mail.
           </Typography>
         )}
         {messages.map((message) => {
@@ -335,7 +335,11 @@ const DiscussionThread = ({ userId }) => {
                   // Keep the focus in the text box
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => insertMention(member)}>
-                  <ListItemText primary={member.name} />
+                  <ListItemText
+                    primary={member.name}
+                    // Tells apart team members with the same name
+                    secondary={member.email}
+                  />
                 </ListItemButton>
               ))}
             </List>
