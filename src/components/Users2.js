@@ -1008,6 +1008,7 @@ export default function DataGridDemo(props) {
             // Hidden by default, shown on demand with the "Columns" button
             columns: {
               columnVisibilityModel: {
+                hasNewMessage: false,
                 first_contact: false,
                 nb_interviews: false,
                 test_voltaire_passed: false,
