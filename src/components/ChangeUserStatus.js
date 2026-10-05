@@ -62,6 +62,7 @@ import FormInterviewComponent from './interviews/Interview';
 // import TopicGradeComponent from '../components/TopicGrade';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
+import WhatsAppButton from './WhatsAppButton';
 
 import DocumentSlots from './application/DocumentSlots';
 import UploadConvention from './FileConventionUploader';
@@ -363,7 +364,12 @@ const ChangeUserStatus = () => {
                       primary={`${user.first_name} ${user.last_name}`}
                     />
                   </ListItem>
-                  <ListItem>
+                  <ListItem
+                    secondaryAction={
+                      userLogged.user.role !== 'volunteer' && (
+                        <WhatsAppButton volunteer={user} />
+                      )
+                    }>
                     <ListItemAvatar>
                       <Avatar>
                         <AlternateEmailIcon />
@@ -804,10 +810,7 @@ const ChangeUserStatus = () => {
                 }}>
                 {' '}
                 {/* Adjust based on your header size */}
-                <DiscussionThread
-                  currentUser={userLogged.user.first_name}
-                  userId={user.id}
-                />
+                <DiscussionThread userId={user.id} />
               </Box>
             </BorderedBoxWithLabel>
           </Grid>

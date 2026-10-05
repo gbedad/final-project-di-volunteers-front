@@ -1,20 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import {
   Box,
   Typography,
-  Avatar,
   Paper,
-  TextField,
   TextareaAutosize,
   IconButton,
   Fade,
+  List,
+  ListItemButton,
+  ListItemText,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { onThreadChanged } from '../../js/whatsapp';
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+// New messages from colleagues show up without reloading the page
+const REFRESH_MS = 30000;
 
 const MessageContainer = styled(Box)(({ theme, isCurrentUser }) => ({
   display: 'flex',
@@ -27,12 +34,6 @@ const MessageBubble = styled(Paper)(({ theme, isCurrentUser }) => ({
   borderRadius: 16,
   minWidth: '70%',
   maxWidth: '90%',
-  // backgroundColor: isCurrentUser
-  //   ? theme.palette.primary.main
-  //   : theme.palette.grey[300],
-  // color: isCurrentUser
-  //   ? theme.palette.primary.contrastText
-  //   : theme.palette.text.primary,
   backgroundColor: isCurrentUser ? 'rgb(255, 255, 255)' : 'rgb( 199, 249, 204)',
   color: isCurrentUser ? 'rgb(0, 0, 0)' : theme.palette.text.primary,
   position: 'relative',
@@ -65,7 +66,8 @@ const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   padding: theme.spacing(2),
   borderTop: `1px solid ${theme.palette.divider}`,
-  alignItems: 'flex-end', // Align items to the bottom
+  alignItems: 'flex-end',
+  position: 'relative',
 }));
 
 const StyledTextareaAutosize = styled(TextareaAutosize)(({ theme }) => ({
@@ -84,134 +86,202 @@ const StyledTextareaAutosize = styled(TextareaAutosize)(({ theme }) => ({
   },
 }));
 
-const DiscussionThread = ({ currentUser, userId }) => {
-  const location = useLocation();
+const formatDate = (value) => format(new Date(value), "d/MM/yyyy 'à' HH:mm");
+
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Message text with the @mentions in bold
+const MessageContent = ({ message, team }) => {
+  const names = team
+    .filter((u) => (message.mentions || []).includes(u.id))
+    .map((u) => `@${u.name}`);
+  if (!names.length) return message.content;
+  const parts = message.content.split(
+    new RegExp(`(${names.map(escapeRegExp).join('|')})`, 'g')
+  );
+  return parts.map((part, i) =>
+    names.includes(part) ? (
+      <Box
+        component="span"
+        key={i}
+        sx={{ fontWeight: 600, color: 'primary.main' }}>
+        {part}
+      </Box>
+    ) : (
+      part
+    )
+  );
+};
+
+// "@Gér" just before the cursor -> "Gér"
+const mentionQuery = (text, caret) => {
+  const match = /(^|\s)@([^\s@]*)$/.exec(text.slice(0, caret));
+  return match ? match[2] : null;
+};
+
+const DiscussionThread = ({ userId }) => {
   const [messages, setMessages] = useState([]);
+  const [team, setTeam] = useState([]);
+  const [me, setMe] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const [mentioned, setMentioned] = useState([]);
+  const [query, setQuery] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasNewMessage, setHasNewMessage] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [sending, setSending] = useState(false);
+  const listRef = useRef(null);
   const inputRef = useRef(null);
 
-  const userToken = location.state.userLogged.token;
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(scrollToBottom, [messages]);
-
-  useEffect(() => {
-    const getMessages = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user-by-id/${userId}`
+  const load = useCallback(async () => {
+    try {
+      const { data } = await axios.get(
+        `${BASE_URL}/admin/users/${userId}/thread`
       );
-      // console.log(response.data);
-      if (response.data.internal_thread) {
-        const fetchedMessages = response.data.internal_thread.map(
-          (string) => string
-        );
-        setMessages(fetchedMessages);
-        setIsLoading(false);
-        localStorage.setItem(
-          `lastViewedCount_${userId}`,
-          fetchedMessages.length.toString()
-        );
-      }
-      setIsLoading(false);
-    };
-
-    getMessages();
+      setMessages(data.messages);
+      setTeam(data.team);
+      setMe(data.me);
+    } catch (err) {
+      console.error(err);
+    }
   }, [userId]);
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim() !== '') {
-      const message = {
-        id: Date.now(),
-        sender: currentUser,
-        content: newMessage,
-        timestamp: new Date(),
-        isRead: false,
-      };
-      const updatedMessages = [...messages, message];
-      setMessages([...messages, message]);
+  useEffect(() => {
+    if (!userId) return;
+    load();
+    const timer = setInterval(load, REFRESH_MS);
+    const stop = onThreadChanged(load);
+    return () => {
+      clearInterval(timer);
+      stop();
+    };
+  }, [userId, load]);
 
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
-          updatedMessages,
+  // Scroll inside the discussion only, not the whole page
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [messages.length]);
+
+  const suggestions =
+    query === null
+      ? []
+      : team
+          .filter((u) => u.id !== me)
+          .filter((u) => u.name.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 6);
+
+  const handleChange = (event) => {
+    setNewMessage(event.target.value);
+    setQuery(mentionQuery(event.target.value, event.target.selectionStart));
+  };
+
+  const insertMention = (member) => {
+    const input = inputRef.current;
+    const caret = input ? input.selectionStart : newMessage.length;
+    const before = newMessage
+      .slice(0, caret)
+      .replace(/@([^\s@]*)$/, `@${member.name} `);
+    setNewMessage(before + newMessage.slice(caret));
+    setMentioned((prev) => [...new Set([...prev, member.id])]);
+    setQuery(null);
+    setTimeout(() => {
+      input?.focus();
+      input?.setSelectionRange(before.length, before.length);
+    });
+  };
+
+  const handleSendMessage = async () => {
+    const content = newMessage.trim();
+    if (!content || sending) return;
+    // Mentions removed from the text while typing are not notified
+    const mentions = mentioned.filter((id) => {
+      const member = team.find((u) => u.id === id);
+      return member && content.includes(`@${member.name}`);
+    });
+    setSending(true);
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/admin/users/${userId}/thread`,
+        { content, mentions }
+      );
+      setMessages((prev) => [...prev, data]);
+      setNewMessage('');
+      setMentioned([]);
+      setQuery(null);
+      if (mentions.length) {
+        toast.success(
+          'Les personnes mentionnées ont été prévenues par e-mail',
           {
-            headers: {
-              'Content-Type': 'application/json',
-              // 'x-access-token': userToken,
-            },
+            position: 'bottom-left',
           }
         );
-        // console.log(response.data.message);
-        if (response.data.message) {
-          console.log('Message saved successfully');
-        } else {
-          console.error('Failed to save message');
-        }
-        // Update last viewed count in local storage
-        localStorage.setItem(
-          `lastViewedCount_${userId}`,
-          updatedMessages.length.toString()
-        );
-      } catch (error) {
-        console.error('Failed to save message', error);
       }
-
-      setNewMessage('');
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Le message n'a pas pu être envoyé", {
+        position: 'bottom-left',
+      });
+    } finally {
+      setSending(false);
+      inputRef.current?.focus();
     }
   };
 
   const handleDeleteMessage = async (messageId) => {
-    const allMessages = messages.filter((message) => message.id !== messageId);
-    setMessages(allMessages);
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/add-internalthread/${userId}`,
-        allMessages,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': userToken,
-          },
-        }
-      );
-      // console.log(response.data.message);
-      if (response.data.message) {
-        console.log('Message saved successfully');
-      } else {
-        console.error('Failed to save message');
-      }
-      // Update last viewed count in local storage
-      localStorage.setItem(
-        `lastViewedCount_${userId}`,
-        allMessages.length.toString()
-      );
+      await axios.delete(`${BASE_URL}/admin/thread/${messageId}`);
+      setMessages((prev) => prev.filter((m) => m.id !== messageId));
     } catch (error) {
-      console.error('Failed to save message', error);
+      console.error(error);
+      toast.error('Suppression impossible', { position: 'bottom-left' });
     }
   };
 
-  const handleKeyPress = (event) => {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape' && query !== null) {
+      setQuery(null);
+      return;
+    }
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      handleSendMessage();
+      if (suggestions.length) insertMention(suggestions[0]);
+      else handleSendMessage();
     }
   };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', padding: 2 }}>
+      <Box
+        ref={listRef}
+        sx={{ flexGrow: 1, overflowY: 'auto', maxHeight: 420, padding: 2 }}>
+        {messages.length === 0 && (
+          <Typography variant="body2" color="text.secondary">
+            Aucun message. Tapez @ pour mentionner un membre de l'équipe : il
+            sera prévenu par e-mail.
+          </Typography>
+        )}
         {messages.map((message) => {
-          const isCurrentUser = message.sender === currentUser;
+          const isCurrentUser = message.author_id === me;
+          if (message.kind === 'whatsapp') {
+            return (
+              <Box
+                key={message.id}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 0.5,
+                  mb: 2,
+                  color: 'text.secondary',
+                }}>
+                <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
+                <Typography variant="caption">
+                  {message.author_name} {message.content} le{' '}
+                  {formatDate(message.created_at)}
+                </Typography>
+              </Box>
+            );
+          }
           return (
             <Box
               key={message.id}
@@ -222,15 +292,14 @@ const DiscussionThread = ({ currentUser, userId }) => {
                 <MessageBubble isCurrentUser={isCurrentUser}>
                   {!isCurrentUser && (
                     <MessageHeader variant="subtitle2">
-                      {message.sender}
+                      {message.author_name}
                     </MessageHeader>
                   )}
-                  <Typography variant="body1">{message.content}</Typography>
-                  <MessageTimestamp variant="caption">
-                    {format(
-                      new Date(message.timestamp),
-                      "d/MM/yyyy 'à' h:mm:ss a"
-                    )}
+                  <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                    <MessageContent message={message} team={team} />
+                  </Typography>
+                  <MessageTimestamp variant="caption" component="div">
+                    {formatDate(message.created_at)}
                   </MessageTimestamp>
                 </MessageBubble>
               </MessageContainer>
@@ -238,6 +307,7 @@ const DiscussionThread = ({ currentUser, userId }) => {
                 <Fade in={hoveredMessageId === message.id}>
                   <DeleteButton
                     size="small"
+                    title="Supprimer mon message"
                     onClick={() => handleDeleteMessage(message.id)}>
                     <DeleteOutlineIcon fontSize="small" />
                   </DeleteButton>
@@ -246,19 +316,45 @@ const DiscussionThread = ({ currentUser, userId }) => {
             </Box>
           );
         })}
-        <div ref={messagesEndRef} />
       </Box>
       <InputContainer>
+        {suggestions.length > 0 && (
+          <Paper
+            elevation={4}
+            sx={{
+              position: 'absolute',
+              bottom: '100%',
+              left: 16,
+              zIndex: 2,
+              minWidth: 220,
+            }}>
+            <List dense disablePadding>
+              {suggestions.map((member) => (
+                <ListItemButton
+                  key={member.id}
+                  // Keep the focus in the text box
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => insertMention(member)}>
+                  <ListItemText primary={member.name} />
+                </ListItemButton>
+              ))}
+            </List>
+          </Paper>
+        )}
         <StyledTextareaAutosize
-          placeholder="Message"
+          placeholder="Message (@ pour mentionner)"
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onBlur={() => setQuery(null)}
           ref={inputRef}
           minRows={1}
           maxRows={6}
         />
-        <IconButton color="primary" onClick={handleSendMessage}>
+        <IconButton
+          color="primary"
+          disabled={!newMessage.trim() || sending}
+          onClick={handleSendMessage}>
           <SendIcon />
         </IconButton>
       </InputContainer>

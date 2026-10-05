@@ -66,7 +66,6 @@ import {
   blueGrey,
 } from '@mui/material/colors';
 import RecruitmentModule from './Recruitment.js';
-import DiscussionThread from './components/interviews/DiscussionThread.jsx';
 
 const theme = createTheme({
   palette: {
@@ -150,7 +149,6 @@ function App() {
             <Route path="update-address" element={<AddressAutocomplete />} />
             <Route path="add-interviews" element={<FormInterviewComponent />} />
 
-            <Route path="add-intternalThread" element={<DiscussionThread />} />
             <Route path="/all-missions" element={<MissionsPage />} />
             <Route path="/documents" element={<AdminFiles />} />
             <Route path="/equipe" element={<Team />} />

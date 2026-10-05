@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
 import {
+  Badge,
   Box,
   Stack,
   Button,
   Autocomplete,
   TextField,
+  Tooltip,
 } from '@mui/material';
 
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
@@ -36,6 +39,9 @@ import {
 } from '../options/existingOptions';
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
+import WhatsAppButton from './WhatsAppButton';
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -115,8 +121,8 @@ export default function DataGridDemo(props) {
   const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
 
   const [rows, setRows] = useState([]);
-  const [newMessageFlags, setNewMessageFlags] = useState({});
-  const [justViewedMessages, setJustViewedMessages] = useState(false);
+  // Unread messages of the internal discussion, per volunteer
+  const [unread, setUnread] = useState({});
   const [selectionModel, setSelectionModel] = useState([])
 
   const columns = [
@@ -140,9 +146,16 @@ export default function DataGridDemo(props) {
       headerName: 'Fil ',
       width: 80,
       renderCell: (params) => {
-        return newMessageFlags[params.row.id] ? (
-          // <Chip label="New" color="primary" />
-          <MessageIcon color="primary" />
+        const count = unread[params.row.id];
+        return count ? (
+          <Tooltip
+            title={`${count} message${count > 1 ? 's' : ''} non lu${
+              count > 1 ? 's' : ''
+            }`}>
+            <Badge badgeContent={count} color="error">
+              <MessageIcon color="primary" />
+            </Badge>
+          </Tooltip>
         ) : null;
       },
     },
@@ -181,8 +194,13 @@ export default function DataGridDemo(props) {
         params.row.phone
           ? `${parsePhoneNumber(params.row.phone).number.international}`
           : '',
-
-      width: 150,
+      renderCell: (params) => (
+        <>
+          <span>{params.value}</span>
+          <WhatsAppButton volunteer={params.row} size="small" />
+        </>
+      ),
+      width: 190,
       editable: true,
     },
     // {
@@ -541,56 +559,28 @@ export default function DataGridDemo(props) {
   }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
-  // Effect to check for new messages
+  // Unread counts, refreshed when coming back to the tab
   useEffect(() => {
-    const updatedFlags = {};
-    filteredData.forEach((item) => {
-      const lastViewedCount =
-        parseInt(localStorage.getItem(`lastViewedCount_${item.id}`)) || 0;
-      const currentCount = Array.isArray(item.internal_thread)
-        ? item.internal_thread.length
-        : 0;
-
-      if (currentCount > lastViewedCount) {
-        updatedFlags[item.id] = true;
-      }
-    });
-
-    setNewMessageFlags((prev) => ({ ...prev, ...updatedFlags }));
-  }, [filteredData, justViewedMessages]);
+    const loadUnread = () =>
+      axios
+        .get(`${BASE_URL}/admin/thread/unread`)
+        .then(({ data }) => setUnread(data))
+        .catch((err) => console.error(err));
+    loadUnread();
+    window.addEventListener('focus', loadUnread);
+    return () => window.removeEventListener('focus', loadUnread);
+  }, []);
 
   const handleRowClick = useCallback(
     (params) => {
-      const userId = params.row.id;
-
-      // If there was a new message flag, remove it
-      if (newMessageFlags[userId]) {
-        setNewMessageFlags((prev) => ({ ...prev, [userId]: false }));
-      }
-      console.log(newMessageFlags);
-      // Update last viewed count in local storage
-      const currentUser = filteredData.find((item) => item.id === userId);
-      if (currentUser && currentUser.internal_thread) {
-        localStorage.setItem(
-          `lastViewedCount_${userId}`,
-          currentUser.internal_thread.length.toString()
-        );
-      }
-
-      setJustViewedMessages(true);
-
       setSelectedUser(params.row.id);
       navigate('/change-status', {
         state: { userId: params.row.id, userLogged: location.state.userLogged },
       });
     },
-    [filteredData, newMessageFlags, navigate, location.state]
+    [navigate, location.state]
   );
 
-  // Reset justViewedMessages when returning to this component
-  useEffect(() => {
-    setJustViewedMessages(false);
-  }, []);
 
   const calculateTrueValues = (users) => {
     return users.map((user) => {
@@ -809,7 +799,7 @@ export default function DataGridDemo(props) {
       })
       .filter((item) => item !== null);
     setRows(newRows);
-  }, [filteredData, newMessageFlags]);
+  }, [filteredData]);
 
   function createData(
     id,
