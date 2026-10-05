@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import {
   Badge,
@@ -19,9 +18,8 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
-import Rating from '@mui/material/Rating';
-import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
-import FilePresentRoundedIcon from '@mui/icons-material/FilePresentRounded';
+import FolderIcon from '@mui/icons-material/Folder';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 // import DoneIcon from '@mui/icons-material/Done';
 // import MoodIcon from '@mui/icons-material/Mood';
 import MessageIcon from '@mui/icons-material/Message';
@@ -44,14 +42,6 @@ import { isManager } from '../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const StyledRating = styled(Rating)({
-  '& .MuiRating-iconFilled': {
-    color: '#ff6d75',
-  },
-  '& .MuiRating-iconHover': {
-    color: '#ff3d47',
-  },
-});
 const subjects = existingSubjects;
 const days = existingDays;
 const times = existingTimes;
@@ -319,12 +309,12 @@ export default function DataGridDemo(props) {
       },
     },
     {
-      field: 'trueValuesCount',
+      field: 'docs',
       headerName: 'Documents',
-
-      width: 130,
-      editable: true,
-      renderCell: renderRating,
+      width: 100,
+      // Sort: complete, then ready for the interview, then incomplete
+      valueGetter: ({ value }) => value?.level ?? 0,
+      renderCell: renderDocuments,
     },
     {
       field: 'test_voltaire_passed',
@@ -407,18 +397,23 @@ export default function DataGridDemo(props) {
   //   );
   // }
 
-  function renderRating(params) {
+  // CV + ID + B3: complete; CV + ID: ready for the interview; else incomplete
+  function renderDocuments(params) {
+    const { level, missing } = params.row.docs || { level: 0, missing: [] };
+    const title =
+      level === 2
+        ? 'Documents complets'
+        : level === 1
+        ? "Prêt pour l'entretien, B3 manquant"
+        : `Manque : ${missing.join(', ')}`;
     return (
-      <StyledRating
-        readOnly
-        value={params.value}
-        getLabelText={(value) =>
-          `${value} ArticleIcon${value !== 1 ? 's' : ''}`
-        }
-        icon={<FilePresentRoundedIcon fontSize="10" />}
-        emptyIcon={<FilePresentOutlinedIcon />}
-        max={3}
-      />
+      <Tooltip title={title}>
+        {level === 0 ? (
+          <FolderOutlinedIcon sx={{ color: 'text.disabled' }} />
+        ) : (
+          <FolderIcon color={level === 2 ? 'success' : 'warning'} />
+        )}
+      </Tooltip>
     );
   }
 
@@ -588,15 +583,17 @@ export default function DataGridDemo(props) {
   );
 
 
+  // Received = uploaded or ticked "reçu sur papier" (flags kept by the server)
   const calculateTrueValues = (users) => {
     return users.map((user) => {
-      const trueValues = [
-        user.id_received,
-        user.cv_received,
-        user.b3_received,
-        // user.convention_received,
-      ].filter((value) => value === true);
-      return { ...user, trueValuesCount: trueValues.length };
+      const missing = [
+        !user.cv_received && 'CV',
+        !user.id_received && "pièce d'identité",
+        !user.b3_received && 'B3',
+      ].filter(Boolean);
+      const readyForInterview = user.cv_received && user.id_received;
+      const level = !readyForInterview ? 0 : user.b3_received ? 2 : 1;
+      return { ...user, docs: { level, missing } };
     });
   };
   const usersWithTrueValuesCount = calculateTrueValues(users);
@@ -796,7 +793,7 @@ export default function DataGridDemo(props) {
           item.is_active,
           first_contact,
           nb_interviews,
-          item.trueValuesCount,
+          item.docs,
           item.test_voltaire_passed,
           item.convention_received,
           item.is_available,
@@ -823,7 +820,7 @@ export default function DataGridDemo(props) {
     is_active,
     first_contact,
     nb_interviews,
-    trueValuesCount,
+    docs,
     test_voltaire_passed,
     convention_received,
     is_available,
@@ -845,7 +842,7 @@ export default function DataGridDemo(props) {
       is_active,
       first_contact,
       nb_interviews,
-      trueValuesCount,
+      docs,
       test_voltaire_passed,
       convention_received,
       is_available,
