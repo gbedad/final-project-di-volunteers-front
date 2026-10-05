@@ -17,6 +17,7 @@ import { styled } from '@mui/system';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { onThreadChanged } from '../../js/whatsapp';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -262,7 +263,7 @@ const DiscussionThread = ({ userId }) => {
         )}
         {messages.map((message) => {
           const isCurrentUser = message.author_id === me;
-          if (message.kind === 'whatsapp') {
+          if (message.kind !== 'message') {
             return (
               <Box
                 key={message.id}
@@ -274,7 +275,11 @@ const DiscussionThread = ({ userId }) => {
                   mb: 2,
                   color: 'text.secondary',
                 }}>
-                <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
+                {message.kind === 'email' ? (
+                  <MailOutlineIcon fontSize="small" color="primary" />
+                ) : (
+                  <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
+                )}
                 <Typography variant="caption">
                   {message.author_name} {message.content} le{' '}
                   {formatDate(message.created_at)}

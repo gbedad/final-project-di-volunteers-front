@@ -4,6 +4,7 @@ import axios from 'axios';
 import {
   Badge,
   Box,
+  Link,
   Stack,
   Button,
   Autocomplete,
@@ -38,6 +39,7 @@ import {
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
+import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
 import DashboardToolbar from './admin/DashboardToolbar';
 import { isManager } from '../js/roles';
@@ -174,8 +176,18 @@ export default function DataGridDemo(props) {
     {
       field: 'email',
       headerName: 'Email',
-
-      width: 250,
+      width: 290,
+      renderCell: (params) => (
+        <>
+          <Link
+            href={`mailto:${params.value}`}
+            onClick={(event) => event.stopPropagation()}
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {params.value}
+          </Link>
+          <EmailButton volunteer={params.row} size="small" />
+        </>
+      ),
     },
     {
       field: 'phone',

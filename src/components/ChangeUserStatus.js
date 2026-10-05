@@ -35,6 +35,7 @@ import Person2Icon from '@mui/icons-material/Person2';
 import Grid from '@mui/material/Grid';
 
 import Stack from '@mui/material/Stack';
+import MuiLink from '@mui/material/Link';
 
 import CakeIcon from '@mui/icons-material/Cake';
 
@@ -63,6 +64,8 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
+import EmailButton from './EmailButton';
+import { volunteerEmail } from '../js/email';
 import toast from 'react-hot-toast';
 import { isManager } from '../js/roles';
 
@@ -375,7 +378,10 @@ const ChangeUserStatus = () => {
                   <ListItem
                     secondaryAction={
                       userLogged.user.role !== 'volunteer' && (
-                        <WhatsAppButton volunteer={user} />
+                        <Stack direction="row">
+                          <EmailButton volunteer={user} />
+                          <WhatsAppButton volunteer={user} />
+                        </Stack>
                       )
                     }>
                     <ListItemAvatar>
@@ -404,7 +410,12 @@ const ChangeUserStatus = () => {
                           backgroundColor: 'lightgray', // Color of the track
                         },
                       }}
-                      primary={user.email2 ? user.email2 : user.email}
+                      primary={
+                        // Opens the computer's mail program
+                        <MuiLink href={`mailto:${volunteerEmail(user)}`}>
+                          {volunteerEmail(user)}
+                        </MuiLink>
+                      }
                       secondary={
                         user.phone
                           ? parsePhoneNumber(user.phone).number.international
