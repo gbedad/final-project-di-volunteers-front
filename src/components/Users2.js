@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -33,23 +33,25 @@ import Looks3Icon from '@mui/icons-material/Looks3';
 import {
   existingDays,
   existingSubjects,
-  existingTimes,
-  existingLevels,
 } from '../options/existingOptions';
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
 import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
+import { useSessionState } from '../js/useSessionState';
+import {
+  LEVELS,
+  SEARCH_TIMES,
+  matchesSearch,
+} from '../js/volunteerSearch';
 import DashboardToolbar from './admin/DashboardToolbar';
 import { isManager } from '../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const subjects = existingSubjects;
-const days = existingDays;
-const times = existingTimes;
-const levels = JSON.parse(existingLevels);
+const dayLabels = existingDays.map((d) => d.label);
 
 // function createData(
 //   id,
@@ -100,20 +102,42 @@ export default function DataGridDemo(props) {
   // const [dataActive, setDataActive] = useState([]);
   // const [activeUsers, setActiveUsers] = useState(null);
   // const [countUsersByStatus, setCountUsersByStatus] = useState({});
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState('');
-  const [selectedDay, setSelectedDay] = useState('');
-  const [selectedTimeStart, setSelectedTimeStart] = useState('');
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState('');
-  const [selectedCohort, setSelectedCohort] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
+  // Filters and grid state are kept for the browser tab, so they are still
+  // there when coming back from a volunteer's page
+  const [subject, setSubject] = useSessionState('dashboard.q.subject', null);
+  const [levelFrom, setLevelFrom] = useSessionState(
+    'dashboard.q.levelFrom',
+    null
+  );
+  const [levelTo, setLevelTo] = useSessionState('dashboard.q.levelTo', null);
+  const [days, setDays] = useSessionState('dashboard.q.days', []);
+  const [timeFrom, setTimeFrom] = useSessionState('dashboard.q.timeFrom', null);
+  const [timeTo, setTimeTo] = useSessionState('dashboard.q.timeTo', null);
+  const [selectedCohort, setSelectedCohort] = useSessionState(
+    'dashboard.cohort',
+    null
+  );
+  const [sortModel, setSortModel] = useSessionState('dashboard.sort', []);
+  // Column filters and the quick search of the toolbar
+  const [gridFilterModel, setGridFilterModel] = useSessionState(
+    'dashboard.gridFilter',
+    { items: [] }
+  );
+  const [paginationModel, setPaginationModel] = useSessionState(
+    'dashboard.page',
+    { page: 0, pageSize: 30 }
+  );
+  // Call, Entretiens, Test and Fil are hidden until shown with "Columns"
+  const [columnVisibilityModel, setColumnVisibilityModel] = useSessionState(
+    'dashboard.columns',
+    {
+      hasNewMessage: false,
+      first_contact: false,
+      nb_interviews: false,
+      test_voltaire_passed: false,
+    }
+  );
 
-  // const [value, setValue] = React.useState(subjects[0]);
-  const [inputSubjectValue, setInputSubjectValue] = React.useState('');
-  const [inputLevelValue, setInputLevelValue] = React.useState('');
-  const [inputDayValue, setInputDayValue] = React.useState('');
-  const [inputTimeStartValue, setInputTimeStartValue] = React.useState('');
-  const [inputTimeEndValue, setInputTimeEndValue] = React.useState('');
 
   const [rows, setRows] = useState([]);
   // Unread messages of the internal discussion, per volunteer
@@ -451,112 +475,15 @@ export default function DataGridDemo(props) {
   // };
   // ===================================================================================================
 
-  function filterUsers(users, filters) {
-    return users.filter((user) => {
-      const topics = user.skill?.topics || [];
-      const daytimes = user.skill?.when_day_slot || [];
-
-      // Subject filter
-      const subjectMatch =
-        !filters.subject ||
-        topics.some((topic) =>
-          JSON.parse(topic).subject.includes(filters.subject)
-        );
-
-      // Level filter
-      const levelMatch =
-        !filters.level ||
-        topics.some((topic) => {
-          const startIndex = levels.findIndex(
-            (level) => level.label === JSON.parse(topic).classStart
-          );
-          const endIndex = levels.findIndex(
-            (level) => level.label === JSON.parse(topic).classEnd
-          );
-
-          console.log('Start Index:', startIndex, 'End Index:', endIndex);
-
-          if (startIndex === -1 || endIndex === -1) {
-            console.error('Invalid classStart or classEnd');
-            return false;
-          }
-
-          // Create an array of levels between classStart and classEnd
-          const levelsInRange = levels
-            .slice(startIndex, endIndex + 1)
-            .map((level) => level.label);
-
-          console.log('Levels in range:', levelsInRange);
-
-          // Check if the filteredLevel is in the levelsInRange array
-          return levelsInRange.includes(filters.level);
-        });
-
-      // Day filter
-      const dayMatch =
-        !filters.day ||
-        daytimes.some((daytime) =>
-          JSON.parse(daytime).day.includes(filters.day)
-        );
-
-      // Time range filter
-      const timeMatch =
-        !filters.timeStart ||
-        !filters.timeEnd ||
-        daytimes.some((daytime) => {
-          const start = new Date(`1970-01-01T${JSON.parse(daytime).startTime}`);
-          const end = new Date(`1970-01-01T${JSON.parse(daytime).endTime}`);
-          const filterStart = new Date(`1970-01-01T${filters.timeStart}`);
-          const filterEnd = new Date(`1970-01-01T${filters.timeEnd}`);
-
-          return start <= filterEnd && end >= filterStart;
-        });
-
-      // Cohort filter: member during that academic year
-      const cohortMatch =
-        !filters.cohort || (user.cohorte_year || []).includes(filters.cohort);
-
-      return subjectMatch && levelMatch && dayMatch && timeMatch && cohortMatch;
-    });
+  function filterUsers(users, criteria) {
+    return users.filter(
+      (user) =>
+        matchesSearch(user.skill, criteria) &&
+        // Cohort: member during that academic year
+        (!criteria.cohort || (user.cohorte_year || []).includes(criteria.cohort))
+    );
   }
 
-  const handleSearch = () => {
-    const filters = {
-      subject: selectedSubject ? selectedSubject.label : null,
-      level: selectedLevel ? selectedLevel['label'] : null,
-      day: selectedDay ? selectedDay['label'] : null,
-      timeStart: selectedTimeStart ? selectedTimeStart['label'] : null,
-      timeEnd: selectedTimeEnd ? selectedTimeEnd['label'] : null,
-      cohort: selectedCohort,
-    };
-    console.log(filters.timeEnd);
-
-    const filteredResults = filterUsers(cleanedArray, filters);
-
-    if (filteredResults.length > 0) {
-      setFilteredData(filteredResults);
-    } else {
-      setFilteredData([]);
-    }
-  };
-
-  if (document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]) {
-    const close = document.getElementsByClassName(
-      'MuiAutocomplete-clearIndicator'
-    )[0];
-    close.addEventListener('click', () => {
-      handleResetFilter();
-    });
-  }
-
-  const handleResetFilter = () => {
-    setFilteredData(cleanedArray);
-  };
-
-  useEffect(() => {
-    handleResetFilter();
-    // eslint-disable-next-line
-  }, [users]);
   // console.log("location====>>>", location);
   // Generate Order Data
   // Unread counts (admins only), refreshed when coming back to the tab
@@ -645,6 +572,51 @@ export default function DataGridDemo(props) {
   ]
     .sort()
     .reverse();
+
+  // Filters apply as soon as they are chosen
+  const filteredData = useMemo(
+    () =>
+      filterUsers(cleanedArray, {
+        subject,
+        levelFrom,
+        levelTo,
+        days,
+        timeFrom,
+        timeTo,
+        cohort: selectedCohort,
+      }),
+    // cleanedArray is rebuilt from users on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      users,
+      subject,
+      levelFrom,
+      levelTo,
+      days,
+      timeFrom,
+      timeTo,
+      selectedCohort,
+    ]
+  );
+  const hasFilters =
+    [subject, levelFrom, levelTo, timeFrom, timeTo, selectedCohort].some(
+      Boolean
+    ) ||
+    days.length > 0 ||
+    gridFilterModel.items.length > 0 ||
+    (gridFilterModel.quickFilterValues || []).length > 0;
+
+  const resetFilters = () => {
+    setSubject(null);
+    setLevelFrom(null);
+    setLevelTo(null);
+    setDays([]);
+    setTimeFrom(null);
+    setTimeTo(null);
+    setSelectedCohort(null);
+    setGridFilterModel({ items: [] });
+    setPaginationModel((model) => ({ ...model, page: 0 }));
+  };
   // console.log(usersWithTrueValuesCount);
   // cleanedArray = filteredData;
   // if (filteredData.length > 0) {
@@ -885,94 +857,73 @@ export default function DataGridDemo(props) {
             <MenuItem value="Codage">Codage</MenuItem>
             {/* Add more subjects as needed 
           </Select> */}
+        {/* What: subject and level range, in the same topic */}
         <Autocomplete
-          value={selectedSubject}
-          onChange={(event, newValue) => {
-            setSelectedSubject(newValue);
-          }}
-          inputValue={inputSubjectValue}
-          onInputChange={(event, newInputValue) => {
-            setInputSubjectValue(newInputValue);
-          }}
-          id="controllable-states-demo"
-          options={subjects}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => (option ? option.label : '')}
-          sx={{ width: 300 }}
+          value={subject}
+          onChange={(event, value) => setSubject(value)}
+          options={subjects.map((o) => o.label)}
+          sx={{ width: 220 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir une matière" size="small" />
+            <TextField {...params} label="Matière" size="small" />
           )}
         />
         <Autocomplete
-          value={selectedLevel}
-          onChange={(event, newValue) => {
-            setSelectedLevel(newValue);
+          value={levelFrom}
+          onChange={(event, value) => {
+            setLevelFrom(value);
+            if (value && levelTo && LEVELS.indexOf(levelTo) < LEVELS.indexOf(value))
+              setLevelTo(value);
           }}
-          inputValue={inputLevelValue}
-          onInputChange={(event, newInputValue) => {
-            setInputLevelValue(newInputValue);
-          }}
-          id="controllable-states-demo"
-          options={levels}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => (option ? option.label : '')}
-          sx={{ width: 300 }}
+          options={LEVELS}
+          sx={{ width: 140 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir un niveau" size="small" />
+            <TextField {...params} label="Niveau de" size="small" />
           )}
         />
         <Autocomplete
-          value={selectedDay}
-          onChange={(event, newValue) => {
-            setSelectedDay(newValue);
-          }}
-          inputValue={inputDayValue}
-          onInputChange={(event, newInputValue) => {
-            setInputDayValue(newInputValue);
-          }}
-          id="controllable-states-demo"
-          options={days}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => (option ? option.label : '')}
-          sx={{ width: 300 }}
+          value={levelTo}
+          onChange={(event, value) => setLevelTo(value)}
+          options={
+            levelFrom ? LEVELS.slice(LEVELS.indexOf(levelFrom)) : LEVELS
+          }
+          sx={{ width: 140 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir un jour" size="small" />
+            <TextField {...params} label="Niveau à" size="small" />
+          )}
+        />
+        {/* When: days and time window, in the same availability slot */}
+        <Autocomplete
+          multiple
+          value={days}
+          onChange={(event, value) => setDays(value)}
+          options={dayLabels}
+          limitTags={2}
+          sx={{ minWidth: 200 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Jours" size="small" />
           )}
         />
         <Autocomplete
-          value={selectedTimeStart}
-          onChange={(event, newValue) => {
-            setSelectedTimeStart(newValue);
+          value={timeFrom}
+          onChange={(event, value) => {
+            setTimeFrom(value);
+            if (value && timeTo && timeTo <= value) setTimeTo(null);
           }}
-          inputValue={inputTimeStartValue}
-          onInputChange={(event, newInputValue) => {
-            setInputTimeStartValue(newInputValue);
-          }}
-          id="controllable-states-demo"
-          options={times}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => (option ? option.label : '')}
-          sx={{ width: 200 }}
+          options={SEARCH_TIMES}
+          sx={{ width: 140 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir heure début" size="small" />
+            <TextField {...params} label="Heure de" size="small" />
           )}
         />
         <Autocomplete
-          value={selectedTimeEnd}
-          onChange={(event, newValue) => {
-            setSelectedTimeEnd(newValue);
-          }}
-          inputValue={inputTimeEndValue}
-          onInputChange={(event, newInputValue) => {
-            setInputTimeEndValue(newInputValue);
-          }}
-          id="controllable-states-demo"
-          options={times}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => (option ? option.label : '')}
-          sx={{ width: 200 }}
+          value={timeTo}
+          onChange={(event, value) => setTimeTo(value)}
+          options={
+            timeFrom ? SEARCH_TIMES.filter((t) => t > timeFrom) : SEARCH_TIMES
+          }
+          sx={{ width: 140 }}
           renderInput={(params) => (
-            <TextField {...params} label="Saisir heure fin" size="small" />
+            <TextField {...params} label="Heure à" size="small" />
           )}
         />
         <Autocomplete
@@ -986,8 +937,11 @@ export default function DataGridDemo(props) {
         />
         {/* </FormControl> */}
 
-        <Button variant="contained" onClick={handleSearch} color="primary">
-          Filtrer
+        <Button
+          variant="outlined"
+          onClick={resetFilters}
+          disabled={!hasFilters}>
+          Réinitialiser
         </Button>
 
       </Stack>
@@ -1011,22 +965,14 @@ export default function DataGridDemo(props) {
           columns={columns}
           slots={{ toolbar: DashboardToolbar }}
           noActionColumn
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 30,
-              },
-            },
-            // Hidden by default, shown on demand with the "Columns" button
-            columns: {
-              columnVisibilityModel: {
-                hasNewMessage: false,
-                first_contact: false,
-                nb_interviews: false,
-                test_voltaire_passed: false,
-              },
-            },
-          }}
+          sortModel={sortModel}
+          onSortModelChange={setSortModel}
+          filterModel={gridFilterModel}
+          onFilterModelChange={setGridFilterModel}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          columnVisibilityModel={columnVisibilityModel}
+          onColumnVisibilityModelChange={setColumnVisibilityModel}
           pageSizeOptions={[30]}
           disableRowSelectionOnClick
           checkboxSelection
