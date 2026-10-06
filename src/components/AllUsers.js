@@ -6,9 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 // import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 // import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 // import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
 // import Divider from '@mui/material/Divider';
 // import IconButton from '@mui/material/IconButton';
 // import Badge from '@mui/material/Badge';
@@ -22,6 +20,7 @@ import Link from '@mui/material/Link';
 // import { mainListItems, secondaryListItems } from './ListItems';
 // import Users from './Users';
 import Users2 from './Users2';
+import PageHeader from './admin/PageHeader';
 
 // import ListItemButton from '@mui/material/ListItemButton';
 // import ListItemIcon from '@mui/material/ListItemIcon';
@@ -165,17 +164,11 @@ function DashboardContent() {
             height: '100vh',
             overflow: 'auto',
           }}>
-          <Toolbar />
-          <Container maxWidth="xxl" sx={{ mt: 0, mb: 2 }}>
-            <Box sx={{ mt: 2, mb: 2 }}>
-              <Typography variant="h4" component="h1">
-                Tuteurs bénévoles
-              </Typography>
-              <Typography color="text.secondary">
-                Candidats et tuteurs : recherche, suivi des candidatures et
-                actions groupées. Les statistiques sont dans « Analyse ».
-              </Typography>
-            </Box>
+          <Container maxWidth="xxl" sx={{ mt: 4, mb: 2 }}>
+            <PageHeader
+              title="Tuteurs bénévoles"
+              subtitle="Candidats et tuteurs : recherche, suivi des candidatures et actions groupées. Les statistiques sont dans « Analyse »."
+            />
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>

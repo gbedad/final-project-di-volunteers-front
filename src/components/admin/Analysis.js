@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import PageHeader from './PageHeader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 // Primary colour of the theme, used with a variable opacity in the grids
@@ -213,12 +214,12 @@ const Analysis = () => {
 
   if (error) {
     return (
-      <Container sx={{ mt: 10 }}>
+      <Container sx={{ mt: 4 }}>
         <Alert severity="error">L'analyse n'a pas pu être chargée.</Alert>
       </Container>
     );
   }
-  if (!data) return <LinearProgress sx={{ mt: 10 }} />;
+  if (!data) return <LinearProgress sx={{ mt: 4 }} />;
 
   const { tutors, supply, recruitment } = data;
   const scopeLabel = SCOPES.find((s) => s.value === data.scope).label;
@@ -241,30 +242,24 @@ const Analysis = () => {
     : recruitment.stuck.slice(0, 10);
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 10, mb: 4 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 2,
-          mb: 2,
-        }}>
-        <Typography variant="h4" sx={{ flex: 1 }}>
-          Analyse
-        </Typography>
-        <ToggleButtonGroup
-          size="small"
-          exclusive
-          value={scope}
-          onChange={(e, value) => value && setScope(value)}>
-          {SCOPES.map((s) => (
-            <ToggleButton key={s.value} value={s.value}>
-              {s.label}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </Box>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <PageHeader
+        title="Analyse"
+        subtitle="Profils des tuteurs, offre de tutorat et recrutement."
+        actions={
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={scope}
+            onChange={(e, value) => value && setScope(value)}>
+            {SCOPES.map((s) => (
+              <ToggleButton key={s.value} value={s.value}>
+                {s.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        }
+      />
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={6} md={3}>

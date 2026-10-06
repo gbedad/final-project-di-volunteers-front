@@ -30,6 +30,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import FileDisplay from '../FileDisplay';
 import { getFileUrl, fileNameOf } from '../../js/fileUrl';
 import { isManager } from '../../js/roles';
+import PageHeader from './PageHeader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -235,9 +236,7 @@ const AdminFiles = () => {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Documents des bénévoles
-      </Typography>
+      <PageHeader title="Documents des bénévoles" />
 
       <Tabs value={tab} onChange={(e, value) => setTab(value)} sx={{ mb: 2 }}>
         <Tab label={`Tous les documents (${files.length})`} />

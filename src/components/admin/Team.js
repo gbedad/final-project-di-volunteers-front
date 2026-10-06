@@ -22,6 +22,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { ROLE_LABELS } from '../../js/roles';
+import PageHeader from './PageHeader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -221,9 +222,7 @@ const Team = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Équipe
-      </Typography>
+      <PageHeader title="Équipe" />
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         {me.role === 'superadmin'
           ? 'Vous pouvez attribuer tous les rôles.'
