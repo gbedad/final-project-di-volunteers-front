@@ -62,8 +62,14 @@ const LocationsPossibleComponent = ({ userSelected }) => {
       const skills = response.data.skill;
       //   const parsed_array = response.data.skill.locations.map(string => JSON.parse(string));
       if (skills) {
+        const places = (skills.where_location || []).filter(Boolean);
         setSelectedModality(skills.how_location || '');
-        setLocationsPossible(skills.where_location || []);
+        // A site is still needed: show the empty site field right away
+        setLocationsPossible(
+          places.length || !SITE_REQUIRED.includes(skills.how_location)
+            ? places
+            : ['']
+        );
       }
       setIsLoading(false);
     };
