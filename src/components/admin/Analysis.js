@@ -192,6 +192,7 @@ const Analysis = () => {
       'dashboard.q.timeFrom': null,
       'dashboard.q.timeTo': null,
       'dashboard.cohort': null,
+      'dashboard.status': null,
       'dashboard.gridFilter': { items: [] },
       ...search,
     };

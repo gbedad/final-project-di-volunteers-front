@@ -4,6 +4,8 @@ import axios from 'axios';
 import {
   Badge,
   Box,
+  Chip,
+  Divider,
   Link,
   Paper,
   Typography,
@@ -100,6 +102,20 @@ const GRID_LOCALE = {
   toolbarQuickFilterPlaceholder: 'Rechercher un nom, un e-mail…',
 };
 
+// Status chips above the search; the rare ones only when someone has them
+const ACTIVE_TUTORS = 'tuteurs-actifs';
+const STATUS_CHIPS = [
+  { status: 'Compte créé', label: 'Compte créé' },
+  { status: 'A renseigner', label: 'A renseigner', always: true },
+  { status: 'Renseigné', label: 'Renseigné' },
+  { status: 'A télécharger', label: 'A télécharger', always: true },
+  { status: 'A interviewer', label: 'A interviewer', always: true },
+  { status: 'A finaliser', label: 'A finaliser', always: true },
+  { status: 'Validé', label: 'Validés', always: true },
+  { status: 'A conserver', label: 'A conserver' },
+  { status: 'Déclinée', label: 'Déclinées', always: true },
+];
+
 // Help shown over the "?" of the search panel
 const SearchHelp = () => (
   <Box sx={{ p: 0.5, fontSize: '0.85rem' }}>
@@ -155,6 +171,11 @@ export default function DataGridDemo(props) {
     'dashboard.cohort',
     null
   );
+  // Status chip clicked above the search: a status, or ACTIVE_TUTORS
+  const [statusFilter, setStatusFilter] = useSessionState(
+    'dashboard.status',
+    null
+  );
   const [sortModel, setSortModel] = useSessionState('dashboard.sort', []);
   // Column filters and the quick search of the toolbar
   const [gridFilterModel, setGridFilterModel] = useSessionState(
@@ -179,13 +200,8 @@ export default function DataGridDemo(props) {
 
   const [rows, setRows] = useState([]);
   // Ids of the rows left after every filter (search fields, column filters,
-  // quick search), sent to the page so its counters follow the table
+  // quick search), for the result sentence
   const [visibleKey, setVisibleKey] = useState(null);
-  const onVisibleChange = props.onVisibleChange;
-  useEffect(() => {
-    if (visibleKey === null) return;
-    onVisibleChange?.(visibleKey ? visibleKey.split(',').map(Number) : []);
-  }, [visibleKey, onVisibleChange]);
   // Unread messages of the internal discussion, per volunteer
   const [unread, setUnread] = useState({});
   const [selectionModel, setSelectionModel] = useState([])
@@ -620,7 +636,7 @@ export default function DataGridDemo(props) {
     .reverse();
 
   // Filters apply as soon as they are chosen
-  const filteredData = useMemo(
+  const searched = useMemo(
     () =>
       filterUsers(cleanedArray, {
         subject,
@@ -644,10 +660,36 @@ export default function DataGridDemo(props) {
       selectedCohort,
     ]
   );
+  // Counts per status of the volunteers found by the search
+  const statusCounts = useMemo(() => {
+    const counts = { [ACTIVE_TUTORS]: 0 };
+    for (const u of searched) {
+      counts[u.status] = (counts[u.status] || 0) + 1;
+      if (u.is_active) counts[ACTIVE_TUTORS] += 1;
+    }
+    return counts;
+  }, [searched]);
+  const filteredData = useMemo(
+    () =>
+      !statusFilter
+        ? searched
+        : searched.filter((u) =>
+            statusFilter === ACTIVE_TUTORS
+              ? u.is_active === true
+              : u.status === statusFilter
+          ),
+    [searched, statusFilter]
+  );
   const hasFilters =
-    [subject, levelFrom, levelTo, timeFrom, timeTo, selectedCohort].some(
-      Boolean
-    ) ||
+    [
+      subject,
+      levelFrom,
+      levelTo,
+      timeFrom,
+      timeTo,
+      selectedCohort,
+      statusFilter,
+    ].some(Boolean) ||
     days.length > 0 ||
     gridFilterModel.items.length > 0 ||
     (gridFilterModel.quickFilterValues || []).length > 0;
@@ -672,6 +714,16 @@ export default function DataGridDemo(props) {
   const gridFiltered =
     gridFilterModel.items.length > 0 ||
     (gridFilterModel.quickFilterValues || []).length > 0;
+  const details = [
+    teach && `${plural ? 'enseignent' : 'enseigne'} ${teach}`,
+    when && `${plural ? 'disponibles' : 'disponible'} ${when}`,
+    selectedCohort && `cohorte ${selectedCohort}`,
+    statusFilter &&
+      (statusFilter === ACTIVE_TUTORS
+        ? 'tuteurs actifs'
+        : `statut « ${statusFilter} »`),
+    gridFiltered && 'avec les filtres du tableau',
+  ].filter(Boolean);
   const resultSentence = !hasFilters ? (
     <>Tous les bénévoles ({shownCount})</>
   ) : (
@@ -679,11 +731,7 @@ export default function DataGridDemo(props) {
       <b>
         {shownCount} bénévole{plural ? 's' : ''}
       </b>
-      {teach && ` ${plural ? 'enseignent' : 'enseigne'} : ${teach}`}
-      {teach && when && ' ·'}
-      {when && ` ${plural ? 'disponibles' : 'disponible'} ${when}`}
-      {selectedCohort && ` · cohorte ${selectedCohort}`}
-      {gridFiltered && ' · avec les filtres du tableau'}
+      {details.length > 0 && ` · ${details.join(' · ')}`}
     </>
   );
 
@@ -695,6 +743,7 @@ export default function DataGridDemo(props) {
     setTimeFrom(null);
     setTimeTo(null);
     setSelectedCohort(null);
+    setStatusFilter(null);
     setGridFilterModel({ items: [] });
     setPaginationModel((model) => ({ ...model, page: 0 }));
   };
@@ -916,6 +965,45 @@ export default function DataGridDemo(props) {
   // --------------------------------------------------------------------------------------------------
   return (
     <>
+      {/* Status chips: counts of the volunteers found, click to filter */}
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        alignItems="center"
+        gap={1}
+        sx={{ mb: 2 }}>
+        <Chip
+          label={`Tous ${searched.length}`}
+          color="primary"
+          variant={statusFilter ? 'outlined' : 'filled'}
+          onClick={() => setStatusFilter(null)}
+        />
+        {STATUS_CHIPS.filter(
+          (c) => c.always || statusCounts[c.status] > 0
+        ).map((c) => (
+          <Chip
+            key={c.status}
+            label={`${c.label} ${statusCounts[c.status] || 0}`}
+            color="primary"
+            variant={statusFilter === c.status ? 'filled' : 'outlined'}
+            onClick={() =>
+              setStatusFilter(statusFilter === c.status ? null : c.status)
+            }
+          />
+        ))}
+        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+        <Chip
+          label={`Tuteurs actifs ${statusCounts[ACTIVE_TUTORS]}`}
+          color="success"
+          variant={statusFilter === ACTIVE_TUTORS ? 'filled' : 'outlined'}
+          onClick={() =>
+            setStatusFilter(
+              statusFilter === ACTIVE_TUTORS ? null : ACTIVE_TUTORS
+            )
+          }
+        />
+      </Stack>
+
       {/* Search on what the volunteers can teach and when they are free */}
       <Paper variant="outlined" sx={{ p: 2, mb: 1 }}>
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>

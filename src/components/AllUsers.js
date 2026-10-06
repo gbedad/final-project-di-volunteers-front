@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import { useLocation, useNavigate } from 'react-router-dom';
 // import { styled, createTheme } from '@mui/material/styles';
@@ -9,8 +9,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 // import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // import Divider from '@mui/material/Divider';
 // import IconButton from '@mui/material/IconButton';
 // import Badge from '@mui/material/Badge';
@@ -24,8 +22,6 @@ import Link from '@mui/material/Link';
 // import { mainListItems, secondaryListItems } from './ListItems';
 // import Users from './Users';
 import Users2 from './Users2';
-import ActiveUsers from './ActiveUsers';
-import UsersByStatusGrid from './UsersByStatus';
 
 // import ListItemButton from '@mui/material/ListItemButton';
 // import ListItemIcon from '@mui/material/ListItemIcon';
@@ -104,30 +100,8 @@ function DashboardContent() {
 
   const [users, setUsers] = useState([]);
   // const [selectedUser, setSelectedUser] = useState(null);
-  // Volunteers left in the table after its filters (null: not known yet)
-  const [visibleIds, setVisibleIds] = useState(null);
   // console.log(location.state);
   // const userLogged = location.state.userLogged;
-
-  // console.log(token);
-  // Counters follow the volunteers shown in the table
-  const shown = useMemo(() => {
-    if (!visibleIds) return users;
-    const ids = new Set(visibleIds);
-    return users.filter((u) => ids.has(u.id));
-  }, [users, visibleIds]);
-  const countUsersByStatus = useMemo(
-    () =>
-      shown.reduce((acc, { status }) => {
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-      }, {}),
-    [shown]
-  );
-  const activeUsers = users.length
-    ? shown.filter((u) => u.is_active === true).length
-    : null;
-  const isFiltered = !!visibleIds && shown.length < users.length;
 
   // Also called by the dashboard after a bulk change
   const [reloadKey, setReloadKey] = useState(0);
@@ -193,48 +167,20 @@ function DashboardContent() {
           }}>
           <Toolbar />
           <Container maxWidth="xxl" sx={{ mt: 0, mb: 2 }}>
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <Typography variant="h4" component="h1">
+                Tuteurs bénévoles
+              </Typography>
+              <Typography color="text.secondary">
+                Candidats et tuteurs : recherche, suivi des candidatures et
+                actions groupées. Les statistiques sont dans « Analyse ».
+              </Typography>
+            </Box>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={10} lg={10}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'relative',
-                  }}>
-                  <UsersByStatusGrid data={countUsersByStatus} />
-                  {/* Over the corner of the block: its height doesn't change */}
-                  {isFiltered && (
-                    <Chip
-                      size="small"
-                      color="primary"
-                      icon={<FilterAltIcon />}
-                      label={`Filtré : ${shown.length} sur ${users.length}`}
-                      sx={{ position: 'absolute', top: 8, right: 8 }}
-                    />
-                  )}
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={2} lg={2}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}>
-                  <ActiveUsers data={activeUsers} />
-                </Paper>
-              </Grid>
-
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   {/* <Users data={users} /> */}
-                  <Users2
-                    data={users}
-                    onChanged={reload}
-                    onVisibleChange={setVisibleIds}
-                  />
+                  <Users2 data={users} onChanged={reload} />
                 </Paper>
               </Grid>
             </Grid>

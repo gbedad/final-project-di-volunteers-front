@@ -22,6 +22,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderIcon from '@mui/icons-material/Folder';
 import GroupIcon from '@mui/icons-material/Group';
+import PeopleIcon from '@mui/icons-material/People';
 import InsightsIcon from '@mui/icons-material/Insights';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -616,9 +617,9 @@ function ResponsiveAppBar() {
                         onClick={handleViewUsers}
                         {...currentProps('dashboard')}>
                         <ListItemIcon>
-                          <DashboardIcon fontSize="small" />
+                          <PeopleIcon fontSize="small" />
                         </ListItemIcon>
-                        Tableau de bord
+                        Tuteurs bénévoles
                       </MenuItem>
                       <MenuItem
                         onClick={handleAdminFiles}
