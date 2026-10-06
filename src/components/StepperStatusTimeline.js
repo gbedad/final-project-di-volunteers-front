@@ -68,6 +68,20 @@ const steps = [
   },
 ];
 
+// Text of the convention step for each state of the signatures
+const CONVENTION_STEP = {
+  to_countersign: {
+    current: "J'ai déposé ma convention signée",
+    current_description:
+      "En attente de la signature de la présidente de l'association : vous recevrez un e-mail dès que la convention signée par les deux parties sera disponible.",
+  },
+  complete: {
+    current: "Ma convention est signée par moi et par l'association",
+    current_description:
+      "Il ne reste plus à l'association qu'à valider votre candidature.",
+  },
+};
+
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -81,7 +95,11 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function StepperStatusTimeline(props) {
-  const { userStatusStep, handleChange, finished } = props;
+  const { userStatusStep, handleChange, finished, conventionState } = props;
+  // The convention step follows the real signatures, not only the status
+  const conventionStep = CONVENTION_STEP[conventionState];
+  const stepOf = (step, index) =>
+    index === 4 && conventionStep ? { ...step, ...conventionStep } : step;
 
   // console.log(userStatusStep);
 
@@ -145,54 +163,68 @@ export default function StepperStatusTimeline(props) {
       sx={{ display: 'flex' }}>
       <Box sx={{ maxWidth: 500 }}>
         <Stepper activeStep={activeStep} orientation="vertical" sx={stepStyle}>
-          {statusSteps.map((step, index) => (
-            <Step key={step.label}>
-              <StepLabel
-                // sx={{ color: activeStep > index ? 'secondary.dark' : 'black' }}
-                optional={
-                  index === 4 ? (
-                    <Typography variant="caption">Dernière étape</Typography>
-                  ) : null
-                }>
-                {activeStep > index && activeStep !== 6
-                  ? step.label_realised
-                  : finished
-                  ? step.label_waiting
-                  : step.label}
-              </StepLabel>
-              <StepContent TransitionProps={{ unmountOnExit: false }}>
-                <Typography color="secondary.dark" fontSize={13} ml={1}>
-                  {finished ? step.description_waiting : step.description}
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <div>
-                    {(index < 3 ||
-                      (index >= 4 && index !== steps.length - 1)) && (
-                      <HtmlTooltip
-                        title={
-                          <React.Fragment>
-                            <Typography color="secondary.dark" fontSize={13}>
-                              Vous n'avez pas encore renseigné les informations
-                              demandées à cette étape ? Vous souhaitez les
-                              modifier ? Alors allez-y !
-                            </Typography>
-                          </React.Fragment>
-                        }>
-                        <Button
-                          disabled={finished}
-                          variant="contained"
-                          onClick={(event) => {
-                            index === 4
-                              ? handleChange(event, index)
-                              : handleChange(event, index + 1);
-                          }}
-                          sx={{ mt: 1, mr: 1 }}>
-                          {/* {index === steps.length - 1 ? 'Terminer' : "J'y vais"} */}
-                          J'y vais
-                        </Button>
-                      </HtmlTooltip>
-                    )}
-                    {/* {index > 0 && (
+          {statusSteps.map((rawStep, index) => {
+            const step = stepOf(rawStep, index);
+            return (
+              <Step key={rawStep.label}>
+                <StepLabel
+                  // sx={{ color: activeStep > index ? 'secondary.dark' : 'black' }}
+                  optional={
+                    index === 4 ? (
+                      <Typography variant="caption">Dernière étape</Typography>
+                    ) : null
+                  }>
+                  {activeStep > index && activeStep !== 6
+                    ? step.label_realised
+                    : step.current
+                      ? step.current
+                      : finished
+                        ? step.label_waiting
+                        : step.label}
+                </StepLabel>
+                <StepContent TransitionProps={{ unmountOnExit: false }}>
+                  <Typography color="secondary.dark" fontSize={13} ml={1}>
+                    {step.current_description
+                      ? step.current_description
+                      : finished
+                        ? step.description_waiting
+                        : step.description}
+                  </Typography>
+                  <Box sx={{ mb: 2 }}>
+                    <div>
+                      {(index < 3 ||
+                        (index >= 4 && index !== steps.length - 1)) &&
+                        !(index === 4 && conventionState === 'complete') && (
+                          <HtmlTooltip
+                            title={
+                              <React.Fragment>
+                                <Typography
+                                  color="secondary.dark"
+                                  fontSize={13}>
+                                  Vous n'avez pas encore renseigné les
+                                  informations demandées à cette étape ? Vous
+                                  souhaitez les modifier ? Alors allez-y !
+                                </Typography>
+                              </React.Fragment>
+                            }>
+                            <Button
+                              disabled={finished}
+                              variant="contained"
+                              onClick={(event) => {
+                                index === 4
+                                  ? handleChange(event, index)
+                                  : handleChange(event, index + 1);
+                              }}
+                              sx={{ mt: 1, mr: 1 }}>
+                              {/* {index === steps.length - 1 ? 'Terminer' : "J'y vais"} */}
+                              {index === 4 &&
+                              conventionState === 'to_countersign'
+                                ? 'Voir ma convention'
+                                : "J'y vais"}
+                            </Button>
+                          </HtmlTooltip>
+                        )}
+                      {/* {index > 0 && (
                       <Button
                         disabled={index === -1}
                         onClick={handleBack}
@@ -210,11 +242,12 @@ export default function StepperStatusTimeline(props) {
                         </>
                       )}
                     </Button> */}
-                  </div>
-                </Box>
-              </StepContent>
-            </Step>
-          ))}
+                    </div>
+                  </Box>
+                </StepContent>
+              </Step>
+            );
+          })}
         </Stepper>
         {activeStep === steps.length && (
           <Paper square elevation={0} sx={{ p: 3 }}>

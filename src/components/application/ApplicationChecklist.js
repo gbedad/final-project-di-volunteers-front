@@ -33,6 +33,9 @@ const EARLY_STATUSES = [
   'A télécharger',
 ];
 
+// Statuses from which the convention is asked
+const CONVENTION_STATUSES = ['A finaliser', 'Validé', 'A conserver'];
+
 const Item = ({ done, optional, title, detail, action, onAction }) => (
   <ListItem
     secondaryAction={
@@ -90,7 +93,14 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
   const missing = missingItems(progress);
   const toFill = (items) => `À indiquer : ${joinFrench(items)}`;
   const sent = !EARLY_STATUSES.includes(progress.status);
+  // After the interview: the convention is part of the application
+  const convention = progress.convention;
+  const conventionAsked =
+    CONVENTION_STATUSES.includes(progress.status) ||
+    (convention && convention.state !== 'to_sign');
+  const conventionDone = convention?.state === 'complete';
   const steps = [profile, wishes, documents.cv && documents.id, sent];
+  if (conventionAsked) steps.push(conventionDone);
   const done = steps.filter(Boolean).length;
   const missingDocs = [
     !documents.cv && 'CV',
@@ -150,6 +160,26 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
           action="Déposer"
           onAction={() => onGoToTab(3)}
         />
+        {conventionAsked && (
+          <Item
+            done={conventionDone}
+            optional={convention?.state === 'to_countersign'}
+            title="Ma convention"
+            detail={
+              conventionDone
+                ? "Signée par vous et par l'association"
+                : convention?.state === 'to_countersign'
+                  ? `Déposée le ${new Date(
+                      convention.signed.uploaded_at
+                    ).toLocaleDateString(
+                      'fr-FR'
+                    )} : en attente de la signature de la présidente`
+                  : 'À télécharger, signer et déposer'
+            }
+            action={convention?.state === 'to_countersign' ? 'Voir' : 'Signer'}
+            onAction={() => onGoToTab(4)}
+          />
+        )}
         {/* Only asked once the convention is signed */}
         {progress.conventionSigned && (
           <Item
@@ -173,8 +203,15 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
 
       {sent ? (
         <Alert severity="success" sx={{ mt: 1 }}>
-          Votre dossier a été envoyé. Nous vous contacterons pour organiser
-          l'entretien.
+          {progress.status === 'Validé'
+            ? 'Votre candidature est validée. Bienvenue parmi les tuteurs bénévoles !'
+            : !conventionAsked
+              ? "Votre dossier a été envoyé. Nous vous contacterons pour organiser l'entretien."
+              : conventionDone
+                ? "Votre convention est complète : l'association va valider votre dossier."
+                : convention?.state === 'to_countersign'
+                  ? 'Merci ! Votre convention est en cours de signature par la présidente.'
+                  : 'Votre entretien est passé : dernière étape, signer votre convention.'}
         </Alert>
       ) : (
         <Box sx={{ mt: 1, textAlign: 'center' }}>

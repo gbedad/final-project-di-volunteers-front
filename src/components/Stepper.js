@@ -369,6 +369,7 @@ const BasicTabs = () => {
               userStatusStep={setStatusStep(status)}
               handleChange={handleChange}
               finished={finished}
+              conventionState={progress?.convention?.state}
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
