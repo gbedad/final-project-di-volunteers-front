@@ -376,6 +376,9 @@ const ChangeUserStatus = () => {
                     />
                   </ListItem>
                   <ListItem
+                    // Room for the two contact buttons: a long address
+                    // wraps instead of running under them
+                    sx={{ pr: '96px' }}
                     secondaryAction={
                       userLogged.user.role !== 'volunteer' && (
                         <Stack direction="row">
@@ -412,7 +415,16 @@ const ChangeUserStatus = () => {
                       }}
                       primary={
                         // Opens the computer's mail program
-                        <MuiLink href={`mailto:${volunteerEmail(user)}`}>
+                        // One line ending with "…", full address on hover
+                        <MuiLink
+                          href={`mailto:${volunteerEmail(user)}`}
+                          title={volunteerEmail(user)}
+                          sx={{
+                            display: 'block',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}>
                           {volunteerEmail(user)}
                         </MuiLink>
                       }

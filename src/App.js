@@ -26,7 +26,6 @@ import TopicSkills from './components/TopicSkills';
 // import AdminPanel from './components/AdminPanel';
 import DocumentCheckbox from './components/files/filesSaved';
 import SelectFormActivity from './components/SelectActivity';
-import AddressAutocomplete from './components/AddressAutocomplete';
 import FormInterviewComponent from './components/interviews/Interview';
 import FormPreInterviewComponent from './components/interviews/PreInterview';
 import ForgotPassword from './components/ForgotPassword';
@@ -147,7 +146,6 @@ function App() {
               element={<DocumentCheckbox />}
             />
             <Route path="/add-activity" element={<SelectFormActivity />} />
-            <Route path="update-address" element={<AddressAutocomplete />} />
             <Route path="add-interviews" element={<FormInterviewComponent />} />
 
             <Route path="/all-missions" element={<MissionsPage />} />

@@ -26,7 +26,6 @@ import TopicSkills from './components/TopicSkills.js';
 // import AdminPanel from './components/AdminPanel';
 import DocumentCheckbox from './components/files/filesSaved.js';
 import SelectFormActivity from './components/SelectActivity.js';
-import AddressAutocomplete from './components/AddressAutocomplete.js';
 import FormInterviewComponent from './components/interviews/Interview.js';
 import FormPreInterviewComponent from './components/interviews/PreInterview.js';
 import ForgotPassword from './components/ForgotPassword.js';
@@ -123,7 +122,6 @@ function RecruitmentModule() {
       <Route path="/change-status" element={<ChangeUserStatus />} />
       <Route path="/update-files-received" element={<DocumentCheckbox />} />
       <Route path="/add-activity" element={<SelectFormActivity />} />
-      <Route path="update-address" element={<AddressAutocomplete />} />
       <Route path="add-interviews" element={<FormInterviewComponent />} />
       <Route path="add-pre-interview" element={<FormPreInterviewComponent />} />
       {/* <Route path="/" element={<CardList />} /> */}

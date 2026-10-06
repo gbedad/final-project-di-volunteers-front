@@ -76,7 +76,6 @@ import EditMissionComponent from '../components/EditMissionComponent';
 
 import BorderedBoxWithLabel from './borderedBox';
 
-import { parsePhoneNumber } from 'awesome-phonenumber';
 
 // import { UserContext } from '../UserContext';
 
@@ -84,10 +83,10 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 // import EditProfile from './EditProfile';
 
 import { setStatusStep } from '../js/statusDescription';
-import AddressAutocomplete from './AddressAutocomplete';
+import AddressField from './application/AddressField';
+import SaveStatus from './application/SaveStatus';
+import { useProfileAutoSave } from '../js/useProfileAutoSave';
 import { isManager } from '../js/roles';
-import { notifyApplicationChanged } from '../js/applicationProgress';
-// import AutofillCheckoutDemo from './AddressAutocomplete2';
 // import SelectFormActivity from './SelectActivity';
 // import ImageDisplay from './ImageDisplay';
 // import StatusTimelineComponent from '../components/TimeLineStatus/StatusTimeline';
@@ -158,6 +157,16 @@ const Transition = function (props) {
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+// Replaces the Edit/Save buttons: changes are saved as they are made
+const AutoSaveNote = ({ state }) => (
+  <Stack direction="row" alignItems="center" spacing={1} mt={1}>
+    <Typography variant="caption" color="text.secondary">
+      Les modifications sont enregistrées automatiquement.
+    </Typography>
+    <SaveStatus state={state} />
+  </Stack>
+);
+
 const ProfilePage = ({ status }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -165,7 +174,6 @@ const ProfilePage = ({ status }) => {
   // eslint-disable-next-line no-unused-vars
   const [resp, setResp] = useState(null);
   const [invisible, setInvisible] = useState(false);
-  const [editing, setEditing] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -181,9 +189,6 @@ const ProfilePage = ({ status }) => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState('');
 
-  const [showButton, setShowButton] = useState(false);
-  const [showProfileButton, setShowProfileButton] = useState(false);
-  const [edit, setEdit] = useState(true);
 
   // console.log('Status from props', status);
 
@@ -208,6 +213,13 @@ const ProfilePage = ({ status }) => {
   } else {
     user = userSelected;
   }
+
+  // Every change is saved shortly after it is made (no Edit/Save buttons)
+  const [saveState, scheduleSave] = useProfileAutoSave(user.id);
+  // Text fields are saved when not empty (the server ignores empty values)
+  const saveText = (field, value) => {
+    if (String(value || '').trim()) scheduleSave({ [field]: value });
+  };
 
   // const { user } = selectedUser;
   // const formattedPhoneNumber = parsePhoneNumber(user.phone).number
@@ -253,85 +265,48 @@ const ProfilePage = ({ status }) => {
   //   setEditing(true);
   // };
 
-  const handleSaveClick = async () => {
-    // Perform any necessary validation or data processing before saving
-    try {
-      const response = await axios.patch(
-        `${BASE_URL}/update-user-profile/${user.id}`,
-        {
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone,
-          email2: email2,
-          birth_date: birthDate,
-          activity: activity,
-          street: streetSelected,
-          city: citySelected,
-          zipcode: zipcodeSelected,
-          country: countrySelected,
-        }
-      );
-      // console.log(response.data.message);
-      if (response.data.message === 'Profile updated successfully') {
-        notifyApplicationChanged();
-        setShowProfileButton(false);
-        // Perform any desired actions after successful submission
-        toast.success('Le profil a été completé');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error);
-      // Handle any errors
-    }
-    setEditing(false);
-  };
-  const handleEditProfile = () => {
-    setEditing(true);
-    setShowProfileButton(true);
-  };
 
   const handleFirstNameChange = (event) => {
     const selectedValue = event.target.value;
     setFirstName(selectedValue);
+    saveText('first_name', selectedValue);
   };
 
   const handleLastNameChange = (event) => {
     const selectedValue = event.target.value;
     setLastName(selectedValue);
+    saveText('last_name', selectedValue);
   };
 
   const handlePhoneChange = (event) => {
     const selectedValue = event.target.value;
     setPhone(selectedValue);
+    saveText('phone', selectedValue);
   };
   const handleEmail2Change = (event) => {
     const selectedValue = event.target.value;
     setEmail2(selectedValue);
+    // Optional: emptying the field removes it
+    scheduleSave({ email2: selectedValue });
   };
 
   const handleActivityChange = (event) => {
     const selectedValue = event.target.value;
     setActivity(selectedValue);
+    saveText('activity', selectedValue);
   };
 
-  const handleStreetChange = (event) => {
-    const selectedValue = event.target.value;
-    setStreetSelected(selectedValue);
+  // Address picked or typed: only the fields that changed are given
+  const handleAddressChange = (fields) => {
+    if ('street' in fields) setStreetSelected(fields.street);
+    if ('zipcode' in fields) setZipcodeSelected(fields.zipcode);
+    if ('city' in fields) setCitySelected(fields.city);
+    if ('country' in fields) setCountrySelected(fields.country);
+    Object.entries(fields).forEach(([field, value]) => saveText(field, value));
   };
 
-  const handleCityChange = (event) => {
-    const selectedValue = event.target.value;
-    setCitySelected(selectedValue);
-  };
-  const handleZipcodeChange = (event) => {
-    const selectedValue = event.target.value;
-    setZipcodeSelected(selectedValue);
-  };
 
-  const handleCountryChange = (event) => {
-    const selectedValue = event.target.value;
-    setCountrySelected(selectedValue);
-  };
+
 
   const getUserById = async () => {
     try {
@@ -417,37 +392,12 @@ const ProfilePage = ({ status }) => {
   const handleMotivationChange = async (e) => {
     e.preventDefault();
     setMessage(e.target.value);
+    saveText('message', e.target.value);
 
-    // Update user's mission title in your state or send a request to the server
-  };
-  const handleChange = async (e) => {
-    setEdit(false);
-    setShowButton(true);
     // Update user's mission title in your state or send a request to the server
   };
   // console.log(selectedMissionTitle);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.patch(
-        `${BASE_URL}/update-user-profile/${user.id}`,
-        {
-          message,
-        }
-      );
-      // console.log(response.data);
-      if (response.data.message === 'Profile updated successfully') {
-        notifyApplicationChanged();
-        setShowButton(false);
-        setEdit(true);
-        toast.success('Modification effectuée');
-      }
-
-      // console.log(response.data.message);
-    } catch (err) {
-      toast.error(err);
-    }
-  };
   const disabledField = {
     '& .MuiInputBase-input.Mui-disabled': {
       WebkitTextFillColor: '#555555',
@@ -576,20 +526,15 @@ const ProfilePage = ({ status }) => {
                       label="Prénom"
                       value={firstName}
                       onChange={handleFirstNameChange}
-                      disabled={!editing}
                       variant="standard"
                       focused
                       // color="light"
-                      InputProps={{
-                        style: { color: editing === false ? 'cyan' : 'black' },
-                      }}
                     />
                     <TextField
                       sx={disabledField}
                       label="Nom"
                       value={lastName}
                       onChange={handleLastNameChange}
-                      disabled={!editing && true}
                       variant="standard"
                       focused
                       // color="light"
@@ -615,9 +560,9 @@ const ProfilePage = ({ status }) => {
                       <ContactMailIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <FormControl sx={{ width: '50%' }}>
+                  <FormControl sx={{ width: '90%' }}>
                     <TextField
-                      label="Nom d'utilsateur"
+                      label="Nom d'utilisateur"
                       value={user.email}
                       disabled
                       variant="standard"
@@ -635,11 +580,8 @@ const ProfilePage = ({ status }) => {
                     <TextField
                       sx={disabledField}
                       label="Téléphone"
-                      value={
-                        phone && parsePhoneNumber(phone).number.international
-                      }
+                      value={phone || ''}
                       onChange={handlePhoneChange}
-                      disabled={!editing && true}
                       variant="standard"
                       focused
                       // color="light"
@@ -659,9 +601,8 @@ const ProfilePage = ({ status }) => {
                       fullWidth
                       labelid="email2"
                       label="Email alternatif"
-                      value={email2}
+                      value={email2 || ''}
                       onChange={handleEmail2Change}
-                      disabled={!editing}
                       variant="standard"
                       focused
                       // color="light"
@@ -688,7 +629,6 @@ const ProfilePage = ({ status }) => {
                       onChange={handleBirthDateChange}
                       variant="standard"
                       focused
-                      disabled={!editing}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -701,9 +641,14 @@ const ProfilePage = ({ status }) => {
                       <DatePicker
                         sx={disabledField}
                         size="small"
-                        value={dayjs(birthDate)}
-                        onChange={(newValue) => setBirthDate(newValue)}
-                        disabled={!editing}
+                        // Empty until filled in (not shown as an error)
+                        value={birthDate ? dayjs(birthDate) : null}
+                        onChange={(newValue) => {
+                          setBirthDate(newValue);
+                          if (newValue && newValue.isValid()) {
+                            scheduleSave({ birth_date: newValue.toISOString() });
+                          }
+                        }}
                         variant="standard"
                         id="birthdate"
                         label="Date de naissance"
@@ -753,8 +698,7 @@ const ProfilePage = ({ status }) => {
                       sx={disabledField}
                       fullWidth
                       // color="light"
-                      disabled={!editing}
-                      labelid="demo-simple-select-standard-label"
+                      labelId="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
                       value={activity || ''}
                       onChange={handleActivityChange}
@@ -779,20 +723,14 @@ const ProfilePage = ({ status }) => {
                       <HomeIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <AddressAutocomplete
-                    sx={disabledField}
-                    fullWidth
-                    required
-                    editing={editing}
-                    userId={user.id}
-                    street={streetSelected}
-                    city={citySelected}
-                    zipcode={zipcodeSelected}
-                    country={countrySelected}
-                    onStreetChange={handleStreetChange}
-                    onCityChange={handleCityChange}
-                    onZipcodeChange={handleZipcodeChange}
-                    onCountryChange={handleCountryChange}
+                  <AddressField
+                    value={{
+                      street: streetSelected,
+                      zipcode: zipcodeSelected,
+                      city: citySelected,
+                      country: countrySelected,
+                    }}
+                    onChange={handleAddressChange}
                   />
                 </ListItem>
                 {user.activity === null || user.street === null ? (
@@ -814,20 +752,7 @@ const ProfilePage = ({ status }) => {
             ) : (
               <p>Please log in to view your profile.</p>
             )}
-            <Stack direction="row" spacing={2} mt={1}>
-              <Button
-                variant="contained"
-                disabled={showProfileButton}
-                onClick={handleEditProfile}>
-                Compléter
-              </Button>
-              <Button
-                variant="contained"
-                disabled={!showProfileButton}
-                onClick={handleSaveClick}>
-                Enregistrer
-              </Button>
-            </Stack>
+            <AutoSaveNote state={saveState} />
           </BorderedBoxWithLabel>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>
@@ -879,8 +804,6 @@ const ProfilePage = ({ status }) => {
           <BorderedBoxWithLabel label="Dites-nous en plus sur votre motivation">
             <Grid item xs={12} md={12} lg={12}>
               <Textarea
-                disabled={edit}
-                autoFocus
                 id="message"
                 label="Motivation"
                 name="message"
@@ -896,20 +819,7 @@ const ProfilePage = ({ status }) => {
                 souhaitez, le modifier.
               </Typography> */}
             </Grid>
-            <Stack direction="row" spacing={2} mt={1}>
-              <Button
-                variant="contained"
-                disabled={showButton}
-                onClick={handleChange}>
-                Modifier
-              </Button>
-              <Button
-                variant="contained"
-                disabled={!showButton}
-                onClick={handleSubmit}>
-                Enregistrer
-              </Button>
-            </Stack>
+            <AutoSaveNote state={saveState} />
           </BorderedBoxWithLabel>
           {/* <BorderedBoxWithLabel label="Votre statut">
 
