@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-import { isTokenExpired } from './js/auth'; // Ensure this utility is correctly implemented
+import { isTokenExpired, refreshSession } from './js/auth'; // Ensure this utility is correctly implemented
 
 const AuthContext = createContext();
 
@@ -10,6 +10,7 @@ export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
@@ -21,15 +22,26 @@ const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     localStorage.clear(); // Clear all local storage items
-    navigate('/login');
+    // Keep the link of an email (/login?candidat=…) to come back to it
+    navigate(
+      location.pathname === '/login' ? `/login${location.search}` : '/login'
+    );
   };
 
-  const checkTokenAndRedirect = (token) => {
-    if (!token || isTokenExpired(token)) {
-      logout(); // Call logout if token is absent or expired
-    } else {
+  // An expired access token is renewed with the refresh token first; the
+  // person is logged out only when that fails
+  const checkTokenAndRedirect = async (token) => {
+    if (token && !isTokenExpired(token)) {
       setIsLoggedIn(true);
       setToken(token);
+      return;
+    }
+    const renewed = token ? await refreshSession() : null;
+    if (renewed) {
+      setIsLoggedIn(true);
+      setToken(renewed);
+    } else {
+      logout();
     }
   };
   const updateToken = (newToken) => {

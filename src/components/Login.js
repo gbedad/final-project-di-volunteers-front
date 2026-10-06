@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   useNavigate,
   useLocation,
@@ -27,6 +27,9 @@ import Container from '@mui/material/Container';
 import { AuthContext } from '../AuthContext';
 
 import PasswordInput from './PasswordInput';
+import CircularProgress from '@mui/material/CircularProgress';
+import { isStaff } from '../js/roles';
+import { refreshSession } from '../js/auth';
 
 function Copyright(props) {
   return (
@@ -61,6 +64,47 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState(location.state?.email || '');
+  // Link from an email: true while checking the session already open in
+  // this browser, so the login form is only shown when really needed
+  const [resuming, setResuming] = useState(!!candidateId);
+
+  useEffect(() => {
+    if (!candidateId) return;
+    const openCandidate = (userLogged) =>
+      navigate('/change-status', {
+        replace: true,
+        state: { userId: candidateId, userLogged },
+      });
+    const resume = async () => {
+      let saved = null;
+      try {
+        saved = JSON.parse(localStorage.getItem('user'));
+      } catch {}
+      if (!saved?.token || !isStaff(saved.user?.role)) {
+        setResuming(false);
+        return;
+      }
+      try {
+        await axios.get(`${BASE_URL}/check-token`);
+        openCandidate(saved);
+        return;
+      } catch {}
+      // Expired access token: try the refresh token before asking to log in
+      const renewed = await refreshSession();
+      if (renewed) {
+        updateToken(renewed);
+        openCandidate({ ...saved, token: renewed });
+      } else {
+        setResuming(false);
+        toast('Votre session a expiré : connectez-vous pour ouvrir la fiche.', {
+          position: 'top-center',
+        });
+      }
+    };
+    resume();
+    // Only when arriving on the page
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // const user = updateUser(userConnected);
   // console.log(user);
@@ -140,6 +184,14 @@ export default function SignIn() {
       });
     }
   };
+
+  if (resuming) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 20 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <>
