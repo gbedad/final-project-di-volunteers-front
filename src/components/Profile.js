@@ -85,6 +85,10 @@ import BorderedBoxWithLabel from './borderedBox';
 import { setStatusStep } from '../js/statusDescription';
 import AddressField from './application/AddressField';
 import SaveStatus from './application/SaveStatus';
+import MotivationCounter, {
+  MOTIVATION_MIN,
+  MOTIVATION_MAX,
+} from './MotivationCounter';
 import { useProfileAutoSave } from '../js/useProfileAutoSave';
 import { isManager } from '../js/roles';
 // import SelectFormActivity from './SelectActivity';
@@ -392,7 +396,10 @@ const ProfilePage = ({ status }) => {
   const handleMotivationChange = async (e) => {
     e.preventDefault();
     setMessage(e.target.value);
-    saveText('message', e.target.value);
+    // A text under the minimum is not saved (the previous one is kept)
+    if (e.target.value.trim().length >= MOTIVATION_MIN) {
+      saveText('message', e.target.value);
+    }
 
     // Update user's mission title in your state or send a request to the server
   };
@@ -811,9 +818,11 @@ const ProfilePage = ({ status }) => {
                 minRows={10}
                 maxRows={20}
                 placeholder="Motivation"
-                value={message}
+                value={message || ''}
+                maxLength={MOTIVATION_MAX}
                 onChange={handleMotivationChange}
               />
+              <MotivationCounter value={message} />
               {/* <Typography variant="body2" component="p" color={'primary'}>
                 Vous n'êtes pas sùr(e) de votre texte, vous pouvez, si vous le
                 souhaitez, le modifier.

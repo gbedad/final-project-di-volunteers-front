@@ -46,6 +46,7 @@ export const useProfileAutoSave = (userId, { delay = 800 } = {}) => {
       if (userId && Object.keys(pending.current).length) {
         axios
           .patch(`${BASE_URL}/update-user-profile/${userId}`, pending.current)
+          .then(notifyApplicationChanged)
           .catch(console.error);
       }
     },

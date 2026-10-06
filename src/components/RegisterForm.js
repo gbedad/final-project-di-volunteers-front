@@ -35,6 +35,10 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
 import PasswordInput from './PasswordInput';
+import MotivationCounter, {
+  MOTIVATION_MIN,
+  MOTIVATION_MAX,
+} from './MotivationCounter';
 
 function Copyright(props) {
   return (
@@ -138,8 +142,10 @@ const RegisterForm = ({ mission }) => {
     if (!isStrongPassword()) {
       found.password = 'Le mot de passe ne respecte pas toutes les règles';
     }
-    if (message.trim().length < 20) {
-      found.message = 'Dites-nous en quelques mots pourquoi vous postulez';
+    if (message.trim().length < MOTIVATION_MIN) {
+      found.message = `Dites-nous en quelques mots pourquoi vous postulez (${MOTIVATION_MIN} caractères minimum)`;
+    } else if (message.trim().length > MOTIVATION_MAX) {
+      found.message = `${MOTIVATION_MAX} caractères maximum`;
     }
     return found;
   };
@@ -348,8 +354,10 @@ const RegisterForm = ({ mission }) => {
                     minRows={5}
                     placeholder="Pourquoi souhaitez-vous être bénévole ?"
                     value={message}
+                    maxLength={MOTIVATION_MAX}
                     onChange={(e) => setMessage(e.target.value)}
                   />
+                  <MotivationCounter value={message} />
                   {errors.message && (
                     <FormHelperText error>{errors.message}</FormHelperText>
                   )}

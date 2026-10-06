@@ -50,6 +50,7 @@ export const useAutoSave = (userId, field, { delay = 700 } = {}) => {
           .post(`${BASE_URL}/create-skill/${userId}`, {
             [field]: pending.current,
           })
+          .then(notifyApplicationChanged)
           .catch(console.error);
       }
     },

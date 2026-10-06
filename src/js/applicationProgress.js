@@ -45,7 +45,7 @@ export const missingItems = (progress) => {
     wishes: [
       !details.topics && 'les matières et niveaux',
       !details.slots && 'vos jours et heures',
-      !details.places && 'vos lieux (ou le distanciel)',
+      !details.places && 'un site (ou une modalité à distance)',
     ].filter(Boolean),
     documents: [
       !documents.cv && 'votre CV',

@@ -8,6 +8,7 @@ import {
   TextField,
   Box,
   LinearProgress,
+  Typography,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Fab from '@mui/material/Fab';
@@ -25,6 +26,10 @@ import {
 } from '../options/existingOptions';
 import { useAutoSave } from '../js/useAutoSave';
 import SaveStatus from './application/SaveStatus';
+
+// Modalities that need at least one site ("Sur site ou à distance" can be
+// done remotely: sites are optional)
+const SITE_REQUIRED = ['Sur site', 'Hybride (alternance sur site et à distance)'];
 
 const fabStyle = {
   position: 'absolute',
@@ -84,7 +89,12 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const handleModalityChange = (value) => {
     setSelectedModality(value);
     saveModality(value);
+    // A site is needed: open the first site field right away
+    if (SITE_REQUIRED.includes(value) && !locationsPossible.length) {
+      setLocationsPossible(['']);
+    }
   };
+  const hasSite = locationsPossible.some(Boolean);
 
   const handleAddLocation = () => {
     setLocationsPossible([...locationsPossible, '']);
@@ -134,6 +144,21 @@ const LocationsPossibleComponent = ({ userSelected }) => {
 
           {selectedModality !== 'A distance' && (
             <>
+              {selectedModality && (
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body2"
+                    color={
+                      SITE_REQUIRED.includes(selectedModality) && !hasSite
+                        ? 'warning.dark'
+                        : 'text.secondary'
+                    }>
+                    {SITE_REQUIRED.includes(selectedModality)
+                      ? 'Choisissez au moins un site (bouton + pour en ajouter).'
+                      : 'Facultatif : indiquez les sites possibles (bouton +).'}
+                  </Typography>
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <label>
                   <Fab
