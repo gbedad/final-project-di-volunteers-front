@@ -41,6 +41,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Error404 from '../pages/404';
+import DocumentsBanner from './application/DocumentsBanner';
 
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -385,14 +386,7 @@ const BasicTabs = () => {
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div>
-              <MissingBanner
-                items={missing?.documents}
-                done={
-                  progress?.documents.b3
-                    ? 'Tous vos documents sont déposés.'
-                    : "CV et pièce d'identité déposés. L'extrait de casier judiciaire (B3) sera demandé avant la signature de la convention."
-                }
-              />
+              <DocumentsBanner progress={progress} />
               <InstructionComponent />
               <DocumentSlots userId={userId} />
             </div>
