@@ -802,12 +802,23 @@ const ChangeUserStatus = () => {
                     <Typography variant="h6" component="div">
                       Lieu(x)
                     </Typography>
+                    {/* Modality first: "A distance" or "Sur site ou à
+                        distance" needs no site, the block is not empty */}
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      {user.skill &&
-                        user.skill.where_location &&
-                        user.skill.where_location.map((location, i) => (
+                      {user.skill?.how_location && (
+                        <div>
+                          Modalité : <b>{user.skill.how_location}</b>
+                        </div>
+                      )}
+                      {(user.skill?.where_location || [])
+                        .filter(Boolean)
+                        .map((location, i) => (
                           <div key={i}>{location}</div>
                         ))}
+                      {user.skill?.how_location !== 'A distance' &&
+                        !(user.skill?.where_location || []).some(Boolean) && (
+                          <div>Aucun site indiqué</div>
+                        )}
                     </Typography>
                   </Box>
 
