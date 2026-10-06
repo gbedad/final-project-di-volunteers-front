@@ -25,7 +25,7 @@ export const useAutoSave = (userId, field, { delay = 700 } = {}) => {
         notifyApplicationChanged();
       } catch (err) {
         console.error(err);
-        setState('error');
+        setState(err.sessionExpired ? 'expired' : 'error');
       }
     },
     [userId, field]

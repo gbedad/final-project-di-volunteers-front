@@ -25,7 +25,7 @@ export const useProfileAutoSave = (userId, { delay = 800 } = {}) => {
       notifyApplicationChanged();
     } catch (err) {
       console.error(err);
-      setState('error');
+      setState(err.sessionExpired ? 'expired' : 'error');
     }
   }, [userId]);
 

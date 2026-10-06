@@ -14,6 +14,10 @@ const SaveStatus = ({ state }) => {
       <ErrorOutlineIcon key="e" sx={{ fontSize: 16 }} />,
       'Non enregistré, réessayez',
     ],
+    expired: [
+      <ErrorOutlineIcon key="x" sx={{ fontSize: 16 }} />,
+      'Session expirée : reconnectez-vous',
+    ],
   }[state];
   return (
     <Box
@@ -24,7 +28,7 @@ const SaveStatus = ({ state }) => {
         gap: 0.5,
         fontSize: '0.8rem',
         color:
-          state === 'error'
+          state === 'error' || state === 'expired'
             ? 'error.main'
             : state === 'saved'
               ? 'success.main'
