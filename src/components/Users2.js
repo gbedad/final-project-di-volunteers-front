@@ -45,6 +45,7 @@ import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
 import { useSessionState } from '../js/useSessionState';
 import {
+  ACTIVE_TUTORS,
   LEVELS,
   SEARCH_TIMES,
   matchesSearch,
@@ -103,7 +104,6 @@ const GRID_LOCALE = {
 };
 
 // Status chips above the search; the rare ones only when someone has them
-const ACTIVE_TUTORS = 'tuteurs-actifs';
 const STATUS_CHIPS = [
   { status: 'Compte créé', label: 'Compte créé' },
   { status: 'A renseigner', label: 'A renseigner', always: true },

@@ -24,9 +24,14 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import PageHeader from './PageHeader';
 
+import { ACTIVE_TUTORS } from '../../js/volunteerSearch';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 // Primary colour of the theme, used with a variable opacity in the grids
 const HEAT_RGB = '0, 105, 92';
+
+// Status filter of the dashboard matching each scope
+const SCOPE_STATUS = { active: ACTIVE_TUTORS, validated: 'Validé', all: null };
 
 const SCOPES = [
   { value: 'active', label: 'Tuteurs actifs' },
@@ -193,7 +198,8 @@ const Analysis = () => {
       'dashboard.q.timeFrom': null,
       'dashboard.q.timeTo': null,
       'dashboard.cohort': null,
-      'dashboard.status': null,
+      // Same tutors as the counted ones: the scope becomes the status filter
+      'dashboard.status': SCOPE_STATUS[data.scope] ?? null,
       'dashboard.gridFilter': { items: [] },
       ...search,
     };

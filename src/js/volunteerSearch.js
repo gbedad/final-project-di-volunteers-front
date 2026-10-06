@@ -3,6 +3,9 @@
 // endTime } (both stored as JSON strings in the skills).
 import { existingLevels } from '../options/existingOptions';
 
+// Value of the status filter for "Tuteurs actifs" (dashboard chips)
+export const ACTIVE_TUTORS = 'tuteurs-actifs';
+
 export const LEVELS = JSON.parse(existingLevels).map((l) => l.label);
 
 // Search times: every half hour from 07:00 to 22:00
