@@ -59,6 +59,8 @@ export default function SignIn() {
   // ?candidat=<id>: link from the new-registration email to the admins
   const [searchParams] = useSearchParams();
   const candidateId = Number(searchParams.get('candidat')) || null;
+  // ?onglet=convention: link from the emails to the volunteer
+  const volunteerTab = searchParams.get('onglet') === 'convention' ? 4 : null;
   const { updateToken } = useContext(AuthContext);
   // const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -66,21 +68,30 @@ export default function SignIn() {
   const [email, setEmail] = useState(location.state?.email || '');
   // Link from an email: true while checking the session already open in
   // this browser, so the login form is only shown when really needed
-  const [resuming, setResuming] = useState(!!candidateId);
+  const [resuming, setResuming] = useState(!!candidateId || !!volunteerTab);
 
   useEffect(() => {
-    if (!candidateId) return;
+    if (!candidateId && !volunteerTab) return;
+    // Team: the candidate's page; volunteer: the tab of the email
     const openCandidate = (userLogged) =>
-      navigate('/change-status', {
-        replace: true,
-        state: { userId: candidateId, userLogged },
-      });
+      candidateId
+        ? navigate('/change-status', {
+            replace: true,
+            state: { userId: candidateId, userLogged },
+          })
+        : navigate('/stepper', {
+            replace: true,
+            state: { userLogged, tab: volunteerTab },
+          });
     const resume = async () => {
       let saved = null;
       try {
         saved = JSON.parse(localStorage.getItem('user'));
       } catch {}
-      if (!saved?.token || !isStaff(saved.user?.role)) {
+      const rightAccount = candidateId
+        ? isStaff(saved?.user?.role)
+        : saved?.user?.role === 'volunteer';
+      if (!saved?.token || !rightAccount) {
         setResuming(false);
         return;
       }
@@ -162,7 +173,7 @@ export default function SignIn() {
 
         // console.log(userLogged, isLoading);
         if (userLogged.user.role === 'volunteer') {
-          navigate('/stepper', { state: { userLogged } });
+          navigate('/stepper', { state: { userLogged, tab: volunteerTab ?? 0 } });
         } else if (
           ['superadmin', 'admin', 'interviewer'].includes(userLogged.user.role)
         ) {

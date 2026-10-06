@@ -197,7 +197,12 @@ const DocumentSlots = ({ userId, onChanged }) => {
   const load = useCallback(async () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/user-by-id/${userId}`);
-      setFiles((data.file || []).filter((f) => f.doc_type !== 'convention'));
+      // Conventions have their own tab
+      setFiles(
+        (data.file || []).filter(
+          (f) => !['convention', 'convention_final'].includes(f.doc_type)
+        )
+      );
     } catch (err) {
       console.error(err);
     }

@@ -23,7 +23,7 @@ const LABELS = {
   cv: 'CV',
   id: "Pièce d'identité",
   b3: 'Casier judiciaire (B3)',
-  convention: 'Convention',
+  convention: 'Convention (contresignée)',
   honorability: "Attestation d'honorabilité",
 };
 
@@ -60,8 +60,11 @@ const DocumentCheckbox = ({ user }) => {
     }
   }, [user.id]);
 
+  // Also after a file upload elsewhere on the page (e.g. the convention)
   useEffect(() => {
     load();
+    window.addEventListener('application-changed', load);
+    return () => window.removeEventListener('application-changed', load);
   }, [load]);
 
   const update = async (body) => {

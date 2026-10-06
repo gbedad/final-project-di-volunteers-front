@@ -19,14 +19,13 @@ import Avatar from '@mui/material/Avatar';
 import Profile from './Profile';
 import Skills from './Skills';
 import InstructionComponent from '../components/files/Instructions';
-import ConventionComponent from './ConventionReciproqueComponent';
 
 import RefreshButton from './refreshIcon';
 
 import StepperStatusTimeline from './StepperStatusTimeline';
 // import { setStatusStep } from '../js/statusDescription';
 import { setStatusStep } from '../js/statusDescription';
-import UploadConventionComponent from './FileConventionUploader';
+import ConventionSteps from './application/ConventionSteps';
 import ApplicationChecklist from './application/ApplicationChecklist';
 import DocumentSlots from './application/DocumentSlots';
 import MissingBanner from './application/MissingBanner';
@@ -42,6 +41,7 @@ import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Error404 from '../pages/404';
 import DocumentsBanner from './application/DocumentsBanner';
+import { isManager } from '../js/roles';
 
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -92,7 +92,8 @@ const BasicTabs = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const [value, setValue] = React.useState(0);
+  // Opened on a given tab from an email link (e.g. the convention)
+  const [value, setValue] = React.useState(location.state?.tab ?? 0);
   const [status, setStatus] = useState('');
   const [screenSize, setScreenSize] = useState('');
   const [finished, setFinished] = React.useState(false);
@@ -392,8 +393,10 @@ const BasicTabs = () => {
             </div>
           </TabPanel>
           <TabPanel value={value} index={4}>
-            <ConventionComponent />
-            <UploadConventionComponent userSelected={userId} />
+            <ConventionSteps
+              userId={userId}
+              admin={isManager(location.state?.userLogged?.user?.role)}
+            />
           </TabPanel>
           {value > 0 && (
             <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>

@@ -64,13 +64,14 @@ import FormInterviewComponent from './interviews/Interview';
 import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
+import ConventionSteps from './application/ConventionSteps';
+import { notifyApplicationChanged } from '../js/applicationProgress';
 import EmailButton from './EmailButton';
 import { volunteerEmail } from '../js/email';
 import toast from 'react-hot-toast';
 import { isManager } from '../js/roles';
 
 import DocumentSlots from './application/DocumentSlots';
-import UploadConvention from './FileConventionUploader';
 
 import { existingStatuses } from '../options/existingOptions';
 import CohortTransferList from './Cohorts';
@@ -277,6 +278,23 @@ const ChangeUserStatus = () => {
   // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
   // console.log("new status:", newStatus);
+  // From the Convention block, once the convention is complete
+  const validateApplication = async () => {
+    try {
+      await axios.patch(`${BASE_URL}/update-status/${user.id}`, {
+        newStatus: 'Validé',
+      });
+      setStatus('Validé');
+      notifyApplicationChanged();
+      toast.success('Dossier validé', { position: 'bottom-left' });
+    } catch (error) {
+      console.error(error);
+      toast.error("Le dossier n'a pas pu être validé", {
+        position: 'bottom-left',
+      });
+    }
+  };
+
   const handleConfirmClick = async () => {
     try {
       const response = await axios.patch(
@@ -876,9 +894,18 @@ const ChangeUserStatus = () => {
               </Box>
               {/* Typed slots are always shown, so admins can upload too */}
               <Box mt={2}>
-                <UploadConvention userSelected={user.id} />
                 <DocumentSlots userId={user.id} />
               </Box>
+            </BorderedBoxWithLabel>
+            {/* Volunteer's signature, president's countersignature, validation */}
+            <BorderedBoxWithLabel label="Convention" sx={{ display: 'flex' }}>
+              <ConventionSteps
+                userId={user.id}
+                admin={isManager(userLogged.user.role)}
+                onValidate={
+                  isManager(userLogged.user.role) ? validateApplication : undefined
+                }
+              />
             </BorderedBoxWithLabel>
           </Grid>
         </Grid>
