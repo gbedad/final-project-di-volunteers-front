@@ -23,6 +23,8 @@ import { existingStatuses } from '../../options/existingOptions';
 import { isManager } from '../../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+// Statuses that send an email to the volunteer
+const EMAIL_STATUSES = ['A finaliser', 'Validé'];
 
 const currentRole = () => {
   try {
@@ -168,6 +170,11 @@ const BulkActions = ({ rows, onDone }) => {
             {names}
             {others}
           </Typography>
+          {EMAIL_STATUSES.includes(pending?.changes?.status) && (
+            <Typography variant="body2" color="warning.dark" sx={{ mt: 2 }}>
+              Ce statut envoie un e-mail à chaque bénévole concerné.
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPending(null)} disabled={saving}>

@@ -65,6 +65,12 @@ import PreInterviewComponent from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
 import ConventionSteps from './application/ConventionSteps';
+import SaveStatus from './application/SaveStatus';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
 import { notifyApplicationChanged } from '../js/applicationProgress';
 import EmailButton from './EmailButton';
 import { volunteerEmail } from '../js/email';
@@ -75,6 +81,9 @@ import DocumentSlots from './application/DocumentSlots';
 
 import { existingStatuses } from '../options/existingOptions';
 import CohortTransferList from './Cohorts';
+
+// Statuses that send an email to the volunteer (asked for confirmation)
+const EMAIL_STATUSES = ['A finaliser', 'Validé'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -108,7 +117,9 @@ const ChangeUserStatus = () => {
   const [isActive, setIsActive] = React.useState(false);
   const [selectedFile] = useState(null);
   const [open, setOpen] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [statusSave, setStatusSave] = useState('idle');
+  // Status waiting for the confirmation of the email it sends
+  const [pendingStatus, setPendingStatus] = useState(null);
   const [isAvailable, setIsAvailable] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -245,9 +256,40 @@ const ChangeUserStatus = () => {
     getUser();
   }, [state.userId, status]);
 
-  const handleStatusChange = async (e) => {
-    setNewStatus(e.target.value);
-    setShowConfirm(true);
+  // Saved as soon as it is chosen, like the rest of the page; a status that
+  // emails the volunteer is confirmed first
+  const handleStatusChange = (e) => {
+    const value = e.target.value;
+    if (EMAIL_STATUSES.includes(value) && value !== status) {
+      setPendingStatus(value);
+    } else {
+      saveStatus(value);
+    }
+  };
+
+  const saveStatus = async (value) => {
+    const previous = status;
+    setNewStatus(value);
+    setStatusSave('saving');
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/update-status/${user.id}`,
+        { newStatus: value }
+      );
+      setStatus(response.data.status);
+      notifyApplicationChanged();
+      setStatusSave('saved');
+      toast.success(`Statut enregistré : ${response.data.status}`, {
+        position: 'bottom-left',
+      });
+    } catch (error) {
+      console.error(error);
+      setNewStatus(previous);
+      setStatusSave(error.sessionExpired ? 'expired' : 'error');
+      toast.error("Le statut n'a pas pu être enregistré", {
+        position: 'bottom-left',
+      });
+    }
   };
   // console.log(user);
   const handleEditUserProfile = () => {
@@ -278,44 +320,10 @@ const ChangeUserStatus = () => {
   // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
   // console.log("new status:", newStatus);
-  // From the Convention block, once the convention is complete
-  const validateApplication = async () => {
-    try {
-      await axios.patch(`${BASE_URL}/update-status/${user.id}`, {
-        newStatus: 'Validé',
-      });
-      setStatus('Validé');
-      notifyApplicationChanged();
-      toast.success('Dossier validé', { position: 'bottom-left' });
-    } catch (error) {
-      console.error(error);
-      toast.error("Le dossier n'a pas pu être validé", {
-        position: 'bottom-left',
-      });
-    }
-  };
+  // From the Convention block, once the convention is complete: same
+  // confirmation as in the status list (the volunteer gets an email)
+  const validateApplication = () => setPendingStatus('Validé');
 
-  const handleConfirmClick = async () => {
-    try {
-      const response = await axios.patch(
-        `${BASE_URL}/update-status/${user.id}`,
-        { newStatus: newStatus }
-      );
-      if (response.data) {
-        setStatus(response.data.status);
-        setShowConfirm(false);
-        toast.success(`Statut enregistré : ${response.data.status}`, {
-          position: 'bottom-left',
-        });
-        return true;
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Le statut n'a pas pu être enregistré", {
-        position: 'bottom-left',
-      });
-    }
-  };
   // const handleOpen = (file) => {
   //   setSelectedFile(file);
   //   setOpen(true);
@@ -703,13 +711,13 @@ const ChangeUserStatus = () => {
                     <MenuItem value={'selected'}>Selected</MenuItem> 
                     </Select> */}
                     <InputLabel id="demo-simple-select-label">
-                      Change Status
+                      Statut
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={newStatus}
-                      label="Change Status"
+                      value={newStatus || status || ''}
+                      label="Statut"
                       onChange={handleStatusChange}>
                       {existingStatuses.map((status) => (
                         <MenuItem key={status} value={status}>
@@ -729,14 +737,33 @@ const ChangeUserStatus = () => {
                     </Select>
                   </FormControl>
                 </Box>
-                <Button
-                  sx={{ width: 'fit-content' }}
-                  variant="contained"
-                  disabled={!showConfirm}
-                  onClick={handleConfirmClick}
-                  mb={3}>
-                  Enregistrer
-                </Button>
+                <Box sx={{ minHeight: 24 }}>
+                  <SaveStatus state={statusSave} />
+                </Box>
+                <Dialog
+                  open={!!pendingStatus}
+                  onClose={() => setPendingStatus(null)}>
+                  <DialogTitle>Passer en « {pendingStatus} » ?</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Ce statut envoie un e-mail au bénévole. Continuer ?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setPendingStatus(null)}>
+                      Annuler
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        const value = pendingStatus;
+                        setPendingStatus(null);
+                        saveStatus(value);
+                      }}>
+                      Continuer
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Box mt={1}>
                   <Typography variant="body2" mt={2}>
                     Cliquer pour éditer le profil du tuteur
