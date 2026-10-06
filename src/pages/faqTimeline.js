@@ -20,7 +20,7 @@ const steps = [
   },
   {
     label: 'Mes documents',
-    description: `En tant que tuteur, vous serez en contact avec des enfants et adolescents, autrement dit avec un public vulnérable. Aussi est-il essentiel pour l’association de disposer de votre pièce d'identité, de votre extrait de casier judiciaire (le b3 s’obtient aisément en ligne) ainsi que de votre CV ou, le cas échéant de vos diplômes ou attestations de travail. C’est un prérequis pour la validation de votre candidature. Comme toutes les autres informations recueillies, ces documents ne sortent pas de l’association.`,
+    description: `En tant que tuteur, vous serez en contact avec des enfants et adolescents, autrement dit avec un public vulnérable. Aussi est-il essentiel pour l’association de disposer de votre pièce d'identité, de votre extrait de casier judiciaire (le b3 s’obtient aisément en ligne) ainsi que de votre CV ou, le cas échéant de vos diplômes ou attestations de travail. C’est un prérequis pour la validation de votre candidature. Après la signature de la convention, une attestation d’honorabilité vous sera également demandée, au plus tard dans le mois qui suit. Comme toutes les autres informations recueillies, ces documents ne sortent pas de l’association.`,
   },
   {
     label: 'Mes entretiens',

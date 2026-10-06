@@ -390,7 +390,7 @@ const BasicTabs = () => {
                 done={
                   progress?.documents.b3
                     ? 'Tous vos documents sont déposés.'
-                    : "CV et pièce d'identité déposés. Le casier judiciaire (B3) sera demandé avant la validation finale."
+                    : "CV et pièce d'identité déposés. L'extrait de casier judiciaire (B3) sera demandé avant la signature de la convention."
                 }
               />
               <InstructionComponent />

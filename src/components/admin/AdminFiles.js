@@ -18,6 +18,7 @@ import {
   Tabs,
   ToggleButton,
   ToggleButtonGroup,
+  Stack,
   Typography,
 } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
@@ -213,6 +214,41 @@ const AdminFiles = () => {
       renderCell: ({ value }) => <Received value={value} />,
     })),
     {
+      field: 'honorability_received',
+      headerName: 'Attestation d’honorabilité',
+      width: 190,
+      // Asked only once the convention is signed (null before)
+      valueGetter: ({ row }) =>
+        row.honorability_received === null
+          ? 'non demandée'
+          : row.honorability_received
+          ? 'reçue'
+          : row.honorability_late
+          ? 'en retard'
+          : 'à fournir',
+      renderCell: ({ row }) =>
+        row.honorability_received === null ? (
+          <Typography variant="body2" color="text.disabled">
+            —
+          </Typography>
+        ) : row.honorability_received ? (
+          <Received value />
+        ) : (
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Received value={false} />
+            {row.honorability_due && (
+              <Typography
+                variant="caption"
+                color={row.honorability_late ? 'error' : 'text.secondary'}
+                sx={{ fontWeight: row.honorability_late ? 600 : 400 }}>
+                {row.honorability_late ? 'en retard, ' : ''}avant le{' '}
+                {new Date(row.honorability_due).toLocaleDateString('fr-FR')}
+              </Typography>
+            )}
+          </Stack>
+        ),
+    },
+    {
       field: 'files_uploaded',
       headerName: 'Fichiers déposés',
       type: 'number',
@@ -255,6 +291,9 @@ const AdminFiles = () => {
             <ToggleButton value="cv">CV</ToggleButton>
             <ToggleButton value="id">Pièce d'identité</ToggleButton>
             <ToggleButton value="b3">Casier judiciaire</ToggleButton>
+            <ToggleButton value="honorability">
+              Attestation d'honorabilité
+            </ToggleButton>
             <ToggleButton value="convention">Conventions</ToggleButton>
             <ToggleButton value="other">Autres</ToggleButton>
           </ToggleButtonGroup>

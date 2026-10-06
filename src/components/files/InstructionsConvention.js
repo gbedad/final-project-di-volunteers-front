@@ -114,7 +114,12 @@ const InstructionCoventionComponent = () => {
                   <Box p={3}>
                     <Typography variant="body2" color="secondary.dark">
                       Après avoir téléchargé le modèle, merci de compléter les
-                      champs manquants de la convention puis de la signer..
+                      champs manquants de la convention puis de la signer.
+                      <br />
+                      <br />
+                      Une fois la convention signée, vous aurez un mois pour
+                      déposer votre attestation d’honorabilité dans l’onglet «
+                      Mes documents ».
                       {/* <List sx={{ padding: '0px 0' }}>
                         <ListItem>
                           <b>nom_prénom_cv_1</b>,{' '}

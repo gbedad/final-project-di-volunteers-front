@@ -76,7 +76,16 @@ const InstructionComponent = () => {
                             target="_blank">
                             s’obtient en ligne)
                           </a>
-                          .
+                          , à fournir avant la signature de la convention,
+                        </ListItem>
+                        <ListItem alignItems="flex-start" dense>
+                          <ListItemIcon>
+                            <FiberManualRecordIcon
+                              sx={{ fontSize: '0.6rem' }}
+                            />
+                          </ListItemIcon>
+                          Attestation d’honorabilité, à fournir au plus tard un
+                          mois après la signature de la convention.
                         </ListItem>
                       </List>
                     </Typography>

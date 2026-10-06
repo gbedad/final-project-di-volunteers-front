@@ -24,7 +24,19 @@ const LABELS = {
   id: "Pièce d'identité",
   b3: 'Casier judiciaire (B3)',
   convention: 'Convention',
+  honorability: "Attestation d'honorabilité",
 };
+
+// Due date of the attestation d'honorabilité, red once it has passed
+const DueChip = ({ due }) =>
+  due ? (
+    <Chip
+      size="small"
+      variant="outlined"
+      color={new Date(due) < new Date() ? 'error' : 'default'}
+      label={`À fournir avant le ${formatDate(due)}`}
+    />
+  ) : null;
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString('fr-FR') : '';
@@ -117,6 +129,9 @@ const DocumentCheckbox = ({ user }) => {
                   </Typography>
                 }
               />
+            )}
+            {doc.type === 'honorability' && !doc.received && (
+              <DueChip due={status.honorability_due} />
             )}
           </Stack>
         ))}

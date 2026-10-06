@@ -141,15 +141,34 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
         <Item
           done={documents.b3}
           optional
-          title="Extrait de casier judiciaire (B3)"
+          title="Mon extrait de casier judiciaire (B3)"
           detail={
             documents.b3
               ? 'Déposé'
-              : 'À fournir avant la validation finale (pas nécessaire pour l’entretien)'
+              : 'À fournir avant la signature de la convention (pas nécessaire pour l’entretien)'
           }
           action="Déposer"
           onAction={() => onGoToTab(3)}
         />
+        {/* Only asked once the convention is signed */}
+        {progress.conventionSigned && (
+          <Item
+            done={documents.honorability}
+            optional
+            title="Mon attestation d'honorabilité"
+            detail={
+              documents.honorability
+                ? 'Reçue'
+                : progress.honorabilityDue
+                  ? `À fournir avant le ${new Date(
+                      progress.honorabilityDue
+                    ).toLocaleDateString('fr-FR')}`
+                  : 'À fournir au plus tard un mois après la signature de la convention'
+            }
+            action="Déposer"
+            onAction={() => onGoToTab(3)}
+          />
+        )}
       </List>
 
       {sent ? (
