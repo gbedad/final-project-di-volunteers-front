@@ -38,6 +38,7 @@ import Team from './components/admin/Team';
 import Analysis from './components/admin/Analysis';
 import StudentsPage from './components/students/StudentsPage';
 import StudentPage from './components/students/StudentPage';
+import PairsPage from './components/students/PairsPage';
 
 import { AuthProvider } from './AuthContext.js';
 import { CourseProvider } from './components/courses/CourseContext';
@@ -156,6 +157,7 @@ function App() {
             <Route path="/analyse" element={<Analysis />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
+            <Route path="/binomes" element={<PairsPage />} />
 
             <Route path="/missions/update/:id" element={<MissionCard />} />
             <Route path="/tutorat" element={<Tutorat />} />

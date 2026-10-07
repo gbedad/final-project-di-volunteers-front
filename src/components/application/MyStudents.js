@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,8 +18,17 @@ import {
   Typography,
 } from '@mui/material';
 
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { SessionDialog, SessionList, formatHours } from '../students/Sessions';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
+const DAY = 86400000;
+// Reminder shown after three weeks without a report (one a month at least)
+const reportDue = (pair) => {
+  const since = pair.stats.last_report || pair.start_date || pair.responded_at;
+  return !since || Date.now() - new Date(since) > 21 * DAY;
+};
 const STATUS = {
   proposé: { label: 'Proposition', color: 'warning' },
   actif: { label: 'En cours', color: 'success' },
@@ -42,6 +52,7 @@ const MyStudents = () => {
   const [pairs, setPairs] = useState(null);
   const [declining, setDeclining] = useState(null);
   const [reason, setReason] = useState('');
+  const [reporting, setReporting] = useState(null);
 
   const load = useCallback(() => {
     axios
@@ -157,15 +168,72 @@ const MyStudents = () => {
                   </Button>
                 </Stack>
               </Box>
-            ) : pair.status === 'actif' ? (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Pour toute question sur {s.first_name} ou sa famille, contactez
-                l'association.
-              </Typography>
+            ) : ['actif', 'en pause', 'terminé'].includes(pair.status) ? (
+              <Box sx={{ mt: 2 }}>
+                <Divider sx={{ mb: 1.5 }} />
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  flexWrap="wrap"
+                  gap={1}
+                  sx={{ mb: 1 }}>
+                  <Typography fontWeight={600}>
+                    Comptes-rendus · {pair.stats.held} séance
+                    {pair.stats.held > 1 ? 's' : ''},{' '}
+                    {formatHours(pair.stats.hours)}
+                  </Typography>
+                  {pair.status !== 'terminé' && (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<EditNoteIcon />}
+                      onClick={() => setReporting(pair)}>
+                      Écrire un compte-rendu
+                    </Button>
+                  )}
+                </Stack>
+                {pair.status === 'actif' && reportDue(pair) && (
+                  <Alert severity="info" sx={{ mb: 1 }}>
+                    {pair.stats.last_report
+                      ? `Votre dernier compte-rendu date du ${formatDate(pair.stats.last_report)}.`
+                      : 'Pas encore de compte-rendu.'}{' '}
+                    Un compte-rendu par mois au minimum nous aide à suivre{' '}
+                    {s.first_name}.
+                  </Alert>
+                )}
+                <SessionList
+                  sessions={pair.sessions}
+                  limit={3}
+                  canDelete={(session) =>
+                    Date.now() - new Date(session.created_at) < 30 * DAY
+                  }
+                  onDeleted={load}
+                />
+                {pair.status !== 'terminé' && (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    component="div"
+                    sx={{ mt: 1 }}>
+                    Pour toute question sur {s.first_name} ou sa famille,
+                    contactez l'association.
+                  </Typography>
+                )}
+              </Box>
             ) : null}
           </Paper>
         );
       })}
+
+      {reporting && (
+        <SessionDialog
+          open
+          pair={reporting}
+          onClose={() => setReporting(null)}
+          onSaved={load}
+        />
+      )}
 
       <Dialog
         open={!!declining}

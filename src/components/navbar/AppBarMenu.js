@@ -25,6 +25,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PeopleIcon from '@mui/icons-material/People';
 import InsightsIcon from '@mui/icons-material/Insights';
 import SchoolIcon from '@mui/icons-material/School';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import SvgIcon from '@mui/material/SvgIcon';
@@ -151,6 +152,7 @@ function ResponsiveAppBar() {
     team: ['/equipe'],
     analysis: ['/analyse'],
     students: ['/eleves'],
+    pairs: ['/binomes'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -159,6 +161,10 @@ function ResponsiveAppBar() {
 
   const handleTeam = () => {
     navigate(`/equipe`, { state: { userLogged } });
+  };
+
+  const handlePairs = () => {
+    navigate(`/binomes`, { state: { userLogged } });
   };
 
   const handleStudents = () => {
@@ -635,6 +641,16 @@ function ResponsiveAppBar() {
                             <SchoolIcon fontSize="small" />
                           </ListItemIcon>
                           Élèves
+                        </MenuItem>
+                      )}
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handlePairs}
+                          {...currentProps('pairs')}>
+                          <ListItemIcon>
+                            <HandshakeIcon fontSize="small" />
+                          </ListItemIcon>
+                          Binômes
                         </MenuItem>
                       )}
                       <MenuItem

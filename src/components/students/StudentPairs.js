@@ -15,6 +15,8 @@ import {
 } from '@mui/material';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import MatchDialog from './MatchDialog';
+import PairDialog, { AlertChips } from './PairDialog';
+import { formatHours } from './Sessions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -34,6 +36,7 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
   const [searching, setSearching] = useState(false);
   const [ending, setEnding] = useState(null);
   const [reason, setReason] = useState('');
+  const [following, setFollowing] = useState(null);
 
   const load = useCallback(() => {
     axios
@@ -104,41 +107,57 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
           Motif du refus : {pair.decline_reason}
         </Typography>
       )}
+      {pair.stats && pair.stats.sessions > 0 && (
+        <Typography variant="body2" sx={{ mt: 0.5 }}>
+          {pair.stats.held} séance{pair.stats.held > 1 ? 's' : ''} ·{' '}
+          {formatHours(pair.stats.hours)} · dernier compte-rendu le{' '}
+          {formatDate(pair.stats.last_report)}
+        </Typography>
+      )}
+      {pair.stats?.alerts?.length > 0 && (
+        <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mt: 0.5 }}>
+          <AlertChips alerts={pair.stats.alerts} />
+        </Stack>
+      )}
       {pair.end_reason && (
         <Typography variant="body2" color="text.secondary">
           Fin : {pair.end_reason}
         </Typography>
       )}
-      {canEdit && (
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-          {pair.status === 'proposé' && (
-            <Button size="small" onClick={() => act(pair, 'cancel')}>
-              Annuler la proposition
-            </Button>
-          )}
-          {pair.status === 'actif' && (
-            <Button size="small" onClick={() => act(pair, 'pause')}>
-              Mettre en pause
-            </Button>
-          )}
-          {pair.status === 'en pause' && (
-            <Button size="small" onClick={() => act(pair, 'resume')}>
-              Reprendre
-            </Button>
-          )}
-          {['actif', 'en pause'].includes(pair.status) && (
-            <Button
-              size="small"
-              color="error"
-              onClick={() => {
-                setReason('');
-                setEnding(pair);
-              }}>
-              Terminer
-            </Button>
-          )}
-        </Stack>
-      )}
+      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+        {/* Follow-up: the whole team; changes: admins only */}
+        {['actif', 'en pause', 'terminé'].includes(pair.status) && (
+          <Button size="small" onClick={() => setFollowing(pair)}>
+            Voir le suivi
+          </Button>
+        )}
+        {canEdit && pair.status === 'proposé' && (
+          <Button size="small" onClick={() => act(pair, 'cancel')}>
+            Annuler la proposition
+          </Button>
+        )}
+        {canEdit && pair.status === 'actif' && (
+          <Button size="small" onClick={() => act(pair, 'pause')}>
+            Mettre en pause
+          </Button>
+        )}
+        {canEdit && pair.status === 'en pause' && (
+          <Button size="small" onClick={() => act(pair, 'resume')}>
+            Reprendre
+          </Button>
+        )}
+        {canEdit && ['actif', 'en pause'].includes(pair.status) && (
+          <Button
+            size="small"
+            color="error"
+            onClick={() => {
+              setReason('');
+              setEnding(pair);
+            }}>
+            Terminer
+          </Button>
+        )}
+      </Stack>
     </Paper>
   );
 
@@ -171,6 +190,12 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
           ))}
         </>
       )}
+
+      <PairDialog
+        pair={following && { ...following, student }}
+        onClose={() => setFollowing(null)}
+        showStudentLink={false}
+      />
 
       <MatchDialog
         open={searching}
