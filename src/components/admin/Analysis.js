@@ -301,7 +301,11 @@ const Analysis = () => {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={6} md={3}>
-          <Kpi label={scopeLabel} value={tutors.total} />
+          <Kpi
+            label={scopeLabel}
+            value={tutors.total}
+            detail={`${tutors.available ?? 0} disponible(s) pour un nouvel élève`}
+          />
         </Grid>
         <Grid item xs={6} md={3}>
           <Kpi

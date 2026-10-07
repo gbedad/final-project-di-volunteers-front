@@ -6,6 +6,7 @@ import TopicGradeComponent from './TopicGrade';
 import LocationsPossibleComponent from './LocationsPossible';
 import TimeRangeSlider from './TimeRangeSliderComponent';
 import SelectNumberStudents from './NumberOfStudents';
+import { NewStudentAvailability } from './application/Availability';
 
 const Skills = ({ userId }) => {
   return (
@@ -23,6 +24,7 @@ const Skills = ({ userId }) => {
         <Grid item xs={12} sm={3} md={12} lg={3}>
           {/* <LocationSkill/> */}
           <LocationsPossibleComponent userSelected={userId} />
+          <NewStudentAvailability userId={userId} />
         </Grid>
       </Grid>
     </React.Fragment>

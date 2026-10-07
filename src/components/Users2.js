@@ -28,7 +28,6 @@ import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 // import MoodIcon from '@mui/icons-material/Mood';
 import MessageIcon from '@mui/icons-material/Message';
 // import PersonPinIcon from '@mui/icons-material/PersonPin';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CallIcon from '@mui/icons-material/Call';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksTwoIcon from '@mui/icons-material/LooksTwo';
@@ -41,6 +40,7 @@ import {
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
+import { AvailabilityChip } from './application/Availability';
 import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
 import { useSessionState } from '../js/useSessionState';
@@ -105,6 +105,8 @@ const GRID_LOCALE = {
 
 // Former volunteers, hidden unless their chip is chosen
 const ARCHIVED = 'Archivé';
+// Tutors who can take a new student now (computed by the server)
+const AVAILABLE = 'disponibles';
 
 // Status chips above the search; the rare ones only when someone has them
 const STATUS_CHIPS = [
@@ -343,20 +345,13 @@ export default function DataGridDemo(props) {
     {
       field: 'is_available',
       headerName: 'Disponible',
-
-      width: 100,
-      align: 'center',
-      renderCell: (params) => {
-        return params.value ? (
-          <EventAvailableIcon
-            style={{
-              color: 'yellowGreen',
-            }}
-          />
-        ) : (
-          ''
-        );
-      },
+      width: 190,
+      // Computed: can take a new student now (places left, not paused…)
+      valueGetter: ({ value }) =>
+        ({ available: 4, paused: 3, full: 2, incomplete: 1 }[value?.state] || 0),
+      renderCell: (params) => (
+        <AvailabilityChip availability={params.row.is_available} />
+      ),
     },
     {
       field: 'first_contact',
@@ -671,6 +666,8 @@ export default function DataGridDemo(props) {
   );
   const statusCounts = useMemo(() => {
     const counts = {
+      [AVAILABLE]: current.filter((u) => u.availability?.state === 'available')
+        .length,
       [ACTIVE_TUTORS]: 0,
       [ARCHIVED]: searched.length - current.length,
     };
@@ -689,6 +686,8 @@ export default function DataGridDemo(props) {
         : current.filter((u) =>
             statusFilter === ACTIVE_TUTORS
               ? u.is_active === true
+              : statusFilter === AVAILABLE
+              ? u.availability?.state === 'available'
               : u.status === statusFilter
           ),
     [searched, current, statusFilter]
@@ -734,6 +733,8 @@ export default function DataGridDemo(props) {
     statusFilter &&
       (statusFilter === ACTIVE_TUTORS
         ? 'tuteurs actifs'
+        : statusFilter === AVAILABLE
+        ? 'tuteurs disponibles'
         : `statut « ${statusFilter} »`),
     gridFiltered && 'avec les filtres du tableau',
   ].filter(Boolean);
@@ -915,7 +916,7 @@ export default function DataGridDemo(props) {
           item.docs,
           item.test_voltaire_passed,
           item.convention_received,
-          item.is_available,
+          item.availability,
           item.cohorte_year || []
         );
       })
@@ -1015,6 +1016,16 @@ export default function DataGridDemo(props) {
             )
           }
         />
+        <Tooltip title="Peuvent prendre un nouvel élève maintenant">
+          <Chip
+            label={`Tuteurs disponibles ${statusCounts[AVAILABLE]}`}
+            color="success"
+            variant={statusFilter === AVAILABLE ? 'filled' : 'outlined'}
+            onClick={() =>
+              setStatusFilter(statusFilter === AVAILABLE ? null : AVAILABLE)
+            }
+          />
+        </Tooltip>
         {statusCounts[ARCHIVED] > 0 && (
           <Chip
             label={`Archivés ${statusCounts[ARCHIVED]}`}

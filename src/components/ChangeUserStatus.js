@@ -70,6 +70,10 @@ import SaveStatus from './application/SaveStatus';
 import ArchiveDialog from './admin/ArchiveDialog';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {
+  AvailabilityChip,
+  UnavailableControl,
+} from './application/Availability';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -126,11 +130,9 @@ const ChangeUserStatus = () => {
   const [pendingStatus, setPendingStatus] = useState(null);
   const [archiving, setArchiving] = useState(false);
   const [archiveBlocked, setArchiveBlocked] = useState([]);
-  const [isAvailable, setIsAvailable] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const userId = state.userId;
 
   // const [openPopper, setOpenPopper] = React.useState(false);
   // const [placement, setPlacement] = React.useState();
@@ -186,36 +188,16 @@ const ChangeUserStatus = () => {
   //   }
   // };
 
-  const updateUserAvailability = async (event) => {
-    const newIsAvailable = event.target.checked;
-    setIsAvailable(newIsAvailable);
-
+  // After a change of the tutor's availability
+  const reloadUser = async () => {
     try {
-      const response = await axios.patch(`${BASE_URL}/update-availability`, {
-        userId,
-        isAvailable: newIsAvailable,
-      });
-
-      if (response.status === 200) {
-        console.log('Availability updated successfully:', response.data);
-      } else {
-        console.warn('Unexpected response status:', response.status);
-      }
-    } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error('No response received:', error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error:', error.message);
-      }
+      const { data } = await axios.get(`${BASE_URL}/user-by-id/${user.id}`);
+      setUser(data);
+    } catch (err) {
+      console.error(err);
     }
   };
+
 
   // console.log(userLogged, state);
   // const handleEditUserProfile = () => {
@@ -252,7 +234,6 @@ const ChangeUserStatus = () => {
         setUser(response.data);
         setStatus(response.data.status);
         setIsActive(response.data.is_active);
-        setIsAvailable(response.data.is_available);
         // setNewIsActive(response.data.is_active)
         localStorage.setItem('user-status', response.data.status);
       } catch (err) {
@@ -417,16 +398,20 @@ const ChangeUserStatus = () => {
             onClick={handleSubmitActiveChange}>
             Enregistrer
           </Button> */}
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isAvailable}
-                onChange={updateUserAvailability}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-            }
-            label="Tuteur disponible"
-          />
+          {/* Available for a new student: computed, plus a pause */}
+          <Stack direction="row" spacing={2} alignItems="flex-start">
+            <Stack spacing={0.5}>
+              <Typography variant="caption" color="text.secondary">
+                Disponibilité
+              </Typography>
+              <AvailabilityChip availability={user.availability} />
+            </Stack>
+            <UnavailableControl
+              userId={user.id}
+              value={user.unavailable_until}
+              onChange={reloadUser}
+            />
+          </Stack>
         </Stack>
 
         <Grid container spacing={2}>
