@@ -69,6 +69,7 @@ import ConventionSteps from './application/ConventionSteps';
 import SaveStatus from './application/SaveStatus';
 import ArchiveDialog from './admin/ArchiveDialog';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -382,6 +383,14 @@ const ChangeUserStatus = () => {
     // <ThemeProvider theme={lightTheme}>
     <>
       <Container maxWidth="l">
+        {/* Back to the list, like on a student's page */}
+        <Button
+          size="small"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate('/view-users', { state: { userLogged } })}
+          sx={{ mt: 2 }}>
+          Tuteurs bénévoles
+        </Button>
         <Stack
           direction={'row'}
           spacing={5}

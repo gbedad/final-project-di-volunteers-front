@@ -18,7 +18,6 @@ import {
 
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -41,6 +40,7 @@ import {
 
 import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
 import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
 import { useSessionState } from '../js/useSessionState';
@@ -466,20 +466,20 @@ export default function DataGridDemo(props) {
     {
       field: 'is_active',
       headerName: 'Actif',
-
-      width: 70,
+      width: 100,
       align: 'center',
-      renderCell: (params) => {
-        return params.value ? (
-          <VerifiedUserIcon
-            style={{
-              color: 'green',
-            }}
-          />
-        ) : (
-          ''
-        );
-      },
+      // A tutor teaching (or ready to teach) a student
+      renderCell: (params) =>
+        params.value ? (
+          <Tooltip title="Tuteur actif : accompagne ou peut accompagner un élève">
+            <Chip
+              size="small"
+              color="success"
+              icon={<CoPresentIcon />}
+              label="Actif"
+            />
+          </Tooltip>
+        ) : null,
     },
   ];
   // function CustomToolbar() {
