@@ -36,6 +36,8 @@ import MissionCard from './components/missions/MissionCard';
 import AdminFiles from './components/admin/AdminFiles';
 import Team from './components/admin/Team';
 import Analysis from './components/admin/Analysis';
+import StudentsPage from './components/students/StudentsPage';
+import StudentPage from './components/students/StudentPage';
 
 import { AuthProvider } from './AuthContext.js';
 import { CourseProvider } from './components/courses/CourseContext';
@@ -152,6 +154,8 @@ function App() {
             <Route path="/documents" element={<AdminFiles />} />
             <Route path="/equipe" element={<Team />} />
             <Route path="/analyse" element={<Analysis />} />
+            <Route path="/eleves" element={<StudentsPage />} />
+            <Route path="/eleves/:id" element={<StudentPage />} />
 
             <Route path="/missions/update/:id" element={<MissionCard />} />
             <Route path="/tutorat" element={<Tutorat />} />

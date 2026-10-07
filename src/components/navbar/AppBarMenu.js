@@ -24,6 +24,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import GroupIcon from '@mui/icons-material/Group';
 import PeopleIcon from '@mui/icons-material/People';
 import InsightsIcon from '@mui/icons-material/Insights';
+import SchoolIcon from '@mui/icons-material/School';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import SvgIcon from '@mui/material/SvgIcon';
@@ -149,6 +150,7 @@ function ResponsiveAppBar() {
     documents: ['/documents'],
     team: ['/equipe'],
     analysis: ['/analyse'],
+    students: ['/eleves'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -157,6 +159,10 @@ function ResponsiveAppBar() {
 
   const handleTeam = () => {
     navigate(`/equipe`, { state: { userLogged } });
+  };
+
+  const handleStudents = () => {
+    navigate(`/eleves`, { state: { userLogged } });
   };
 
   const handleAnalysis = () => {
@@ -621,6 +627,16 @@ function ResponsiveAppBar() {
                         </ListItemIcon>
                         Tuteurs bénévoles
                       </MenuItem>
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleStudents}
+                          {...currentProps('students')}>
+                          <ListItemIcon>
+                            <SchoolIcon fontSize="small" />
+                          </ListItemIcon>
+                          Élèves
+                        </MenuItem>
+                      )}
                       <MenuItem
                         onClick={handleAdminFiles}
                         {...currentProps('documents')}>
