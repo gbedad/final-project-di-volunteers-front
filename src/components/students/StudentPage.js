@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -32,6 +32,7 @@ import SaveStatus from '../application/SaveStatus';
 import SchoolField from './SchoolField';
 import SlotsEditor from './SlotsEditor';
 import TopicsEditor from './TopicsEditor';
+import StudentPairs from './StudentPairs';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -87,12 +88,19 @@ const StudentPage = () => {
   const [saveState, schedule] = useStudentAutoSave(id);
   const canEdit = isManager(currentRole());
 
-  useEffect(() => {
+  const load = useCallback(() => {
     axios
       .get(`${BASE_URL}/admin/students/${id}`)
       .then(({ data }) => setStudent(data))
       .catch(() => setError(true));
   }, [id]);
+  useEffect(load, [load]);
+  // A pair accepted, paused or ended changes the student's status
+  const reloadStatus = () =>
+    axios
+      .get(`${BASE_URL}/admin/students/${id}`)
+      .then(({ data }) => setStudent((s) => ({ ...s, status: data.status })))
+      .catch(() => {});
 
   if (error) {
     return (
@@ -307,6 +315,13 @@ const StudentPage = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
+          <Block title="Tuteur">
+            <StudentPairs
+              student={student}
+              canEdit={canEdit}
+              onChanged={reloadStatus}
+            />
+          </Block>
           <Block title="Suivi de la demande">
             {select(
               'status',

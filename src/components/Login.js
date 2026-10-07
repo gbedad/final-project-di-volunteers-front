@@ -60,7 +60,10 @@ export default function SignIn() {
   const [searchParams] = useSearchParams();
   const candidateId = Number(searchParams.get('candidat')) || null;
   // ?onglet=convention: link from the emails to the volunteer
-  const volunteerTab = searchParams.get('onglet') === 'convention' ? 4 : null;
+  const volunteerTab =
+    { convention: 4, eleves: 5 }[searchParams.get('onglet')] ?? null;
+  // ?eleve=<id>: link from the emails to the team (student's page)
+  const studentId = Number(searchParams.get('eleve')) || null;
   const { updateToken } = useContext(AuthContext);
   // const [userConnected, setUserConnected] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -68,13 +71,20 @@ export default function SignIn() {
   const [email, setEmail] = useState(location.state?.email || '');
   // Link from an email: true while checking the session already open in
   // this browser, so the login form is only shown when really needed
-  const [resuming, setResuming] = useState(!!candidateId || !!volunteerTab);
+  const [resuming, setResuming] = useState(
+    !!candidateId || !!volunteerTab || !!studentId
+  );
 
   useEffect(() => {
-    if (!candidateId && !volunteerTab) return;
-    // Team: the candidate's page; volunteer: the tab of the email
+    if (!candidateId && !volunteerTab && !studentId) return;
+    // Team: the candidate's or student's page; volunteer: the tab of the email
     const openCandidate = (userLogged) =>
-      candidateId
+      studentId
+        ? navigate(`/eleves/${studentId}`, {
+            replace: true,
+            state: { userLogged },
+          })
+        : candidateId
         ? navigate('/change-status', {
             replace: true,
             state: { userId: candidateId, userLogged },
@@ -88,7 +98,7 @@ export default function SignIn() {
       try {
         saved = JSON.parse(localStorage.getItem('user'));
       } catch {}
-      const rightAccount = candidateId
+      const rightAccount = candidateId || studentId
         ? isStaff(saved?.user?.role)
         : saved?.user?.role === 'volunteer';
       if (!saved?.token || !rightAccount) {
@@ -177,7 +187,9 @@ export default function SignIn() {
         } else if (
           ['superadmin', 'admin', 'interviewer'].includes(userLogged.user.role)
         ) {
-          if (candidateId) {
+          if (studentId) {
+            navigate(`/eleves/${studentId}`, { state: { userLogged } });
+          } else if (candidateId) {
             navigate('/change-status', {
               state: { userId: candidateId, userLogged },
             });

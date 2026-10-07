@@ -26,6 +26,7 @@ import StepperStatusTimeline from './StepperStatusTimeline';
 // import { setStatusStep } from '../js/statusDescription';
 import { setStatusStep } from '../js/statusDescription';
 import ConventionSteps from './application/ConventionSteps';
+import MyStudents from './application/MyStudents';
 import ApplicationChecklist from './application/ApplicationChecklist';
 import DocumentSlots from './application/DocumentSlots';
 import MissingBanner from './application/MissingBanner';
@@ -187,6 +188,8 @@ const BasicTabs = () => {
 
   // What is missing, to guide the volunteer on each tab
   const [progress] = useApplicationProgress(userId);
+  // The volunteer's own space (not an admin editing a profile)
+  const ownSpace = String(userId) === String(location.state?.userLogged?.user?.id);
   const missing = progress ? missingItems(progress) : null;
   const tabState = (items) =>
     !items || status === 'Déclinée'
@@ -311,6 +314,14 @@ const BasicTabs = () => {
                       (status === 'Déclinée' && 'text.disabled'),
                   }}
                 />
+                {/* The tutor's own students (not shown when an admin edits) */}
+                {ownSpace && (
+                  <Tab
+                    label="MES ÉLÈVES"
+                    {...a11yProps(5)}
+                    disabled={!['Validé', 'A conserver'].includes(status)}
+                  />
+                )}
                 <Box display="flex" justifyContent="center" alignItems="center">
                   <RefreshButton getUser={getUser} setFinished={setFinished} />
                 </Box>
@@ -399,6 +410,11 @@ const BasicTabs = () => {
               admin={isManager(location.state?.userLogged?.user?.role)}
             />
           </TabPanel>
+          {ownSpace && (
+            <TabPanel value={value} index={5}>
+              <MyStudents />
+            </TabPanel>
+          )}
           {value > 0 && (
             <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>
               <Button
