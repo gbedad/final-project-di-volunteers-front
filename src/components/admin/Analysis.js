@@ -10,6 +10,7 @@ import {
   LinearProgress,
   Link,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -23,6 +24,8 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import PageHeader from './PageHeader';
+import StudentAnalysis from './StudentAnalysis';
+import { useSessionState } from '../../js/useSessionState';
 
 import { ACTIVE_TUTORS } from '../../js/volunteerSearch';
 
@@ -162,6 +165,19 @@ const Yes = ({ ok }) =>
 const Analysis = () => {
   const navigate = useNavigate();
   const [scope, setScope] = useState('active');
+  // Tutors (volunteers, recruitment) or students (requests, pairs)
+  const [view, setView] = useSessionState('analysis.view', 'tutors');
+  const viewToggle = (
+    <ToggleButtonGroup
+      size="small"
+      exclusive
+      color="primary"
+      value={view}
+      onChange={(e, value) => value && setView(value)}>
+      <ToggleButton value="tutors">Tuteurs</ToggleButton>
+      <ToggleButton value="students">Élèves</ToggleButton>
+    </ToggleButtonGroup>
+  );
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
   const [showAll, setShowAll] = useState({ incomplete: false, stuck: false });
@@ -218,6 +234,19 @@ const Analysis = () => {
     navigate('/view-users', { state: { userLogged } });
   };
 
+  if (view === 'students') {
+    return (
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <PageHeader
+          title="Analyse"
+          subtitle="Demandes des élèves, demande et offre de tutorat, binômes et séances."
+          actions={viewToggle}
+        />
+        <StudentAnalysis />
+      </Container>
+    );
+  }
+
   if (error) {
     return (
       <Container sx={{ mt: 4 }}>
@@ -253,17 +282,20 @@ const Analysis = () => {
         title="Analyse"
         subtitle="Profils des tuteurs, offre de tutorat et recrutement."
         actions={
-          <ToggleButtonGroup
-            size="small"
-            exclusive
-            value={scope}
-            onChange={(e, value) => value && setScope(value)}>
-            {SCOPES.map((s) => (
-              <ToggleButton key={s.value} value={s.value}>
-                {s.label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            {viewToggle}
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={scope}
+              onChange={(e, value) => value && setScope(value)}>
+              {SCOPES.map((s) => (
+                <ToggleButton key={s.value} value={s.value}>
+                  {s.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Stack>
         }
       />
 
