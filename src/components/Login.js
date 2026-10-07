@@ -28,6 +28,7 @@ import { AuthContext } from '../AuthContext';
 
 import PasswordInput from './PasswordInput';
 import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
 import { isStaff } from '../js/roles';
 import { refreshSession } from '../js/auth';
 
@@ -69,6 +70,8 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState(location.state?.email || '');
+  // Sent here because the account has just been archived
+  const archived = searchParams.get('archive') === '1';
   // Link from an email: true while checking the session already open in
   // this browser, so the login form is only shown when really needed
   const [resuming, setResuming] = useState(
@@ -202,6 +205,13 @@ export default function SignIn() {
       }
     } catch (err) {
       console.log(err);
+      if (err.response?.data?.code === 'archived') {
+        toast.error(err.response.data.msg, {
+          position: 'top-center',
+          duration: 8000,
+        });
+        return;
+      }
       toast.error(`Utilisateur ou mot de passe incorrect`, {
         position: 'top-center',
       });
@@ -232,6 +242,12 @@ export default function SignIn() {
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
+            {archived && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                Votre compte est archivé. Pour reprendre votre engagement,
+                contactez l'association.
+              </Alert>
+            )}
             <Typography component="h1" variant="h5">
               Se connecter
             </Typography>

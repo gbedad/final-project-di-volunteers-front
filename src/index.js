@@ -22,6 +22,12 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(undefined, async (error) => {
   const config = error.config;
   const status = error.response?.status;
+  // Archived volunteer: the session ends, the login page explains why
+  if (status === 403 && error.response?.data?.code === 'archived') {
+    localStorage.clear();
+    window.location.assign('/login?archive=1');
+    return Promise.reject(error);
+  }
   const isAuthCall = /\/(login|refresh-token)$/.test(config?.url || '');
   if (status !== 401 || !config || config._retried || isAuthCall) {
     return Promise.reject(error);

@@ -103,6 +103,9 @@ const GRID_LOCALE = {
   toolbarQuickFilterPlaceholder: 'Rechercher un nom, un e-mail…',
 };
 
+// Former volunteers, hidden unless their chip is chosen
+const ARCHIVED = 'Archivé';
+
 // Status chips above the search; the rare ones only when someone has them
 const STATUS_CHIPS = [
   { status: 'Compte créé', label: 'Compte créé' },
@@ -661,24 +664,34 @@ export default function DataGridDemo(props) {
     ]
   );
   // Counts per status of the volunteers found by the search
+  // Former volunteers (archived) only appear with their own chip
+  const current = useMemo(
+    () => searched.filter((u) => u.status !== ARCHIVED),
+    [searched]
+  );
   const statusCounts = useMemo(() => {
-    const counts = { [ACTIVE_TUTORS]: 0 };
-    for (const u of searched) {
+    const counts = {
+      [ACTIVE_TUTORS]: 0,
+      [ARCHIVED]: searched.length - current.length,
+    };
+    for (const u of current) {
       counts[u.status] = (counts[u.status] || 0) + 1;
       if (u.is_active) counts[ACTIVE_TUTORS] += 1;
     }
     return counts;
-  }, [searched]);
+  }, [searched, current]);
   const filteredData = useMemo(
     () =>
-      !statusFilter
-        ? searched
-        : searched.filter((u) =>
+      statusFilter === ARCHIVED
+        ? searched.filter((u) => u.status === ARCHIVED)
+        : !statusFilter
+        ? current
+        : current.filter((u) =>
             statusFilter === ACTIVE_TUTORS
               ? u.is_active === true
               : u.status === statusFilter
           ),
-    [searched, statusFilter]
+    [searched, current, statusFilter]
   );
   const hasFilters =
     [
@@ -973,7 +986,7 @@ export default function DataGridDemo(props) {
         gap={1}
         sx={{ mb: 2 }}>
         <Chip
-          label={`Tous ${searched.length}`}
+          label={`Tous ${current.length}`}
           color="primary"
           variant={statusFilter ? 'outlined' : 'filled'}
           onClick={() => setStatusFilter(null)}
@@ -1002,6 +1015,15 @@ export default function DataGridDemo(props) {
             )
           }
         />
+        {statusCounts[ARCHIVED] > 0 && (
+          <Chip
+            label={`Archivés ${statusCounts[ARCHIVED]}`}
+            variant={statusFilter === ARCHIVED ? 'filled' : 'outlined'}
+            onClick={() =>
+              setStatusFilter(statusFilter === ARCHIVED ? null : ARCHIVED)
+            }
+          />
+        )}
       </Stack>
 
       {/* Search on what the volunteers can teach and when they are free */}

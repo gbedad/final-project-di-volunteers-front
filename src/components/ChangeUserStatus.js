@@ -35,6 +35,7 @@ import Person2Icon from '@mui/icons-material/Person2';
 import Grid from '@mui/material/Grid';
 
 import Stack from '@mui/material/Stack';
+import Alert from '@mui/material/Alert';
 import MuiLink from '@mui/material/Link';
 
 import CakeIcon from '@mui/icons-material/Cake';
@@ -66,6 +67,8 @@ import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
 import ConventionSteps from './application/ConventionSteps';
 import SaveStatus from './application/SaveStatus';
+import ArchiveDialog from './admin/ArchiveDialog';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -120,6 +123,8 @@ const ChangeUserStatus = () => {
   const [statusSave, setStatusSave] = useState('idle');
   // Status waiting for the confirmation of the email it sends
   const [pendingStatus, setPendingStatus] = useState(null);
+  const [archiving, setArchiving] = useState(false);
+  const [archiveBlocked, setArchiveBlocked] = useState([]);
   const [isAvailable, setIsAvailable] = useState(false);
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -320,6 +325,40 @@ const ChangeUserStatus = () => {
   // console.log("USER", JSON.parse(user.skill.when_day_slot[0]).day)
 
   // console.log("new status:", newStatus);
+  // Former volunteer: archived (no login, hidden day to day), or back
+  const archive = async ({ reason, deleteSensitive }) => {
+    try {
+      await axios.post(`${BASE_URL}/admin/users/${user.id}/archive`, {
+        reason,
+        deleteSensitive,
+      });
+      setArchiving(false);
+      setStatus('Archivé');
+      toast.success('Bénévole archivé', { position: 'bottom-left' });
+    } catch (err) {
+      const data = err.response?.data;
+      setArchiveBlocked([
+        { id: user.id, error: data?.error || 'Archivage impossible', openPairs: data?.openPairs },
+      ]);
+    }
+  };
+  const unarchive = async () => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/admin/users/${user.id}/unarchive`
+      );
+      setStatus(data.status);
+      setNewStatus(data.status);
+      toast.success(`Bénévole désarchivé : ${data.status}`, {
+        position: 'bottom-left',
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Désarchivage impossible', {
+        position: 'bottom-left',
+      });
+    }
+  };
+
   // From the Convention block, once the convention is complete: same
   // confirmation as in the status list (the volunteer gets an email)
   const validateApplication = () => setPendingStatus('Validé');
@@ -716,7 +755,10 @@ const ChangeUserStatus = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={newStatus || status || ''}
+                      value={
+                        status === 'Archivé' ? '' : newStatus || status || ''
+                      }
+                      disabled={status === 'Archivé'}
                       label="Statut"
                       onChange={handleStatusChange}>
                       {existingStatuses.map((status) => (
@@ -740,6 +782,45 @@ const ChangeUserStatus = () => {
                 <Box sx={{ minHeight: 24 }}>
                   <SaveStatus state={statusSave} />
                 </Box>
+                {/* Former volunteer: archived, or button to archive */}
+                {user.status === 'Archivé' ? (
+                  <Alert
+                    severity="warning"
+                    sx={{ mt: 1 }}
+                    action={
+                      isManager(userLogged.user.role) && (
+                        <Button color="inherit" size="small" onClick={unarchive}>
+                          Désarchiver
+                        </Button>
+                      )
+                    }>
+                    Archivé
+                    {user.archived_at &&
+                      ` le ${new Date(user.archived_at).toLocaleDateString('fr-FR')}`}
+                    {user.archive_reason && ` : ${user.archive_reason}`}
+                  </Alert>
+                ) : (
+                  isManager(userLogged.user.role) && (
+                    <Button
+                      size="small"
+                      color="warning"
+                      startIcon={<ArchiveIcon />}
+                      sx={{ mt: 1, alignSelf: 'flex-start' }}
+                      onClick={() => {
+                        setArchiveBlocked([]);
+                        setArchiving(true);
+                      }}>
+                      Archiver ce bénévole
+                    </Button>
+                  )
+                )}
+                <ArchiveDialog
+                  open={archiving}
+                  title={`Archiver ${user.first_name} ${user.last_name}`}
+                  blocked={archiveBlocked}
+                  onClose={() => setArchiving(false)}
+                  onConfirm={archive}
+                />
                 <Dialog
                   open={!!pendingStatus}
                   onClose={() => setPendingStatus(null)}>

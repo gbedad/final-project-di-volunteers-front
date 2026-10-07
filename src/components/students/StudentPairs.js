@@ -37,6 +37,23 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
   const [ending, setEnding] = useState(null);
   const [reason, setReason] = useState('');
   const [following, setFollowing] = useState(null);
+  const [freeTutor, setFreeTutor] = useState(null);
+
+  const setInactive = async () => {
+    try {
+      await axios.patch(`${BASE_URL}/update-active-user/${freeTutor.id}`, {
+        isActive: false,
+      });
+      toast.success(`${freeTutor.name} est maintenant tuteur inactif`, {
+        position: 'bottom-left',
+      });
+    } catch {
+      toast.error("Le tuteur n'a pas pu être modifié", {
+        position: 'bottom-left',
+      });
+    }
+    setFreeTutor(null);
+  };
 
   const load = useCallback(() => {
     axios
@@ -48,12 +65,17 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
 
   const act = async (pair, action, extra = {}) => {
     try {
-      await axios.patch(`${BASE_URL}/admin/binomes/${pair.id}`, {
-        action,
-        ...extra,
-      });
+      const { data } = await axios.patch(
+        `${BASE_URL}/admin/binomes/${pair.id}`,
+        {
+          action,
+          ...extra,
+        }
+      );
       load();
       onChanged?.();
+      // Last student of this tutor: ask whether the tutor stays active
+      if (data.tutorFree) setFreeTutor(data.tutorFree);
     } catch (err) {
       toast.error(err.response?.data?.error || 'Action impossible', {
         position: 'bottom-left',
@@ -190,6 +212,25 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
           ))}
         </>
       )}
+
+      <Dialog open={!!freeTutor} onClose={() => setFreeTutor(null)}>
+        <DialogTitle>{freeTutor?.name} n'a plus d'élève</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Le passer en tuteur inactif ? Il pourra toujours être proposé à un
+            autre élève (« Tous les validés »), et redeviendra actif s'il
+            accepte.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setFreeTutor(null)}>
+            Non, il reste actif
+          </Button>
+          <Button variant="contained" onClick={setInactive}>
+            Oui, le passer inactif
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <PairDialog
         pair={following && { ...following, student }}

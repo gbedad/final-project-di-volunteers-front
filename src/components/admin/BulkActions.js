@@ -18,6 +18,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import PersonIcon from '@mui/icons-material/Person';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import ArchiveDialog from './ArchiveDialog';
 
 import { existingStatuses } from '../../options/existingOptions';
 import { isManager } from '../../js/roles';
@@ -42,6 +44,8 @@ const BulkActions = ({ rows, onDone }) => {
   // { label, changes } waiting for confirmation
   const [pending, setPending] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [archiving, setArchiving] = useState(false);
+  const [blocked, setBlocked] = useState([]);
   const manager = isManager(currentRole());
 
   if (!rows.length) return null;
@@ -67,6 +71,46 @@ const BulkActions = ({ rows, onDone }) => {
       .catch(() =>
         toast.error('Copie impossible', { position: 'bottom-left' })
       );
+  };
+
+  // Volunteers with pairs in progress are skipped and listed
+  const archive = async ({ reason, deleteSensitive }) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/admin/users/bulk-archive`,
+        {
+          ids: rows.map((r) => r.id),
+          reason,
+          deleteSensitive,
+        }
+      );
+      if (data.archived.length) {
+        toast.success(
+          `${plural(data.archived.length, 'bénévole')} archivé(s)`,
+          {
+            position: 'bottom-left',
+          }
+        );
+      }
+      if (data.blocked.length) {
+        setBlocked(
+          data.blocked.map((b) => {
+            const row = rows.find((r) => r.id === b.id);
+            return {
+              ...b,
+              name: row ? `${row.first_name} ${row.last_name}` : '',
+            };
+          })
+        );
+      } else {
+        setArchiving(false);
+      }
+      if (data.archived.length) onDone();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Archivage impossible', {
+        position: 'bottom-left',
+      });
+    }
   };
 
   const apply = async () => {
@@ -133,6 +177,16 @@ const BulkActions = ({ rows, onDone }) => {
               }>
               Rendre actifs
             </Button>
+            <Button
+              variant="outlined"
+              color="warning"
+              startIcon={<ArchiveIcon />}
+              onClick={() => {
+                setBlocked([]);
+                setArchiving(true);
+              }}>
+              Archiver
+            </Button>
           </>
         )}
         <Button startIcon={<ContentCopyIcon />} onClick={copyEmails}>
@@ -185,6 +239,13 @@ const BulkActions = ({ rows, onDone }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ArchiveDialog
+        open={archiving}
+        title={`Archiver ${plural(rows.length, 'bénévole')}`}
+        blocked={blocked}
+        onClose={() => setArchiving(false)}
+        onConfirm={archive}
+      />
     </Paper>
   );
 };
