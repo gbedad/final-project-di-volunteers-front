@@ -7,7 +7,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   Chip,
   Container,
   Dialog,
@@ -15,7 +14,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControlLabel,
   Grid,
   LinearProgress,
   MenuItem,
@@ -33,6 +31,7 @@ import SchoolField from './SchoolField';
 import SlotsEditor from './SlotsEditor';
 import TopicsEditor from './TopicsEditor';
 import StudentPairs from './StudentPairs';
+import ParentalConsent from './ParentalConsent';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -322,6 +321,19 @@ const StudentPage = () => {
               onChanged={reloadStatus}
             />
           </Block>
+          <Block
+            title="Accord des parents"
+            note="Obligatoire avant le début du tutorat.">
+            <ParentalConsent
+              student={student}
+              canEdit={canEdit}
+              onConsentChange={(value, save) =>
+                save
+                  ? set('parental_consent_at', value)
+                  : setStudent((s) => ({ ...s, parental_consent_at: value }))
+              }
+            />
+          </Block>
           <Block title="Suivi de la demande">
             {select(
               'status',
@@ -329,27 +341,6 @@ const StudentPage = () => {
               STUDENT_STATUSES.map((s) => s.value)
             )}
             {select('priority', 'Priorité', PRIORITIES)}
-            <FormControlLabel
-              disabled={!canEdit}
-              control={
-                <Checkbox
-                  checked={!!student.parental_consent_at}
-                  onChange={(e) =>
-                    set(
-                      'parental_consent_at',
-                      e.target.checked ? new Date().toISOString() : null
-                    )
-                  }
-                />
-              }
-              label={
-                student.parental_consent_at
-                  ? `Consentement des parents reçu le ${new Date(
-                      student.parental_consent_at
-                    ).toLocaleDateString('fr-FR')}`
-                  : 'Consentement des parents reçu'
-              }
-            />
             {text('comment', 'Note interne', { multiline: true, minRows: 3 })}
           </Block>
           {canEdit && (

@@ -22,6 +22,8 @@ const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     localStorage.clear(); // Clear all local storage items
+    // Public pages (parent's consent link) need no account
+    if (location.pathname.startsWith('/consentement/')) return;
     // Keep the link of an email (/login?candidat=…) to come back to it
     navigate(
       location.pathname === '/login' ? `/login${location.search}` : '/login'

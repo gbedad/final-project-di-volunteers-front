@@ -39,6 +39,7 @@ import Analysis from './components/admin/Analysis';
 import StudentsPage from './components/students/StudentsPage';
 import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
+import ConsentPage from './pages/ConsentPage';
 
 import { AuthProvider } from './AuthContext.js';
 import { CourseProvider } from './components/courses/CourseContext';
@@ -158,6 +159,7 @@ function App() {
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
             <Route path="/binomes" element={<PairsPage />} />
+            <Route path="/consentement/:token" element={<ConsentPage />} />
 
             <Route path="/missions/update/:id" element={<MissionCard />} />
             <Route path="/tutorat" element={<Tutorat />} />

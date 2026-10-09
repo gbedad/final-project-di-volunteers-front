@@ -94,6 +94,12 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
             <b>{student.first_name}</b>. Le tuteur reçoit un e-mail et répond
             depuis son espace.
           </Typography>
+          {!student.parental_consent_at && (
+            <Alert severity="warning">
+              L'accord des parents n'a pas encore été reçu. Vous pouvez proposer
+              le tuteur, mais le tutorat ne doit pas commencer sans cet accord.
+            </Alert>
+          )}
           <Box>
             <Typography variant="body2" color="text.secondary">
               Matière(s)
