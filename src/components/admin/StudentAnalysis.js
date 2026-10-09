@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   Alert,
   Box,
+  Chip,
   FormControlLabel,
   Grid,
   LinearProgress,
   Paper,
+  Stack,
   Switch,
   Table,
   TableBody,
@@ -127,6 +129,24 @@ const StudentAnalysis = () => {
     navigate('/eleves');
   };
 
+  // Students of the list filtered on their parental consent
+  const openConsent = (value) => {
+    const keys = {
+      'students.subject': null,
+      'students.level': null,
+      'students.day': null,
+      'students.status': null,
+      'students.consent': value,
+      'students.demo': includeDemo,
+    };
+    try {
+      Object.entries(keys).forEach(([k, v]) =>
+        sessionStorage.setItem(k, JSON.stringify(v))
+      );
+    } catch {}
+    navigate('/eleves');
+  };
+
   if (data === false) {
     return (
       <Alert severity="error">
@@ -135,7 +155,7 @@ const StudentAnalysis = () => {
     );
   }
   if (!data) return <LinearProgress />;
-  const { requests, gap, pairs, profile } = data;
+  const { requests, gap, pairs, profile, consent } = data;
   const maxHours = Math.max(1, ...pairs.hoursByMonth.map((m) => m.hours));
 
   return (
@@ -185,6 +205,44 @@ const StudentAnalysis = () => {
           />
         </Grid>
       </Grid>
+
+      {consent && (
+        <Paper sx={{ p: 2, mb: 3 }}>
+          <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+            <Typography fontWeight={600} sx={{ mr: 1 }}>
+              Accord des parents
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+              demandes en cours, cliquez pour voir les élèves :
+            </Typography>
+            <Chip
+              color="success"
+              variant="outlined"
+              label={`${consent.signed} signé${consent.signed > 1 ? 's' : ''}`}
+              onClick={() => openConsent('signed')}
+            />
+            <Chip
+              color="warning"
+              variant="outlined"
+              label={`${consent.pending} en attente`}
+              onClick={() => openConsent('pending')}
+            />
+            <Chip
+              color="error"
+              variant="outlined"
+              label={`${consent.missing} manquant${consent.missing > 1 ? 's' : ''}`}
+              onClick={() => openConsent('missing')}
+            />
+            {consent.pairsWithout > 0 && (
+              <Chip
+                color="error"
+                label={`${consent.pairsWithout} binôme${consent.pairsWithout > 1 ? 's' : ''} sans accord`}
+                onClick={() => openConsent('urgent')}
+              />
+            )}
+          </Stack>
+        </Paper>
+      )}
 
       <Section
         title="Demande et offre"

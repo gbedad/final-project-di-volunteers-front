@@ -23,6 +23,14 @@ import { DataGrid, frFR } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 
 import PageHeader from '../admin/PageHeader';
+import { RequestDialog } from './ParentalConsent';
+import {
+  BulkConsentButton,
+  ConsentCell,
+  ConsentFilterChips,
+  consentRank,
+  matchesConsentFilter,
+} from './ConsentOverview';
 import { useSessionState } from '../../js/useSessionState';
 import { isManager } from '../../js/roles';
 import {
@@ -135,13 +143,18 @@ const StudentsPage = () => {
   const [level, setLevel] = useSessionState('students.level', null);
   const [day, setDay] = useSessionState('students.day', null);
   const [showDemo, setShowDemo] = useSessionState('students.demo', true);
+  const [consent, setConsent] = useSessionState('students.consent', null);
+  const [selection, setSelection] = useState([]);
+  const [asking, setAsking] = useState(null);
   const canEdit = isManager(currentRole());
 
-  useEffect(() => {
+  const load = () =>
     axios
       .get(`${BASE_URL}/admin/students`)
       .then(({ data }) => setStudents(data))
       .catch(() => setStudents([]));
+  useEffect(() => {
+    load();
   }, []);
 
   // Search first, then the status chips count what the search found
@@ -164,7 +177,10 @@ const StudentsPage = () => {
       }, {}),
     [searched]
   );
-  const rows = status ? searched.filter((s) => s.status === status) : searched;
+  const rows = searched.filter(
+    (s) => (!status || s.status === status) && matchesConsentFilter(s, consent)
+  );
+  const selectedStudents = rows.filter((s) => selection.includes(s.id));
   const demoCount = (students || []).filter((s) => s.is_demo).length;
 
   const columns = [
@@ -253,6 +269,18 @@ const StudentsPage = () => {
         ) : null,
     },
     {
+      field: 'consent',
+      headerName: 'Accord',
+      description: 'Accord des parents',
+      width: 100,
+      align: 'center',
+      headerAlign: 'center',
+      valueGetter: ({ row }) => consentRank(row),
+      renderCell: ({ row }) => (
+        <ConsentCell student={row} canEdit={canEdit} onAsk={setAsking} />
+      ),
+    },
+    {
       field: 'status',
       headerName: 'Statut',
       width: 170,
@@ -269,7 +297,7 @@ const StudentsPage = () => {
     },
   ];
 
-  const filtered = !!(subject || level || day || status);
+  const filtered = !!(subject || level || day || status || consent);
 
   return (
     <Container maxWidth="xxl" sx={{ mt: 4, mb: 4 }}>
@@ -323,6 +351,14 @@ const StudentsPage = () => {
         )}
       </Stack>
 
+      <Box sx={{ mb: 2 }}>
+        <ConsentFilterChips
+          students={searched}
+          value={consent}
+          onChange={setConsent}
+        />
+      </Box>
+
       <Stack
         direction="row"
         flexWrap="wrap"
@@ -361,6 +397,7 @@ const StudentsPage = () => {
             setLevel(null);
             setDay(null);
             setStatus(null);
+            setConsent(null);
           }}>
           Réinitialiser
         </Button>
@@ -371,13 +408,29 @@ const StudentsPage = () => {
         </Typography>
       </Stack>
 
+      {canEdit && (
+        <BulkConsentButton
+          students={selectedStudents}
+          onDone={() => {
+            setSelection([]);
+            load();
+          }}
+        />
+      )}
       <Box sx={{ height: 640, width: '100%', bgcolor: 'background.paper' }}>
         <DataGrid
           rows={rows}
           columns={columns}
           loading={students === null}
           localeText={GRID_LOCALE}
-          onRowClick={({ row }) => navigate(`/eleves/${row.id}`)}
+          // The tick box and the consent icon don't open the student's page
+          onCellClick={({ field, row }) => {
+            if (field === '__check__' || field === 'consent') return;
+            navigate(`/eleves/${row.id}`);
+          }}
+          checkboxSelection={canEdit}
+          rowSelectionModel={selection}
+          onRowSelectionModelChange={setSelection}
           sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
           initialState={{
             sorting: { sortModel: [{ field: 'priority', sort: 'asc' }] },
@@ -387,6 +440,14 @@ const StudentsPage = () => {
       </Box>
 
       <NewStudentDialog open={creating} onClose={() => setCreating(false)} />
+      {asking && (
+        <RequestDialog
+          student={asking}
+          open
+          onClose={() => setAsking(null)}
+          onSent={load}
+        />
+      )}
     </Container>
   );
 };

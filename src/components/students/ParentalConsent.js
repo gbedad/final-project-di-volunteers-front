@@ -57,7 +57,7 @@ const openFile = async (file) => {
 };
 
 // Request dialog: which parent, which channel; then the link to send
-const RequestDialog = ({ student, open, onClose, onSent }) => {
+export const RequestDialog = ({ student, open, onClose, onSent }) => {
   const parents = [parent(student, 1), parent(student, 2)].filter(
     (p) => p.name || p.email || p.phone
   );
