@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Container,
+  FormControlLabel,
   Grid,
   LinearProgress,
   Link,
@@ -16,6 +17,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Switch,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
@@ -167,6 +169,8 @@ const Analysis = () => {
   const [scope, setScope] = useState('active');
   // Tutors (volunteers, recruitment) or students (requests, pairs)
   const [view, setView] = useSessionState('analysis.view', 'tutors');
+  // Demo volunteers are left out of the figures unless asked
+  const [tutorsDemo, setTutorsDemo] = useSessionState('analysis.tutorsDemo', false);
   const viewToggle = (
     <ToggleButtonGroup
       size="small"
@@ -187,14 +191,14 @@ const Analysis = () => {
     setError(false);
     try {
       const { data } = await axios.get(`${BASE_URL}/admin/analytics`, {
-        params: { scope },
+        params: { scope, demo: tutorsDemo ? 1 : 0 },
       });
       setData(data);
     } catch (err) {
       console.error(err);
       setError(true);
     }
-  }, [scope]);
+  }, [scope, tutorsDemo]);
 
   useEffect(() => {
     load();
@@ -297,6 +301,17 @@ const Analysis = () => {
             </ToggleButtonGroup>
           </Stack>
         }
+      />
+
+      <FormControlLabel
+        sx={{ mb: 1 }}
+        control={
+          <Switch
+            checked={tutorsDemo}
+            onChange={(e) => setTutorsDemo(e.target.checked)}
+          />
+        }
+        label="Inclure les tuteurs de démonstration"
       />
 
       <Grid container spacing={2} sx={{ mb: 3 }}>

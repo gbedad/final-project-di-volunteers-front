@@ -20,7 +20,7 @@ import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 import FullEditDataGrid from 'mui-datagrid-full-edit';
 
 import TypeSpecimenRoundedIcon from '@mui/icons-material/TypeSpecimenRounded';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -107,6 +107,57 @@ const GRID_LOCALE = {
 const ARCHIVED = 'Archivé';
 // Tutors who can take a new student now (computed by the server)
 const AVAILABLE = 'disponibles';
+const TO_COUNTERSIGN = 'a-contresigner';
+
+// Where the convention stands, for the list: 'sign' (waiting for the
+// volunteer), 'countersign' (waiting for the president) or 'done'
+const conventionStep = (user) => {
+  const c = user.convention;
+  if (c?.state === 'complete' || (!c && user.convention_received)) return 'done';
+  if (c?.state === 'to_countersign') return 'countersign';
+  if (user.status === 'A finaliser') return 'sign';
+  return null;
+};
+const CONVENTION_STEPS = { sign: 1, countersign: 0, done: 2 };
+const frDay = (d) => (d ? new Date(d).toLocaleDateString('fr-FR') : '');
+const conventionChip = (value) => {
+  if (!value?.step) return null;
+  const c = value.convention || {};
+  const chip = {
+    sign: {
+      label: 'À signer',
+      color: 'default',
+      title: 'Envoyée au bénévole, en attente de sa signature',
+    },
+    countersign: {
+      label: 'À contresigner',
+      color: 'warning',
+      title: `Signée par le bénévole${
+        c.signed ? ` le ${frDay(c.signed.uploaded_at)}` : ''
+      }, en attente de la présidente`,
+    },
+    done: {
+      label: 'Signée',
+      color: 'success',
+      title: c.paper
+        ? 'Convention reçue sur papier'
+        : `Signée par le bénévole${
+            c.signed ? ` le ${frDay(c.signed.uploaded_at)}` : ''
+          } et contresignée${c.final ? ` le ${frDay(c.final.uploaded_at)}` : ''}`,
+    },
+  }[value.step];
+  return (
+    <Tooltip title={chip.title}>
+      <Chip
+        size="small"
+        color={chip.color}
+        variant={value.step === 'done' ? 'filled' : 'outlined'}
+        icon={value.step === 'done' ? <HistoryEduIcon /> : undefined}
+        label={chip.label}
+      />
+    </Tooltip>
+  );
+};
 
 // Status chips above the search; the rare ones only when someone has them
 const STATUS_CHIPS = [
@@ -182,6 +233,7 @@ export default function DataGridDemo(props) {
     null
   );
   const [sortModel, setSortModel] = useSessionState('dashboard.sort', []);
+  const [showDemo, setShowDemo] = useSessionState('dashboard.demo', true);
   // Column filters and the quick search of the toolbar
   const [gridFilterModel, setGridFilterModel] = useSessionState(
     'dashboard.gridFilter',
@@ -254,6 +306,13 @@ export default function DataGridDemo(props) {
       field: 'last_name',
       headerName: 'Nom',
       width: 150,
+      // Fake volunteers used for trials
+      renderCell: ({ row, value }) => (
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</span>
+          {row.is_demo && <Chip size="small" label="Démo" />}
+        </Stack>
+      ),
     },
     // {
     //   field: 'fullName',
@@ -427,19 +486,16 @@ export default function DataGridDemo(props) {
       field: 'convention_received',
       headerName: 'Convention',
 
-      width: 100,
-
-      renderCell: (params) => {
-        return params.value ? (
-          <ReceiptLongIcon
-            style={{
-              color: 'purple',
-            }}
-          />
-        ) : (
-          ''
-        );
-      },
+      width: 135,
+      align: 'center',
+      headerAlign: 'center',
+      // Sort: to countersign first (action for the president), to sign, done
+      valueGetter: ({ row }) =>
+        CONVENTION_STEPS[row.convention_received?.step] ?? 3,
+      renderCell: ({ row }) => conventionChip(row.convention_received),
+      // Text of the CSV export
+      valueFormatter: ({ value }) =>
+        ['À contresigner', 'À signer', 'Signée'][value] || '',
     },
     {
       field: 'cohorte_year',
@@ -644,7 +700,7 @@ export default function DataGridDemo(props) {
         timeFrom,
         timeTo,
         cohort: selectedCohort,
-      }),
+      }).filter((u) => showDemo || !u.is_demo),
     // cleanedArray is rebuilt from users on every render
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -656,8 +712,10 @@ export default function DataGridDemo(props) {
       timeFrom,
       timeTo,
       selectedCohort,
+      showDemo,
     ]
   );
+  const demoCount = (users || []).filter((u) => u.is_demo).length;
   // Counts per status of the volunteers found by the search
   // Former volunteers (archived) only appear with their own chip
   const current = useMemo(
@@ -668,6 +726,9 @@ export default function DataGridDemo(props) {
     const counts = {
       [AVAILABLE]: current.filter((u) => u.availability?.state === 'available')
         .length,
+      [TO_COUNTERSIGN]: current.filter(
+        (u) => conventionStep(u) === 'countersign'
+      ).length,
       [ACTIVE_TUTORS]: 0,
       [ARCHIVED]: searched.length - current.length,
     };
@@ -688,6 +749,8 @@ export default function DataGridDemo(props) {
               ? u.is_active === true
               : statusFilter === AVAILABLE
               ? u.availability?.state === 'available'
+              : statusFilter === TO_COUNTERSIGN
+              ? conventionStep(u) === 'countersign'
               : u.status === statusFilter
           ),
     [searched, current, statusFilter]
@@ -735,6 +798,8 @@ export default function DataGridDemo(props) {
         ? 'tuteurs actifs'
         : statusFilter === AVAILABLE
         ? 'tuteurs disponibles'
+        : statusFilter === TO_COUNTERSIGN
+        ? 'convention à contresigner'
         : `statut « ${statusFilter} »`),
     gridFiltered && 'avec les filtres du tableau',
   ].filter(Boolean);
@@ -915,9 +980,10 @@ export default function DataGridDemo(props) {
           nb_interviews,
           item.docs,
           item.test_voltaire_passed,
-          item.convention_received,
+          { step: conventionStep(item), convention: item.convention },
           item.availability,
-          item.cohorte_year || []
+          item.cohorte_year || [],
+          item.is_demo
         );
       })
       .filter((item) => item !== null);
@@ -944,7 +1010,8 @@ export default function DataGridDemo(props) {
     test_voltaire_passed,
     convention_received,
     is_available,
-    cohorte_year
+    cohorte_year,
+    is_demo
   ) {
     return {
       id,
@@ -967,6 +1034,7 @@ export default function DataGridDemo(props) {
       convention_received,
       is_available,
       cohorte_year,
+      is_demo,
     };
   }
   
@@ -1026,6 +1094,21 @@ export default function DataGridDemo(props) {
             }
           />
         </Tooltip>
+        {(statusCounts[TO_COUNTERSIGN] > 0 ||
+          statusFilter === TO_COUNTERSIGN) && (
+          <Tooltip title="Signées par le bénévole, en attente de la présidente">
+            <Chip
+              label={`Conventions à contresigner ${statusCounts[TO_COUNTERSIGN]}`}
+              color="warning"
+              variant={statusFilter === TO_COUNTERSIGN ? 'filled' : 'outlined'}
+              onClick={() =>
+                setStatusFilter(
+                  statusFilter === TO_COUNTERSIGN ? null : TO_COUNTERSIGN
+                )
+              }
+            />
+          </Tooltip>
+        )}
         {statusCounts[ARCHIVED] > 0 && (
           <Chip
             label={`Archivés ${statusCounts[ARCHIVED]}`}
@@ -1034,6 +1117,18 @@ export default function DataGridDemo(props) {
               setStatusFilter(statusFilter === ARCHIVED ? null : ARCHIVED)
             }
           />
+        )}
+        {demoCount > 0 && (
+          <>
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+            <Tooltip title="Tuteurs fictifs créés pour les essais : cliquez pour les afficher ou les masquer">
+              <Chip
+                label={`Démo ${demoCount}`}
+                variant={showDemo ? 'filled' : 'outlined'}
+                onClick={() => setShowDemo(!showDemo)}
+              />
+            </Tooltip>
+          </>
         )}
       </Stack>
 

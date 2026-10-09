@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 
 import InputLabel from '@mui/material/InputLabel';
@@ -431,7 +432,14 @@ const ChangeUserStatus = () => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${user.first_name} ${user.last_name}`}
+                      primary={
+                        <>
+                          {user.first_name} {user.last_name}
+                          {user.is_demo && (
+                            <Chip size="small" label="Démo" sx={{ ml: 1 }} />
+                          )}
+                        </>
+                      }
                     />
                   </ListItem>
                   <ListItem
