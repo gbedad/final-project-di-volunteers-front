@@ -33,6 +33,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 import logo from '../../assets/mycogniverse3.gif';
 import { isStaff, isManager } from '../../js/roles';
+import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 // const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
@@ -153,6 +154,7 @@ function ResponsiveAppBar() {
     analysis: ['/analyse'],
     students: ['/eleves'],
     pairs: ['/binomes'],
+    connections: ['/connexions'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -161,6 +163,10 @@ function ResponsiveAppBar() {
 
   const handleTeam = () => {
     navigate(`/equipe`, { state: { userLogged } });
+  };
+
+  const handleConnections = () => {
+    navigate(`/connexions`, { state: { userLogged } });
   };
 
   const handlePairs = () => {
@@ -679,6 +685,16 @@ function ResponsiveAppBar() {
                             <GroupIcon fontSize="small" />
                           </ListItemIcon>
                           Équipe
+                        </MenuItem>
+                      )}
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleConnections}
+                          {...currentProps('connections')}>
+                          <ListItemIcon>
+                            <WifiTetheringIcon fontSize="small" />
+                          </ListItemIcon>
+                          Connexions
                         </MenuItem>
                       )}
                       <Divider />

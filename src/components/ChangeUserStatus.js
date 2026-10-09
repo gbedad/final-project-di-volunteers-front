@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import { sinceLabel } from './admin/Connections';
 import Card from '@mui/material/Card';
 
 import InputLabel from '@mui/material/InputLabel';
@@ -439,6 +440,10 @@ const ChangeUserStatus = () => {
                             <Chip size="small" label="Démo" sx={{ ml: 1 }} />
                           )}
                         </>
+                      }
+                      secondary={
+                        ['superadmin', 'admin'].includes(userLogged.user.role) &&
+                        `Dernière connexion : ${sinceLabel(user.last_seen_at)}`
                       }
                     />
                   </ListItem>

@@ -36,6 +36,7 @@ import MissionCard from './components/missions/MissionCard';
 import AdminFiles from './components/admin/AdminFiles';
 import Team from './components/admin/Team';
 import Analysis from './components/admin/Analysis';
+import Connections from './components/admin/Connections';
 import StudentsPage from './components/students/StudentsPage';
 import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
@@ -156,6 +157,7 @@ function App() {
             <Route path="/documents" element={<AdminFiles />} />
             <Route path="/equipe" element={<Team />} />
             <Route path="/analyse" element={<Analysis />} />
+            <Route path="/connexions" element={<Connections />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
             <Route path="/binomes" element={<PairsPage />} />
