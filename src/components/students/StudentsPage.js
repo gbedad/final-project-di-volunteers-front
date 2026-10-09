@@ -13,6 +13,8 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  IconButton,
+  InputAdornment,
   MenuItem,
   Stack,
   TextField,
@@ -21,6 +23,8 @@ import {
 } from '@mui/material';
 import { DataGrid, frFR } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import PageHeader from '../admin/PageHeader';
 import { RequestDialog } from './ParentalConsent';
@@ -60,9 +64,51 @@ const currentRole = () => {
 // Tranche of the participation: T1…T7, T8 (QF above 2 500 €), none (QF not
 // given), unknown (nothing entered yet)
 export const feeKey = (s) =>
-  !s.fee ? 'unknown' : s.fee.mode === 'term' ? `T${s.fee.tranche}` : s.fee.tranche ? 'T8' : 'none';
-const FEE_LABELS = { T8: 'Tranche 8 et plus', none: 'QF non communiqué', unknown: 'Participation non renseignée' };
+  !s.fee
+    ? 'unknown'
+    : s.fee.mode === 'term'
+      ? `T${s.fee.tranche}`
+      : s.fee.tranche
+        ? 'T8'
+        : 'none';
+const FEE_LABELS = {
+  T8: 'Tranche 8 et plus',
+  none: 'QF non communiqué',
+  unknown: 'Participation non renseignée',
+};
 const feeLabel = (k) => FEE_LABELS[k] || `Tranche ${k.slice(1)}`;
+
+// Search without accents or case: "zoe" finds "Zoé"
+const norm = (v) =>
+  String(v || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+// Name of the student or of a parent, school, parent's e-mail or phone
+const matchesText = (s, q) => {
+  const words = norm(q).split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  const text = norm(
+    [
+      s.first_name,
+      s.last_name,
+      s.school?.name,
+      s.school?.city,
+      s.parent1_firstname,
+      s.parent1_lastname,
+      s.parent1_email,
+      s.parent1_phone,
+      s.parent2_firstname,
+      s.parent2_lastname,
+      s.parent2_email,
+      s.parent2_phone,
+    ].join(' '),
+  );
+  const digits = text.replace(/[^\d]/g, '');
+  return words.every(
+    (w) => text.includes(w) || (/^\d{4,}$/.test(w) && digits.includes(w)),
+  );
+};
 
 const age = (birthDate) => {
   if (!birthDate) return '';
@@ -152,6 +198,7 @@ const StudentsPage = () => {
   const [showDemo, setShowDemo] = useSessionState('students.demo', true);
   const [consent, setConsent] = useSessionState('students.consent', null);
   const [tranche, setTranche] = useSessionState('students.tranche', null);
+  const [query, setQuery] = useSessionState('students.query', '');
   const [selection, setSelection] = useState([]);
   const [asking, setAsking] = useState(null);
   const canEdit = isManager(currentRole());
@@ -171,11 +218,12 @@ const StudentsPage = () => {
       (students || []).filter(
         (s) =>
           (showDemo || !s.is_demo) &&
+          matchesText(s, query) &&
           (!subject || (s.topics || []).some((t) => t.subject === subject)) &&
           (!level || s.level === level) &&
-          (!day || (s.when_day_slot || []).some((sl) => sl.day === day))
+          (!day || (s.when_day_slot || []).some((sl) => sl.day === day)),
       ),
-    [students, subject, level, day, showDemo]
+    [students, subject, level, day, showDemo, query],
   );
   const counts = useMemo(
     () =>
@@ -183,13 +231,13 @@ const StudentsPage = () => {
         acc[s.status] = (acc[s.status] || 0) + 1;
         return acc;
       }, {}),
-    [searched]
+    [searched],
   );
   const rows = searched.filter(
     (s) =>
       (!status || s.status === status) &&
       matchesConsentFilter(s, consent) &&
-      (!tranche || feeKey(s) === tranche)
+      (!tranche || feeKey(s) === tranche),
   );
   const selectedStudents = rows.filter((s) => selection.includes(s.id));
   const demoCount = (students || []).filter((s) => s.is_demo).length;
@@ -286,7 +334,13 @@ const StudentsPage = () => {
       width: 100,
       // Sort: tranches 1-7, then hourly (QF above 2 500 €, then not given)
       valueGetter: ({ row }) =>
-        !row.fee ? 99 : row.fee.mode === 'term' ? row.fee.tranche : row.fee.tranche ? 8 : 9,
+        !row.fee
+          ? 99
+          : row.fee.mode === 'term'
+            ? row.fee.tranche
+            : row.fee.tranche
+              ? 8
+              : 9,
       renderCell: ({ row }) =>
         !row.fee ? null : (
           <Tooltip
@@ -294,8 +348,8 @@ const StudentsPage = () => {
               row.fee.missing
                 ? 'Niveau à renseigner pour le tarif horaire'
                 : row.fee.mode === 'term'
-                ? `${row.fee.amount} € par trimestre`
-                : `${row.fee.amount} € de l'heure${row.fee.tranche ? '' : ' (QF non communiqué)'}`
+                  ? `${row.fee.amount} € par trimestre`
+                  : `${row.fee.amount} € de l'heure${row.fee.tranche ? '' : ' (QF non communiqué)'}`
             }>
             <Chip
               size="small"
@@ -304,8 +358,8 @@ const StudentsPage = () => {
                 row.fee.mode === 'term'
                   ? `T${row.fee.tranche}`
                   : row.fee.tranche
-                  ? 'T8 · horaire'
-                  : 'Sans QF'
+                    ? 'T8 · horaire'
+                    : 'Sans QF'
               }
             />
           </Tooltip>
@@ -340,7 +394,15 @@ const StudentsPage = () => {
     },
   ];
 
-  const filtered = !!(subject || level || day || status || consent || tranche);
+  const filtered = !!(
+    subject ||
+    level ||
+    day ||
+    status ||
+    consent ||
+    tranche ||
+    query
+  );
 
   return (
     <Container maxWidth="xxl" sx={{ mt: 4, mb: 4 }}>
@@ -408,6 +470,31 @@ const StudentsPage = () => {
         gap={1.5}
         alignItems="center"
         sx={{ mb: 2 }}>
+        <TextField
+          size="small"
+          label="Rechercher un élève"
+          placeholder="Nom, parent, établissement, téléphone…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          sx={{ width: 280 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            ),
+            endAdornment: query ? (
+              <InputAdornment position="end">
+                <IconButton
+                  size="small"
+                  onClick={() => setQuery('')}
+                  aria-label="Effacer">
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ) : null,
+          }}
+        />
         <Autocomplete
           size="small"
           options={SUBJECTS}
@@ -442,6 +529,7 @@ const StudentsPage = () => {
             setStatus(null);
             setConsent(null);
             setTranche(null);
+            setQuery('');
           }}>
           Réinitialiser
         </Button>
