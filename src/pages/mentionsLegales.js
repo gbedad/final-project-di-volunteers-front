@@ -86,6 +86,12 @@ const GeneralConditions = () => {
           possible de protection.
         </Typography>
         <Typography variant="body1" paragraph>
+          La date de dernière connexion et de dernière activité sur la
+          plateforme est enregistrée pour le suivi des bénévoles. Elle n'est
+          visible que par les administrateurs de l'association. Aucune autre
+          donnée de navigation n'est conservée.
+        </Typography>
+        <Typography variant="body1" paragraph>
           Les données sont conservées indéfiniment sauf vous sollicitez leur
           suppression en écrivant à{' '}
           <Link
