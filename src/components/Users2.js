@@ -1175,7 +1175,14 @@ export default function DataGridDemo(props) {
       />
       <Box sx={{ height: 'auto', width: '100%' }}>
         <FullEditDataGrid
-          onRowDoubleClick={handleRowClick}
+          // One click opens the volunteer's page, as on the students list;
+          // the tick box only selects (the e-mail and WhatsApp buttons stop
+          // the click themselves)
+          onCellClick={(params) => {
+            if (params.field === '__check__') return;
+            handleRowClick(params);
+          }}
+          sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
           {...rows}
           // slots={{
           //   toolbar: CustomToolbar,
