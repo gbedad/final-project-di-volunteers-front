@@ -209,6 +209,13 @@ export const RequestDialog = ({ student, open, onClose, onSent }) => {
                 />
               </RadioGroup>
             </Box>
+            {(!student.fee || student.fee.missing) && (
+              <Alert severity="warning">
+                La participation aux frais n'est pas encore calculée (bloc
+                « Participation aux frais ») : l'accord ne mentionnera aucun
+                montant.
+              </Alert>
+            )}
             {!student.birth_date && (
               <Alert severity="info">
                 Sans date de naissance de l'élève sur la fiche, le parent n'aura

@@ -129,6 +129,25 @@ const StudentAnalysis = () => {
     navigate('/eleves');
   };
 
+  // Students of the list in one tranche of the participation
+  const openTranche = (key) => {
+    const keys = {
+      'students.subject': null,
+      'students.level': null,
+      'students.day': null,
+      'students.status': null,
+      'students.consent': null,
+      'students.tranche': key,
+      'students.demo': includeDemo,
+    };
+    try {
+      Object.entries(keys).forEach(([k, v]) =>
+        sessionStorage.setItem(k, JSON.stringify(v))
+      );
+    } catch {}
+    navigate('/eleves');
+  };
+
   // Students of the list filtered on their parental consent
   const openConsent = (value) => {
     const keys = {
@@ -155,7 +174,8 @@ const StudentAnalysis = () => {
     );
   }
   if (!data) return <LinearProgress />;
-  const { requests, gap, pairs, profile, consent } = data;
+  const { requests, gap, pairs, profile, consent, fees } = data;
+  const euro = (n) => `${Number(n || 0).toLocaleString('fr-FR', { maximumFractionDigits: 2 })} €`;
   const maxHours = Math.max(1, ...pairs.hoursByMonth.map((m) => m.hours));
 
   return (
@@ -396,6 +416,104 @@ const StudentAnalysis = () => {
             )}
           </Section>
         </Grid>
+        {fees && (
+          <Grid item xs={12}>
+            <Section
+              title="Participation aux frais"
+              subtitle={`Demandes en cours, ${fees.term}. Tranches 1 à 7 : montant fixe par trimestre ; au-delà ou sans QF : à l'heure, selon les comptes-rendus de séance.`}>
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={6} md={3}>
+                  <Kpi
+                    label="Participations du trimestre"
+                    value={euro(fees.termTotal)}
+                    detail="tranches 1 à 7, binômes en cours"
+                  />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <Kpi
+                    label="Cautions"
+                    value={euro(fees.deposits)}
+                    detail="tranches 1 à 7, binômes en cours"
+                  />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <Kpi
+                    label="Dû à l'heure ce trimestre"
+                    value={euro(fees.hourlyDue)}
+                    detail={`${String(fees.hourlyHours).replace('.', ',')} h de tutorat réalisées`}
+                  />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <Kpi
+                    label="Participation à renseigner"
+                    value={fees.missing}
+                    detail="QF ou niveau manquant"
+                  />
+                </Grid>
+              </Grid>
+              <Typography variant="subtitle2" sx={{ mt: 3, mb: 1 }}>
+                Répartition par tranche de QF
+              </Typography>
+              <Box sx={{ overflowX: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Tranche</TableCell>
+                      <TableCell>Quotient familial</TableCell>
+                      <TableCell>Participation</TableCell>
+                      <TableCell align="right">Élèves</TableCell>
+                      <TableCell sx={{ width: '30%' }} />
+                      <TableCell align="right">
+                        <Tooltip title="Si toutes les demandes en cours de la tranche ont un binôme ce trimestre">
+                          <span>Potentiel / trimestre</span>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(fees.table || []).map((t) => {
+                      const all = fees.table.reduce((n, x) => n + x.count, 0) || 1;
+                      const pct = Math.round((t.count / all) * 100);
+                      return (
+                        <TableRow
+                          key={t.key}
+                          hover={t.count > 0}
+                          onClick={t.count ? () => openTranche(t.key) : undefined}
+                          sx={{ cursor: t.count ? 'pointer' : 'default', opacity: t.count ? 1 : 0.55 }}>
+                          <TableCell sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{t.label}</TableCell>
+                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{t.range}</TableCell>
+                          <TableCell>{t.rate}</TableCell>
+                          <TableCell align="right">{t.count}</TableCell>
+                          <TableCell>
+                            <Tooltip title={`${pct} % des demandes en cours`}>
+                              <Box sx={{ bgcolor: 'action.hover', borderRadius: 1, height: 14 }}>
+                                <Box
+                                  sx={{
+                                    width: `${pct}%`,
+                                    minWidth: t.count ? 4 : 0,
+                                    height: '100%',
+                                    borderRadius: 1,
+                                    bgcolor: t.key === 'unknown' ? 'grey.400' : 'primary.main',
+                                  }}
+                                />
+                              </Box>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell align="right">
+                            {t.total === undefined ? '—' : euro(t.total)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </Box>
+              <Typography variant="caption" color="text.secondary">
+                Cliquez sur une tranche pour voir ses élèves.
+              </Typography>
+            </Section>
+          </Grid>
+        )}
         <Grid item xs={12} md={6}>
           <Section title="Niveaux">
             <Bars items={profile.byLevel} />

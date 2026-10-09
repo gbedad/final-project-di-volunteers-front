@@ -32,6 +32,7 @@ import SlotsEditor from './SlotsEditor';
 import TopicsEditor from './TopicsEditor';
 import StudentPairs from './StudentPairs';
 import ParentalConsent from './ParentalConsent';
+import StudentFees from './StudentFees';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -90,10 +91,27 @@ const StudentPage = () => {
   const load = useCallback(() => {
     axios
       .get(`${BASE_URL}/admin/students/${id}`)
-      .then(({ data }) => setStudent(data))
+      // Amounts come as "3100.00": shown as 3100
+      .then(({ data }) =>
+        setStudent({
+          ...data,
+          qf: data.qf === null ? null : Number(data.qf),
+          fee_override: data.fee_override === null ? null : Number(data.fee_override),
+        })
+      )
       .catch(() => setError(true));
   }, [id]);
   useEffect(load, [load]);
+  // The participation is computed by the server: reloaded after each save
+  useEffect(() => {
+    if (saveState !== 'saved') return;
+    axios
+      .get(`${BASE_URL}/admin/students/${id}`)
+      .then(({ data }) =>
+        setStudent((s) => ({ ...s, fee: data.fee, fee_terms: data.fee_terms }))
+      )
+      .catch(() => {});
+  }, [saveState, id]);
   // A pair accepted, paused or ended changes the student's status
   const reloadStatus = () =>
     axios
@@ -111,9 +129,10 @@ const StudentPage = () => {
   if (!student) return <LinearProgress sx={{ mt: 4 }} />;
 
   // Local update + autosave; text fields are sent while typing
-  const set = (field, value) => {
+  // save false: local value only (e.g. a file the server already saved)
+  const set = (field, value, save = true) => {
     setStudent((s) => ({ ...s, [field]: value }));
-    if (canEdit) schedule({ [field]: value });
+    if (canEdit && save) schedule({ [field]: value });
   };
   const text = (field, label, props = {}) => (
     <TextField
@@ -320,6 +339,11 @@ const StudentPage = () => {
               canEdit={canEdit}
               onChanged={reloadStatus}
             />
+          </Block>
+          <Block
+            title="Participation aux frais"
+            note="Selon le quotient familial (QF) de la famille.">
+            <StudentFees student={student} canEdit={canEdit} set={set} />
           </Block>
           <Block
             title="Accord des parents"

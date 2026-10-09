@@ -191,6 +191,9 @@ const ConsentPage = () => {
       const { data } = await axios.post(`${BASE_URL}/consentement/${token}`, {
         ...form,
         signature,
+        // Lets the server check the amount read is still the current one
+        participation_text:
+          items.find((i) => i.id === 'participation')?.text || null,
       });
       setDone(data);
       window.scrollTo(0, 0);
@@ -198,6 +201,15 @@ const ConsentPage = () => {
       const data = err.response?.data || {};
       if (data.state && data.state !== 'pending' && CLOSED[data.state]) {
         setPage({ state: data.state });
+      } else if (data.code === 'fee_changed') {
+        // New amount: shown again, to be ticked again
+        setError(data.error);
+        const { data: fresh } = await axios.get(`${BASE_URL}/consentement/${token}`);
+        setPage(fresh);
+        setForm((f) => {
+          const { participation, ...choices } = f.choices;
+          return { ...f, choices };
+        });
       } else {
         setError(data.error || 'Une erreur est survenue. Merci de réessayer.');
       }
@@ -242,7 +254,7 @@ const ConsentPage = () => {
           </Typography>
           <Typography sx={{ mt: 1 }}>
             L'association Séphora Berrebi va proposer à <b>{page.child}</b> un
-            accompagnement scolaire gratuit, assuré par un tuteur bénévole.
+            accompagnement scolaire, assuré par un tuteur bénévole.
             Pour commencer, nous avons besoin de votre accord. Lisez, cochez,
             puis signez en bas de la page.
           </Typography>

@@ -57,6 +57,13 @@ const currentRole = () => {
   }
 };
 
+// Tranche of the participation: T1…T7, T8 (QF above 2 500 €), none (QF not
+// given), unknown (nothing entered yet)
+export const feeKey = (s) =>
+  !s.fee ? 'unknown' : s.fee.mode === 'term' ? `T${s.fee.tranche}` : s.fee.tranche ? 'T8' : 'none';
+const FEE_LABELS = { T8: 'Tranche 8 et plus', none: 'QF non communiqué', unknown: 'Participation non renseignée' };
+const feeLabel = (k) => FEE_LABELS[k] || `Tranche ${k.slice(1)}`;
+
 const age = (birthDate) => {
   if (!birthDate) return '';
   const b = new Date(birthDate);
@@ -144,6 +151,7 @@ const StudentsPage = () => {
   const [day, setDay] = useSessionState('students.day', null);
   const [showDemo, setShowDemo] = useSessionState('students.demo', true);
   const [consent, setConsent] = useSessionState('students.consent', null);
+  const [tranche, setTranche] = useSessionState('students.tranche', null);
   const [selection, setSelection] = useState([]);
   const [asking, setAsking] = useState(null);
   const canEdit = isManager(currentRole());
@@ -178,7 +186,10 @@ const StudentsPage = () => {
     [searched]
   );
   const rows = searched.filter(
-    (s) => (!status || s.status === status) && matchesConsentFilter(s, consent)
+    (s) =>
+      (!status || s.status === status) &&
+      matchesConsentFilter(s, consent) &&
+      (!tranche || feeKey(s) === tranche)
   );
   const selectedStudents = rows.filter((s) => selection.includes(s.id));
   const demoCount = (students || []).filter((s) => s.is_demo).length;
@@ -269,6 +280,38 @@ const StudentsPage = () => {
         ) : null,
     },
     {
+      field: 'fee',
+      headerName: 'Tranche',
+      description: 'Participation aux frais selon le quotient familial',
+      width: 100,
+      // Sort: tranches 1-7, then hourly (QF above 2 500 €, then not given)
+      valueGetter: ({ row }) =>
+        !row.fee ? 99 : row.fee.mode === 'term' ? row.fee.tranche : row.fee.tranche ? 8 : 9,
+      renderCell: ({ row }) =>
+        !row.fee ? null : (
+          <Tooltip
+            title={
+              row.fee.missing
+                ? 'Niveau à renseigner pour le tarif horaire'
+                : row.fee.mode === 'term'
+                ? `${row.fee.amount} € par trimestre`
+                : `${row.fee.amount} € de l'heure${row.fee.tranche ? '' : ' (QF non communiqué)'}`
+            }>
+            <Chip
+              size="small"
+              variant="outlined"
+              label={
+                row.fee.mode === 'term'
+                  ? `T${row.fee.tranche}`
+                  : row.fee.tranche
+                  ? 'T8 · horaire'
+                  : 'Sans QF'
+              }
+            />
+          </Tooltip>
+        ),
+    },
+    {
       field: 'consent',
       headerName: 'Accord',
       description: 'Accord des parents',
@@ -297,7 +340,7 @@ const StudentsPage = () => {
     },
   ];
 
-  const filtered = !!(subject || level || day || status || consent);
+  const filtered = !!(subject || level || day || status || consent || tranche);
 
   return (
     <Container maxWidth="xxl" sx={{ mt: 4, mb: 4 }}>
@@ -398,9 +441,17 @@ const StudentsPage = () => {
             setDay(null);
             setStatus(null);
             setConsent(null);
+            setTranche(null);
           }}>
           Réinitialiser
         </Button>
+        {tranche && (
+          <Chip
+            label={feeLabel(tranche)}
+            onDelete={() => setTranche(null)}
+            color="primary"
+          />
+        )}
         <Typography variant="body2" sx={{ ml: 1 }}>
           <b>
             {rows.length} élève{rows.length > 1 ? 's' : ''}
