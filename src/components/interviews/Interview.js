@@ -104,7 +104,7 @@ const SENSITIVE = [
   ['vie familiale', /(divorc|séparée? de|veu(f|ve)|conjoint|\b(ses|sa|son|leurs?)\s+(\S+\s+)?(fils|filles?|garçons|enfants|petits-enfants)\b|nièce|neveu)/iu],
   ['âge', /(^|\D)\d{2}\s?ans\b/i],
 ];
-const sensitiveHint = (text) => {
+export const sensitiveHint = (text) => {
   const found = SENSITIVE.filter(([, re]) => re.test(text || '')).map(
     ([l]) => l
   );

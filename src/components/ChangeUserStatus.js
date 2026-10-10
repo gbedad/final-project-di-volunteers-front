@@ -65,7 +65,10 @@ import FormInterviewComponent, {
 } from './interviews/Interview';
 
 // import TopicGradeComponent from '../components/TopicGrade';
-import PreInterviewComponent from './interviews/PreInterview';
+import PreInterviewComponent, {
+  FirstContactSummary,
+  STATUS_EVENT,
+} from './interviews/PreInterview';
 import DiscussionThread from './interviews/DiscussionThread';
 import WhatsAppButton from './WhatsAppButton';
 import ConventionSteps from './application/ConventionSteps';
@@ -246,6 +249,13 @@ const ChangeUserStatus = () => {
 
   // Saved as soon as it is chosen, like the rest of the page; a status that
   // emails the volunteer is confirmed first
+  // "Premier contact" asks for a new status (confirmed over there)
+  useEffect(() => {
+    const onRequest = (e) => saveStatus(e.detail);
+    window.addEventListener(STATUS_EVENT, onRequest);
+    return () => window.removeEventListener(STATUS_EVENT, onRequest);
+  });
+
   const handleStatusChange = (e) => {
     const value = e.target.value;
     if (EMAIL_STATUSES.includes(value) && value !== status) {
@@ -793,12 +803,17 @@ const ChangeUserStatus = () => {
                 </Box>
                 <Stack
                   direction="row"
-                  spacing={1}
+                  flexWrap="wrap"
+                  useFlexGap
+                  gap={1}
                   alignItems="center"
                   sx={{ minHeight: 24 }}>
                   <SaveStatus state={statusSave} />
                   {userLogged.user.role !== 'volunteer' && (
-                    <LatestRecommendation userId={user.id} />
+                    <>
+                      <FirstContactSummary userId={user.id} />
+                      <LatestRecommendation userId={user.id} />
+                    </>
                   )}
                 </Stack>
                 {/* Former volunteer: archived, or button to archive */}
