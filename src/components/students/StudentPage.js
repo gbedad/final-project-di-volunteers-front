@@ -9,11 +9,13 @@ import {
   Button,
   Chip,
   Container,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
   Grid,
   LinearProgress,
   MenuItem,
@@ -96,7 +98,8 @@ const StudentPage = () => {
         setStudent({
           ...data,
           qf: data.qf === null ? null : Number(data.qf),
-          fee_override: data.fee_override === null ? null : Number(data.fee_override),
+          fee_override:
+            data.fee_override === null ? null : Number(data.fee_override),
         })
       )
       .catch(() => setError(true));
@@ -366,6 +369,21 @@ const StudentPage = () => {
             )}
             {select('priority', 'Priorité', PRIORITIES)}
             {text('comment', 'Note interne', { multiline: true, minRows: 3 })}
+            <FormControlLabel
+              disabled={!canEdit}
+              control={
+                <Checkbox
+                  size="small"
+                  checked={!!student.is_demo}
+                  onChange={(e) => set('is_demo', e.target.checked)}
+                />
+              }
+              label={
+                <Typography variant="body2">
+                  Élève de démonstration (pour les essais)
+                </Typography>
+              }
+            />
           </Block>
           {canEdit && (
             <Button

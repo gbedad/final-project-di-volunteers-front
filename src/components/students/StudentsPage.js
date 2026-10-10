@@ -12,7 +12,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Checkbox,
   Divider,
+  FormControlLabel,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -102,11 +104,11 @@ const matchesText = (s, q) => {
       s.parent2_lastname,
       s.parent2_email,
       s.parent2_phone,
-    ].join(' '),
+    ].join(' ')
   );
   const digits = text.replace(/[^\d]/g, '');
   return words.every(
-    (w) => text.includes(w) || (/^\d{4,}$/.test(w) && digits.includes(w)),
+    (w) => text.includes(w) || (/^\d{4,}$/.test(w) && digits.includes(w))
   );
 };
 
@@ -126,6 +128,7 @@ const NewStudentDialog = ({ open, onClose }) => {
     first_name: '',
     last_name: '',
     level: '',
+    is_demo: false,
   });
   const [saving, setSaving] = useState(false);
   const create = async () => {
@@ -168,6 +171,22 @@ const NewStudentDialog = ({ open, onClose }) => {
               </MenuItem>
             ))}
           </TextField>
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={form.is_demo}
+                onChange={(e) =>
+                  setForm({ ...form, is_demo: e.target.checked })
+                }
+              />
+            }
+            label={
+              <Typography variant="body2">
+                Élève de démonstration (pour les essais)
+              </Typography>
+            }
+          />
           <Typography variant="caption" color="text.secondary">
             La fiche s'ouvre ensuite pour compléter les besoins, les
             disponibilités et les responsables.
@@ -221,9 +240,9 @@ const StudentsPage = () => {
           matchesText(s, query) &&
           (!subject || (s.topics || []).some((t) => t.subject === subject)) &&
           (!level || s.level === level) &&
-          (!day || (s.when_day_slot || []).some((sl) => sl.day === day)),
+          (!day || (s.when_day_slot || []).some((sl) => sl.day === day))
       ),
-    [students, subject, level, day, showDemo, query],
+    [students, subject, level, day, showDemo, query]
   );
   const counts = useMemo(
     () =>
@@ -231,13 +250,13 @@ const StudentsPage = () => {
         acc[s.status] = (acc[s.status] || 0) + 1;
         return acc;
       }, {}),
-    [searched],
+    [searched]
   );
   const rows = searched.filter(
     (s) =>
       (!status || s.status === status) &&
       matchesConsentFilter(s, consent) &&
-      (!tranche || feeKey(s) === tranche),
+      (!tranche || feeKey(s) === tranche)
   );
   const selectedStudents = rows.filter((s) => selection.includes(s.id));
   const demoCount = (students || []).filter((s) => s.is_demo).length;

@@ -43,6 +43,7 @@ const BulkActions = ({ rows, onDone }) => {
   const [statusMenu, setStatusMenu] = useState(null);
   // { label, changes } waiting for confirmation
   const [pending, setPending] = useState(null);
+  const [demoMenu, setDemoMenu] = useState(null);
   const [saving, setSaving] = useState(false);
   const [archiving, setArchiving] = useState(false);
   const [blocked, setBlocked] = useState([]);
@@ -179,6 +180,12 @@ const BulkActions = ({ rows, onDone }) => {
             </Button>
             <Button
               variant="outlined"
+              endIcon={<ArrowDropDownIcon />}
+              onClick={(e) => setDemoMenu(e.currentTarget)}>
+              Démo
+            </Button>
+            <Button
+              variant="outlined"
               color="warning"
               startIcon={<ArchiveIcon />}
               onClick={() => {
@@ -194,6 +201,32 @@ const BulkActions = ({ rows, onDone }) => {
         </Button>
       </Stack>
 
+      <Menu
+        anchorEl={demoMenu}
+        open={!!demoMenu}
+        onClose={() => setDemoMenu(null)}>
+        <MenuItem
+          onClick={() => {
+            setDemoMenu(null);
+            setPending({
+              label:
+                'être marqué(s) « Démo » (tuteurs fictifs, exclus de l’analyse)',
+              changes: { is_demo: true },
+            });
+          }}>
+          Marquer comme démo
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setDemoMenu(null);
+            setPending({
+              label: 'ne plus être marqué(s) « Démo »',
+              changes: { is_demo: false },
+            });
+          }}>
+          Retirer le marquage démo
+        </MenuItem>
+      </Menu>
       <Menu
         anchorEl={statusMenu}
         open={!!statusMenu}

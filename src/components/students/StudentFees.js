@@ -74,7 +74,7 @@ const StudentFees = ({ student, canEdit, set }) => {
     try {
       const { data } = await axios.post(
         `${BASE_URL}/admin/students/${student.id}/qf-proof`,
-        form,
+        form
       );
       set('qf_file', data, false);
       toast.success('Justificatif enregistré', { position: 'bottom-left' });

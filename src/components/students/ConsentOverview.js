@@ -139,7 +139,7 @@ export const BulkConsentButton = ({ students, onDone }) => {
         err.response?.data?.error || "Les demandes n'ont pas pu être envoyées",
         {
           position: 'bottom-left',
-        },
+        }
       );
     } finally {
       setSending(false);

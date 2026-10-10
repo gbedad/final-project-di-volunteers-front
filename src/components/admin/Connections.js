@@ -120,7 +120,7 @@ const Connections = () => {
         setError(false);
       })
       .catch((err) =>
-        setError(err.response?.status === 403 ? 'forbidden' : true),
+        setError(err.response?.status === 403 ? 'forbidden' : true)
       );
   }, []);
   useEffect(() => {
@@ -133,7 +133,7 @@ const Connections = () => {
     (u) =>
       !!u.last_seen_at &&
       now - new Date(u.last_seen_at) < (data?.online_minutes || 5) * MINUTE,
-    [now, data],
+    [now, data]
   );
   const inPeriod = useCallback(
     (u, p) => {
@@ -148,7 +148,7 @@ const Connections = () => {
       }
       return now - new Date(u.last_seen_at) < 7 * DAY;
     },
-    [isOnline, now],
+    [isOnline, now]
   );
 
   const hasTeam = !!data?.team;
@@ -156,7 +156,7 @@ const Connections = () => {
     hasTeam && tab === 'team' ? data.team : data?.volunteers || [];
   const rows = useMemo(
     () => current.filter((u) => inPeriod(u, period)),
-    [current, period, inPeriod],
+    [current, period, inPeriod]
   );
 
   const openVolunteer = (u) =>
@@ -232,7 +232,7 @@ const Connections = () => {
     PERIODS.map((p) => [
       p.value,
       current.filter((u) => inPeriod(u, p.value)).length,
-    ]),
+    ])
   );
   const onlineTeam = (data?.team || []).filter(isOnline);
   const onlineVolunteers = (data?.volunteers || []).filter(isOnline);
@@ -274,7 +274,10 @@ const Connections = () => {
           </Grid>
 
           {hasTeam && (
-            <Tabs value={tab} onChange={(e, v) => setTab(v)} sx={{ mb: 2, mt: -1 }}>
+            <Tabs
+              value={tab}
+              onChange={(e, v) => setTab(v)}
+              sx={{ mb: 2, mt: -1 }}>
               <Tab value="team" label={`Équipe (${data.team.length})`} />
               <Tab
                 value="volunteers"

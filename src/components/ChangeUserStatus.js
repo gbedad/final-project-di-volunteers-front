@@ -26,7 +26,6 @@ import CategoryIcon from '@mui/icons-material/Category';
 import MapIcon from '@mui/icons-material/Map';
 import Typography from '@mui/material/Typography';
 
-
 // import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 // import DraftsIcon from '@mui/icons-material/Drafts';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
@@ -135,7 +134,6 @@ const ChangeUserStatus = () => {
   // const [newIsActive, setNewIsActive] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-
   // const [openPopper, setOpenPopper] = React.useState(false);
   // const [placement, setPlacement] = React.useState();
   const userLogged = JSON.parse(localStorage.getItem('user'));
@@ -199,7 +197,6 @@ const ChangeUserStatus = () => {
       console.error(err);
     }
   };
-
 
   // console.log(userLogged, state);
   // const handleEditUserProfile = () => {
@@ -322,7 +319,11 @@ const ChangeUserStatus = () => {
     } catch (err) {
       const data = err.response?.data;
       setArchiveBlocked([
-        { id: user.id, error: data?.error || 'Archivage impossible', openPairs: data?.openPairs },
+        {
+          id: user.id,
+          error: data?.error || 'Archivage impossible',
+          openPairs: data?.openPairs,
+        },
       ]);
     }
   };
@@ -442,7 +443,9 @@ const ChangeUserStatus = () => {
                         </>
                       }
                       secondary={
-                        ['superadmin', 'admin'].includes(userLogged.user.role) &&
+                        ['superadmin', 'admin'].includes(
+                          userLogged.user.role
+                        ) &&
                         `Dernière connexion : ${sinceLabel(user.last_seen_at)}`
                       }
                     />
@@ -796,7 +799,10 @@ const ChangeUserStatus = () => {
                     sx={{ mt: 1 }}
                     action={
                       isManager(userLogged.user.role) && (
-                        <Button color="inherit" size="small" onClick={unarchive}>
+                        <Button
+                          color="inherit"
+                          size="small"
+                          onClick={unarchive}>
                           Désarchiver
                         </Button>
                       )
@@ -808,17 +814,53 @@ const ChangeUserStatus = () => {
                   </Alert>
                 ) : (
                   isManager(userLogged.user.role) && (
-                    <Button
-                      size="small"
-                      color="warning"
-                      startIcon={<ArchiveIcon />}
-                      sx={{ mt: 1, alignSelf: 'flex-start' }}
-                      onClick={() => {
-                        setArchiveBlocked([]);
-                        setArchiving(true);
-                      }}>
-                      Archiver ce bénévole
-                    </Button>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      flexWrap="wrap"
+                      sx={{ mt: 1 }}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            size="small"
+                            checked={!!user.is_demo}
+                            onChange={async (e) => {
+                              const is_demo = e.target.checked;
+                              // Shown at once, put back if the save fails
+                              setUser((u) => ({ ...u, is_demo }));
+                              try {
+                                await axios.patch(
+                                  `${BASE_URL}/admin/users/bulk`,
+                                  { ids: [user.id], is_demo }
+                                );
+                              } catch {
+                                setUser((u) => ({ ...u, is_demo: !is_demo }));
+                                toast.error('Modification impossible', {
+                                  position: 'bottom-left',
+                                });
+                              }
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            Tuteur de démonstration
+                          </Typography>
+                        }
+                      />
+                      <Button
+                        size="small"
+                        color="warning"
+                        startIcon={<ArchiveIcon />}
+                        sx={{ alignSelf: 'center' }}
+                        onClick={() => {
+                          setArchiveBlocked([]);
+                          setArchiving(true);
+                        }}>
+                        Archiver ce bénévole
+                      </Button>
+                    </Stack>
                   )
                 )}
                 <ArchiveDialog
@@ -926,9 +968,9 @@ const ChangeUserStatus = () => {
                       {!user.skill.availability
                         ? ''
                         : user.skill.availability.min ===
-                          user.skill.availability.max
-                        ? `Peut effectuer ${user.skill.availability.min}  heure(s) hebdomadaire(s)`
-                        : `Peut effectuer ${user.skill.availability.min} à ${user.skill.availability.max} heures hebdomadaires`}
+                            user.skill.availability.max
+                          ? `Peut effectuer ${user.skill.availability.min}  heure(s) hebdomadaire(s)`
+                          : `Peut effectuer ${user.skill.availability.min} à ${user.skill.availability.max} heures hebdomadaires`}
                     </Typography>
                   </Box>
                   <Box mt={2}>
@@ -1018,7 +1060,9 @@ const ChangeUserStatus = () => {
                 userId={user.id}
                 admin={isManager(userLogged.user.role)}
                 onValidate={
-                  isManager(userLogged.user.role) ? validateApplication : undefined
+                  isManager(userLogged.user.role)
+                    ? validateApplication
+                    : undefined
                 }
               />
             </BorderedBoxWithLabel>
