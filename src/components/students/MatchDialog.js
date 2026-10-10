@@ -19,18 +19,23 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { MODALITIES } from '../../js/studentOptions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const slotText = (s) => `${s.day} ${s.startTime}–${s.endTime}`;
 
+// ok: true (met), false (not met), null (not known)
 const Criterion = ({ ok, children }) => (
   <Stack direction="row" spacing={0.5} alignItems="center">
-    {ok ? (
+    {ok === null ? (
+      <HelpOutlineIcon fontSize="small" color="disabled" />
+    ) : ok ? (
       <CheckIcon fontSize="small" color="success" />
     ) : (
       <CloseIcon fontSize="small" color="error" />
@@ -312,6 +317,22 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
                           {m.capacity.free > 1 ? 's' : ''} sur{' '}
                           {m.capacity.total}
                         </Criterion>
+                        {m.difficulty && (
+                          <Tooltip title="L'élève a des besoins particuliers : critère tiré du dernier entretien du tuteur (jusqu'à 5 points ; valeur neutre de 2,5 points s'il n'a pas été évalué)">
+                            <span>
+                              <Criterion
+                                ok={
+                                  m.difficulty.followup
+                                    ? m.difficulty.points > 0
+                                    : null
+                                }>
+                                {m.difficulty.followup
+                                  ? `Élèves en grande difficulté : ${m.difficulty.followup.toLowerCase()}`
+                                  : 'Élèves en grande difficulté : non évalué en entretien'}
+                              </Criterion>
+                            </span>
+                          </Tooltip>
+                        )}
                       </Stack>
                     </Box>
                     <Button variant="outlined" onClick={() => setChosen(m)}>
