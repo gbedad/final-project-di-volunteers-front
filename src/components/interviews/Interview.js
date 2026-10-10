@@ -15,6 +15,8 @@ import {
   InputLabel,
   FormControlLabel,
   Switch,
+  Alert,
+  FormHelperText,
 } from '@mui/material';
 // import Zoom from '@mui/material/Zoom';
 import Fab from '@mui/material/Fab';
@@ -108,6 +110,52 @@ const fabStyle = {
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+// Assessments about what the mission needs, not verdicts on the person: the
+// volunteer may read everything recorded about them (RGPD, right of access)
+const FOLLOWUP_VALUES = ['Oui', 'Avec accompagnement', 'Pas pour le moment'];
+const FRENCH_VALUES = ['Vérifiée', 'À vérifier', 'Attestée par les écrits'];
+const RECOMMENDATION_VALUES = ['À retenir', 'Ne pas retenir', 'À revoir'];
+const EXPERIENCE_VALUES = ['Confirmée', 'Quelques expériences', 'Débutant(e)'];
+const FOLLOWUP_MAP = {
+  'Pourquoi pas': 'Avec accompagnement',
+  'A éviter': 'Pas pour le moment',
+  'À éviter': 'Pas pour le moment',
+  Non: 'Pas pour le moment',
+};
+const FRENCH_MAP = {
+  Requis: 'À vérifier',
+  'Pas nécessaire': 'Attestée par les écrits',
+  'Non nécessaire': 'Attestée par les écrits',
+};
+const RECOMMENDATION_MAP = {
+  'A recruter': 'À retenir',
+  'A ne pas recruter': 'Ne pas retenir',
+  NSP: 'À revoir',
+};
+const modernize = (iv) => ({
+  ...iv,
+  followup: FOLLOWUP_MAP[iv.followup] || iv.followup,
+  test: FRENCH_MAP[iv.test] || iv.test,
+  recommendation: RECOMMENDATION_MAP[iv.recommendation] || iv.recommendation,
+});
+
+// Data that must not be written in an interview report (special categories,
+// family life, age…): a reminder, never a block
+const SENSITIVE = [
+  ['santé', /(malade|maladie|santé|enceinte|grossesse|cancer|dépression|déprim|médica|traitement médical|hospitalis|burn.?out|thérapie)/i],
+  ['religion', /(religi|musulman|juif|juive|chrétien|catholique|protestant|bouddhiste|voilée?\b|kippa|ramadan|shabbat|mosquée|église|synagogue)/i],
+  ['origine', /(origine|nationalité|étranger|étrangère|immigr|ethni|couleur de peau|accent)/iu],
+  ['opinions', /(politique|syndica|militant)/i],
+  ['vie familiale', /(divorc|séparée? de|veu(f|ve)|conjoint|\b(ses|sa|son|leurs?)\s+(\S+\s+)?(fils|filles?|garçons|enfants|petits-enfants)\b|nièce|neveu)/iu],
+  ['âge', /(^|\D)\d{2}\s?ans\b/i],
+];
+const sensitiveHint = (text) => {
+  const found = SENSITIVE.filter(([, re]) => re.test(text || '')).map(([l]) => l);
+  return found.length
+    ? `À vérifier : ce texte semble mentionner ${found.join(', ')}. N'écrivez que ce qui est utile à la mission.`
+    : '';
+};
+
 const FormInterviewComponent = ({ userId }) => {
   const location = useLocation();
   // eslint-disable-next-line no-unused-vars
@@ -140,9 +188,12 @@ const FormInterviewComponent = ({ userId }) => {
       );
       // console.log(response.data);
       if (response.data.interviews) {
-        const parsed_array = response.data.interviews.map((string) =>
-          JSON.parse(string)
-        );
+        // Former wording shown with the current one
+        const parsed_array = response.data.interviews.map((string) => {
+          let v = string;
+          for (let i = 0; i < 3 && typeof v === 'string'; i += 1) v = JSON.parse(v);
+          return modernize(v);
+        });
         setInterviews(parsed_array);
         setIsLoading(false);
         setShowButton(false);
@@ -419,6 +470,13 @@ const FormInterviewComponent = ({ userId }) => {
                 <Typography variant="h6">Détails</Typography>
               </AccordionSummary>
               <AccordionDetails>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  Notez uniquement ce qui est utile à la mission : expérience,
+                  pédagogie, disponibilités, points d'attention pour le
+                  tutorat. Pas d'âge, de santé, de religion, d'opinions,
+                  d'origine ni de vie familiale. Le bénévole peut demander à
+                  lire ce compte-rendu.
+                </Alert>
                 <Grid item xs={12}>
                   <FormControl
                     sx={{
@@ -435,6 +493,8 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.motivation}
+                      helperText={sensitiveHint(interview.motivation)}
+                      FormHelperTextProps={{ sx: { color: 'warning.dark' } }}
                       onChange={(e) =>
                         handleInterviewChange(
                           'motivation',
@@ -465,6 +525,8 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.experience}
+                      helperText={sensitiveHint(interview.experience)}
+                      FormHelperTextProps={{ sx: { color: 'warning.dark' } }}
                       onChange={(e) =>
                         handleInterviewChange(
                           'experience',
@@ -499,6 +561,8 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.how_tutoring}
+                      helperText={sensitiveHint(interview.how_tutoring)}
+                      FormHelperTextProps={{ sx: { color: 'warning.dark' } }}
                       onChange={(e) =>
                         handleInterviewChange(
                           'how_tutoring',
@@ -529,6 +593,8 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.personal_questions}
+                      helperText={sensitiveHint(interview.personal_questions)}
+                      FormHelperTextProps={{ sx: { color: 'warning.dark' } }}
                       onChange={(e) =>
                         handleInterviewChange(
                           'personal_questions',
@@ -559,6 +625,8 @@ const FormInterviewComponent = ({ userId }) => {
                       minRows={1}
                       placeholder=""
                       value={interview.content}
+                      helperText={sensitiveHint(interview.content)}
+                      FormHelperTextProps={{ sx: { color: 'warning.dark' } }}
                       // onChange={(e) =>
                       //   handleInterviewChange(e.target.value, index)
                       // }
@@ -574,8 +642,8 @@ const FormInterviewComponent = ({ userId }) => {
               </AccordionDetails>
             </Accordion>
             <Grid item={12}>
-              <Stack direction="row" spacing={2} mb={2} mt={2}>
-                <FormControl required sx={{ m: 1, width: 300 }}>
+              <Stack direction="row" flexWrap="wrap" useFlexGap spacing={1} mb={2} mt={2}>
+                <FormControl required sx={{ m: 1, flex: '1 1 240px', minWidth: 0 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Recommandation
                   </InputLabel>
@@ -583,7 +651,7 @@ const FormInterviewComponent = ({ userId }) => {
                   <Select
                     size="small"
                     notched
-                    autoWidth
+                    fullWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     label="Recommandation *"
@@ -595,14 +663,14 @@ const FormInterviewComponent = ({ userId }) => {
                         index
                       )
                     }>
-                    <MenuItem value={'A recruter'}>A recruter</MenuItem>
-                    <MenuItem value={'A ne pas recruter'}>
-                      A ne pas recruter
-                    </MenuItem>
-                    <MenuItem value={'NSP'}>NSP</MenuItem>
+                    {RECOMMENDATION_VALUES.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
-                <FormControl required sx={{ m: 1, width: 300 }}>
+                <FormControl required sx={{ m: 1, flex: '1 1 240px', minWidth: 0 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Suivi d'élèves en grande difficulté
                   </InputLabel>
@@ -610,7 +678,7 @@ const FormInterviewComponent = ({ userId }) => {
                   <Select
                     size="small"
                     notched
-                    autoWidth
+                    fullWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     label="Suivi d'élèves en grande difficulté *"
@@ -618,59 +686,76 @@ const FormInterviewComponent = ({ userId }) => {
                     onChange={(e) =>
                       handleInterviewChange('followup', e.target.value, index)
                     }>
-                    <MenuItem value={'Oui'}>Oui</MenuItem>
-                    <MenuItem value={'Pourquoi pas'}>Pourquoi pas</MenuItem>
-                    <MenuItem value={'A éviter'}>A éviter</MenuItem>
-                    <MenuItem value={'Non'}>Non</MenuItem>
+                    {FOLLOWUP_VALUES.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Stack>
             </Grid>
             <Grid item={12}>
-              <Stack direction="row" spacing={2} mb={2}>
-                <FormControl required sx={{ m: 1, width: 300 }}>
+              <Stack direction="row" flexWrap="wrap" useFlexGap spacing={1} mb={2}>
+                <FormControl required sx={{ m: 1, flex: '1 1 240px', minWidth: 0 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
-                    Test français
+                    Maîtrise du français écrit
                   </InputLabel>
 
                   <Select
                     size="small"
                     notched
-                    autoWidth
+                    fullWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Test français *"
+                    label="Maîtrise du français écrit *"
                     value={interview.test}
                     onChange={(e) =>
                       handleInterviewChange('test', e.target.value, index)
                     }>
-                    <MenuItem value={'Requis'}>Requis</MenuItem>
-                    <MenuItem value={'Pas nécessaire'}>Pas nécessaire</MenuItem>
+                    {FRENCH_VALUES.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
                   </Select>
+                  <FormHelperText>
+                    Même critère pour tous les candidats (écrits, CV, test)
+                  </FormHelperText>
                 </FormControl>
-                <FormControl required sx={{ m: 1, width: 300 }}>
+                <FormControl required sx={{ m: 1, flex: '1 1 240px', minWidth: 0 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
-                    Aptitudes pédagogiques
+                    Expérience pédagogique
                   </InputLabel>
 
                   <Select
                     size="small"
                     notched
-                    autoWidth
+                    fullWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    label="Aptitudes pédagogiques *"
-                    value={interview.aptitudes}
+                    label="Expérience pédagogique *"
+                    value={interview.experience_level || ''}
                     onChange={(e) =>
-                      handleInterviewChange('aptitudes', e.target.value, index)
+                      handleInterviewChange(
+                        'experience_level',
+                        e.target.value,
+                        index
+                      )
                     }>
-                    <MenuItem value={'Avérées'}>Avérées</MenuItem>
-                    <MenuItem value={'Probables'}>Probables</MenuItem>
-                    <MenuItem value={'A observer'}>A observer</MenuItem>
-                    <MenuItem value={'Insuffisantes'}>Insuffisantes</MenuItem>
+                    {EXPERIENCE_VALUES.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
                   </Select>
+                  {interview.aptitudes && (
+                    <FormHelperText>
+                      Ancienne évaluation « aptitudes » : {interview.aptitudes}
+                    </FormHelperText>
+                  )}
                 </FormControl>
-                <FormControl required sx={{ m: 1, width: 300 }}>
+                <FormControl required sx={{ m: 1, flex: '1 1 240px', minWidth: 0 }}>
                   <InputLabel shrink id="demo-simple-select-standard-label">
                     Formations
                   </InputLabel>
@@ -678,7 +763,7 @@ const FormInterviewComponent = ({ userId }) => {
                   <Select
                     size="small"
                     notched
-                    autoWidth
+                    fullWidth
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     label="Formations *"
