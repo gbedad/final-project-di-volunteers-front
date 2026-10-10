@@ -60,7 +60,9 @@ import FileDisplay from './FileDisplay';
 import DocumentCheckbox from './files/filesSaved';
 import BorderedBoxWithLabel from './borderedBox';
 import { parsePhoneNumber } from 'awesome-phonenumber';
-import FormInterviewComponent from './interviews/Interview';
+import FormInterviewComponent, {
+  LatestRecommendation,
+} from './interviews/Interview';
 
 // import TopicGradeComponent from '../components/TopicGrade';
 import PreInterviewComponent from './interviews/PreInterview';
@@ -789,9 +791,16 @@ const ChangeUserStatus = () => {
                     </Select>
                   </FormControl>
                 </Box>
-                <Box sx={{ minHeight: 24 }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ minHeight: 24 }}>
                   <SaveStatus state={statusSave} />
-                </Box>
+                  {userLogged.user.role !== 'volunteer' && (
+                    <LatestRecommendation userId={user.id} />
+                  )}
+                </Stack>
                 {/* Former volunteer: archived, or button to archive */}
                 {user.status === 'Archivé' ? (
                   <Alert
