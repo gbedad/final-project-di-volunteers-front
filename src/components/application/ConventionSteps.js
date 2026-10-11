@@ -651,7 +651,7 @@ const ConventionSteps = ({ userId, admin = false, onValidate }) => {
           <Typography variant="body2" color="warning.dark">
             {admin
               ? onlineSigned
-                ? 'À contresigner en ligne par la présidente, depuis cette fiche.'
+                ? 'À contresigner en ligne par la présidente : le bouton « Contresigner » apparaît ici quand Emmanuelle Berrebi ouvre cette fiche avec son compte.'
                 : 'Convention papier : à faire signer par la présidente, puis à déposer ici.'
               : "En attente de la signature de la présidente de l'association. Vous recevrez un e-mail dès qu'elle sera disponible."}
           </Typography>
