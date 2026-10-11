@@ -11,6 +11,10 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Document, Page, pdfjs } from 'react-pdf';
+// Layers drawn over the page (selectable text, links): without their styles
+// the text shows again, in plain, under the page
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 // import AWS from 'aws-sdk';
 import { saveAs } from 'file-saver';
 import { getFileUrl, fileNameOf } from '../js/fileUrl';
