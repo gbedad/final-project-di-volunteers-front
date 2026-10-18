@@ -7,6 +7,7 @@ import {
   Chip,
   CircularProgress,
   IconButton,
+  Link,
   Paper,
   Stack,
   Tooltip,
@@ -16,6 +17,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import FileDisplay from '../FileDisplay';
 import { isManager } from '../../js/roles';
@@ -36,18 +38,20 @@ const SLOTS = [
   {
     type: 'id',
     label: "Pièce d'identité",
-    hint: 'Recto et verso',
+    hint: 'Recto et verso, lisible',
     required: true,
   },
   {
     type: 'b3',
     label: 'Extrait de casier judiciaire (extrait B3)',
-    hint: 'À fournir avant la signature de la convention',
+    hint: 'À fournir avant la signature de la convention. Gratuit, demande en ligne.',
+    howTo: 'https://www.service-public.fr/particuliers/vosdroits/F1420',
   },
   {
     type: 'honorability',
     label: "Attestation d'honorabilité",
     hint: 'À fournir au plus tard un mois après la signature de la convention',
+    howTo: 'https://honorabilite.social.gouv.fr/comment-obtenir-mon-attestation',
   },
   {
     type: 'other',
@@ -122,6 +126,17 @@ const Slot = ({ slot, files, userId, canDelete, onChanged, onView, due }) => {
           <Typography variant="body2" color="text.secondary">
             {slot.hint}
           </Typography>
+          {slot.howTo && (
+            <Link
+              variant="body2"
+              href={slot.howTo}
+              target="_blank"
+              rel="noreferrer"
+              sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+              Comment l'obtenir ?
+              <OpenInNewIcon sx={{ fontSize: 14 }} />
+            </Link>
+          )}
           {due && available.length === 0 && (
             <Typography
               variant="body2"
@@ -224,6 +239,11 @@ const DocumentSlots = ({ userId, onChanged }) => {
 
   return (
     <Stack spacing={2} sx={{ maxWidth: 720, mx: 'auto', my: 2 }}>
+      <Typography variant="body2" color="text.secondary">
+        Formats acceptés : PDF, JPG ou PNG. Une photo prise avec votre
+        téléphone convient, si elle est lisible. Le nom du fichier n'a pas
+        d'importance : chaque document est rangé automatiquement.
+      </Typography>
       {SLOTS.map((slot) => (
         <Slot
           key={slot.type}

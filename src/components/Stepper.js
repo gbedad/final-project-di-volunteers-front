@@ -18,7 +18,6 @@ import Avatar from '@mui/material/Avatar';
 
 import Profile from './Profile';
 import Skills from './Skills';
-import InstructionComponent from '../components/files/Instructions';
 
 import RefreshButton from './refreshIcon';
 
@@ -400,7 +399,6 @@ const BasicTabs = () => {
           <TabPanel value={value} index={3}>
             <div>
               <DocumentsBanner progress={progress} />
-              <InstructionComponent />
               <DocumentSlots userId={userId} />
             </div>
           </TabPanel>
