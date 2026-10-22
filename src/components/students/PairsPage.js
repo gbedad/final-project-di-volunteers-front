@@ -60,6 +60,9 @@ const PairsPage = () => {
       minWidth: 160,
       valueGetter: ({ row }) =>
         row.student ? `${row.student.first_name} ${row.student.last_name}` : '',
+      // First name, then last name; accents and capitals ignored
+      sortComparator: (a, b) =>
+        a.localeCompare(b, 'fr', { sensitivity: 'base' }),
       renderCell: ({ row, value }) => (
         <Stack direction="row" spacing={1} alignItems="center">
           <span>{value}</span>
@@ -156,6 +159,10 @@ const PairsPage = () => {
           loading={pairs === null}
           localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
           onRowClick={({ row }) => setOpen(row)}
+          // Default order: students' first names, A to Z
+          initialState={{
+            sorting: { sortModel: [{ field: 'student', sort: 'asc' }] },
+          }}
           sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
           disableRowSelectionOnClick
         />
