@@ -27,6 +27,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { MODALITIES } from '../../js/studentOptions';
 
+import { useSessionState } from '../../js/useSessionState';
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const slotText = (s) => `${s.day} ${s.startTime}–${s.endTime}`;
 
@@ -61,6 +63,12 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
   const [startDate, setStartDate] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
+  // Pairs agreed before MyCogniverse: created active, nothing to accept.
+  // Kept for the session, while the existing pairs are entered.
+  const [alreadyAccepted, setAlreadyAccepted] = useSessionState(
+    'pairs.alreadyAccepted',
+    false
+  );
 
   const propose = async () => {
     setSaving(true);
@@ -74,10 +82,14 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
         site: how === 'A distance' ? null : site || null,
         start_date: startDate || null,
         note: note || null,
+        already_accepted: alreadyAccepted,
       });
-      toast.success(`Proposition envoyée à ${match.tutor.name}`, {
-        position: 'bottom-left',
-      });
+      toast.success(
+        alreadyAccepted
+          ? `Binôme créé : ${match.tutor.name} accompagne ${student.first_name}`
+          : `Proposition envoyée à ${match.tutor.name}`,
+        { position: 'bottom-left' }
+      );
       onDone();
     } catch (err) {
       toast.error(
@@ -96,8 +108,10 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
         <Stack spacing={2}>
           <Typography>
             Proposer à <b>{match.tutor.name}</b> d'accompagner{' '}
-            <b>{student.first_name}</b>. Le tuteur reçoit un e-mail et répond
-            depuis son espace.
+            <b>{student.first_name}</b>.{' '}
+            {alreadyAccepted
+              ? 'Le binôme est créé directement, sans e-mail ni réponse à attendre.'
+              : 'Le tuteur reçoit un e-mail et répond depuis son espace.'}
           </Typography>
           {!student.parental_consent_at && (
             <Alert severity="warning">
@@ -181,6 +195,20 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={alreadyAccepted}
+                onChange={(e) => setAlreadyAccepted(e.target.checked)}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                Le tuteur a déjà accepté (hors application) : créer le binôme
+                directement
+              </Typography>
+            }
+          />
           <Alert severity="info">
             Le tuteur voit le prénom de l'élève, son niveau, ses besoins et le
             créneau. Il ne reçoit ni les coordonnées des parents ni les besoins
@@ -194,7 +222,7 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
           variant="contained"
           disabled={saving || !subjects.length}
           onClick={propose}>
-          Envoyer la proposition
+          {alreadyAccepted ? 'Créer le binôme' : 'Envoyer la proposition'}
         </Button>
       </DialogActions>
     </>
