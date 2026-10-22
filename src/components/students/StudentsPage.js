@@ -268,6 +268,9 @@ const StudentsPage = () => {
       flex: 1,
       minWidth: 170,
       valueGetter: ({ row }) => `${row.first_name} ${row.last_name}`,
+      // First name, then last name; accents and capitals ignored
+      sortComparator: (a, b) =>
+        a.localeCompare(b, 'fr', { sensitivity: 'base' }),
       renderCell: ({ row }) => (
         <Stack direction="row" spacing={1} alignItems="center">
           <span>
@@ -591,7 +594,8 @@ const StudentsPage = () => {
           onRowSelectionModelChange={setSelection}
           sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
           initialState={{
-            sorting: { sortModel: [{ field: 'priority', sort: 'asc' }] },
+            // Default order: first names, A to Z
+            sorting: { sortModel: [{ field: 'name', sort: 'asc' }] },
           }}
           disableRowSelectionOnClick
         />
