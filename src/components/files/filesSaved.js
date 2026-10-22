@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
+  Alert,
   Box,
   Checkbox,
   Chip,
@@ -44,7 +45,7 @@ const formatDate = (value) =>
 // Documents received for a volunteer, on the admin profile page: a document
 // is received when a file is uploaded (ticked automatically) or when the
 // admin ticks "Reçu sur papier". Every change is saved immediately.
-const DocumentCheckbox = ({ user }) => {
+const DocumentCheckbox = ({ user, validated }) => {
   const [status, setStatus] = useState(null);
   const [saveState, setSaveState] = useState('idle');
   const [preview, setPreview] = useState(null);
@@ -83,10 +84,19 @@ const DocumentCheckbox = ({ user }) => {
   };
 
   if (!status) return null;
+  // Validated tutor (e.g. entered by the team) still owing documents
+  const owed = validated
+    ? status.documents.filter((d) => !d.received).map((d) => LABELS[d.type])
+    : [];
 
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={1}>
+        {owed.length > 0 && (
+          <Alert severity="warning">
+            Tuteur validé, documents encore attendus : {owed.join(', ')}.
+          </Alert>
+        )}
         {status.documents.map((doc) => (
           <Stack
             key={doc.type}

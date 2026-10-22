@@ -74,6 +74,7 @@ import WhatsAppButton from './WhatsAppButton';
 import ConventionSteps from './application/ConventionSteps';
 import SaveStatus from './application/SaveStatus';
 import ArchiveDialog from './admin/ArchiveDialog';
+import { SendAccess } from './admin/AddTutor';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
@@ -462,6 +463,11 @@ const ChangeUserStatus = () => {
                       }
                     />
                   </ListItem>
+                  {user.no_password && isManager(userLogged.user.role) && (
+                    <ListItem>
+                      <SendAccess userId={user.id} />
+                    </ListItem>
+                  )}
                   <ListItem
                     // Room for the two contact buttons: a long address
                     // wraps instead of running under them
@@ -1071,7 +1077,10 @@ const ChangeUserStatus = () => {
                 sx={{
                   display: userLogged.user.role === 'interviewer' && 'none',
                 }}>
-                <DocumentCheckbox user={user} />
+                <DocumentCheckbox
+                  user={user}
+                  validated={user.status === 'Validé'}
+                />
               </Box>
               {/* Typed slots are always shown, so admins can upload too */}
               <Box mt={2}>

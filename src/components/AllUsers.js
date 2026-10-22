@@ -22,6 +22,8 @@ import Link from '@mui/material/Link';
 import Users2 from './Users2';
 import PageHeader from './admin/PageHeader';
 import { EmailPauseControl } from './admin/EmailPause';
+import { AddTutorButton } from './admin/AddTutor';
+import Stack from '@mui/material/Stack';
 
 // import ListItemButton from '@mui/material/ListItemButton';
 // import ListItemIcon from '@mui/material/ListItemIcon';
@@ -169,7 +171,17 @@ function DashboardContent() {
             <PageHeader
               title="Tuteurs bénévoles"
               subtitle="Candidats et tuteurs : recherche, suivi des candidatures et actions groupées. Les statistiques sont dans « Analyse »."
-              actions={<EmailPauseControl />}
+              actions={
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  flexWrap="wrap"
+                  useFlexGap>
+                  <AddTutorButton onCreated={reload} />
+                  <EmailPauseControl />
+                </Stack>
+              }
             />
             <Grid container spacing={3}>
               <Grid item xs={12}>

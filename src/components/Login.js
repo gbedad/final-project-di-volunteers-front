@@ -209,7 +209,7 @@ export default function SignIn() {
       }
     } catch (err) {
       console.log(err);
-      if (err.response?.data?.code === 'archived') {
+      if (['archived', 'no_password'].includes(err.response?.data?.code)) {
         toast.error(err.response.data.msg, {
           position: 'top-center',
           duration: 8000,
