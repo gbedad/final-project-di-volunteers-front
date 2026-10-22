@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const DAYS_FR = [
@@ -99,7 +100,11 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                   flexWrap="wrap"
                   useFlexGap
                   sx={{ mt: 0.5 }}>
-                  <CheckCircleIcon color="success" fontSize="small" />
+                  {done.attendance === 'absent' ? (
+                    <EventBusyIcon color="warning" fontSize="small" />
+                  ) : (
+                    <CheckCircleIcon color="success" fontSize="small" />
+                  )}
                   <Typography variant="body2">
                     {done.attendance === 'absent'
                       ? 'Absence enregistrée'

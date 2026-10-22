@@ -186,7 +186,11 @@ export default function SignIn() {
 
         // console.log(userLogged, isLoading);
         if (userLogged.user.role === 'volunteer') {
-          navigate('/stepper', { state: { userLogged, tab: volunteerTab ?? 0 } });
+          // A validated tutor lands on "Mes élèves", a candidate on the status
+          const tutor = ['Validé', 'A conserver'].includes(response.data.user.status);
+          navigate('/stepper', {
+            state: { userLogged, tab: volunteerTab ?? (tutor ? 5 : 0) },
+          });
         } else if (
           ['superadmin', 'admin', 'interviewer'].includes(userLogged.user.role)
         ) {

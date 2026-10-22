@@ -32,7 +32,8 @@ const reportDue = (pair) => {
 };
 const STATUS = {
   proposé: { label: 'Proposition', color: 'warning' },
-  actif: { label: 'En cours', color: 'success' },
+  // The pair, not today's session
+  actif: { label: 'Accompagnement en cours', color: 'success' },
   'en pause': { label: 'En pause', color: 'default' },
   terminé: { label: 'Terminé', color: 'default' },
 };
@@ -114,6 +115,9 @@ const MyStudents = () => {
               direction="row"
               justifyContent="space-between"
               alignItems="center"
+              flexWrap="wrap"
+              useFlexGap
+              gap={1}
               sx={{ mb: 1 }}>
               <Typography variant="h6">
                 {s.first_name} {s.initial}
