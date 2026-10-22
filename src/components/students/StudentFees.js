@@ -57,6 +57,7 @@ const StudentFees = ({ student, canEdit, set }) => {
   const proof = student.qf_proof || '';
   const hasQf = proof === 'caf' || proof === 'avis';
   const hourly = fee?.mode === 'hourly';
+  const agreed = !!fee?.agreed;
 
   const computeQf = () => {
     const i = Number(parseAmount(income));
@@ -221,6 +222,39 @@ const StudentFees = ({ student, canEdit, set }) => {
         />
       )}
 
+      {(hourly || agreed) && (
+        <Stack direction="row" spacing={1} alignItems="center">
+          <FormControlLabel
+            disabled={!canEdit}
+            sx={{ flex: 1 }}
+            control={
+              <Checkbox
+                size="small"
+                checked={agreed}
+                // 130 €: amount of tranche 7, to change if needed
+                onChange={(e) => set('fee_term', e.target.checked ? 130 : null)}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                Montant fixe par trimestre (exception convenue avec la famille)
+              </Typography>
+            }
+          />
+          {agreed && (
+            <TextField
+              size="small"
+              label="Montant / trimestre (€)"
+              value={student.fee_term ?? ''}
+              disabled={!canEdit}
+              onChange={(e) => set('fee_term', parseAmount(e.target.value))}
+              inputProps={{ inputMode: 'decimal' }}
+              sx={{ width: 170 }}
+            />
+          )}
+        </Stack>
+      )}
+
       {!fee ? (
         <Alert severity="info">
           Indiquez le justificatif et le QF pour calculer la participation.
@@ -232,12 +266,16 @@ const StudentFees = ({ student, canEdit, set }) => {
       ) : (
         <Alert severity="success" icon={false}>
           <Typography fontWeight={600}>
-            {fee.mode === 'term'
+            {agreed
+              ? `Montant convenu : ${euros(fee.amount)} par trimestre`
+              : fee.mode === 'term'
               ? `Tranche ${fee.tranche} : ${euros(fee.amount)} par trimestre`
               : `${euros(fee.amount)} de l'heure`}
           </Typography>
           <Typography variant="body2">
-            {fee.mode === 'term'
+            {agreed
+              ? `${fee.tranche ? 'Tranche 8 et plus' : 'QF non communiqué'} · caution : ${euros(fee.deposit)}`
+              : fee.mode === 'term'
               ? `Caution : ${euros(fee.deposit)}`
               : `${fee.tranche ? 'Tranche 8 et plus' : 'QF non communiqué'} · ${
                   fee.row
@@ -256,7 +294,7 @@ const StudentFees = ({ student, canEdit, set }) => {
         </Alert>
       )}
 
-      {fee && !fee.missing && canEdit && (
+      {fee && !fee.missing && !agreed && canEdit && (
         <Stack direction="row" spacing={1}>
           <TextField
             size="small"
