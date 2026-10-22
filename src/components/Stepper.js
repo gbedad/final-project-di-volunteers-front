@@ -37,6 +37,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import Button from '@mui/material/Button';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import SchoolIcon from '@mui/icons-material/School';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Error404 from '../pages/404';
@@ -87,13 +92,112 @@ function a11yProps(index) {
   };
 }
 
+// Sections of the volunteer's space; the convention opens after the
+// interview, the students once validated
+const EARLY = ['Compte créé', 'A renseigner', 'A télécharger', 'A interviewer'];
+const sectionsOf = (status, ownSpace, missing) =>
+  [
+    { index: 0, label: 'Mon statut' },
+    { index: 1, label: 'Mon profil', items: missing?.profile },
+    { index: 2, label: 'Mes disponibilités', items: missing?.wishes, disabled: status === 'Déclinée' },
+    { index: 3, label: 'Mes documents', items: missing?.documents, disabled: status === 'Déclinée' },
+    { index: 4, label: 'Ma convention', disabled: EARLY.includes(status) || status === 'Déclinée' },
+    ownSpace && {
+      index: 5,
+      label: 'Mes élèves',
+      disabled: !['Validé', 'A conserver'].includes(status),
+    },
+  ].filter(Boolean);
+
+// Phone header. Validated tutor: "Mes élèves" + a "Mon dossier" menu with
+// the application sections. Candidate: the sections on one scrolling line.
+const MobileTabs = ({ value, setValue, status, ownSpace, tabState, missing, folderMenu, setFolderMenu, tutor }) => {
+  const sections = sectionsOf(status, ownSpace, missing);
+  if (tutor) {
+    const folder = sections.filter((x) => x.index !== 5);
+    const current = folder.find((x) => x.index === value);
+    return (
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ width: '100%', boxSizing: 'border-box', px: 2, py: 1 }}>
+        <Button
+          fullWidth
+          sx={{ minWidth: 0 }}
+          variant={value === 5 ? 'contained' : 'outlined'}
+          startIcon={<SchoolIcon />}
+          onClick={() => setValue(5)}>
+          Mes élèves
+        </Button>
+        <Button
+          fullWidth
+          variant={value !== 5 ? 'contained' : 'outlined'}
+          startIcon={<AssignmentIcon />}
+          endIcon={<ArrowDropDownIcon />}
+          sx={{ minWidth: 0 }}
+          onClick={(e) => setFolderMenu(e.currentTarget)}>
+          <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {current ? current.label : 'Mon dossier'}
+          </Box>
+        </Button>
+        <Menu anchorEl={folderMenu} open={!!folderMenu} onClose={() => setFolderMenu(null)}>
+          {folder.map((x) => (
+            <MenuItem
+              key={x.index}
+              selected={x.index === value}
+              disabled={x.disabled}
+              onClick={() => {
+                setValue(x.index);
+                setFolderMenu(null);
+              }}>
+              <Box sx={{ flex: 1 }}>{x.label}</Box>
+              <Box sx={{ ml: 2, display: 'flex' }}>{tabState(x.items).icon}</Box>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Stack>
+    );
+  }
+  return (
+    <Tabs
+      value={sections.some((x) => x.index === value) ? value : false}
+      onChange={(e, v) => setValue(v)}
+      variant="scrollable"
+      scrollButtons="auto"
+      allowScrollButtonsMobile
+      sx={{ width: '100%', maxWidth: '100vw', boxSizing: 'border-box' }}>
+      {sections.map((x) => (
+        <Tab
+          key={x.index}
+          value={x.index}
+          label={x.label}
+          disabled={x.disabled}
+          {...tabState(x.items)}
+          sx={{ minHeight: 48, textTransform: 'none', fontWeight: 600 }}
+        />
+      ))}
+    </Tabs>
+  );
+};
+
 const BasicTabs = () => {
   const isAuthenticated = useContext(AuthContext);
   const navigate = useNavigate();
 
   const location = useLocation();
   // Opened on a given tab from an email link (e.g. the convention)
-  const [value, setValue] = React.useState(location.state?.tab ?? 0);
+  // A validated tutor comes for their students: that tab first
+  const TUTOR_STATUSES = ['Validé', 'A conserver'];
+  const ownAtStart =
+    !location.state?.userSelected ||
+    location.state?.userSelected?.id === location.state?.userLogged?.user?.id;
+  const [value, setValue] = React.useState(
+    location.state?.tab ??
+      (ownAtStart && TUTOR_STATUSES.includes(localStorage.getItem('user-status'))
+        ? 5
+        : 0)
+  );
+  const [folderMenu, setFolderMenu] = useState(null);
   const [status, setStatus] = useState('');
   const [screenSize, setScreenSize] = useState('');
   const [finished, setFinished] = React.useState(false);
@@ -208,6 +312,15 @@ const BasicTabs = () => {
           iconPosition: 'end',
         };
 
+  // A section not open yet (e.g. "Mes élèves" from the /emarger link, for a
+  // candidate): back to the status
+  useEffect(() => {
+    if (!status) return;
+    const section = sectionsOf(status, ownSpace, missing).find((x) => x.index === value);
+    if (section?.disabled) setValue(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, value]);
+
   const getUser = async () => {
     try {
       const response = await axios.get(
@@ -264,7 +377,21 @@ const BasicTabs = () => {
                 {location.state.userSelected.last_name}
               </Typography>
             )}
-            <Box>
+            {/* Phone: one compact line instead of the column of tabs */}
+            {screenSize !== 'lg' && (
+              <MobileTabs
+                value={value}
+                setValue={setValue}
+                status={status}
+                ownSpace={ownSpace}
+                tabState={tabState}
+                missing={missing}
+                folderMenu={folderMenu}
+                setFolderMenu={setFolderMenu}
+                tutor={ownSpace && TUTOR_STATUSES.includes(status)}
+              />
+            )}
+            <Box sx={{ display: screenSize === 'lg' ? 'block' : 'none' }}>
               <Tabs
                 orientation={
                   screenSize === 'md' || screenSize === 'sm'
@@ -413,7 +540,7 @@ const BasicTabs = () => {
               <MyStudents />
             </TabPanel>
           )}
-          {value > 0 && (
+          {value > 0 && screenSize === 'lg' && (
             <Box sx={{ position: 'fixed', top: '70px', right: '20px' }}>
               <Button
                 variant="contained"
