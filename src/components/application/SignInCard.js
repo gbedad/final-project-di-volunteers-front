@@ -41,17 +41,21 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
       Number((a.schedule || []).some((s) => s.day === day))
   );
 
-  const signIn = async (pair, attendance) => {
+  // late: the student arrived 15 minutes late or more
+  const signIn = async (pair, attendance, late = false) => {
     setBusy(pair.id);
     try {
       await axios.post(`${BASE_URL}/my/binomes/${pair.id}/emargement`, {
         attendance,
+        late,
       });
       toast.success(
-        attendance === 'présent'
-          ? `Séance avec ${pair.student.first_name} émargée. Merci !`
-          : `Absence de ${pair.student.first_name} enregistrée.`,
-        { position: 'top-center' }
+        attendance === 'absent'
+          ? `Absence de ${pair.student.first_name} enregistrée.`
+          : late
+            ? 'Séance émargée avec le retard. Pensez à le déclarer sur le groupe WhatsApp de la famille.'
+            : `Séance avec ${pair.student.first_name} émargée. Merci !`,
+        { position: 'top-center', duration: late ? 8000 : 4000 }
       );
       onChanged();
     } catch (err) {
@@ -110,6 +114,7 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                       ? 'Absence enregistrée'
                       : 'Séance émargée'}{' '}
                     à {timeOf(done.created_at)}
+                    {done.late ? ' · retard de 15 min ou plus' : ''}
                   </Typography>
                   {done.attendance === 'présent' && !done.work && (
                     <Button size="small" onClick={() => onReport(pair)}>
@@ -129,7 +134,13 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                     size="large"
                     disabled={busy === pair.id}
                     onClick={() => signIn(pair, 'présent')}>
-                    La séance a eu lieu
+                    La séance a eu lieu, à l'heure
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    disabled={busy === pair.id}
+                    onClick={() => signIn(pair, 'présent', true)}>
+                    L'élève est arrivé en retard (15 min ou plus)
                   </Button>
                   <Button
                     disabled={busy === pair.id}

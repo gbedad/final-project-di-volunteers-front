@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
+  Checkbox,
+  FormControlLabel,
   Button,
   Chip,
   Dialog,
@@ -71,6 +73,7 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
     duration_minutes: defaultDuration(pair),
     // What was signed in today: an absence stays an absence
     attendance: signedToday(pair)?.attendance || 'présent',
+    late: !!signedToday(pair)?.late,
     work: '',
     progress: 3,
     remark: '',
@@ -155,6 +158,20 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
           </Stack>
           {held && (
             <>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={form.late}
+                    onChange={(e) => set('late', e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    L'élève est arrivé avec 15 minutes de retard ou plus
+                  </Typography>
+                }
+              />
               <TextField
                 size="small"
                 label="Ce que vous avez travaillé"
@@ -243,6 +260,9 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
                 color={ATTENDANCE[s.attendance]?.color}
                 label={ATTENDANCE[s.attendance]?.label || s.attendance}
               />
+              {s.late && (
+                <Chip size="small" color="warning" variant="outlined" label="Retard" />
+              )}
               {s.duration_minutes && (
                 <Typography variant="caption" color="text.secondary">
                   {durationLabel(s.duration_minutes)}
