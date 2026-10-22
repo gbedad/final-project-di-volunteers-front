@@ -229,6 +229,17 @@ const StudentPage = () => {
               onChange={(e) => set('birth_date', e.target.value || null)}
               disabled={!canEdit}
             />
+            {/* The student's own contact, for older students (facultative) */}
+            <Stack direction="row" spacing={1}>
+              {text('phone', "Téléphone de l'élève", {
+                placeholder: 'Facultatif',
+                inputProps: { inputMode: 'tel' },
+              })}
+              {text('email', "E-mail de l'élève", {
+                placeholder: 'Facultatif',
+                type: 'email',
+              })}
+            </Stack>
             <Stack direction="row" spacing={1}>
               {select('level', 'Niveau', STUDENT_LEVELS)}
               {LYCEE.includes(student.level) &&
