@@ -21,7 +21,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 function YourComponent({ user }) {
   const [selectedMissionTitle, setSelectedMissionTitle] = useState(null);
   const [missions, setMissions] = useState([]);
-  const [mission, setMission] = useState(user.mission);
+  // No mission (deleted, or not chosen yet): the list still opens
+  const [mission, setMission] = useState(user.mission || {});
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ function YourComponent({ user }) {
       );
       // console.log(response.data.mission);
       const newMission = response.data.mission;
-      setMission(newMission);
+      setMission(newMission || {});
     };
 
     getUserMission();

@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import BorderedBoxWithLabel from './borderedBox';
 
@@ -26,11 +25,6 @@ import { existingSubjects, existingClasses } from '../options/existingOptions';
 import { useAutoSave } from '../js/useAutoSave';
 import SaveStatus from './application/SaveStatus';
 
-const fabStyle = {
-  position: 'absolute',
-  bottom: 10,
-  right: 16,
-};
 
 const SubjectClassRangeComponent = ({ userSelected }) => {
   const location = useLocation();
@@ -135,12 +129,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
     persist(updatedSubjectClassRanges);
   };
 
-  const fab = {
-    color: 'primary',
-    sx: fabStyle,
-    icon: <AddIcon />,
-    label: 'Add',
-  };
 
   return (
     <div>
@@ -148,17 +136,6 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
       <BorderedBoxWithLabel
         label="Matières et classes *"
         sx={{ display: 'flex' }}>
-        <label>
-          <Fab
-            sx={fab.sx}
-            aria-label={fab.label}
-            color={fab.color}
-            onClick={() => handleAddSubjectClassRange()}
-            component="button"
-            disabled={!allValuesFilled}>
-            {fab.icon}
-          </Fab>
-        </label>
         {isLoading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -172,7 +149,8 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
               spacing={1}
               key={index}
               style={{ marginTop: '16px' }}>
-              <Grid item xs={4}>
+              {/* Subject on its own line, levels side by side (narrow column) */}
+              <Grid item xs={12}>
                 <TextField
                   size="small"
                   fullWidth
@@ -195,12 +173,12 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 <TextField
                   size="small"
                   fullWidth
                   variant="outlined"
-                  label="Classe mini"
+                  label="Du niveau"
                   select
                   value={subjectClassRange.classStart}
                   onChange={(e) =>
@@ -220,12 +198,12 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 <TextField
                   size="small"
                   fullWidth
                   variant="outlined"
-                  label="Classe maxi"
+                  label="Au niveau"
                   select
                   value={subjectClassRange.classEnd}
                   onChange={(e) => handleClassEndChange(e.target.value, index)}>
@@ -236,14 +214,28 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={2}>
-                <Button onClick={() => handleRemoveSubjectClassRange(index)}>
-                  <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
+              <Grid item xs={12}>
+                <Button
+                  size="small"
+                  color="inherit"
+                  startIcon={<DeleteIcon />}
+                  sx={{ color: 'text.secondary' }}
+                  onClick={() => handleRemoveSubjectClassRange(index)}>
+                  Supprimer
                 </Button>
               </Grid>
             </Grid>
           ))
         )}
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<AddIcon />}
+          sx={{ mt: 1 }}
+          disabled={!allValuesFilled}
+          onClick={handleAddSubjectClassRange}>
+          Ajouter une matière
+        </Button>
         <Box sx={{ mt: 1, minHeight: 20 }}>
           <SaveStatus state={saveState} />
         </Box>
@@ -252,7 +244,8 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
         open={open}
         autoHideDuration={10000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        // At the bottom: on a phone, the top would hide the tabs
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <SnackbarContent
           style={{
             backgroundColor: 'white',
@@ -262,7 +255,7 @@ const SubjectClassRangeComponent = ({ userSelected }) => {
           message={
             <span id="client-snackbar">
               Choisissez la matière et les niveaux : elle est enregistrée
-              automatiquement. Cliquez sur + pour en ajouter une autre.
+              automatiquement. « Ajouter une matière » pour en ajouter une autre.
             </span>
           }
         />

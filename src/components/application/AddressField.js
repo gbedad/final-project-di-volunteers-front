@@ -3,7 +3,6 @@ import {
   Autocomplete,
   Box,
   CircularProgress,
-  Stack,
   TextField,
   Typography,
 } from '@mui/material';
@@ -139,11 +138,18 @@ const AddressField = ({ value, onChange }) => {
           />
         )}
       />
-      <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
-        {field('zipcode', 'Code postal', { sx: { width: 120 } })}
-        {field('city', 'Ville', { sx: { flex: 1 } })}
-        {field('country', 'Pays', { sx: { width: 120 } })}
-      </Stack>
+      {/* Postcode and town side by side, country below (narrow column) */}
+      <Box
+        sx={{
+          mt: 1.5,
+          display: 'grid',
+          gap: 1,
+          gridTemplateColumns: '2fr 3fr',
+        }}>
+        {field('zipcode', 'Code postal')}
+        {field('city', 'Ville')}
+        {field('country', 'Pays', { sx: { gridColumn: '1 / -1' } })}
+      </Box>
     </Box>
   );
 };

@@ -74,6 +74,16 @@ import {
 import RecruitmentModule from './Recruitment.js';
 
 const theme = createTheme({
+  // Phone: small fields a little taller, easier to touch
+  components: {
+    MuiInputBase: {
+      styleOverrides: {
+        inputSizeSmall: {
+          '@media (max-width: 424px)': { paddingTop: 11.5, paddingBottom: 11.5 },
+        },
+      },
+    },
+  },
   palette: {
     primary: { main: cyan[900] },
     light: { main: cyan[500] },

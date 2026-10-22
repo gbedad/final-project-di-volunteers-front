@@ -440,8 +440,10 @@ const ProfilePage = ({ status }) => {
               <List
                 sx={{
                   width: '100%',
-
                   bgcolor: 'background.paper',
+                  // Phone: no column of icons, the fields get the width
+                  '& .MuiListItemAvatar-root': { display: { xs: 'none', sm: 'flex' } },
+                  '& .MuiListItem-root': { px: { xs: 0, sm: 2 } },
                 }}>
                 {/* <ListItem>
                   <ListItemAvatar>

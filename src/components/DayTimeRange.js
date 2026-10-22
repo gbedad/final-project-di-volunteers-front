@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderedBoxWithLabel from './borderedBox';
-import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useAutoSave } from '../js/useAutoSave';
 import SaveStatus from './application/SaveStatus';
@@ -26,11 +25,6 @@ import SaveStatus from './application/SaveStatus';
 
 // import { AuthContext } from '../AuthContext';
 
-const fabStyle = {
-  position: 'absolute',
-  bottom: 10,
-  right: 16,
-};
 
 const DayTimeRangeComponent = ({ userSelected }) => {
   const location = useLocation();
@@ -141,28 +135,11 @@ const DayTimeRangeComponent = ({ userSelected }) => {
     persist(updatedDayTimeRanges);
   };
 
-  const fab = {
-    color: 'primary',
-    sx: fabStyle,
-    icon: <AddIcon />,
-    label: 'Add',
-  };
 
   return (
     <div>
       {/* <ToastContainer /> */}
       <BorderedBoxWithLabel label="Jours et heures *" sx={{ display: 'flex' }}>
-        <label>
-          <Fab
-            sx={fab.sx}
-            aria-label={fab.label}
-            color={fab.color}
-            onClick={() => handleAddDayTimeRange()}
-            component="button"
-            disabled={!allValuesFilled}>
-            {fab.icon}
-          </Fab>
-        </label>
         {isLoading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -178,7 +155,8 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                   spacing={1}
                   key={index}
                   style={{ marginTop: '16px' }}>
-                  <Grid item xs={4} md={4} lg={4}>
+                  {/* Day on its own line, start and end side by side (narrow column) */}
+                  <Grid item xs={12}>
                     <FormControl fullWidth variant="outlined">
                       <InputLabel id={`day-label-${index}`}>Jour</InputLabel>
                       <Select
@@ -204,12 +182,12 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={3} md={3} lg={3}>
+                  <Grid item xs={6}>
                     <TextField
                       size="small"
                       fullWidth
                       variant="outlined"
-                      label="Heure début"
+                      label="Début"
                       type="time"
                       value={dayTimeRange.startTime}
                       onChange={(e) =>
@@ -225,13 +203,12 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={3} md={3} lg={3}>
+                  <Grid item xs={6}>
                     <TextField
-                      id="time"
                       size="small"
                       fullWidth
                       variant="outlined"
-                      label="Heure fin"
+                      label="Fin"
                       type="time"
                       value={dayTimeRange.endTime}
                       onChange={(e) =>
@@ -246,15 +223,29 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={1}>
-                    <Button onClick={() => handleRemoveDayTimeRange(index)}>
-                      <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
+                  <Grid item xs={12}>
+                    <Button
+                      size="small"
+                      color="inherit"
+                      startIcon={<DeleteIcon />}
+                      sx={{ color: 'text.secondary' }}
+                      onClick={() => handleRemoveDayTimeRange(index)}>
+                      Supprimer
                     </Button>
                   </Grid>
                 </Grid>
               )
           )
         )}
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<AddIcon />}
+          sx={{ mt: 1 }}
+          disabled={!allValuesFilled}
+          onClick={handleAddDayTimeRange}>
+          Ajouter un créneau
+        </Button>
         <Box sx={{ mt: 1, minHeight: 20 }}>
           <SaveStatus state={saveState} />
         </Box>
@@ -262,7 +253,8 @@ const DayTimeRangeComponent = ({ userSelected }) => {
           open={open}
           autoHideDuration={10000}
           onClose={handleClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+          // At the bottom: on a phone, the top would hide the tabs
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
           <SnackbarContent
             style={{
               backgroundColor: 'white',
@@ -272,7 +264,7 @@ const DayTimeRangeComponent = ({ userSelected }) => {
             message={
               <span id="client-snackbar">
                 Choisissez le jour et les heures : le créneau est enregistré
-                automatiquement. Cliquez sur + pour en ajouter un autre.
+                automatiquement. « Ajouter un créneau » pour en ajouter un autre.
               </span>
             }
           />

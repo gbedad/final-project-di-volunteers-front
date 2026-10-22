@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Button,
+  Chip,
   Grid,
-  MenuItem,
-  TextField,
-  Box,
   LinearProgress,
+  MenuItem,
+  Stack,
+  TextField,
   Typography,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 import BorderedBoxWithLabel from './borderedBox';
 
 // import { ToastContainer, toast } from 'react-toastify';
@@ -31,11 +29,10 @@ import SaveStatus from './application/SaveStatus';
 // done remotely: sites are optional)
 const SITE_REQUIRED = ['Sur site', 'Hybride (alternance sur site et à distance)'];
 
-const fabStyle = {
-  position: 'absolute',
-  bottom: 10,
-  right: 16,
-};
+
+// Real sites only: not the separator nor the modalities of the old list
+const NOT_SITES = /^-+$|^a distance$|^présentiel ou distanciel$/i;
+const SITES = existingLocations.filter((l) => !NOT_SITES.test(l));
 
 const LocationsPossibleComponent = ({ userSelected }) => {
   const location = useLocation();
@@ -64,12 +61,7 @@ const LocationsPossibleComponent = ({ userSelected }) => {
       if (skills) {
         const places = (skills.where_location || []).filter(Boolean);
         setSelectedModality(skills.how_location || '');
-        // A site is still needed: show the empty site field right away
-        setLocationsPossible(
-          places.length || !SITE_REQUIRED.includes(skills.how_location)
-            ? places
-            : ['']
-        );
+        setLocationsPossible(places);
       }
       setIsLoading(false);
     };
@@ -95,42 +87,24 @@ const LocationsPossibleComponent = ({ userSelected }) => {
   const handleModalityChange = (value) => {
     setSelectedModality(value);
     saveModality(value);
-    // A site is needed: open the first site field right away
-    if (SITE_REQUIRED.includes(value) && !locationsPossible.length) {
-      setLocationsPossible(['']);
-    }
   };
   const hasSite = locationsPossible.some(Boolean);
 
-  const handleAddLocation = () => {
-    setLocationsPossible([...locationsPossible, '']);
+  // One tap selects or removes a site; saved at once
+  const toggleSite = (site) => {
+    const next = locationsPossible.includes(site)
+      ? locationsPossible.filter((x) => x !== site)
+      : [...locationsPossible, site];
+    setLocationsPossible(next);
+    persistPlaces(next);
   };
-
-  const handleLocationChange = (value, index) => {
-    const updatedLocationsPossible = [...locationsPossible];
-    updatedLocationsPossible[index] = value;
-    setLocationsPossible(updatedLocationsPossible);
-    persistPlaces(updatedLocationsPossible);
-  };
-
-  const handleRemoveLocation = (index) => {
-    const updatedLocationsPossible = [...locationsPossible];
-    updatedLocationsPossible.splice(index, 1);
-    setLocationsPossible(updatedLocationsPossible);
-    persistPlaces(updatedLocationsPossible);
-  };
-
-  const fab = {
-    color: 'primary',
-    sx: fabStyle,
-    icon: <AddIcon />,
-    label: 'Add',
-  };
+  // Sites chosen in the old list but no longer offered stay visible
+  const shown = [...SITES, ...locationsPossible.filter((x) => x && !SITES.includes(x))];
 
   return (
     <div>
       <BorderedBoxWithLabel label="Modalités et lieux *" sx={{ display: 'flex' }}>
-        <Grid container spacing={1} style={{ marginTop: '16px' }}>
+        <Grid container spacing={1.5} style={{ marginTop: '8px' }}>
           <Grid item xs={12}>
             <TextField
               size="small"
@@ -160,62 +134,36 @@ const LocationsPossibleComponent = ({ userSelected }) => {
                         : 'text.secondary'
                     }>
                     {SITE_REQUIRED.includes(selectedModality)
-                      ? 'Choisissez au moins un site (bouton + pour en ajouter).'
-                      : 'Facultatif : indiquez les sites possibles (bouton +).'}
+                      ? 'Touchez les sites où vous pouvez aller (au moins un).'
+                      : 'Facultatif : touchez les sites où vous pouvez aussi aller.'}
                   </Typography>
                 </Grid>
               )}
-              <Grid item xs={12}>
-                <label>
-                  <Fab
-                    sx={fab.sx}
-                    aria-label={fab.label}
-                    color={fab.color}
-                    onClick={() => handleAddLocation()}
-                    component="button"
-                    disabled={locationsPossible.some((place) => !place)}>
-                    {fab.icon}
-                  </Fab>
-                </label>
-              </Grid>
 
               {isLoading ? (
                 <Grid item xs={12}>
-                  <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                  </Box>
+                  <LinearProgress />
                 </Grid>
               ) : (
-                locationsPossible &&
-                locationsPossible.map((loc, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Grid container spacing={1} style={{ marginTop: '16px' }}>
-                      <Grid item xs={9}>
-                        <TextField
-                          size="small"
-                          fullWidth
-                          variant="outlined"
-                          label="Site"
-                          select
-                          value={loc}
-                          onChange={(e) =>
-                            handleLocationChange(e.target.value, index)
-                          }>
-                          {existingLocations.map((location, idx) => (
-                            <MenuItem key={idx} value={location}>
-                              {location}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Button onClick={() => handleRemoveLocation(index)}>
-                          <DeleteIcon sx={{ fontSize: 40 }} color="trash" />
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ))
+                <Grid item xs={12}>
+                  <Stack direction="row" flexWrap="wrap" useFlexGap gap={1}>
+                    {shown.map((site) => {
+                      const on = locationsPossible.includes(site);
+                      return (
+                        <Chip
+                          key={site}
+                          label={site}
+                          color={on ? 'primary' : 'default'}
+                          variant={on ? 'filled' : 'outlined'}
+                          icon={on ? <CheckIcon /> : undefined}
+                          onClick={() => toggleSite(site)}
+                          aria-pressed={on}
+                          sx={{ height: 36, fontSize: '0.9rem' }}
+                        />
+                      );
+                    })}
+                  </Stack>
+                </Grid>
               )}
             </>
           )}
