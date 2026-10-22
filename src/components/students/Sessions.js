@@ -51,6 +51,10 @@ const minutesOf = (t) => {
   const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
   return m ? Number(m[1]) * 60 + Number(m[2]) : null;
 };
+// Session already signed in today (attendance sheet), if any
+const signedToday = (pair) =>
+  (pair?.sessions || []).find((x) => String(x.date).slice(0, 10) === today());
+
 const defaultDuration = (pair) => {
   const signed = (pair?.sessions || []).find(
     (x) => String(x.date).slice(0, 10) === today() && x.duration_minutes
@@ -65,7 +69,8 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
   const [form, setForm] = useState({
     date: today(),
     duration_minutes: defaultDuration(pair),
-    attendance: 'présent',
+    // What was signed in today: an absence stays an absence
+    attendance: signedToday(pair)?.attendance || 'présent',
     work: '',
     progress: 3,
     remark: '',
