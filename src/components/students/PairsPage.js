@@ -1,6 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { Box, Chip, Container, Stack } from '@mui/material';
+import {
+  Box,
+  Chip,
+  Container,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import { DataGrid, frFR } from '@mui/x-data-grid';
 import PageHeader from '../admin/PageHeader';
 import PairDialog, { AlertChips } from './PairDialog';
@@ -19,11 +29,49 @@ const FILTERS = [
   { value: 'terminé', label: 'Terminés' },
 ];
 
+// Search without accents or case: "helene" finds "Hélène"
+const norm = (v) =>
+  String(v || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+// Usual short names of the subjects ("maths", "géo", "PC"…)
+const SUBJECT_ALIASES = {
+  Mathématiques: 'maths',
+  'Physique-Chimie': 'pc',
+  'Histoire-Géographie': 'hg geo',
+  Géographie: 'geo',
+  Informatique: 'info',
+  Philosophie: 'philo',
+};
+
+// Every word typed must be found in the pair: "jade maths" gives Jade's
+// maths pair only
+const matchesText = (p, q) => {
+  const words = norm(q).split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  const text = norm(
+    [
+      p.student?.first_name,
+      p.student?.last_name,
+      p.student?.level,
+      p.tutor?.first_name,
+      p.tutor?.last_name,
+      ...(p.subjects || []).map((x) => `${x} ${SUBJECT_ALIASES[x] || ''}`),
+      ...(p.schedule || []).map((sl) => sl.day),
+      p.how_location,
+      p.site,
+    ].join(' ')
+  );
+  return words.every((w) => text.includes(w));
+};
+
 // Every tutor / student pair, with alerts on the pairs to follow up
 const PairsPage = () => {
   const [pairs, setPairs] = useState(null);
   const [filter, setFilter] = useSessionState('pairs.filter', 'all');
   const [open, setOpen] = useState(null);
+  const [query, setQuery] = useSessionState('pairs.query', '');
 
   useEffect(() => {
     axios
@@ -32,8 +80,13 @@ const PairsPage = () => {
       .catch(() => setPairs([]));
   }, []);
 
+  // Search first, then the chips count what the search found
+  const searched = useMemo(
+    () => (pairs || []).filter((p) => matchesText(p, query)),
+    [pairs, query]
+  );
   const count = (f) =>
-    (pairs || []).filter((p) =>
+    searched.filter((p) =>
       f === 'all'
         ? true
         : f === 'alerts'
@@ -42,14 +95,14 @@ const PairsPage = () => {
     ).length;
   const rows = useMemo(
     () =>
-      (pairs || []).filter((p) =>
+      searched.filter((p) =>
         filter === 'all'
           ? !['refusé', 'annulé'].includes(p.status)
           : filter === 'alerts'
             ? p.stats.alerts.length > 0
             : p.status === filter
       ),
-    [pairs, filter]
+    [searched, filter]
   );
 
   const columns = [
@@ -140,6 +193,32 @@ const PairsPage = () => {
       <PageHeader
         title="Binômes"
         subtitle="Suivi des binômes tuteur / élève : séances, heures et alertes. Cliquez sur un binôme pour voir ses comptes-rendus."
+      />
+      <TextField
+        size="small"
+        label="Rechercher un binôme"
+        placeholder="Élève, tuteur, matière, jour…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
+        sx={{ width: { xs: '100%', sm: 320 }, mb: 1.5 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+          endAdornment: query ? (
+            <InputAdornment position="end">
+              <IconButton
+                size="small"
+                onClick={() => setQuery('')}
+                aria-label="Effacer">
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ) : null,
+        }}
       />
       <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
         {FILTERS.map((f) => (
