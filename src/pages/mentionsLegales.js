@@ -87,7 +87,10 @@ const GeneralConditions = () => {
         </Typography>
         <Typography variant="body1" paragraph>
           La date de dernière connexion et de dernière activité sur la
-          plateforme est enregistrée pour le suivi des bénévoles. Elle n'est
+          plateforme est enregistrée pour le suivi des bénévoles. Pour
+          chaque séance de tutorat en présentiel, l'élève signe la feuille de
+          présence sur le téléphone du tuteur ; cette signature n'est visible
+          que par l'association. Elle n'est
           visible que par les administrateurs de l'association. Aucune autre
           donnée de navigation n'est conservée.
         </Typography>

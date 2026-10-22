@@ -21,7 +21,7 @@ const Skills = ({ userId }) => {
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <TopicGradeComponent userSelected={userId} />
         </Grid>
-        <Grid item xs={12} sm={3} md={12} lg={3}>
+        <Grid item xs={12} sm={12} md={12} lg={3}>
           {/* <LocationSkill/> */}
           <LocationsPossibleComponent userSelected={userId} />
           <NewStudentAvailability userId={userId} />

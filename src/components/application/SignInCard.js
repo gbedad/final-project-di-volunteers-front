@@ -5,6 +5,8 @@ import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
+import DrawIcon from '@mui/icons-material/Draw';
+import SignaturePad from './SignaturePad';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const DAYS_FR = [
@@ -27,6 +29,73 @@ const timeOf = (d) =>
 // Remote sessions: the Zoom report is the proof (Charte)
 export const needsSignIn = (pair) =>
   !/^\s*(à|a) distance\s*$/i.test(pair.how_location || '');
+
+// The student signs at the end of the session, on the tutor's phone (same
+// day); never blocking: "L'élève ne peut pas / n'a pas pu signer"
+const StudentSignature = ({ session, firstName, onChanged }) => {
+  const [signature, setSignature] = useState(null);
+  const [busy, setBusy] = useState(false);
+  if (session.student_signed_at) {
+    return (
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+        <DrawIcon color="success" fontSize="small" />
+        <Typography variant="body2">
+          Signée par {firstName} à {timeOf(session.student_signed_at)}
+        </Typography>
+      </Stack>
+    );
+  }
+  if (session.no_signature) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        Séance non signée par l'élève.
+      </Typography>
+    );
+  }
+  const send = async (path, body) => {
+    setBusy(true);
+    try {
+      await axios.post(`${BASE_URL}/my/seances/${session.id}/${path}`, body);
+      if (path === 'signature') {
+        toast.success(`Merci ${firstName} !`, { position: 'top-center' });
+      }
+      onChanged();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Enregistrement impossible', {
+        position: 'top-center',
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Box sx={{ mt: 1.5 }}>
+      <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+        Signature de {firstName} (en fin de séance)
+      </Typography>
+      <SignaturePad onChange={setSignature} />
+      <Stack
+        direction="row"
+        spacing={1}
+        flexWrap="wrap"
+        useFlexGap
+        sx={{ mt: 1 }}>
+        <Button
+          variant="contained"
+          disabled={!signature || busy}
+          onClick={() => send('signature', { signature })}>
+          Valider la signature
+        </Button>
+        <Button
+          color="inherit"
+          disabled={busy}
+          onClick={() => send('no-signature')}>
+          L'élève ne peut pas / n'a pas pu signer
+        </Button>
+      </Stack>
+    </Box>
+  );
+};
 
 // "Émarger ma séance": one tap per student, date and time set by the server
 const SignInCard = ({ pairs, onChanged, onReport }) => {
@@ -114,7 +183,7 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                       ? 'Absence enregistrée'
                       : 'Séance émargée'}{' '}
                     à {timeOf(done.created_at)}
-                    {done.late ? ' · retard de 15 min ou plus' : ''}
+                    {done.late ? ' · élève très en retard' : ''}
                   </Typography>
                   {done.attendance === 'présent' && !done.work && (
                     <Button size="small" onClick={() => onReport(pair)}>
@@ -122,7 +191,15 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                     </Button>
                   )}
                 </Stack>
-              ) : (
+              ) : null}
+              {done && done.attendance === 'présent' && (
+                <StudentSignature
+                  session={done}
+                  firstName={pair.student.first_name}
+                  onChanged={onChanged}
+                />
+              )}
+              {done ? null : (
                 <Stack
                   direction="row"
                   spacing={1}
@@ -140,7 +217,7 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                     variant="outlined"
                     disabled={busy === pair.id}
                     onClick={() => signIn(pair, 'présent', true)}>
-                    L'élève est arrivé en retard (15 min ou plus)
+                    L'élève est arrivé très en retard
                   </Button>
                   <Button
                     disabled={busy === pair.id}

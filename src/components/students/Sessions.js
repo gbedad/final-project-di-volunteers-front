@@ -67,6 +67,25 @@ const defaultDuration = (pair) => {
   return d > 0 ? d : 60;
 };
 
+// The team can open the student's signature of a session
+const isTeam = () => {
+  try {
+    return ['superadmin', 'admin', 'interviewer'].includes(
+      JSON.parse(localStorage.getItem('user'))?.user?.role
+    );
+  } catch {
+    return false;
+  }
+};
+const openSignature = async (id) => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/admin/seances/${id}/signature`);
+    window.open(data.url, '_blank', 'noopener');
+  } catch {
+    toast.error("La signature n'a pas pu être ouverte", { position: 'bottom-left' });
+  }
+};
+
 export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
   const [form, setForm] = useState({
     date: today(),
@@ -260,6 +279,25 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
                 color={ATTENDANCE[s.attendance]?.color}
                 label={ATTENDANCE[s.attendance]?.label || s.attendance}
               />
+              {s.student_signed_at && (
+                <Tooltip
+                  title={
+                    isTeam()
+                      ? 'Voir la signature'
+                      : `Signée à ${new Date(s.student_signed_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+                  }>
+                  <Chip
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                    label="Signée par l'élève"
+                    onClick={isTeam() ? () => openSignature(s.id) : undefined}
+                  />
+                </Tooltip>
+              )}
+              {s.no_signature && (
+                <Chip size="small" variant="outlined" label="Non signée" />
+              )}
               {s.late && (
                 <Chip size="small" color="warning" variant="outlined" label="Retard" />
               )}
