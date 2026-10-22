@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
 const DURATIONS = [30, 45, 60, 90, 120];
 const ATTENDANCE = {
   présent: { label: 'Séance faite', color: 'success' },
@@ -45,10 +45,26 @@ export const formatHours = (h) =>
   h ? `${String(h).replace('.', ',')} h` : '0 h';
 
 // One report per session, or a monthly summary: the tutor chooses
+// Duration of today's session: the one already signed in, else today's slot
+const DAYS_FR = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+const minutesOf = (t) => {
+  const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+};
+const defaultDuration = (pair) => {
+  const signed = (pair?.sessions || []).find(
+    (x) => String(x.date).slice(0, 10) === today() && x.duration_minutes
+  );
+  if (signed) return signed.duration_minutes;
+  const slot = (pair?.schedule || []).find((x) => x.day === DAYS_FR[new Date().getDay()]);
+  const d = slot ? minutesOf(slot.endTime) - minutesOf(slot.startTime) : 0;
+  return d > 0 ? d : 60;
+};
+
 export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
   const [form, setForm] = useState({
     date: today(),
-    duration_minutes: 60,
+    duration_minutes: defaultDuration(pair),
     attendance: 'présent',
     work: '',
     progress: 3,
@@ -122,7 +138,9 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
                 value={form.duration_minutes}
                 onChange={(e) => set('duration_minutes', e.target.value)}
                 sx={{ width: 120 }}>
-                {DURATIONS.map((d) => (
+                {[...new Set([...DURATIONS, Number(form.duration_minutes)])]
+                  .sort((a, b) => a - b)
+                  .map((d) => (
                   <MenuItem key={d} value={d}>
                     {durationLabel(d)}
                   </MenuItem>

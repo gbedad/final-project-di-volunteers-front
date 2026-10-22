@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useJwt } from 'react-jwt';
 import './App.css';
@@ -164,6 +164,8 @@ function App() {
             <Route path="/eleves/:id" element={<StudentPage />} />
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
+            {/* Short link (QR code in the rooms): the "Mes élèves" tab */}
+            <Route path="/emarger" element={<Navigate to="/login?onglet=eleves" replace />} />
 
             <Route path="/missions/update/:id" element={<MissionCard />} />
             <Route path="/tutorat" element={<Tutorat />} />
