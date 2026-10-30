@@ -580,6 +580,8 @@ const StudentsPage = () => {
       )}
       <Box sx={{ height: 640, width: '100%', bgcolor: 'background.paper' }}>
         <DataGrid
+          // "lea" finds "Léa"
+          ignoreDiacritics
           rows={rows}
           columns={columns}
           loading={students === null}

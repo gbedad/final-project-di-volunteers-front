@@ -32,7 +32,12 @@ const InstancesPage = () => {
     <div>
       <h3>Instances des cours</h3>
       <div>
-        <DataGrid rows={instances} columns={columns} getRowId={getRowId} />
+        <DataGrid
+          rows={instances}
+          columns={columns}
+          getRowId={getRowId}
+          ignoreDiacritics
+        />
       </div>
     </div>
   );

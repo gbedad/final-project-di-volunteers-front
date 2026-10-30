@@ -339,6 +339,8 @@ const Team = () => {
 
       <Box sx={{ height: 450, width: '100%' }}>
         <DataGrid
+          // "lea" finds "Léa"
+          ignoreDiacritics
           rows={team}
           columns={columns}
           loading={loading}

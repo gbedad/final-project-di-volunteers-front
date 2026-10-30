@@ -1270,6 +1270,8 @@ export default function DataGridDemo(props) {
       />
       <Box sx={{ height: 'auto', width: '100%' }}>
         <FullEditDataGrid
+          // "lea" finds "Léa"
+          ignoreDiacritics
           // One click opens the volunteer's page, as on the students list;
           // the tick box only selects (the e-mail and WhatsApp buttons stop
           // the click themselves)

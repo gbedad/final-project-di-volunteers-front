@@ -338,6 +338,8 @@ const AdminFiles = () => {
           </ToggleButtonGroup>
           <Box sx={{ height: 600, width: '100%' }}>
             <DataGrid
+              // "lea" finds "Léa"
+              ignoreDiacritics
               rows={visibleFiles}
               columns={fileColumns}
               loading={loading}
@@ -377,6 +379,8 @@ const AdminFiles = () => {
           />
           <Box sx={{ height: 600, width: '100%' }}>
             <DataGrid
+              // "lea" finds "Léa"
+              ignoreDiacritics
               rows={visibleMissing}
               columns={missingColumns}
               loading={loading}

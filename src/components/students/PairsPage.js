@@ -233,6 +233,8 @@ const PairsPage = () => {
       </Stack>
       <Box sx={{ height: 600, width: '100%', bgcolor: 'background.paper' }}>
         <DataGrid
+          // "lea" finds "Léa"
+          ignoreDiacritics
           rows={rows}
           columns={columns}
           loading={pairs === null}

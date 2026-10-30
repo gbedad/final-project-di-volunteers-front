@@ -557,6 +557,8 @@ const CourseList = ({ courses, handleCourseUpdate, handleInstanceCreate }) => {
       <h2>Tous les cours</h2>
       <div style={{ height: 300, width: '100%' }}>
         <DataGrid
+          // "lea" finds "Léa"
+          ignoreDiacritics
           rows={rows}
           columns={columns}
           rowModesModel={rowModesModel}

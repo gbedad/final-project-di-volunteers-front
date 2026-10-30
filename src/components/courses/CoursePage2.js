@@ -39,6 +39,8 @@ const MuiDataGrid = () => {
 
   return (
     <DataGrid
+      // "lea" finds "Léa"
+      ignoreDiacritics
       rows={rows}
       columns={columns}
       editMode="row"
