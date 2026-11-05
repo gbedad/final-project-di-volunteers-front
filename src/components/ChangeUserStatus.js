@@ -102,6 +102,20 @@ const EMAIL_STATUSES = ['A finaliser', 'Validé'];
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+// Subject or slot of the profile: an object, its JSON, or (old imports) its
+// JSON encoded twice; anything unreadable gives null instead of a blank page
+const parseItem = (value) => {
+  let v = value;
+  for (let i = 0; i < 2 && typeof v === 'string'; i++) {
+    try {
+      v = JSON.parse(v);
+    } catch {
+      return null;
+    }
+  }
+  return v && typeof v === 'object' ? v : null;
+};
+
 // const Item = styled(Paper)(({ theme }) => ({
 //   ...theme.typography.body2,
 //   textAlign: 'center',
@@ -961,15 +975,16 @@ const ChangeUserStatus = () => {
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {user.skill &&
                         user.skill.topics !== null &&
-                        user.skill.topics.map((topic, i) => (
-                          <div key={i}>
-                            {JSON.parse(topic).subject.label
-                              ? JSON.parse(topic).subject.label
-                              : JSON.parse(topic).subject}{' '}
-                            de {JSON.parse(topic).classStart} à{' '}
-                            {JSON.parse(topic).classEnd}
-                          </div>
-                        ))}
+                        user.skill.topics.map((topic, i) => {
+                          const t = parseItem(topic);
+                          if (!t) return null;
+                          return (
+                            <div key={i}>
+                              {t.subject?.label || t.subject} de{' '}
+                              {t.classStart} à {t.classEnd}
+                            </div>
+                          );
+                        })}
                     </Typography>
                   </Box>
                   <Box mt={2}>
@@ -981,7 +996,7 @@ const ChangeUserStatus = () => {
                       {user.skill &&
                         user.skill.when_day_slot &&
                         user.skill.when_day_slot.map((slot, i) => {
-                          const parsedSlot = JSON.parse(slot);
+                          const parsedSlot = parseItem(slot);
 
                           // Check if parsedSlot is not null before accessing its properties
                           if (parsedSlot) {
