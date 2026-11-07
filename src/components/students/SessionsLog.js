@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import {
   Alert,
+  Button,
   Box,
   Chip,
   IconButton,
@@ -23,6 +24,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import PairDialog from './PairDialog';
 import { formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
+import { isManager } from '../../js/roles';
+import { JotformPendingDialog, syncJotformNow } from './JotformPending';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -140,16 +143,23 @@ const presenceColor = (r) =>
         : r.late
           ? 'warning'
           : 'success';
+const SOURCES = {
+  app: 'Application',
+  jotform: 'Jotform',
+  'app+jotform': 'Application + Jotform',
+};
 const signatureOf = (r) =>
   r.kind === 'attendue'
     ? ''
-    : r.remote
-      ? 'À distance'
-      : {
-          signée: 'Signée',
-          impossible: 'Ne peut pas signer',
-          manquante: 'Non signée',
-        }[r.signature] || '—';
+    : r.jotform_signature_url
+      ? 'Signée (Jotform)'
+      : r.remote
+        ? 'À distance'
+        : {
+            signée: 'Signée',
+            impossible: 'Ne peut pas signer',
+            manquante: 'Non signée',
+          }[r.signature] || '—';
 const signedInOf = (r) =>
   r.remote ? 'À distance' : r.signed_in_at ? timeLabel(r.signed_in_at) : '—';
 const reportOf = (r) =>
@@ -183,6 +193,15 @@ const SessionsLog = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(null);
+  const [pendingOpen, setPendingOpen] = useState(false);
+  const [reload, setReload] = useState(0);
+  const manager = (() => {
+    try {
+      return isManager(JSON.parse(localStorage.getItem('user'))?.user?.role);
+    } catch {
+      return false;
+    }
+  })();
 
   const period = periodKey === 'custom' ? custom : periodOf(periodKey);
   useEffect(() => {
@@ -194,7 +213,7 @@ const SessionsLog = () => {
       .then(({ data }) => setData(data))
       .catch(() => setError(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period.from, period.to]);
+  }, [period.from, period.to, reload]);
 
   // Search and demo first; the chips count what is left
   const searched = useMemo(
@@ -296,6 +315,18 @@ const SessionsLog = () => {
       renderCell: ({ row, value }) =>
         row.signature === 'manquante' ? (
           <Chip size="small" color="warning" variant="outlined" label={value} />
+        ) : row.jotform_signature_url ? (
+          <Chip
+            size="small"
+            color="success"
+            variant="outlined"
+            label={value}
+            title="Ouvrir la signature (connexion Jotform)"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(row.jotform_signature_url, '_blank', 'noopener');
+            }}
+          />
         ) : row.signature === 'signée' ? (
           <Chip size="small" color="success" variant="outlined" label={value} />
         ) : (
@@ -341,6 +372,13 @@ const SessionsLog = () => {
       width: 200,
     },
     { field: 'remark', headerName: 'Remarques', width: 200 },
+    {
+      field: 'source',
+      headerName: 'Origine',
+      width: 120,
+      valueGetter: ({ row }) =>
+        row.kind === 'session' ? SOURCES[row.source] : '',
+    },
     {
       field: 'place',
       headerName: 'Lieu',
@@ -426,6 +464,15 @@ const SessionsLog = () => {
           color={hideDemo ? 'primary' : 'default'}
           onClick={() => setHideDemo(!hideDemo)}
         />
+        {manager && (
+          <Button
+            size="small"
+            onClick={async () => {
+              if (await syncJotformNow()) setReload((n) => n + 1);
+            }}>
+            Synchroniser Jotform
+          </Button>
+        )}
       </Stack>
       <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
         {FILTERS.map((f) => (
@@ -441,6 +488,22 @@ const SessionsLog = () => {
       {error && (
         <Alert severity="error" sx={{ mb: 1.5 }}>
           Le journal des séances n'a pas pu être chargé.
+        </Alert>
+      )}
+      {data?.jotform_pending > 0 && (
+        <Alert
+          severity="warning"
+          sx={{ mb: 1.5 }}
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => setPendingOpen(true)}>
+              Rattacher
+            </Button>
+          }>
+          {data.jotform_pending} signature{data.jotform_pending > 1 ? 's' : ''}{' '}
+          Jotform à rattacher à un binôme.
         </Alert>
       )}
       {data && !data.calendar_ok && (
@@ -481,6 +544,11 @@ const SessionsLog = () => {
         />
       </Box>
       <PairDialog pair={open} onClose={() => setOpen(null)} />
+      <JotformPendingDialog
+        open={pendingOpen}
+        onClose={() => setPendingOpen(false)}
+        onChanged={() => setReload((n) => n + 1)}
+      />
     </Box>
   );
 };
