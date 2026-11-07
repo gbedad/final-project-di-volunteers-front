@@ -248,6 +248,8 @@ const SessionsLog = () => {
     {
       field: 'signed_in_at',
       headerName: 'Émargé à',
+      description:
+        "Heure de l'émargement (application) ou du formulaire Jotform : pendant ou à la fin de la séance, ce n'est pas l'heure d'arrivée de l'élève",
       width: 95,
       valueGetter: ({ row }) => signedInOf(row),
     },
