@@ -6,6 +6,7 @@ import {
   Box,
   Chip,
   IconButton,
+  Link,
   InputAdornment,
   MenuItem,
   Stack,
@@ -24,8 +25,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import PairDialog from './PairDialog';
 import { formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
-import { isManager } from '../../js/roles';
-import { JotformPendingDialog, syncJotformNow } from './JotformPending';
+import { JotformPendingDialog } from './JotformPending';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -195,13 +195,6 @@ const SessionsLog = () => {
   const [open, setOpen] = useState(null);
   const [pendingOpen, setPendingOpen] = useState(false);
   const [reload, setReload] = useState(0);
-  const manager = (() => {
-    try {
-      return isManager(JSON.parse(localStorage.getItem('user'))?.user?.role);
-    } catch {
-      return false;
-    }
-  })();
 
   const period = periodKey === 'custom' ? custom : periodOf(periodKey);
   useEffect(() => {
@@ -464,15 +457,6 @@ const SessionsLog = () => {
           color={hideDemo ? 'primary' : 'default'}
           onClick={() => setHideDemo(!hideDemo)}
         />
-        {manager && (
-          <Button
-            size="small"
-            onClick={async () => {
-              if (await syncJotformNow()) setReload((n) => n + 1);
-            }}>
-            Synchroniser Jotform
-          </Button>
-        )}
       </Stack>
       <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
         {FILTERS.map((f) => (
@@ -522,6 +506,17 @@ const SessionsLog = () => {
         {totals.noReport > 1 ? 's' : ''} · {totals.expected} séance
         {totals.expected > 1 ? 's' : ''} attendue
         {totals.expected > 1 ? 's' : ''} sans rien d'enregistré
+        {/* Jotform answers and the sync on demand (rarely needed: webhook
+            and hourly check) */}
+        {' · '}
+        <Link
+          component="button"
+          variant="body2"
+          color="text.secondary"
+          onClick={() => setPendingOpen(true)}
+          sx={{ verticalAlign: 'baseline' }}>
+          Signatures Jotform
+        </Link>
       </Typography>
       <Box sx={{ height: 620, width: '100%', bgcolor: 'background.paper' }}>
         <DataGrid

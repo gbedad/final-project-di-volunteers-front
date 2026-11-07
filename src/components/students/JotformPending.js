@@ -160,7 +160,7 @@ export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
   };
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Signatures Jotform à rattacher</DialogTitle>
+      <DialogTitle>Signatures Jotform</DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           L'application n'a pas reconnu l'élève ou le tuteur. Choisissez le
@@ -189,6 +189,16 @@ export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
         )}
       </DialogContent>
       <DialogActions>
+        {canEdit && (
+          <Button
+            sx={{ mr: 'auto' }}
+            title="Normalement inutile : chaque signature arrive seule (webhook), et une relecture a lieu toutes les heures"
+            onClick={async () => {
+              if (await syncJotformNow()) done();
+            }}>
+            Synchroniser Jotform maintenant
+          </Button>
+        )}
         <Button onClick={onClose}>Fermer</Button>
       </DialogActions>
     </Dialog>
