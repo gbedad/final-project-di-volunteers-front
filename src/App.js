@@ -173,6 +173,7 @@ function App() {
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
             <Route path="/binomes" element={<PairsPage />} />
+            <Route path="/binomes/seances" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
             {/* Short link (QR code in the rooms): the "Mes élèves" tab */}
             <Route path="/emarger" element={<Navigate to="/login?onglet=eleves" replace />} />

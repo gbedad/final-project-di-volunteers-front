@@ -7,8 +7,11 @@ import {
   IconButton,
   InputAdornment,
   Stack,
+  Tab,
+  Tabs,
   TextField,
 } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { DataGrid, frFR } from '@mui/x-data-grid';
@@ -17,6 +20,7 @@ import PairDialog, { AlertChips } from './PairDialog';
 import { PAIR_STATUS } from './StudentPairs';
 import { formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
+import SessionsLog from './SessionsLog';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -72,6 +76,12 @@ const PairsPage = () => {
   const [filter, setFilter] = useSessionState('pairs.filter', 'all');
   const [open, setOpen] = useState(null);
   const [query, setQuery] = useSessionState('pairs.query', '');
+  // Pairs whose student or tutor is a demonstration one (same choice on the
+  // "Séances" tab)
+  const [hideDemo, setHideDemo] = useSessionState('pairs.hideDemo', false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onSessions = location.pathname.startsWith('/binomes/seances');
 
   useEffect(() => {
     axios
@@ -82,8 +92,13 @@ const PairsPage = () => {
 
   // Search first, then the chips count what the search found
   const searched = useMemo(
-    () => (pairs || []).filter((p) => matchesText(p, query)),
-    [pairs, query]
+    () =>
+      (pairs || []).filter(
+        (p) =>
+          (!hideDemo || !(p.student?.is_demo || p.tutor?.is_demo)) &&
+          matchesText(p, query)
+      ),
+    [pairs, query, hideDemo]
   );
   const count = (f) =>
     searched.filter((p) =>
@@ -119,7 +134,9 @@ const PairsPage = () => {
       renderCell: ({ row, value }) => (
         <Stack direction="row" spacing={1} alignItems="center">
           <span>{value}</span>
-          {row.student?.is_demo && <Chip size="small" label="Démo" />}
+          {(row.student?.is_demo || row.tutor?.is_demo) && (
+            <Chip size="small" label="Démo" />
+          )}
         </Stack>
       ),
     },
@@ -192,63 +209,97 @@ const PairsPage = () => {
     <Container maxWidth="xxl" sx={{ mt: 4, mb: 4 }}>
       <PageHeader
         title="Binômes"
-        subtitle="Suivi des binômes tuteur / élève : séances, heures et alertes. Cliquez sur un binôme pour voir ses comptes-rendus."
+        subtitle={
+          onSessions
+            ? 'Toutes les séances d’une période : horaires, émargements, signatures et comptes-rendus. Cliquez sur une séance pour voir son binôme.'
+            : 'Suivi des binômes tuteur / élève : séances, heures et alertes. Cliquez sur un binôme pour voir ses comptes-rendus.'
+        }
       />
-      <TextField
-        size="small"
-        label="Rechercher un binôme"
-        placeholder="Élève, tuteur, matière, jour…"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
-        sx={{ width: { xs: '100%', sm: 320 }, mb: 1.5 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon fontSize="small" />
-            </InputAdornment>
-          ),
-          endAdornment: query ? (
-            <InputAdornment position="end">
-              <IconButton
-                size="small"
-                onClick={() => setQuery('')}
-                aria-label="Effacer">
-                <ClearIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          ) : null,
-        }}
-      />
-      <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
-        {FILTERS.map((f) => (
-          <Chip
-            key={f.value}
-            label={`${f.label} ${count(f.value)}`}
-            color={f.color || 'primary'}
-            variant={filter === f.value ? 'filled' : 'outlined'}
-            onClick={() => setFilter(f.value)}
-          />
-        ))}
-      </Stack>
-      <Box sx={{ height: 600, width: '100%', bgcolor: 'background.paper' }}>
-        <DataGrid
-          // "lea" finds "Léa"
-          ignoreDiacritics
-          rows={rows}
-          columns={columns}
-          loading={pairs === null}
-          localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
-          onRowClick={({ row }) => setOpen(row)}
-          // Default order: students' first names, A to Z
-          initialState={{
-            sorting: { sortModel: [{ field: 'student', sort: 'asc' }] },
-          }}
-          sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
-          disableRowSelectionOnClick
-        />
-      </Box>
-      <PairDialog pair={open} onClose={() => setOpen(null)} />
+      <Tabs
+        value={onSessions ? 'seances' : 'binomes'}
+        onChange={(e, v) =>
+          navigate(v === 'seances' ? '/binomes/seances' : '/binomes', {
+            state: location.state,
+          })
+        }
+        sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Tab value="binomes" label="Binômes" />
+        <Tab value="seances" label="Séances" />
+      </Tabs>
+      {onSessions ? (
+        <SessionsLog />
+      ) : (
+        <>
+          <Stack
+            direction="row"
+            flexWrap="wrap"
+            gap={1.5}
+            alignItems="center"
+            sx={{ mb: 1.5 }}>
+            <TextField
+              size="small"
+              label="Rechercher un binôme"
+              placeholder="Élève, tuteur, matière, jour…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
+              sx={{ width: { xs: '100%', sm: 320 } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: query ? (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      onClick={() => setQuery('')}
+                      aria-label="Effacer">
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+              }}
+            />
+            <Chip
+              label="Masquer la démo"
+              variant={hideDemo ? 'filled' : 'outlined'}
+              color={hideDemo ? 'primary' : 'default'}
+              onClick={() => setHideDemo(!hideDemo)}
+            />
+          </Stack>
+          <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
+            {FILTERS.map((f) => (
+              <Chip
+                key={f.value}
+                label={`${f.label} ${count(f.value)}`}
+                color={f.color || 'primary'}
+                variant={filter === f.value ? 'filled' : 'outlined'}
+                onClick={() => setFilter(f.value)}
+              />
+            ))}
+          </Stack>
+          <Box sx={{ height: 600, width: '100%', bgcolor: 'background.paper' }}>
+            <DataGrid
+              // "lea" finds "Léa"
+              ignoreDiacritics
+              rows={rows}
+              columns={columns}
+              loading={pairs === null}
+              localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+              onRowClick={({ row }) => setOpen(row)}
+              // Default order: students' first names, A to Z
+              initialState={{
+                sorting: { sortModel: [{ field: 'student', sort: 'asc' }] },
+              }}
+              sx={{ '& .MuiDataGrid-row': { cursor: 'pointer' } }}
+              disableRowSelectionOnClick
+            />
+          </Box>
+          <PairDialog pair={open} onClose={() => setOpen(null)} />
+        </>
+      )}
     </Container>
   );
 };
