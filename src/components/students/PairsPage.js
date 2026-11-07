@@ -189,6 +189,13 @@ const PairsPage = () => {
       valueFormatter: ({ value }) => formatHours(value),
     },
     {
+      field: 'last_session',
+      headerName: 'Dernière séance',
+      width: 125,
+      valueGetter: ({ row }) => row.stats.last_session,
+      valueFormatter: ({ value }) => formatDate(value),
+    },
+    {
       field: 'last_report',
       headerName: 'Dernier CR',
       width: 110,

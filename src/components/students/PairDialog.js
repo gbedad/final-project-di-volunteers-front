@@ -99,6 +99,10 @@ const PairDialog = ({ pair, onClose, showStudentLink = true }) => {
                 value={formatHours(stats?.hours)}
               />
               <Figure
+                label="Dernière séance"
+                value={formatDate(stats?.last_session)}
+              />
+              <Figure
                 label="Dernier compte-rendu"
                 value={formatDate(stats?.last_report)}
               />
