@@ -115,10 +115,18 @@ const DetailsEditor = ({ pair, onSaved, onCancel }) => {
             }
           />
         </Stack>
-        <Typography variant="caption" color="text.secondary">
-          Les séances avant cette date gardent l'ancien créneau (créneau prévu,
-          retards).
-        </Typography>
+        {fromStart && (pair.schedule_history || []).length > 1 ? (
+          <Alert severity="warning">
+            Ceci efface l'historique des créneaux : toutes les séances, même
+            anciennes, seront jugées sur ce créneau. Pour ajouter ou changer un
+            créneau sans toucher au passé, décochez et choisissez une date.
+          </Alert>
+        ) : (
+          <Typography variant="caption" color="text.secondary">
+            Les séances avant cette date gardent l'ancien créneau (créneau
+            prévu, retards).
+          </Typography>
+        )}
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
           <TextField
             select

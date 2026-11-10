@@ -22,6 +22,7 @@ import {
 } from '@mui/x-data-grid';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import HistoryIcon from '@mui/icons-material/History';
 import PairDialog from './PairDialog';
 import { durationLabel, formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
@@ -244,9 +245,34 @@ const SessionsLog = () => {
     {
       field: 'slot',
       headerName: 'Créneau prévu',
-      width: 120,
+      width: 135,
+      // Exported with "(ancien créneau)"; shown with an icon
       valueGetter: ({ row }) =>
-        row.slot ? `${row.slot.startTime}–${row.slot.endTime}` : 'hors créneau',
+        (row.slot
+          ? `${row.slot.startTime}–${row.slot.endTime}`
+          : 'hors créneau') +
+        (row.slot_changed_since ? ' (ancien créneau)' : ''),
+      renderCell: ({ row }) => (
+        <Stack direction="row" spacing={0.5} alignItems="center">
+          <span>
+            {row.slot
+              ? `${row.slot.startTime}–${row.slot.endTime}`
+              : 'hors créneau'}
+          </span>
+          {row.slot_changed_since && (
+            <Tooltip
+              title={`Ancien créneau, en vigueur à cette date. Créneau actuel depuis le ${new Date(
+                `${row.slot_changed_since}T12:00:00Z`
+              ).toLocaleDateString('fr-FR')} : ${
+                (row.current_schedule || [])
+                  .map((s) => `${s.day} ${s.startTime}–${s.endTime}`)
+                  .join(', ') || 'aucun créneau'
+              }`}>
+              <HistoryIcon fontSize="small" color="action" />
+            </Tooltip>
+          )}
+        </Stack>
+      ),
     },
     {
       field: 'signed_in_at',
