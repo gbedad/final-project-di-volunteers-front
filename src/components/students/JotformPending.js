@@ -44,27 +44,45 @@ const pairLabel = (p) =>
 // Pairs the team most likely means first: same tutor, then same first name
 const ranked = (pairs, row) => {
   const score = (p) =>
-    (norm(row.tutor_name).includes(norm(p.tutor?.last_name)) ? 2 : 0) +
-    (norm(row.student_first).split(' ').includes(norm(p.student?.first_name))
+    (norm(row.tutor_name || row.host_name).includes(norm(p.tutor?.last_name))
+      ? 2
+      : 0) +
+    (norm(
+      `${row.student_first || ''} ${row.student_names || ''} ${row.topic || ''}`
+    )
+      .split(/[^a-z]+/)
+      .includes(norm(p.student?.first_name))
       ? 1
       : 0);
   return [...pairs].sort((a, b) => score(b) - score(a));
 };
 
-const PendingRow = ({ row, pairs, canEdit, onDone }) => {
+const zoomTime = (v) =>
+  v
+    ? new Date(v).toLocaleTimeString('fr-FR', {
+        timeZone: 'Europe/Paris',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
+
+// kind: 'jotform' (a signature) or 'zoom' (a remote session)
+const PendingRow = ({ kind, row, pairs, canEdit, onDone }) => {
   const [pick, setPick] = useState('');
   const [busy, setBusy] = useState(false);
   const act = async (action) => {
     setBusy(true);
     try {
       await axios.post(
-        `${BASE_URL}/admin/jotform/pending/${row.id}/${action}`,
+        `${BASE_URL}/admin/${kind}/pending/${row.id}/${action}`,
         action === 'match' ? { binome_id: pick } : {}
       );
       toast.success(
         action === 'match'
-          ? 'Séance enregistrée, nom mémorisé pour les prochaines fois'
-          : 'Signature écartée',
+          ? kind === 'zoom'
+            ? 'Séance enregistrée, réunion mémorisée pour ce binôme'
+            : 'Séance enregistrée, nom mémorisé pour les prochaines fois'
+          : 'Écartée',
         { position: 'bottom-left' }
       );
       onDone();
@@ -78,22 +96,33 @@ const PendingRow = ({ row, pairs, canEdit, onDone }) => {
   };
   return (
     <Stack spacing={1}>
-      <Typography variant="body2">
-        <b>
-          {frDate(row.date)} {row.arrival}
-        </b>{' '}
-        · élève « {row.student_first} {row.student_last} » · tuteur «{' '}
-        {row.tutor_name || '—'} »
-        {row.signature_url && (
-          <>
-            {' '}
-            ·{' '}
-            <Link href={row.signature_url} target="_blank" rel="noopener">
-              signature
-            </Link>
-          </>
-        )}
-      </Typography>
+      {kind === 'zoom' ? (
+        <Typography variant="body2">
+          <b>
+            {frDate(row.date)} {zoomTime(row.arrival)}
+          </b>{' '}
+          · réunion « {row.topic || row.meeting_id} » · hôte «{' '}
+          {row.host_name || row.host_email || '—'} » · connecté(s) : «{' '}
+          {row.student_names || '—'} » · {row.minutes} min
+        </Typography>
+      ) : (
+        <Typography variant="body2">
+          <b>
+            {frDate(row.date)} {row.arrival}
+          </b>{' '}
+          · élève « {row.student_first} {row.student_last} » · tuteur «{' '}
+          {row.tutor_name || '—'} »
+          {row.signature_url && (
+            <>
+              {' '}
+              ·{' '}
+              <Link href={row.signature_url} target="_blank" rel="noopener">
+                signature
+              </Link>
+            </>
+          )}
+        </Typography>
+      )}
       <Typography variant="caption" color="text.secondary">
         {row.reason}
       </Typography>
@@ -127,10 +156,37 @@ const PendingRow = ({ row, pairs, canEdit, onDone }) => {
   );
 };
 
-// Answers of the Jotform attendance form the application could not match
-// to a pair: the team picks the pair (remembered for the next ones)
+const Section = ({ title, kind, rows, pairs, canEdit, onDone, empty }) => (
+  <>
+    <Typography fontWeight={600} sx={{ mt: 2, mb: 1 }}>
+      {title}
+    </Typography>
+    {rows === null ? (
+      <Typography variant="body2">Chargement…</Typography>
+    ) : rows.length === 0 ? (
+      <Alert severity="success">{empty}</Alert>
+    ) : (
+      <Stack spacing={2} divider={<Divider />}>
+        {rows.map((r) => (
+          <PendingRow
+            key={r.id}
+            kind={kind}
+            row={r}
+            pairs={pairs}
+            canEdit={canEdit}
+            onDone={onDone}
+          />
+        ))}
+      </Stack>
+    )}
+  </>
+);
+
+// Jotform signatures and Zoom sessions the application could not match to
+// a pair: the team picks the pair (remembered for the next ones)
 export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
   const [rows, setRows] = useState(null);
+  const [zoomRows, setZoomRows] = useState(null);
   const [pairs, setPairs] = useState([]);
   const canEdit = isManager(role());
   const load = useCallback(() => {
@@ -138,10 +194,15 @@ export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
       .get(`${BASE_URL}/admin/jotform/pending`)
       .then(({ data }) => setRows(data))
       .catch(() => setRows([]));
+    axios
+      .get(`${BASE_URL}/admin/zoom/pending`)
+      .then(({ data }) => setZoomRows(data))
+      .catch(() => setZoomRows([]));
   }, []);
   useEffect(() => {
     if (!open) return;
     setRows(null);
+    setZoomRows(null);
     load();
     axios
       .get(`${BASE_URL}/admin/binomes`)
@@ -160,44 +221,51 @@ export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
   };
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Signatures Jotform</DialogTitle>
+      <DialogTitle>Jotform et Zoom</DialogTitle>
       <DialogContent>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" color="text.secondary">
           L'application n'a pas reconnu l'élève ou le tuteur. Choisissez le
-          binôme : la séance est enregistrée et le nom est mémorisé pour les
-          prochaines signatures. « Écarter » pour un essai ou un élève qui n'est
-          pas suivi dans l'application.
+          binôme : la séance est enregistrée, et le nom (Jotform) ou la réunion
+          (Zoom) est mémorisé pour les prochaines fois. « Écarter » pour un
+          essai ou un élève qui n'est pas suivi dans l'application.
         </Typography>
-        {rows === null ? (
-          <Typography variant="body2">Chargement…</Typography>
-        ) : rows.length === 0 ? (
-          <Alert severity="success">
-            Toutes les signatures sont rattachées.
-          </Alert>
-        ) : (
-          <Stack spacing={2} divider={<Divider />}>
-            {rows.map((r) => (
-              <PendingRow
-                key={r.id}
-                row={r}
-                pairs={pairs}
-                canEdit={canEdit}
-                onDone={done}
-              />
-            ))}
-          </Stack>
-        )}
+        <Section
+          title="Signatures Jotform à rattacher"
+          kind="jotform"
+          rows={rows}
+          pairs={pairs}
+          canEdit={canEdit}
+          onDone={done}
+          empty="Toutes les signatures sont rattachées."
+        />
+        <Section
+          title="Séances Zoom à rattacher"
+          kind="zoom"
+          rows={zoomRows}
+          pairs={pairs}
+          canEdit={canEdit}
+          onDone={done}
+          empty="Toutes les séances Zoom sont rattachées."
+        />
       </DialogContent>
       <DialogActions>
         {canEdit && (
-          <Button
-            sx={{ mr: 'auto' }}
-            title="Normalement inutile : chaque signature arrive seule (webhook), et une relecture a lieu toutes les heures"
-            onClick={async () => {
-              if (await syncJotformNow()) done();
-            }}>
-            Synchroniser Jotform maintenant
-          </Button>
+          <Stack direction="row" spacing={1} sx={{ mr: 'auto' }}>
+            <Button
+              title="Normalement inutile : chaque signature arrive seule (webhook), et une relecture a lieu toutes les heures"
+              onClick={async () => {
+                if (await syncNow('jotform')) done();
+              }}>
+              Synchroniser Jotform
+            </Button>
+            <Button
+              title="Normalement inutile : chaque séance arrive seule après la fin de la réunion (webhook), et une relecture a lieu toutes les heures"
+              onClick={async () => {
+                if (await syncNow('zoom')) done();
+              }}>
+              Synchroniser Zoom
+            </Button>
+          </Stack>
         )}
         <Button onClick={onClose}>Fermer</Button>
       </DialogActions>
@@ -205,12 +273,12 @@ export const JotformPendingDialog = ({ open, onClose, onChanged }) => {
   );
 };
 
-// "Synchroniser Jotform": the hourly check, now
-export const syncJotformNow = async () => {
+// "Synchroniser Jotform / Zoom": the hourly check, now
+export const syncNow = async (kind) => {
   try {
-    const { data } = await axios.post(`${BASE_URL}/admin/jotform/sync`);
+    const { data } = await axios.post(`${BASE_URL}/admin/${kind}/sync`);
     toast.success(
-      `Jotform : ${data.created} séance(s) ajoutée(s), ${data.completed} complétée(s), ${data.pending} à rattacher`,
+      `${kind === 'zoom' ? 'Zoom' : 'Jotform'} : ${data.created} séance(s) ajoutée(s), ${data.completed} complétée(s), ${data.pending} à rattacher`,
       { position: 'bottom-left', duration: 6000 }
     );
     return true;

@@ -147,21 +147,24 @@ const SOURCES = {
   app: 'Application',
   jotform: 'Jotform',
   'app+jotform': 'Application + Jotform',
+  zoom: 'Zoom',
+  'app+zoom': 'Application + Zoom',
 };
 const signatureOf = (r) =>
   r.kind === 'attendue'
     ? ''
     : r.jotform_signature_url
       ? 'Signée (Jotform)'
-      : r.remote
+      : r.remote || r.zoom
         ? 'À distance'
         : {
             signée: 'Signée',
             impossible: 'Ne peut pas signer',
             manquante: 'Non signée',
           }[r.signature] || '—';
+// Zoom: the student's connection; remote without Zoom: nothing to sign in
 const signedInOf = (r) =>
-  r.remote ? 'À distance' : r.signed_in_at ? timeLabel(r.signed_in_at) : '—';
+  r.signed_in_at ? timeLabel(r.signed_in_at) : r.remote ? 'À distance' : '—';
 const reportOf = (r) =>
   r.report === 'fait' ? 'Fait' : r.report === 'manquant' ? 'Manquant' : '—';
 
@@ -249,7 +252,7 @@ const SessionsLog = () => {
       field: 'signed_in_at',
       headerName: 'Émargé à',
       description:
-        "Heure de l'émargement (application) ou du formulaire Jotform : pendant ou à la fin de la séance, ce n'est pas l'heure d'arrivée de l'élève",
+        "Application ou Jotform : heure de l'émargement, pendant ou à la fin de la séance (pas l'heure d'arrivée de l'élève). Zoom : heure de connexion de l'élève",
       width: 95,
       valueGetter: ({ row }) => signedInOf(row),
     },
@@ -379,7 +382,7 @@ const SessionsLog = () => {
       headerName: 'Lieu',
       width: 110,
       valueGetter: ({ row }) =>
-        row.remote ? 'À distance' : row.pair.site || 'Sur site',
+        row.remote || row.zoom ? 'À distance' : row.pair.site || 'Sur site',
     },
   ];
 
@@ -476,7 +479,7 @@ const SessionsLog = () => {
           Le journal des séances n'a pas pu être chargé.
         </Alert>
       )}
-      {data?.jotform_pending > 0 && (
+      {data?.jotform_pending + data?.zoom_pending > 0 && (
         <Alert
           severity="warning"
           sx={{ mb: 1.5 }}
@@ -488,8 +491,15 @@ const SessionsLog = () => {
               Rattacher
             </Button>
           }>
-          {data.jotform_pending} signature{data.jotform_pending > 1 ? 's' : ''}{' '}
-          Jotform à rattacher à un binôme.
+          {[
+            data.jotform_pending > 0 &&
+              `${data.jotform_pending} signature${data.jotform_pending > 1 ? 's' : ''} Jotform`,
+            data.zoom_pending > 0 &&
+              `${data.zoom_pending} séance${data.zoom_pending > 1 ? 's' : ''} Zoom`,
+          ]
+            .filter(Boolean)
+            .join(' et ')}{' '}
+          à rattacher à un binôme.
         </Alert>
       )}
       {data && !data.calendar_ok && (
@@ -517,7 +527,7 @@ const SessionsLog = () => {
           color="text.secondary"
           onClick={() => setPendingOpen(true)}
           sx={{ verticalAlign: 'baseline' }}>
-          Signatures Jotform
+          Jotform et Zoom
         </Link>
       </Typography>
       <Box sx={{ height: 620, width: '100%', bgcolor: 'background.paper' }}>
