@@ -204,15 +204,21 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
                 value={form.work}
                 onChange={(e) => set('work', e.target.value)}
               />
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Typography variant="body2">Comment va l'élève ?</Typography>
-                <Rating
-                  value={form.progress}
-                  onChange={(e, v) => set('progress', v || 1)}
-                />
-                <Typography variant="body2" color="text.secondary">
-                  {PROGRESS_LABELS[form.progress]}
+              {/* The question on its own line, the stars and their word
+                  under it (narrow dialog, phones included) */}
+              <Stack spacing={0.5}>
+                <Typography variant="body2">
+                  Comment s'est passée la séance ?
                 </Typography>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Rating
+                    value={form.progress}
+                    onChange={(e, v) => set('progress', v || 1)}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    {PROGRESS_LABELS[form.progress]}
+                  </Typography>
+                </Stack>
               </Stack>
             </>
           )}

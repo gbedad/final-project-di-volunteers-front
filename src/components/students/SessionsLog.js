@@ -385,7 +385,7 @@ const SessionsLog = () => {
     },
     {
       field: 'progress',
-      headerName: 'Ressenti',
+      headerName: 'Rating',
       width: 85,
       valueGetter: ({ row }) => (row.progress ? `${row.progress} / 5` : ''),
     },
