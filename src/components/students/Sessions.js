@@ -41,10 +41,15 @@ const PROGRESS_LABELS = {
 export const durationLabel = (minutes) =>
   minutes < 60
     ? `${minutes} min`
-    : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${minutes % 60}` : ''}`;
+    : `${Math.floor(minutes / 60)} h${
+        minutes % 60 ? ` ${String(minutes % 60).padStart(2, '0')}` : ''
+      }`;
 
-export const formatHours = (h) =>
-  h ? `${String(h).replace('.', ',')} h` : '0 h';
+// Hours as "59 min", "1 h 05", "7 h 48" (never 0,9833 h)
+export const formatHours = (h) => {
+  const minutes = Math.round((Number(h) || 0) * 60);
+  return minutes ? durationLabel(minutes) : '0 h';
+};
 
 // One report per session, or a monthly summary: the tutor chooses
 // Duration of today's session: the one already signed in, else today's slot

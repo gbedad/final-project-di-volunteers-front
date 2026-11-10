@@ -23,7 +23,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import PairDialog from './PairDialog';
-import { formatHours } from './Sessions';
+import { durationLabel, formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
 import { JotformPendingDialog } from './JotformPending';
 
@@ -302,7 +302,7 @@ const SessionsLog = () => {
       width: 75,
       valueGetter: ({ row }) =>
         row.kind === 'session' && row.attendance === 'présent'
-          ? formatHours((row.duration_minutes || 0) / 60)
+          ? durationLabel(row.duration_minutes || 0)
           : '',
     },
     {
