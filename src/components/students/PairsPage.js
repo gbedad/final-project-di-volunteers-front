@@ -83,12 +83,13 @@ const PairsPage = () => {
   const navigate = useNavigate();
   const onSessions = location.pathname.startsWith('/binomes/seances');
 
+  const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     axios
       .get(`${BASE_URL}/admin/binomes`)
       .then(({ data }) => setPairs(data))
       .catch(() => setPairs([]));
-  }, []);
+  }, [reloadKey]);
 
   // Search first, then the chips count what the search found
   const searched = useMemo(
@@ -304,7 +305,11 @@ const PairsPage = () => {
               disableRowSelectionOnClick
             />
           </Box>
-          <PairDialog pair={open} onClose={() => setOpen(null)} />
+          <PairDialog
+            pair={open}
+            onClose={() => setOpen(null)}
+            onChanged={() => setReloadKey((k) => k + 1)}
+          />
         </>
       )}
     </Container>

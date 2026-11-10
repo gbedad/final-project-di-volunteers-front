@@ -550,7 +550,11 @@ const SessionsLog = () => {
           }}
         />
       </Box>
-      <PairDialog pair={open} onClose={() => setOpen(null)} />
+      <PairDialog
+        pair={open}
+        onClose={() => setOpen(null)}
+        onChanged={() => setReload((n) => n + 1)}
+      />
       <JotformPendingDialog
         open={pendingOpen}
         onClose={() => setPendingOpen(false)}

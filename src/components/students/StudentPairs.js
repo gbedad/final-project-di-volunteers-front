@@ -235,6 +235,7 @@ const StudentPairs = ({ student, canEdit, onChanged }) => {
       <PairDialog
         pair={following && { ...following, student }}
         onClose={() => setFollowing(null)}
+        onChanged={load}
         showStudentLink={false}
       />
 
