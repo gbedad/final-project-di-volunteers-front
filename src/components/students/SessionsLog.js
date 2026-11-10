@@ -128,7 +128,9 @@ const timeLabel = (v) =>
 // Presence, as shown and exported
 const presenceOf = (r) =>
   r.kind === 'attendue'
-    ? 'Rien d’enregistré'
+    ? r.today
+      ? 'Pas encore émargée'
+      : 'Rien d’enregistré'
     : r.attendance === 'absent'
       ? 'Absent'
       : r.attendance === 'annulé'
@@ -138,7 +140,9 @@ const presenceOf = (r) =>
           : 'Présent';
 const presenceColor = (r) =>
   r.kind === 'attendue'
-    ? 'warning'
+    ? r.today
+      ? 'default'
+      : 'warning'
     : r.attendance === 'absent'
       ? 'error'
       : r.attendance === 'annulé'
