@@ -10,6 +10,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Checkbox,
+  FormControlLabel,
   LinearProgress,
   MenuItem,
   Paper,
@@ -50,13 +52,19 @@ const DetailsEditor = ({ pair, onSaved, onCancel }) => {
   const [schedule, setSchedule] = useState(pair.schedule || []);
   const [how, setHow] = useState(pair.how_location || '');
   const [site, setSite] = useState(pair.site || '');
+  // The new slot applies from that day; or it corrects the whole past (the
+  // slot was wrong from the start)
+  const [since, setSince] = useState(
+    new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' })
+  );
+  const [fromStart, setFromStart] = useState(false);
   const [busy, setBusy] = useState(false);
   const save = async () => {
     setBusy(true);
     try {
       const { data } = await axios.patch(
         `${BASE_URL}/admin/binomes/${pair.id}/details`,
-        { schedule, how_location: how, site }
+        { schedule, how_location: how, site, since: fromStart ? null : since }
       );
       toast.success('Créneau du binôme enregistré', {
         position: 'bottom-left',
@@ -79,6 +87,38 @@ const DetailsEditor = ({ pair, onSaved, onCancel }) => {
           retard. Les disponibilités du tuteur et de l'élève ne changent pas.
         </Typography>
         <SlotsEditor value={schedule} onChange={setSchedule} />
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          alignItems={{ sm: 'center' }}>
+          <TextField
+            size="small"
+            type="date"
+            label="Applicable à partir du"
+            value={since}
+            disabled={fromStart}
+            onChange={(e) => setSince(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={fromStart}
+                onChange={(e) => setFromStart(e.target.checked)}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                Corriger depuis le début du binôme (le créneau était faux)
+              </Typography>
+            }
+          />
+        </Stack>
+        <Typography variant="caption" color="text.secondary">
+          Les séances avant cette date gardent l'ancien créneau (créneau prévu,
+          retards).
+        </Typography>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
           <TextField
             select
@@ -171,6 +211,28 @@ const PairDialog = ({
             .filter(Boolean)
             .join(' · ')}
         </Typography>
+        {/* Earlier slots (each change applies from a day) */}
+        {(pair.schedule_history || []).length > 1 && (
+          <Typography variant="caption" color="text.secondary" component="div">
+            {[...pair.schedule_history]
+              .sort((a, b) =>
+                String(a.since || '').localeCompare(String(b.since || ''))
+              )
+              .slice(0, -1)
+              .map((h) => {
+                const next = pair.schedule_history
+                  .map((x) => x.since)
+                  .filter((d) => d && d > (h.since || ''))
+                  .sort()[0];
+                return `Avant le ${new Date(`${next}T12:00:00Z`).toLocaleDateString('fr-FR')} : ${
+                  (h.schedule || [])
+                    .map((s) => `${s.day} ${s.startTime}–${s.endTime}`)
+                    .join(', ') || 'aucun créneau'
+                }`;
+              })
+              .join(' · ')}
+          </Typography>
+        )}
       </DialogTitle>
       <DialogContent>
         {!data ? (
