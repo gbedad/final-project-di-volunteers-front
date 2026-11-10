@@ -224,7 +224,7 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
           )}
           <TextField
             size="small"
-            label="Remarque pour l'association (facultatif)"
+            label="Remarque pour l'association"
             multiline
             minRows={2}
             value={form.remark}
