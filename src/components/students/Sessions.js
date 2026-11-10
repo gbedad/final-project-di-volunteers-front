@@ -281,7 +281,8 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
               direction="row"
               spacing={1}
               alignItems="center"
-              flexWrap="wrap">
+              flexWrap="wrap"
+              useFlexGap>
               <Typography variant="body2" fontWeight={600}>
                 {formatDate(s.date)}
               </Typography>
@@ -308,6 +309,11 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
               )}
               {s.no_signature && (
                 <Chip size="small" variant="outlined" label="Non signée" />
+              )}
+              {s.source === 'equipe' && (
+                <Tooltip title={s.confirmation || ''}>
+                  <Chip size="small" variant="outlined" label="Confirmée par l'association" />
+                </Tooltip>
               )}
               {s.late && (
                 <Chip size="small" color="warning" variant="outlined" label="Retard" />

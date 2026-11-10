@@ -27,6 +27,8 @@ import PairDialog from './PairDialog';
 import { durationLabel, formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
 import { JotformPendingDialog } from './JotformPending';
+import ConfirmSession from './ConfirmSession';
+import { isManager } from '../../js/roles';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -150,6 +152,7 @@ const SOURCES = {
   'app+jotform': 'Application + Jotform',
   zoom: 'Zoom',
   'app+zoom': 'Application + Zoom',
+  equipe: 'Équipe',
 };
 const signatureOf = (r) =>
   r.kind === 'attendue'
@@ -198,6 +201,15 @@ const SessionsLog = () => {
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(null);
   const [pendingOpen, setPendingOpen] = useState(false);
+  // Expected session confirmed by the team (call, message…)
+  const [confirming, setConfirming] = useState(null);
+  const manager = (() => {
+    try {
+      return isManager(JSON.parse(localStorage.getItem('user'))?.user?.role);
+    } catch {
+      return false;
+    }
+  })();
   const [reload, setReload] = useState(0);
 
   const period = periodKey === 'custom' ? custom : periodOf(periodKey);
@@ -311,15 +323,29 @@ const SessionsLog = () => {
     {
       field: 'presence',
       headerName: 'Présence',
-      width: 170,
+      width: 230,
       valueGetter: ({ row }) => presenceOf(row),
       renderCell: ({ row, value }) => (
-        <Chip
-          size="small"
-          color={presenceColor(row)}
-          variant={row.kind === 'attendue' ? 'outlined' : 'filled'}
-          label={value}
-        />
+        <Stack direction="row" spacing={0.5} alignItems="center">
+          <Chip
+            size="small"
+            color={presenceColor(row)}
+            variant={row.kind === 'attendue' ? 'outlined' : 'filled'}
+            label={value}
+          />
+          {row.kind === 'attendue' && manager && (
+            <Button
+              size="small"
+              sx={{ minWidth: 0, px: 0.5 }}
+              title="La séance a eu lieu (appel, message…) : l'enregistrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setConfirming(row);
+              }}>
+              Confirmer
+            </Button>
+          )}
+        </Stack>
       ),
     },
     {
@@ -402,6 +428,16 @@ const SessionsLog = () => {
       width: 120,
       valueGetter: ({ row }) =>
         row.kind === 'session' ? SOURCES[row.source] : '',
+      // Confirmed by the team: who and how
+      renderCell: ({ row, value }) =>
+        row.source === 'equipe' ? (
+          <Tooltip
+            title={`Confirmée par ${row.confirmed_by || "l'équipe"} : ${row.confirmation || ''}`}>
+            <span style={{ textDecoration: 'underline dotted' }}>{value}</span>
+          </Tooltip>
+        ) : (
+          value
+        ),
     },
     {
       field: 'place',
@@ -580,6 +616,13 @@ const SessionsLog = () => {
         pair={open}
         onClose={() => setOpen(null)}
         onChanged={() => setReload((n) => n + 1)}
+      />
+      <ConfirmSession
+        open={!!confirming}
+        pair={confirming?.pair}
+        date={confirming?.date}
+        onClose={() => setConfirming(null)}
+        onSaved={() => setReload((n) => n + 1)}
       />
       <JotformPendingDialog
         open={pendingOpen}

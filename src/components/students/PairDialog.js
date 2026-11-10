@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { SessionList, formatHours } from './Sessions';
 import SlotsEditor from './SlotsEditor';
+import ConfirmSession from './ConfirmSession';
 import { isManager } from '../../js/roles';
 import { MODALITIES } from '../../js/studentOptions';
 
@@ -173,6 +174,7 @@ const PairDialog = ({
   const [data, setData] = useState(null);
   const [pair, setPair] = useState(initial);
   const [editing, setEditing] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const manager = isManager(currentRole());
   // Another pair opened (the student's page passes a new object each time:
   // only the id counts)
@@ -289,12 +291,14 @@ const PairDialog = ({
               />
             ) : (
               manager && (
-                <Button
-                  size="small"
-                  sx={{ alignSelf: 'flex-start' }}
-                  onClick={() => setEditing(true)}>
-                  Modifier le créneau, la modalité ou le lieu
-                </Button>
+                <Stack direction="row" flexWrap="wrap" gap={1}>
+                  <Button size="small" onClick={() => setEditing(true)}>
+                    Modifier le créneau, la modalité ou le lieu
+                  </Button>
+                  <Button size="small" onClick={() => setConfirming(true)}>
+                    Ajouter une séance confirmée
+                  </Button>
+                </Stack>
               )
             )}
             <Typography fontWeight={600}>Comptes-rendus</Typography>
@@ -316,6 +320,15 @@ const PairDialog = ({
           Fermer
         </Button>
       </DialogActions>
+      <ConfirmSession
+        open={confirming}
+        pair={pair}
+        onClose={() => setConfirming(false)}
+        onSaved={() => {
+          load();
+          onChanged?.();
+        }}
+      />
     </Dialog>
   );
 };
