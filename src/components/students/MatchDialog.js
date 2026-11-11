@@ -17,8 +17,6 @@ import {
   Paper,
   Stack,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -231,7 +229,6 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
 
 // Tutors who fit the student, best first, with the reasons
 const MatchDialog = ({ open, student, onClose, onProposed }) => {
-  const [scope, setScope] = useState('validated');
   // Demonstration tutors: tests only (a demo student: included at once)
   const [demo, setDemo] = useState(!!student.is_demo);
   const [matches, setMatches] = useState(null);
@@ -248,11 +245,11 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
     setChosen(null);
     axios
       .get(`${BASE_URL}/admin/students/${student.id}/matches`, {
-        params: { scope, demo: demo ? '1' : '0' },
+        params: { demo: demo ? '1' : '0' },
       })
       .then(({ data }) => setMatches(data))
       .catch(() => setMatches([]));
-  }, [open, scope, demo, student.id]);
+  }, [open, demo, student.id]);
   const choose = (m) => (m.capacity.free > 0 ? setChosen(m) : setFullOne(m));
 
   return (
@@ -271,26 +268,11 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
       ) : (
         <>
           <DialogContent>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              flexWrap="wrap"
-              gap={1}
-              sx={{ mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                Tuteurs qui enseignent au moins une des matières de l'élève à
-                son niveau, classés par compatibilité.
-              </Typography>
-              <ToggleButtonGroup
-                size="small"
-                exclusive
-                value={scope}
-                onChange={(e, v) => v && setScope(v)}>
-                <ToggleButton value="validated">Tous les validés</ToggleButton>
-                <ToggleButton value="active">Tuteurs actifs</ToggleButton>
-              </ToggleButtonGroup>
-            </Stack>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Tuteurs validés qui enseignent au moins une des matières de
+              l'élève à son niveau : d'abord ceux qui ont de la place, classés
+              par compatibilité, puis les tuteurs complets.
+            </Typography>
             <FormControlLabel
               sx={{ mt: -1, mb: 1 }}
               control={
@@ -310,8 +292,8 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
             {matches?.length === 0 && (
               <Alert severity="info">
                 Aucun tuteur ne correspond aux matières et au niveau de l'élève.
-                Essayez « Tous les validés », ou complétez les profils des
-                tuteurs.
+                Complétez les profils des tuteurs (matières et niveaux), ou
+                recrutez un tuteur pour ces matières.
               </Alert>
             )}
             {matches?.length > 0 &&
@@ -348,12 +330,35 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
                         />
                       </Box>
                       <Box sx={{ flex: 1 }}>
-                        <Stack direction="row" spacing={1} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
+                          flexWrap="wrap"
+                          useFlexGap>
                           <Typography fontWeight={600}>
                             {m.tutor.name}
                           </Typography>
-                          {!m.tutor.is_active && (
-                            <Chip size="small" label="inactif" />
+                          {/* Where the tutor stands: new, or students now and before */}
+                          {m.experience.current + m.experience.past === 0 ? (
+                            <Chip
+                              size="small"
+                              color="success"
+                              label="Nouveau"
+                            />
+                          ) : (
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              label={[
+                                m.experience.current > 0 &&
+                                  `${m.experience.current} élève${m.experience.current > 1 ? 's' : ''} en cours`,
+                                m.experience.past > 0 &&
+                                  `${m.experience.past} suivi${m.experience.past > 1 ? 's' : ''} avant`,
+                              ]
+                                .filter(Boolean)
+                                .join(' · ')}
+                            />
                           )}
                           {m.tutor.is_demo && (
                             <Chip size="small" label="Démo" />
