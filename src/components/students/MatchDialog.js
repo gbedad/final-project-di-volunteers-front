@@ -231,21 +231,29 @@ const ProposalForm = ({ student, match, onDone, onBack }) => {
 
 // Tutors who fit the student, best first, with the reasons
 const MatchDialog = ({ open, student, onClose, onProposed }) => {
-  const [scope, setScope] = useState('active');
+  const [scope, setScope] = useState('validated');
+  // Demonstration tutors: tests only (a demo student: included at once)
+  const [demo, setDemo] = useState(!!student.is_demo);
   const [matches, setMatches] = useState(null);
   const [chosen, setChosen] = useState(null);
+  // Full tutor chosen: asked first
+  const [fullOne, setFullOne] = useState(null);
 
+  useEffect(() => {
+    if (open) setDemo(!!student.is_demo);
+  }, [open, student.is_demo]);
   useEffect(() => {
     if (!open) return;
     setMatches(null);
     setChosen(null);
     axios
       .get(`${BASE_URL}/admin/students/${student.id}/matches`, {
-        params: { scope },
+        params: { scope, demo: demo ? '1' : '0' },
       })
       .then(({ data }) => setMatches(data))
       .catch(() => setMatches([]));
-  }, [open, scope, student.id]);
+  }, [open, scope, demo, student.id]);
+  const choose = (m) => (m.capacity.free > 0 ? setChosen(m) : setFullOne(m));
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -279,10 +287,25 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
                 exclusive
                 value={scope}
                 onChange={(e, v) => v && setScope(v)}>
-                <ToggleButton value="active">Tuteurs actifs</ToggleButton>
                 <ToggleButton value="validated">Tous les validés</ToggleButton>
+                <ToggleButton value="active">Tuteurs actifs</ToggleButton>
               </ToggleButtonGroup>
             </Stack>
+            <FormControlLabel
+              sx={{ mt: -1, mb: 1 }}
+              control={
+                <Checkbox
+                  size="small"
+                  checked={demo}
+                  onChange={(e) => setDemo(e.target.checked)}
+                />
+              }
+              label={
+                <Typography variant="body2" color="text.secondary">
+                  Inclure les tuteurs de démo (pour tester)
+                </Typography>
+              }
+            />
             {matches === null && <LinearProgress />}
             {matches?.length === 0 && (
               <Alert severity="info">
@@ -291,83 +314,129 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
                 tuteurs.
               </Alert>
             )}
+            {matches?.length > 0 &&
+              !matches.some((m) => m.capacity.free > 0) && (
+                <Alert severity="warning" sx={{ mb: 1.5 }}>
+                  Tous les tuteurs qui conviennent sont complets : il faut un
+                  nouveau tuteur, ou l'accord d'un tuteur pour un élève de plus.
+                </Alert>
+              )}
             <Stack spacing={1.5}>
-              {(matches || []).map((m) => (
-                <Paper key={m.tutor.id} variant="outlined" sx={{ p: 1.5 }}>
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box sx={{ width: 64, textAlign: 'center' }}>
-                      <Typography variant="h5" color="primary">
-                        {m.score}
+              {(matches || []).map((m, i, list) => (
+                <React.Fragment key={m.tutor.id}>
+                  {/* Full tutors after the others, with a heading */}
+                  {m.capacity.free === 0 &&
+                    (i === 0 || list[i - 1].capacity.free > 0) && (
+                      <Typography
+                        variant="body2"
+                        fontWeight={600}
+                        sx={{ pt: 1 }}>
+                        Tuteurs complets (seulement s'ils acceptent un élève de
+                        plus)
                       </Typography>
-                      <LinearProgress
-                        variant="determinate"
-                        value={m.score}
-                        sx={{ height: 6, borderRadius: 3 }}
-                      />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography fontWeight={600}>{m.tutor.name}</Typography>
-                        {!m.tutor.is_active && (
-                          <Chip size="small" label="inactif" />
-                        )}
-                      </Stack>
-                      <Stack
-                        direction="row"
-                        flexWrap="wrap"
-                        columnGap={2}
-                        rowGap={0.5}
-                        sx={{ mt: 0.5 }}>
-                        {m.subjects.map((s) => (
-                          <Criterion key={s.subject} ok={s.fit}>
-                            {s.subject} {student.level}
+                    )}
+                  <Paper variant="outlined" sx={{ p: 1.5 }}>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Box sx={{ width: 64, textAlign: 'center' }}>
+                        <Typography variant="h5" color="primary">
+                          {m.score}
+                        </Typography>
+                        <LinearProgress
+                          variant="determinate"
+                          value={m.score}
+                          sx={{ height: 6, borderRadius: 3 }}
+                        />
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Typography fontWeight={600}>
+                            {m.tutor.name}
+                          </Typography>
+                          {!m.tutor.is_active && (
+                            <Chip size="small" label="inactif" />
+                          )}
+                          {m.tutor.is_demo && (
+                            <Chip size="small" label="Démo" />
+                          )}
+                          {m.capacity.free === 0 && (
+                            <Chip
+                              size="small"
+                              color="error"
+                              variant="outlined"
+                              label={`Complet (${m.capacity.used} élève${m.capacity.used > 1 ? 's' : ''} sur ${m.capacity.total})`}
+                            />
+                          )}
+                        </Stack>
+                        <Stack
+                          direction="row"
+                          flexWrap="wrap"
+                          columnGap={2}
+                          rowGap={0.5}
+                          sx={{ mt: 0.5 }}>
+                          {m.subjects.map((s) => (
+                            <Criterion key={s.subject} ok={s.fit}>
+                              {s.subject} {student.level}
+                            </Criterion>
+                          ))}
+                          <Criterion ok={m.slots.length > 0}>
+                            {m.slots.length
+                              ? m.slots
+                                  .map(
+                                    (s) =>
+                                      `${s.day} ${s.startTime}–${s.endTime}`
+                                  )
+                                  .join(', ')
+                              : 'Aucun créneau commun'}
                           </Criterion>
-                        ))}
-                        <Criterion ok={m.slots.length > 0}>
-                          {m.slots.length
-                            ? m.slots
+                          {m.busy?.length > 0 && (
+                            <Typography
+                              variant="caption"
+                              color="text.secondary">
+                              Déjà pris :{' '}
+                              {m.busy
                                 .map(
                                   (s) => `${s.day} ${s.startTime}–${s.endTime}`
                                 )
-                                .join(', ')
-                            : 'Aucun créneau commun'}
-                        </Criterion>
-                        <Criterion ok={m.place.fit}>
-                          {m.place.remote
-                            ? 'À distance possible'
-                            : m.place.sites.length
-                              ? m.place.sites.join(', ')
-                              : 'Lieu incompatible'}
-                        </Criterion>
-                        <Criterion ok={m.capacity.free > 0}>
-                          {m.capacity.free} place
-                          {m.capacity.free > 1 ? 's' : ''} libre
-                          {m.capacity.free > 1 ? 's' : ''} sur{' '}
-                          {m.capacity.total}
-                        </Criterion>
-                        {m.difficulty && (
-                          <Tooltip title="L'élève a des besoins particuliers : critère tiré du dernier entretien du tuteur (jusqu'à 5 points ; valeur neutre de 2,5 points s'il n'a pas été évalué)">
-                            <span>
-                              <Criterion
-                                ok={
-                                  m.difficulty.followup
-                                    ? m.difficulty.points > 0
-                                    : null
-                                }>
-                                {m.difficulty.followup
-                                  ? `Élèves en grande difficulté : ${m.difficulty.followup.toLowerCase()}`
-                                  : 'Élèves en grande difficulté : non évalué en entretien'}
-                              </Criterion>
-                            </span>
-                          </Tooltip>
-                        )}
-                      </Stack>
-                    </Box>
-                    <Button variant="outlined" onClick={() => setChosen(m)}>
-                      Proposer
-                    </Button>
-                  </Stack>
-                </Paper>
+                                .join(', ')}
+                            </Typography>
+                          )}
+                          <Criterion ok={m.place.fit}>
+                            {m.place.remote
+                              ? 'À distance possible'
+                              : m.place.sites.length
+                                ? m.place.sites.join(', ')
+                                : 'Lieu incompatible'}
+                          </Criterion>
+                          <Criterion ok={m.capacity.free > 0}>
+                            {m.capacity.free} place
+                            {m.capacity.free > 1 ? 's' : ''} libre
+                            {m.capacity.free > 1 ? 's' : ''} sur{' '}
+                            {m.capacity.total}
+                          </Criterion>
+                          {m.difficulty && (
+                            <Tooltip title="L'élève a des besoins particuliers : critère tiré du dernier entretien du tuteur (jusqu'à 5 points ; valeur neutre de 2,5 points s'il n'a pas été évalué)">
+                              <span>
+                                <Criterion
+                                  ok={
+                                    m.difficulty.followup
+                                      ? m.difficulty.points > 0
+                                      : null
+                                  }>
+                                  {m.difficulty.followup
+                                    ? `Élèves en grande difficulté : ${m.difficulty.followup.toLowerCase()}`
+                                    : 'Élèves en grande difficulté : non évalué en entretien'}
+                                </Criterion>
+                              </span>
+                            </Tooltip>
+                          )}
+                        </Stack>
+                      </Box>
+                      <Button variant="outlined" onClick={() => choose(m)}>
+                        Proposer
+                      </Button>
+                    </Stack>
+                  </Paper>
+                </React.Fragment>
               ))}
             </Stack>
           </DialogContent>
@@ -376,6 +445,28 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
           </DialogActions>
         </>
       )}
+      <Dialog open={!!fullOne} onClose={() => setFullOne(null)} maxWidth="xs">
+        <DialogTitle>Tuteur complet</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2">
+            {fullOne?.tutor.name} a indiqué {fullOne?.capacity.total} élève
+            {fullOne?.capacity.total > 1 ? 's' : ''} au maximum et en accompagne
+            déjà {fullOne?.capacity.used}. Le proposer quand même ? (à faire
+            seulement s'il a accepté un élève de plus)
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setFullOne(null)}>Annuler</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setChosen(fullOne);
+              setFullOne(null);
+            }}>
+            Proposer quand même
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 };
