@@ -21,6 +21,7 @@ import {
 } from '../../options/existingOptions';
 
 import InstancesPage from './InstancesPage';
+import TimeInput from '../TimeInput';
 
 // Mock data for select options
 
@@ -211,30 +212,21 @@ const CreateCourseForm = ({ onCourseCreate }) => {
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           {/* <InputLabel>Horaire</InputLabel> */}
-          <TextField
-            type="time"
-            value={timeStart}
-            onChange={(e) => setTimeStart(e.target.value)}
-            size="small"
+          <TimeInput
             label="Horaire début"
-            variant="outlined"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            value={timeStart}
+            onChange={setTimeStart}
+            sx={{ width: 140 }}
           />
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           {/* <InputLabel>Horaire</InputLabel> */}
-          <TextField
-            type="time"
-            value={timeEnd}
-            onChange={(e) => setTimeEnd(e.target.value)}
-            size="small"
+          <TimeInput
             label="Horaire fin"
-            variant="outlined"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            value={timeEnd}
+            after={timeStart}
+            onChange={setTimeEnd}
+            sx={{ width: 140 }}
           />
         </FormControl>
 

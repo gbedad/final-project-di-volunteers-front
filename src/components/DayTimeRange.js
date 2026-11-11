@@ -8,7 +8,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Box,
   LinearProgress,
   Snackbar,
@@ -19,6 +18,7 @@ import BorderedBoxWithLabel from './borderedBox';
 import AddIcon from '@mui/icons-material/Add';
 import { useAutoSave } from '../js/useAutoSave';
 import SaveStatus from './application/SaveStatus';
+import TimeInput from './TimeInput';
 
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
@@ -183,43 +183,21 @@ const DayTimeRangeComponent = ({ userSelected }) => {
                   </Grid>
 
                   <Grid item xs={6}>
-                    <TextField
-                      size="small"
+                    <TimeInput
                       fullWidth
-                      variant="outlined"
                       label="Début"
-                      type="time"
                       value={dayTimeRange.startTime}
-                      onChange={(e) =>
-                        handleStartTimeChange(e.target.value, index)
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        step: 300,
-                        // 5 minutes in seconds (300 seconds)
-                      }}
+                      onChange={(t) => handleStartTimeChange(t, index)}
                     />
                   </Grid>
 
                   <Grid item xs={6}>
-                    <TextField
-                      size="small"
+                    <TimeInput
                       fullWidth
-                      variant="outlined"
                       label="Fin"
-                      type="time"
                       value={dayTimeRange.endTime}
-                      onChange={(e) =>
-                        handleEndTimeChange(e.target.value, index)
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        step: 300, // 5 minutes in seconds (300 seconds)
-                      }}
+                      after={dayTimeRange.startTime}
+                      onChange={(t) => handleEndTimeChange(t, index)}
                     />
                   </Grid>
 

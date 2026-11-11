@@ -47,13 +47,13 @@ import { useSessionState } from '../js/useSessionState';
 import {
   ACTIVE_TUTORS,
   LEVELS,
-  SEARCH_TIMES,
   matchesSearch,
 } from '../js/volunteerSearch';
 import DashboardToolbar from './admin/DashboardToolbar';
 import { frFR } from '@mui/x-data-grid';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { isManager } from '../js/roles';
+import TimeInput from './TimeInput';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -1206,28 +1206,21 @@ export default function DataGridDemo(props) {
                   <TextField {...params} label="Jours" size="small" />
                 )}
               />
-              <Autocomplete
+              <TimeInput
+                label="Heure de"
                 value={timeFrom}
-                onChange={(event, value) => {
-                  setTimeFrom(value);
+                onChange={(value) => {
+                  setTimeFrom(value || null);
                   if (value && timeTo && timeTo <= value) setTimeTo(null);
                 }}
-                options={SEARCH_TIMES}
                 sx={{ width: 130 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Heure de" size="small" />
-                )}
               />
-              <Autocomplete
+              <TimeInput
+                label="Heure à"
                 value={timeTo}
-                onChange={(event, value) => setTimeTo(value)}
-                options={
-                  timeFrom ? SEARCH_TIMES.filter((t) => t > timeFrom) : SEARCH_TIMES
-                }
+                after={timeFrom}
+                onChange={(value) => setTimeTo(value || null)}
                 sx={{ width: 130 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Heure à" size="small" />
-                )}
               />
             </Stack>
           </Box>

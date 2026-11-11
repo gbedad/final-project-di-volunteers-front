@@ -3,7 +3,7 @@ import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import { DAYS } from '../../js/studentOptions';
-import { SEARCH_TIMES } from '../../js/volunteerSearch';
+import TimeInput from '../TimeInput';
 
 // Availability slots: [{ day, startTime, endTime }] (same as the tutors)
 const SlotsEditor = ({ value = [], onChange }) => {
@@ -28,34 +28,17 @@ const SlotsEditor = ({ value = [], onChange }) => {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            select
-            size="small"
+          <TimeInput
             label="De"
-            value={slot.startTime || ''}
-            onChange={(e) => update(index, 'startTime', e.target.value)}
-            sx={{ width: 110 }}>
-            {SEARCH_TIMES.map((t) => (
-              <MenuItem key={t} value={t}>
-                {t}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            size="small"
+            value={slot.startTime}
+            onChange={(t) => update(index, 'startTime', t)}
+          />
+          <TimeInput
             label="À"
-            value={slot.endTime || ''}
-            onChange={(e) => update(index, 'endTime', e.target.value)}
-            sx={{ width: 110 }}>
-            {SEARCH_TIMES.filter(
-              (t) => !slot.startTime || t > slot.startTime
-            ).map((t) => (
-              <MenuItem key={t} value={t}>
-                {t}
-              </MenuItem>
-            ))}
-          </TextField>
+            value={slot.endTime}
+            after={slot.startTime}
+            onChange={(t) => update(index, 'endTime', t)}
+          />
           <IconButton
             aria-label="Retirer le créneau"
             onClick={() => onChange(value.filter((_, i) => i !== index))}>
