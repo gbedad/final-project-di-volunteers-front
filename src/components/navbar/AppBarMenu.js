@@ -153,7 +153,7 @@ function ResponsiveAppBar() {
     dashboard: ['/view-users', '/change-status', '/stepper', '/profile'],
     documents: ['/documents'],
     team: ['/equipe'],
-    analysis: ['/analyse'],
+    analysis: ['/analyse', '/rapport-annuel'],
     students: ['/eleves'],
     pairs: ['/binomes'],
     connections: ['/connexions'],

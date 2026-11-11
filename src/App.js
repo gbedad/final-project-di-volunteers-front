@@ -47,6 +47,7 @@ import StudentsPage from './components/students/StudentsPage';
 import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
 import TodoPage from './components/admin/TodoPage';
+import AnnualReport from './components/admin/AnnualReport';
 import KioskPage from './components/kiosk/KioskPage';
 import ConsentPage from './pages/ConsentPage';
 import { EmailPauseBanner } from './components/admin/EmailPause';
@@ -187,6 +188,7 @@ function App() {
             <Route path="/documents" element={<AdminFiles />} />
             <Route path="/equipe" element={<Team />} />
             <Route path="/analyse" element={<Analysis />} />
+            <Route path="/rapport-annuel" element={<AnnualReport />} />
             <Route path="/connexions" element={<Connections />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />

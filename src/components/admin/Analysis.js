@@ -170,17 +170,31 @@ const Analysis = () => {
   // Tutors (volunteers, recruitment) or students (requests, pairs)
   const [view, setView] = useSessionState('analysis.view', 'tutors');
   // Demo volunteers are left out of the figures unless asked
-  const [tutorsDemo, setTutorsDemo] = useSessionState('analysis.tutorsDemo', false);
+  const [tutorsDemo, setTutorsDemo] = useSessionState(
+    'analysis.tutorsDemo',
+    false
+  );
   const viewToggle = (
-    <ToggleButtonGroup
-      size="small"
-      exclusive
-      color="primary"
-      value={view}
-      onChange={(e, value) => value && setView(value)}>
-      <ToggleButton value="tutors">Tuteurs</ToggleButton>
-      <ToggleButton value="students">Élèves</ToggleButton>
-    </ToggleButtonGroup>
+    <Stack direction="row" spacing={1} alignItems="center">
+      <ToggleButtonGroup
+        size="small"
+        exclusive
+        color="primary"
+        value={view}
+        onChange={(e, value) => value && setView(value)}>
+        <ToggleButton value="tutors">Tuteurs</ToggleButton>
+        <ToggleButton value="students">Élèves</ToggleButton>
+      </ToggleButtonGroup>
+      {/* For the funders: the figures of a school year */}
+      <Button
+        size="small"
+        variant="outlined"
+        onClick={() =>
+          navigate('/rapport-annuel', { state: { userLogged: session() } })
+        }>
+        Rapport annuel
+      </Button>
+    </Stack>
   );
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
