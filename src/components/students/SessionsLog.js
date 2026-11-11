@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
   Alert,
@@ -204,7 +205,11 @@ const SessionsLog = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(null);
-  const [pendingOpen, setPendingOpen] = useState(false);
+  // Opened from "À traiter" (Jotform / Zoom to match)
+  const location = useLocation();
+  const [pendingOpen, setPendingOpen] = useState(
+    location.state?.open === 'jotform-zoom'
+  );
   // Expected session confirmed by the team (call, message…)
   const [confirming, setConfirming] = useState(null);
   const manager = (() => {

@@ -57,3 +57,17 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// Installable app (PWA): the service worker only shows a page without
+// network (nothing cached, always the latest version). Production only.
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+// The browser's install offer comes once, early: kept for the tutors' page
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  window.__installPrompt = event;
+  window.dispatchEvent(new Event('install-available'));
+});

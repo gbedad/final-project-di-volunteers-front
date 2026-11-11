@@ -21,6 +21,7 @@ import {
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { SessionDialog, SessionList, formatHours } from '../students/Sessions';
 import SignInCard from './SignInCard';
+import InstallApp from './InstallApp';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -99,7 +100,8 @@ const MyStudents = () => {
 
   return (
     <Stack spacing={2} sx={{ maxWidth: 820, mx: 'auto', my: 2 }}>
-      <SignInCard pairs={pairs} onChanged={load} onReport={setReporting} />
+      <InstallApp />
+      <SignInCard pairs={pairs} onChanged={load} />
       {pairs.map((pair) => {
         const s = pair.student;
         return (

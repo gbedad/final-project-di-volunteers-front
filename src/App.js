@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import axios from 'axios';
 import { useJwt } from 'react-jwt';
 import './App.css';
@@ -40,6 +46,8 @@ import Connections from './components/admin/Connections';
 import StudentsPage from './components/students/StudentsPage';
 import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
+import TodoPage from './components/admin/TodoPage';
+import KioskPage from './components/kiosk/KioskPage';
 import ConsentPage from './pages/ConsentPage';
 import { EmailPauseBanner } from './components/admin/EmailPause';
 
@@ -120,6 +128,16 @@ const theme = createTheme({
 });
 
 function App() {
+  const { pathname } = useLocation();
+  // The attendance tablet: full screen, no menu
+  if (pathname.startsWith('/borne')) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Toaster />
+        <KioskPage />
+      </ThemeProvider>
+    );
+  }
   return (
     <ThemeProvider theme={theme}>
       <AppBarMenu />
@@ -172,6 +190,7 @@ function App() {
             <Route path="/connexions" element={<Connections />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
+            <Route path="/a-traiter" element={<TodoPage />} />
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/binomes/seances" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />

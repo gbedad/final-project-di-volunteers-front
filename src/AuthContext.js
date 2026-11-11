@@ -18,6 +18,9 @@ const AuthProvider = ({ children }) => {
 
   // Helper function to handle logout
   const logout = () => {
+    // The attendance tablet has no account: nothing to log out, and its own
+    // key must stay in the browser
+    if (window.location.pathname.startsWith('/borne')) return;
     setIsLoggedIn(false);
     setToken(null);
     setUser(null);

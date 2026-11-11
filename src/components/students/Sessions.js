@@ -29,7 +29,7 @@ const ATTENDANCE = {
   absent: { label: 'Élève absent', color: 'warning' },
   annulé: { label: 'Annulée', color: 'default' },
 };
-const PROGRESS_LABELS = {
+export const PROGRESS_LABELS = {
   1: 'Grosses difficultés',
   2: 'Difficile',
   3: 'Correct',

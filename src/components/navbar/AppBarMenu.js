@@ -34,6 +34,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 import logo from '../../assets/mycogniverse3.gif';
 import { isStaff, isManager } from '../../js/roles';
 import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
+import ChecklistIcon from '@mui/icons-material/Checklist';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 // const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
@@ -155,6 +156,7 @@ function ResponsiveAppBar() {
     students: ['/eleves'],
     pairs: ['/binomes'],
     connections: ['/connexions'],
+    todo: ['/a-traiter'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -167,6 +169,10 @@ function ResponsiveAppBar() {
 
   const handleConnections = () => {
     navigate(`/connexions`, { state: { userLogged } });
+  };
+
+  const handleTodo = () => {
+    navigate(`/a-traiter`, { state: { userLogged } });
   };
 
   const handlePairs = () => {
@@ -631,6 +637,14 @@ function ResponsiveAppBar() {
                     location.pathname === '/view-users') &&
                   isStaff(userLogged.user.role) ? (
                     <div>
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem onClick={handleTodo} {...currentProps('todo')}>
+                          <ListItemIcon>
+                            <ChecklistIcon fontSize="small" />
+                          </ListItemIcon>
+                          À traiter
+                        </MenuItem>
+                      )}
                       <MenuItem
                         onClick={handleViewUsers}
                         {...currentProps('dashboard')}>

@@ -29,7 +29,7 @@ import { AuthContext } from '../AuthContext';
 import PasswordInput from './PasswordInput';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
-import { isStaff } from '../js/roles';
+import { isManager, isStaff } from '../js/roles';
 import { refreshSession } from '../js/auth';
 
 function Copyright(props) {
@@ -101,6 +101,18 @@ export default function SignIn() {
       try {
         saved = JSON.parse(localStorage.getItem('user'));
       } catch {}
+      // The installed app opens on /emarger (tutors): a team member already
+      // logged in goes to the tutors' list instead of the login form
+      if (!candidateId && !studentId && saved?.token && isStaff(saved?.user?.role)) {
+        try {
+          await axios.get(`${BASE_URL}/check-token`);
+          navigate(isManager(saved.user.role) ? '/a-traiter' : '/view-users', {
+            replace: true,
+            state: { userLogged: saved },
+          });
+          return;
+        } catch {}
+      }
       const rightAccount = candidateId || studentId
         ? isStaff(saved?.user?.role)
         : saved?.user?.role === 'volunteer';
@@ -200,6 +212,9 @@ export default function SignIn() {
             navigate('/change-status', {
               state: { userId: candidateId, userLogged },
             });
+          } else if (isManager(userLogged.user.role)) {
+            // Admins: what waits for them first
+            navigate('/a-traiter', { state: { userLogged } });
           } else {
             navigate('/view-users', { state: { userLogged } });
           }

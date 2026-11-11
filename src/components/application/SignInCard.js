@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Paper,
+  Rating,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import DrawIcon from '@mui/icons-material/Draw';
 import SignaturePad from './SignaturePad';
+import { PROGRESS_LABELS } from '../students/Sessions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const DAYS_FR = [
@@ -97,8 +106,110 @@ const StudentSignature = ({ session, firstName, onChanged }) => {
   );
 };
 
+// Right after the sign-in (and the student's signature): the report, on
+// the same screen, in a few seconds; "Plus tard" leaves it for later
+const QuickReport = ({ pair, session, onChanged }) => {
+  const [progress, setProgress] = useState(3);
+  const [work, setWork] = useState('');
+  const [remark, setRemark] = useState('');
+  const [later, setLater] = useState(false);
+  const [busy, setBusy] = useState(false);
+  if (later) {
+    return (
+      <Button size="small" sx={{ mt: 1 }} onClick={() => setLater(false)}>
+        Écrire le compte-rendu
+      </Button>
+    );
+  }
+  const save = async () => {
+    setBusy(true);
+    try {
+      // Completes the session signed in today (same day, same tutor)
+      await axios.post(`${BASE_URL}/my/binomes/${pair.id}/seances`, {
+        date: today(),
+        attendance: 'présent',
+        duration_minutes: session.duration_minutes,
+        late: !!session.late,
+        progress,
+        work,
+        remark,
+      });
+      toast.success('Compte-rendu enregistré. Merci !', {
+        position: 'top-center',
+      });
+      onChanged();
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error ||
+          "Le compte-rendu n'a pas pu être enregistré",
+        { position: 'top-center' }
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Box
+      sx={{
+        mt: 1.5,
+        p: 1.5,
+        borderRadius: 1,
+        bgcolor: 'action.hover',
+      }}>
+      <Stack spacing={1.25}>
+        <Typography variant="body2" fontWeight={600}>
+          Compte-rendu
+        </Typography>
+        <Stack spacing={0.5}>
+          <Typography variant="body2">
+            Comment s'est passée la séance ?
+          </Typography>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Rating
+              size="large"
+              value={progress}
+              onChange={(e, v) => setProgress(v || 1)}
+            />
+            <Typography variant="body2" color="text.secondary">
+              {PROGRESS_LABELS[progress]}
+            </Typography>
+          </Stack>
+        </Stack>
+        <TextField
+          size="small"
+          label="Ce que vous avez travaillé"
+          value={work}
+          onChange={(e) => setWork(e.target.value)}
+          multiline
+          minRows={2}
+          fullWidth
+        />
+        <TextField
+          size="small"
+          label="Remarque pour l'association"
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
+          multiline
+          fullWidth
+        />
+        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Button variant="contained" disabled={busy} onClick={save}>
+            Enregistrer
+          </Button>
+          <Button
+            color="inherit"
+            disabled={busy}
+            onClick={() => setLater(true)}>
+            Plus tard
+          </Button>
+        </Stack>
+      </Stack>
+    </Box>
+  );
+};
+
 // "Émarger ma séance": one tap per student, date and time set by the server
-const SignInCard = ({ pairs, onChanged, onReport }) => {
+const SignInCard = ({ pairs, onChanged }) => {
   const [busy, setBusy] = useState(null);
   const active = pairs.filter((p) => p.status === 'actif' && needsSignIn(p));
   if (!active.length) return null;
@@ -185,11 +296,6 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                     à {timeOf(done.created_at)}
                     {done.late ? ' · élève très en retard' : ''}
                   </Typography>
-                  {done.attendance === 'présent' && !done.work && (
-                    <Button size="small" onClick={() => onReport(pair)}>
-                      Ajouter un compte-rendu (facultatif)
-                    </Button>
-                  )}
                 </Stack>
               ) : null}
               {done && done.attendance === 'présent' && (
@@ -199,6 +305,28 @@ const SignInCard = ({ pairs, onChanged, onReport }) => {
                   onChanged={onChanged}
                 />
               )}
+              {/* Then the report, once the student signed (or could not) */}
+              {done &&
+                done.attendance === 'présent' &&
+                (done.student_signed_at || done.no_signature) &&
+                (done.work || done.progress || done.remark ? (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    alignItems="center"
+                    sx={{ mt: 0.5 }}>
+                    <CheckCircleIcon color="success" fontSize="small" />
+                    <Typography variant="body2">
+                      Compte-rendu enregistré
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <QuickReport
+                    pair={pair}
+                    session={done}
+                    onChanged={onChanged}
+                  />
+                ))}
               {done ? null : (
                 <Stack
                   direction="row"
