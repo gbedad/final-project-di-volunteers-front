@@ -35,6 +35,7 @@ import logo from '../../assets/mycogniverse3.gif';
 import { isStaff, isManager } from '../../js/roles';
 import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
 import ChecklistIcon from '@mui/icons-material/Checklist';
+import RuleIcon from '@mui/icons-material/Rule';
 
 const pages = ['Accueil', 'Comment ça marche', 'Missions bénévoles'];
 // const settings = ['Profil', 'Account', 'Dashboard', 'Logout'];
@@ -157,6 +158,7 @@ function ResponsiveAppBar() {
     pairs: ['/binomes'],
     connections: ['/connexions'],
     todo: ['/a-traiter'],
+    controls: ['/controles'],
   };
   const isCurrent = (section) =>
     sectionPaths[section].some((p) => location.pathname.startsWith(p));
@@ -173,6 +175,9 @@ function ResponsiveAppBar() {
 
   const handleTodo = () => {
     navigate(`/a-traiter`, { state: { userLogged } });
+  };
+  const handleControls = () => {
+    navigate(`/controles`, { state: { userLogged } });
   };
 
   const handlePairs = () => {
@@ -643,6 +648,16 @@ function ResponsiveAppBar() {
                             <ChecklistIcon fontSize="small" />
                           </ListItemIcon>
                           À traiter
+                        </MenuItem>
+                      )}
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleControls}
+                          {...currentProps('controls')}>
+                          <ListItemIcon>
+                            <RuleIcon fontSize="small" />
+                          </ListItemIcon>
+                          Contrôles
                         </MenuItem>
                       )}
                       <MenuItem

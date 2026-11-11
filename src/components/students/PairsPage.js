@@ -90,6 +90,19 @@ const PairsPage = () => {
       .then(({ data }) => setPairs(data))
       .catch(() => setPairs([]));
   }, [reloadKey]);
+  // Coming from "À traiter" or "Contrôles": the pair's sheet opens at once
+  const wanted = location.state?.pairId;
+  useEffect(() => {
+    if (!wanted || !pairs) return;
+    const pair = pairs.find((p) => p.id === wanted);
+    if (pair) setOpen(pair);
+    // Once: not again when coming back to the list
+    navigate(location.pathname, {
+      replace: true,
+      state: { ...location.state, pairId: undefined },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wanted, pairs]);
 
   // Search first, then the chips count what the search found
   const searched = useMemo(

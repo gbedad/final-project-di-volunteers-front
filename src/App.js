@@ -191,6 +191,18 @@ function App() {
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />
             <Route path="/a-traiter" element={<TodoPage />} />
+            <Route
+              path="/controles"
+              element={
+                <TodoPage
+                  endpoint="/admin/controls"
+                  title="Contrôles"
+                  subtitle="Incohérences repérées automatiquement dans les données. Touchez une ligne pour corriger."
+                  emptyText="Aucune incohérence repérée."
+                  doneLabel="Rien à signaler :"
+                />
+              }
+            />
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/binomes/seances" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
