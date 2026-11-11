@@ -163,37 +163,6 @@ const ChangeUserStatus = () => {
 
   const openPopper = Boolean(anchorEl);
 
-  const updateIsActive = async (event) => {
-    // console.log('Checked state', event.target.checked);
-    const newIsActive = event.target.checked;
-    setIsActive(newIsActive);
-    try {
-      const response = await axios.patch(
-        `${BASE_URL}/update-active-user/${state.userId}`,
-        {
-          isActive: newIsActive,
-        }
-      );
-      if (response.status === 200) {
-        console.log('Availability updated successfully:', response.data);
-      } else {
-        console.warn('Unexpected response status:', response.status);
-      }
-    } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error('No response received:', error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error:', error.message);
-      }
-    }
-  };
   // setShowActiveConfirm(true);
 
   // const handleSubmitActiveChange = async () => {
@@ -411,16 +380,14 @@ const ChangeUserStatus = () => {
             visibility:
               userLogged.user.role === 'interviewer' ? 'hidden' : 'visible',
           }}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isActive}
-                onChange={updateIsActive}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-            }
-            label="Tuteur actif"
-          />
+          {/* Computed: active while a pair is in progress */}
+          <Tooltip title="Calculé automatiquement : actif tant qu'il a un binôme en cours (actif ou en pause)">
+            <Chip
+              color={isActive ? 'success' : 'default'}
+              variant={isActive ? 'filled' : 'outlined'}
+              label={isActive ? 'Tuteur actif' : 'Sans binôme en cours'}
+            />
+          </Tooltip>
 
           {/* <Button
             variant="contained"

@@ -15,8 +15,6 @@ import {
   Typography,
 } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import PersonOffIcon from '@mui/icons-material/PersonOff';
-import PersonIcon from '@mui/icons-material/Person';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ArchiveDialog from './ArchiveDialog';
@@ -155,28 +153,6 @@ const BulkActions = ({ rows, onDone }) => {
               endIcon={<ArrowDropDownIcon />}
               onClick={(e) => setStatusMenu(e.currentTarget)}>
               Changer le statut
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<PersonOffIcon />}
-              onClick={() =>
-                setPending({
-                  label: 'passer en « tuteur inactif »',
-                  changes: { is_active: false },
-                })
-              }>
-              Rendre inactifs
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<PersonIcon />}
-              onClick={() =>
-                setPending({
-                  label: 'passer en « tuteur actif »',
-                  changes: { is_active: true },
-                })
-              }>
-              Rendre actifs
             </Button>
             <Button
               variant="outlined"

@@ -273,6 +273,15 @@ const MatchDialog = ({ open, student, onClose, onProposed }) => {
               l'élève à son niveau : d'abord ceux qui ont de la place, classés
               par compatibilité, puis les tuteurs complets.
             </Typography>
+            {matches?.[0]?.student_busy?.length > 0 && (
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Horaires déjà pris par les binômes de {student.first_name} (non
+                proposés) :{' '}
+                {matches[0].student_busy
+                  .map((s) => `${s.day} ${s.startTime}–${s.endTime}`)
+                  .join(', ')}
+              </Typography>
+            )}
             <FormControlLabel
               sx={{ mt: -1, mb: 1 }}
               control={
