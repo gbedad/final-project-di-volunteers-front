@@ -137,7 +137,7 @@ const presenceOf = (r) =>
       : r.attendance === 'annulé'
         ? 'Annulée'
         : r.late
-          ? 'Présent, très en retard'
+          ? 'Présent, en retard'
           : 'Présent';
 const presenceColor = (r) =>
   r.kind === 'attendue'

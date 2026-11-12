@@ -80,7 +80,7 @@ const StudentSignature = ({ session, firstName, onChanged }) => {
   return (
     <Box sx={{ mt: 1.5 }}>
       <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
-        Signature de {firstName} (en fin de séance)
+        Signature de {firstName}
       </Typography>
       <SignaturePad onChange={setSignature} />
       <Stack
@@ -106,7 +106,7 @@ const StudentSignature = ({ session, firstName, onChanged }) => {
   );
 };
 
-// Right after the sign-in (and the student's signature): the report, on
+// Right after the attendance and the student's signature: the report, on
 // the same screen, in a few seconds; "Plus tard" leaves it for later
 const QuickReport = ({ pair, session, onChanged }) => {
   const [progress, setProgress] = useState(3);
@@ -208,7 +208,26 @@ const QuickReport = ({ pair, session, onChanged }) => {
   );
 };
 
-// "Émarger ma séance": one tap per student, date and time set by the server
+// Minutes since midnight, Paris time
+const nowMinutes = () => {
+  const [h, m] = new Date()
+    .toLocaleTimeString('fr-FR', {
+      timeZone: 'Europe/Paris',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    .split(':')
+    .map(Number);
+  return h * 60 + m;
+};
+const minutesOf = (hhmm) => {
+  const m = /^(\d{1,2}):(\d{2})/.exec(hhmm || '');
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+};
+
+// End of the session, in one go: was the student there (on time, late or
+// absent), the student's signature, then the report. Date and time are set
+// by the server; lateness is what the tutor says (Charte: 15 min or more).
 const SignInCard = ({ pairs, onChanged }) => {
   const [busy, setBusy] = useState(null);
   const active = pairs.filter((p) => p.status === 'actif' && needsSignIn(p));
@@ -221,7 +240,6 @@ const SignInCard = ({ pairs, onChanged }) => {
       Number((a.schedule || []).some((s) => s.day === day))
   );
 
-  // late: the student arrived 15 minutes late or more
   const signIn = async (pair, attendance, late = false) => {
     setBusy(pair.id);
     try {
@@ -233,8 +251,8 @@ const SignInCard = ({ pairs, onChanged }) => {
         attendance === 'absent'
           ? `Absence de ${pair.student.first_name} enregistrée.`
           : late
-            ? 'Séance émargée avec le retard. Pensez à le déclarer sur le groupe WhatsApp de la famille.'
-            : `Séance avec ${pair.student.first_name} émargée. Merci !`,
+            ? 'Retard enregistré. Pensez à le signaler sur le groupe WhatsApp de la famille.'
+            : `Présence de ${pair.student.first_name} enregistrée.`,
         { position: 'top-center', duration: late ? 8000 : 4000 }
       );
       onChanged();
@@ -255,7 +273,7 @@ const SignInCard = ({ pairs, onChanged }) => {
     <Paper variant="outlined" sx={{ p: 2, borderColor: 'primary.main' }}>
       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
         <HowToRegIcon color="primary" />
-        <Typography variant="h6">Émarger ma séance</Typography>
+        <Typography variant="h6">Fin de séance : émarger</Typography>
       </Stack>
       <Stack spacing={1.5}>
         {sorted.map((pair) => {
@@ -263,6 +281,9 @@ const SignInCard = ({ pairs, onChanged }) => {
             (s) => String(s.date).slice(0, 10) === today()
           );
           const slot = (pair.schedule || []).find((s) => s.day === day);
+          // Before the planned end: a reminder, never blocking
+          const early =
+            !done && slot && nowMinutes() < minutesOf(slot.endTime) - 10;
           return (
             <Box key={pair.id}>
               <Typography fontWeight={600}>
@@ -291,10 +312,11 @@ const SignInCard = ({ pairs, onChanged }) => {
                   )}
                   <Typography variant="body2">
                     {done.attendance === 'absent'
-                      ? 'Absence enregistrée'
-                      : 'Séance émargée'}{' '}
-                    à {timeOf(done.created_at)}
-                    {done.late ? ' · élève très en retard' : ''}
+                      ? 'Absent'
+                      : done.late
+                        ? 'Présent, en retard'
+                        : "Présent, à l'heure"}{' '}
+                    · émargé à {timeOf(done.created_at)}
                   </Typography>
                 </Stack>
               ) : null}
@@ -328,31 +350,47 @@ const SignInCard = ({ pairs, onChanged }) => {
                   />
                 ))}
               {done ? null : (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  flexWrap="wrap"
-                  useFlexGap
-                  sx={{ mt: 0.75 }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    disabled={busy === pair.id}
-                    onClick={() => signIn(pair, 'présent')}>
-                    La séance a eu lieu, à l'heure
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    disabled={busy === pair.id}
-                    onClick={() => signIn(pair, 'présent', true)}>
-                    L'élève est arrivé très en retard
-                  </Button>
-                  <Button
-                    disabled={busy === pair.id}
-                    onClick={() => signIn(pair, 'absent')}>
-                    L'élève n'est pas venu
-                  </Button>
-                </Stack>
+                <Box sx={{ mt: 0.75 }}>
+                  <Typography variant="body2" sx={{ mb: 0.75 }}>
+                    {early
+                      ? `À faire à la fin de la séance (fin prévue à ${slot.endTime}). ${pair.student.first_name} était :`
+                      : `La séance est terminée : ${pair.student.first_name} était :`}
+                  </Typography>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    flexWrap="wrap"
+                    useFlexGap
+                    alignItems="flex-start">
+                    <Button
+                      variant="contained"
+                      size="large"
+                      disabled={busy === pair.id}
+                      onClick={() => signIn(pair, 'présent')}>
+                      Présent, à l'heure
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      disabled={busy === pair.id}
+                      onClick={() => signIn(pair, 'présent', true)}
+                      sx={{ flexDirection: 'column', lineHeight: 1.2 }}>
+                      Présent, en retard
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        sx={{ textTransform: 'none' }}>
+                        15 min ou plus
+                      </Typography>
+                    </Button>
+                    <Button
+                      size="large"
+                      disabled={busy === pair.id}
+                      onClick={() => signIn(pair, 'absent')}>
+                      Absent
+                    </Button>
+                  </Stack>
+                </Box>
               )}
             </Box>
           );
@@ -363,8 +401,10 @@ const SignInCard = ({ pairs, onChanged }) => {
         color="text.secondary"
         component="div"
         sx={{ mt: 1.5 }}>
-        La date et l'heure sont enregistrées automatiquement. Séances à distance
-        : le rapport Zoom fait foi, pas besoin d'émarger.
+        À la fin de chaque séance : la présence de l'élève, sa signature, puis
+        votre compte-rendu. La date et l'heure sont enregistrées
+        automatiquement. Séances à distance : le rapport Zoom fait foi, pas
+        besoin d'émarger.
       </Typography>
     </Paper>
   );
