@@ -33,6 +33,8 @@ import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
 import TimeInput from '../TimeInput';
+import FlyerDialog from './Flyer';
+import ImageIcon from '@mui/icons-material/Image';
 import { LEVELS } from '../../js/volunteerSearch';
 import { isCulture } from '../../js/roles';
 import {
@@ -418,6 +420,74 @@ const PaymentDialog = ({ r, onClose, onSaved }) => {
   );
 };
 
+// Tutoring session at the time of the outing: told or to tell the tutor
+const sessionText = (c) =>
+  `Séance de tutorat ${c.slot.startTime}–${c.slot.endTime}${
+    c.subjects?.length ? ` (${c.subjects.join(', ')})` : ''
+  }${c.tutor ? ` avec ${c.tutor}` : ''}`;
+const TutoringNotice = ({ r, canEdit, onChanged }) => {
+  const [busy, setBusy] = useState(false);
+  const open = r.tutoring.filter((c) =>
+    ['conflit', 'à vérifier'].includes(c.state)
+  );
+  const tell = async () => {
+    setBusy(true);
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/admin/inscriptions-activites/${r.id}/prevenir`
+      );
+      toast.success(
+        data.told
+          ? 'Tuteur prévenu : séance annulée ce jour-là'
+          : 'Rien à prévenir',
+        { position: 'bottom-left' }
+      );
+      onChanged();
+    } catch (err) {
+      toastError(err, "Le tuteur n'a pas pu être prévenu");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Stack spacing={0.5} sx={{ mt: 0.75 }}>
+      {r.tutoring.map((c) => (
+        <Chip
+          key={c.pair_id}
+          size="small"
+          sx={{
+            alignSelf: 'flex-start',
+            height: 'auto',
+            py: 0.25,
+            '& .MuiChip-label': { whiteSpace: 'normal' },
+          }}
+          color={
+            ['conflit', 'à vérifier'].includes(c.state) ? 'warning' : 'default'
+          }
+          variant={c.state === 'conflit' ? 'filled' : 'outlined'}
+          label={`${sessionText(c)} · ${
+            {
+              conflit: 'en même temps que la sortie',
+              'à vérifier': 'à vérifier (sortie sans heures)',
+              prévenu: 'tuteur prévenu',
+              'déjà annulée': 'déjà annulée',
+            }[c.state]
+          }`}
+        />
+      ))}
+      {canEdit && open.length > 0 && (
+        <Button
+          size="small"
+          sx={{ alignSelf: 'flex-start' }}
+          disabled={busy}
+          onClick={tell}>
+          Prévenir le tuteur (séance annulée ce jour-là)
+        </Button>
+      )}
+    </Stack>
+  );
+};
+
 const RegistrationRow = ({ r, a, canEdit, onChanged, onPay, placeFree }) => {
   const [menu, setMenu] = useState(null);
   const patch = async (body) => {
@@ -521,6 +591,9 @@ const RegistrationRow = ({ r, a, canEdit, onChanged, onPay, placeFree }) => {
                 />
               )}
             </Stack>
+          )}
+          {r.status === 'inscrit' && (r.tutoring || []).length > 0 && (
+            <TutoringNotice r={r} canEdit={canEdit} onChanged={onChanged} />
           )}
           {r.status === 'attente' && canEdit && placeFree && (
             <Button
@@ -692,6 +765,8 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
   const [picked, setPicked] = useState(null);
   const [paying, setPaying] = useState(null);
   const [newStudent, setNewStudent] = useState(false);
+  // A tutoring session at the time of the outing: what to do
+  const [clash, setClash] = useState(null);
   useEffect(() => {
     if (!canEdit) return;
     axios
@@ -726,24 +801,39 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
       }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [students, a.registrations, a.levels]);
-  const add = async (student) => {
-    if (!student) return;
+  // Registered, telling the tutor (or not) when a session is at that time
+  const save = async (student, tellTutor) => {
     try {
       const { data } = await axios.post(
         `${BASE_URL}/admin/activites/${a.id}/inscriptions`,
-        { student_id: student.id }
+        { student_id: student.id, tell_tutor: tellTutor }
       );
       toast.success(
         data.status === 'attente'
           ? `${student.first_name} est sur liste d'attente (activité complète)`
-          : `${student.first_name} est inscrit(e)`,
+          : `${student.first_name} est inscrit(e)${
+              data.tutors_told ? ', tuteur prévenu' : ''
+            }`,
         { position: 'bottom-left' }
       );
       setPicked(null);
+      setClash(null);
       reload();
     } catch (err) {
       toastError(err, "L'inscription n'a pas pu être enregistrée");
     }
+  };
+  const add = async (student) => {
+    if (!student) return;
+    let found = [];
+    try {
+      ({ data: found } = await axios.get(
+        `${BASE_URL}/admin/activites/${a.id}/conflits`,
+        { params: { student_id: student.id } }
+      ));
+    } catch {}
+    if (found.length) setClash({ student, found });
+    else save(student, false);
   };
   const registered = a.registrations.filter((r) => r.status === 'inscrit');
   const waiting = a.registrations.filter((r) => r.status === 'attente');
@@ -779,6 +869,43 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
           onClick={() => setNewStudent(true)}>
           Élève absent de la liste ? Le créer
         </Button>
+      )}
+      {clash && (
+        <Dialog open onClose={() => setClash(null)} fullWidth maxWidth="xs">
+          <DialogTitle>Séance de tutorat ce jour-là</DialogTitle>
+          <DialogContent>
+            <Stack spacing={1}>
+              {clash.found.map((c) => (
+                <Typography key={c.pair_id}>
+                  {frDate(a.date).replace(/^./, (c) => c.toUpperCase())},{' '}
+                  {clash.student.first_name} a une{' '}
+                  {sessionText(c).charAt(0).toLowerCase() +
+                    sessionText(c).slice(1)}
+                  .{' '}
+                  {c.state === 'conflit'
+                    ? `Elle chevauche la sortie (${hours(a)}, trajet compris).`
+                    : "La sortie n'a pas encore d'heures : à vérifier."}
+                </Typography>
+              ))}
+              <Typography variant="body2" color="text.secondary">
+                Prévenir le tuteur annule la séance ce jour-là (« Pas de séance
+                », motif : élève indisponible) et lui envoie un e-mail. Si
+                l'élève se désiste, la séance est rétablie et le tuteur prévenu.
+              </Typography>
+            </Stack>
+          </DialogContent>
+          <DialogActions sx={{ flexWrap: 'wrap', gap: 1 }}>
+            <Button onClick={() => setClash(null)}>Annuler</Button>
+            <Button color="inherit" onClick={() => save(clash.student, false)}>
+              Inscrire sans toucher à la séance
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => save(clash.student, true)}>
+              Inscrire et prévenir le tuteur
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
       {newStudent && (
         <NewStudentDialog
@@ -1209,6 +1336,7 @@ const ActivityPage = () => {
   const [a, setA] = useState(null);
   const [error, setError] = useState(false);
   const [tab, setTab] = useState(0);
+  const [flyer, setFlyer] = useState(false);
   const load = useCallback(() => {
     axios
       .get(`${BASE_URL}/admin/activites/${id}`)
@@ -1265,6 +1393,13 @@ const ActivityPage = () => {
         sx={{ mt: 1.5 }}>
         <Button
           size="small"
+          variant="contained"
+          startIcon={<ImageIcon />}
+          onClick={() => setFlyer(true)}>
+          Flyer
+        </Button>
+        <Button
+          size="small"
           variant="outlined"
           startIcon={<ContentCopyIcon />}
           onClick={() =>
@@ -1292,6 +1427,7 @@ const ActivityPage = () => {
         <Tab label={`Accompagnateurs (${a.staff.length})`} />
         <Tab label="Budget" />
       </Tabs>
+      {flyer && <FlyerDialog a={a} onClose={() => setFlyer(false)} />}
       {tab === 0 && (
         <InfoTab
           a={a}
