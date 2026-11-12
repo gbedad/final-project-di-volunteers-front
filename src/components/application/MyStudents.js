@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
@@ -22,6 +23,9 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import { SessionDialog, SessionList, formatHours } from '../students/Sessions';
 import SignInCard from './SignInCard';
 import InstallApp from './InstallApp';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import { BreaksList, NoSessionDialog, SlotRequestDialog } from './PairChanges';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -56,6 +60,11 @@ const MyStudents = () => {
   const [declining, setDeclining] = useState(null);
   const [reason, setReason] = useState('');
   const [reporting, setReporting] = useState(null);
+  // "Pas de séance" and "Le créneau a changé" (also from the e-mail link)
+  const [noSession, setNoSession] = useState(null);
+  const [slotFor, setSlotFor] = useState(null);
+  const location = useLocation();
+  const linkHandled = useRef(false);
 
   const load = useCallback(() => {
     axios
@@ -64,6 +73,17 @@ const MyStudents = () => {
       .catch(() => setPairs([]));
   }, []);
   useEffect(load, [load]);
+  useEffect(() => {
+    const wanted = location.state?.pairAction;
+    if (!pairs || !wanted || linkHandled.current) return;
+    linkHandled.current = true;
+    const pair = pairs.find(
+      (p) => p.id === wanted.id && ['actif', 'en pause'].includes(p.status)
+    );
+    if (!pair) return;
+    if (wanted.action === 'creneau') setSlotFor(pair);
+    if (wanted.action === 'pas-de-seance') setNoSession(pair);
+  }, [pairs, location.state]);
 
   const answer = async (pair, accept, declineReason) => {
     try {
@@ -178,6 +198,40 @@ const MyStudents = () => {
               </Box>
             ) : ['actif', 'en pause', 'terminé'].includes(pair.status) ? (
               <Box sx={{ mt: 2 }}>
+                {pair.status !== 'terminé' && (
+                  <Stack spacing={1} sx={{ mb: 1.5 }}>
+                    <BreaksList
+                      breaks={pair.breaks}
+                      deleteUrl={(id) => `${BASE_URL}/my/pas-de-seance/${id}`}
+                      onChanged={load}
+                    />
+                    {pair.schedule_request && (
+                      <Alert severity="info" sx={{ py: 0 }}>
+                        Nouveau créneau envoyé à l'association :{' '}
+                        {pair.schedule_request.schedule
+                          .map((x) => `${x.day} ${x.startTime}–${x.endTime}`)
+                          .join(', ')}
+                        . Il sera mis à jour après vérification.
+                      </Alert>
+                    )}
+                    <Stack direction="row" gap={1} flexWrap="wrap">
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<EventBusyIcon />}
+                        onClick={() => setNoSession(pair)}>
+                        Pas de séance
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<ScheduleIcon />}
+                        onClick={() => setSlotFor(pair)}>
+                        Le créneau a changé
+                      </Button>
+                    </Stack>
+                  </Stack>
+                )}
                 <Divider sx={{ mb: 1.5 }} />
                 <Stack
                   direction="row"
@@ -234,6 +288,29 @@ const MyStudents = () => {
         );
       })}
 
+      {noSession && (
+        <NoSessionDialog
+          open
+          url={`${BASE_URL}/my/binomes/${noSession.id}/pas-de-seance`}
+          firstName={noSession.student.first_name}
+          onClose={() => setNoSession(null)}
+          onSaved={() => {
+            setNoSession(null);
+            load();
+          }}
+        />
+      )}
+      {slotFor && (
+        <SlotRequestDialog
+          open
+          pair={slotFor}
+          onClose={() => setSlotFor(null)}
+          onSaved={() => {
+            setSlotFor(null);
+            load();
+          }}
+        />
+      )}
       {reporting && (
         <SessionDialog
           open

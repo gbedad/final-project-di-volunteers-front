@@ -63,6 +63,13 @@ export default function SignIn() {
   // ?onglet=convention: link from the emails to the volunteer
   const volunteerTab =
     { convention: 4, eleves: 5 }[searchParams.get('onglet')] ?? null;
+  // &binome=<id>&action=creneau|pas-de-seance: back-to-school e-mail
+  const pairAction = searchParams.get('binome')
+    ? {
+        id: Number(searchParams.get('binome')),
+        action: searchParams.get('action'),
+      }
+    : null;
   // ?eleve=<id>: link from the emails to the team (student's page)
   const studentId = Number(searchParams.get('eleve')) || null;
   const { updateToken } = useContext(AuthContext);
@@ -94,7 +101,7 @@ export default function SignIn() {
           })
         : navigate('/stepper', {
             replace: true,
-            state: { userLogged, tab: volunteerTab },
+            state: { userLogged, tab: volunteerTab, pairAction },
           });
     const resume = async () => {
       let saved = null;
@@ -201,7 +208,11 @@ export default function SignIn() {
           // A validated tutor lands on "Mes élèves", a candidate on the status
           const tutor = ['Validé', 'A conserver'].includes(response.data.user.status);
           navigate('/stepper', {
-            state: { userLogged, tab: volunteerTab ?? (tutor ? 5 : 0) },
+            state: {
+              userLogged,
+              tab: volunteerTab ?? (tutor ? 5 : 0),
+              pairAction,
+            },
           });
         } else if (
           ['superadmin', 'admin', 'interviewer'].includes(userLogged.user.role)

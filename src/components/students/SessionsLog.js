@@ -76,10 +76,12 @@ const FILTERS = [
   { value: 'no_report', label: 'Sans compte-rendu', color: 'warning' },
   { value: 'unsigned', label: 'Non signées', color: 'warning' },
   { value: 'attendue', label: 'Rien d’enregistré', color: 'warning' },
+  { value: 'prevenue', label: 'Pas de séance (prévenu)' },
 ];
 const matchesFilter = (r, f) =>
   f === 'all' ||
   (f === 'attendue' && r.kind === 'attendue') ||
+  (f === 'prevenue' && r.kind === 'prevenue') ||
   (r.kind === 'session' &&
     ((f === 'présent' && r.attendance === 'présent') ||
       (f === 'late' && r.late) ||
@@ -128,29 +130,33 @@ const timeLabel = (v) =>
 
 // Presence, as shown and exported
 const presenceOf = (r) =>
-  r.kind === 'attendue'
-    ? r.today
-      ? 'Pas encore émargée'
-      : 'Rien d’enregistré'
-    : r.attendance === 'absent'
-      ? 'Absent'
-      : r.attendance === 'annulé'
-        ? 'Annulée'
-        : r.late
-          ? 'Présent, en retard'
-          : 'Présent';
+  r.kind === 'prevenue'
+    ? `Pas de séance · ${r.break?.reason_label || 'prévenu'}`
+    : r.kind === 'attendue'
+      ? r.today
+        ? 'Pas encore émargée'
+        : 'Rien d’enregistré'
+      : r.attendance === 'absent'
+        ? 'Absent'
+        : r.attendance === 'annulé'
+          ? 'Annulée'
+          : r.late
+            ? 'Présent, en retard'
+            : 'Présent';
 const presenceColor = (r) =>
-  r.kind === 'attendue'
-    ? r.today
-      ? 'default'
-      : 'warning'
-    : r.attendance === 'absent'
-      ? 'error'
-      : r.attendance === 'annulé'
+  r.kind === 'prevenue'
+    ? 'default'
+    : r.kind === 'attendue'
+      ? r.today
         ? 'default'
-        : r.late
-          ? 'warning'
-          : 'success';
+        : 'warning'
+      : r.attendance === 'absent'
+        ? 'error'
+        : r.attendance === 'annulé'
+          ? 'default'
+          : r.late
+            ? 'warning'
+            : 'success';
 const SOURCES = {
   app: 'Application',
   jotform: 'Jotform',
@@ -160,7 +166,7 @@ const SOURCES = {
   equipe: 'Équipe',
 };
 const signatureOf = (r) =>
-  r.kind === 'attendue'
+  r.kind !== 'session'
     ? ''
     : r.jotform_signature_url
       ? 'Signée (Jotform)'
@@ -254,6 +260,7 @@ const SessionsLog = () => {
     late: held.filter((r) => r.late).length,
     noReport: held.filter((r) => r.report === 'manquant').length,
     expected: rows.filter((r) => r.kind === 'attendue').length,
+    told: rows.filter((r) => r.kind === 'prevenue').length,
   };
 
   const columns = [
@@ -339,7 +346,7 @@ const SessionsLog = () => {
           <Chip
             size="small"
             color={presenceColor(row)}
-            variant={row.kind === 'attendue' ? 'outlined' : 'filled'}
+            variant={row.kind === 'session' ? 'filled' : 'outlined'}
             label={value}
           />
           {row.kind === 'attendue' && manager && (
@@ -589,6 +596,9 @@ const SessionsLog = () => {
         {totals.noReport > 1 ? 's' : ''} · {totals.expected} séance
         {totals.expected > 1 ? 's' : ''} attendue
         {totals.expected > 1 ? 's' : ''} sans rien d'enregistré
+        {totals.told
+          ? ` · ${totals.told} sans séance (prévenu${totals.told > 1 ? 's' : ''})`
+          : ''}
         {/* Jotform answers and the sync on demand (rarely needed: webhook
             and hourly check) */}
         {' · '}

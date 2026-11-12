@@ -24,6 +24,7 @@ import SlotsEditor from './SlotsEditor';
 import ConfirmSession from './ConfirmSession';
 import { isManager } from '../../js/roles';
 import { MODALITIES } from '../../js/studentOptions';
+import { BreaksList, NoSessionDialog } from '../application/PairChanges';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '—');
@@ -49,14 +50,19 @@ const REMOTE = /^\s*(à|a) distance\s*$/i;
 
 // Slot, modality and place agreed for the pair (not the availabilities of
 // the tutor or the student)
-const DetailsEditor = ({ pair, onSaved, onCancel }) => {
-  const [schedule, setSchedule] = useState(pair.schedule || []);
+const DetailsEditor = ({ pair, request, onSaved, onCancel }) => {
+  // request: the slot told by the tutor, to apply
+  const [schedule, setSchedule] = useState(
+    request?.schedule || pair.schedule || []
+  );
+  const [duringHolidays, setDuringHolidays] = useState(!!pair.during_holidays);
   const [how, setHow] = useState(pair.how_location || '');
   const [site, setSite] = useState(pair.site || '');
   // The new slot applies from that day; or it corrects the whole past (the
   // slot was wrong from the start)
   const [since, setSince] = useState(
-    new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' })
+    request?.since ||
+      new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' })
   );
   const [fromStart, setFromStart] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -65,7 +71,13 @@ const DetailsEditor = ({ pair, onSaved, onCancel }) => {
     try {
       const { data } = await axios.patch(
         `${BASE_URL}/admin/binomes/${pair.id}/details`,
-        { schedule, how_location: how, site, since: fromStart ? null : since }
+        {
+          schedule,
+          how_location: how,
+          site,
+          since: fromStart ? null : since,
+          during_holidays: duringHolidays,
+        }
       );
       toast.success('Créneau du binôme enregistré', {
         position: 'bottom-left',
@@ -152,6 +164,21 @@ const DetailsEditor = ({ pair, onSaved, onCancel }) => {
             />
           )}
         </Stack>
+        <FormControlLabel
+          control={
+            <Checkbox
+              size="small"
+              checked={duringHolidays}
+              onChange={(e) => setDuringHolidays(e.target.checked)}
+            />
+          }
+          label={
+            <Typography variant="body2">
+              Séances aussi pendant les vacances scolaires (attendues dans le
+              journal)
+            </Typography>
+          }
+        />
         <Stack direction="row" spacing={1} justifyContent="flex-end">
           <Button onClick={onCancel}>Annuler</Button>
           <Button variant="contained" disabled={busy} onClick={save}>
@@ -175,6 +202,10 @@ const PairDialog = ({
   const [pair, setPair] = useState(initial);
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  // Applying the slot told by the tutor
+  const [applying, setApplying] = useState(false);
+  const [breaks, setBreaks] = useState([]);
+  const [noSession, setNoSession] = useState(false);
   const manager = isManager(currentRole());
   // Another pair opened (the student's page passes a new object each time:
   // only the id counts)
@@ -182,6 +213,7 @@ const PairDialog = ({
   useEffect(() => {
     setPair(initial);
     setEditing(false);
+    setApplying(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialId]);
 
@@ -192,7 +224,25 @@ const PairDialog = ({
       .get(`${BASE_URL}/admin/binomes/${pairId}/seances`)
       .then(({ data }) => setData(data))
       .catch(() => setData({ sessions: [], stats: null }));
+    axios
+      .get(`${BASE_URL}/admin/binomes/${pairId}/pas-de-seance`)
+      .then(({ data }) => setBreaks(data))
+      .catch(() => setBreaks([]));
   }, [pairId]);
+  const dismissRequest = async () => {
+    try {
+      const { data } = await axios.patch(
+        `${BASE_URL}/admin/binomes/${pair.id}/details`,
+        { schedule_request: null }
+      );
+      setPair({ ...pair, ...data });
+      onChanged?.();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Enregistrement impossible', {
+        position: 'bottom-left',
+      });
+    }
+  };
   useEffect(() => {
     setData(null);
     load();
@@ -279,13 +329,56 @@ const PairDialog = ({
                 }
               />
             </Stack>
+            {pair.schedule_request?.schedule?.length > 0 && !editing && (
+              <Alert
+                severity="info"
+                action={
+                  manager && (
+                    <Stack direction={{ xs: 'column', sm: 'row' }}>
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          setApplying(true);
+                          setEditing(true);
+                        }}>
+                        Appliquer
+                      </Button>
+                      <Button
+                        size="small"
+                        color="inherit"
+                        onClick={dismissRequest}>
+                        Écarter
+                      </Button>
+                    </Stack>
+                  )
+                }>
+                Nouveau créneau signalé par le tuteur le{' '}
+                {formatDate(pair.schedule_request.at)} :{' '}
+                <b>
+                  {pair.schedule_request.schedule
+                    .map((x) => `${x.day} ${x.startTime}–${x.endTime}`)
+                    .join(', ')}
+                </b>
+                {pair.schedule_request.since
+                  ? ` à partir du ${formatDate(`${pair.schedule_request.since}T12:00:00Z`)}`
+                  : ''}
+                {pair.schedule_request.note
+                  ? ` · « ${pair.schedule_request.note} »`
+                  : ''}
+              </Alert>
+            )}
             {editing ? (
               <DetailsEditor
                 pair={pair}
-                onCancel={() => setEditing(false)}
+                request={applying ? pair.schedule_request : null}
+                onCancel={() => {
+                  setEditing(false);
+                  setApplying(false);
+                }}
                 onSaved={(saved) => {
                   setPair({ ...pair, ...saved });
                   setEditing(false);
+                  setApplying(false);
                   onChanged?.();
                 }}
               />
@@ -298,9 +391,24 @@ const PairDialog = ({
                   <Button size="small" onClick={() => setConfirming(true)}>
                     Ajouter une séance confirmée
                   </Button>
+                  {['actif', 'en pause'].includes(pair.status) && (
+                    <Button size="small" onClick={() => setNoSession(true)}>
+                      Pas de séance (prévenu)
+                    </Button>
+                  )}
                 </Stack>
               )
             )}
+            {pair.during_holidays && (
+              <Typography variant="body2" color="text.secondary">
+                Ce binôme continue pendant les vacances scolaires.
+              </Typography>
+            )}
+            <BreaksList
+              breaks={breaks}
+              deleteUrl={(id) => `${BASE_URL}/admin/pas-de-seance/${id}`}
+              onChanged={load}
+            />
             <Typography fontWeight={600}>Comptes-rendus</Typography>
             <SessionList
               sessions={data.sessions}
@@ -320,6 +428,19 @@ const PairDialog = ({
           Fermer
         </Button>
       </DialogActions>
+      {noSession && (
+        <NoSessionDialog
+          open
+          url={`${BASE_URL}/admin/binomes/${pair.id}/pas-de-seance`}
+          firstName={pair.student?.first_name}
+          onClose={() => setNoSession(false)}
+          onSaved={() => {
+            setNoSession(false);
+            load();
+            onChanged?.();
+          }}
+        />
+      )}
       <ConfirmSession
         open={confirming}
         pair={pair}
