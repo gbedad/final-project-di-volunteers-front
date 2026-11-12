@@ -408,12 +408,7 @@ const StudentPage = () => {
             <StudentMembership studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block
-            title="Convention d'engagement"
-            note="À envoyer dès l'inscription : signée en ligne par un responsable légal, contresignée automatiquement.">
-            <FamilyConvention studentId={student.id} canEdit={canEdit} fee={student.fee} />
-          </Block>
-          <Block
-            title="Accord des parents"
+            title="Autorisation parentale générique"
             note="Obligatoire avant le début du tutorat.">
             <ParentalConsent
               student={student}
@@ -424,6 +419,11 @@ const StudentPage = () => {
                   : setStudent((s) => ({ ...s, parental_consent_at: value }))
               }
             />
+          </Block>
+          <Block
+            title="Convention d'engagement"
+            note="À envoyer dès l'inscription : signée en ligne par un responsable légal, contresignée automatiquement.">
+            <FamilyConvention studentId={student.id} canEdit={canEdit} fee={student.fee} />
           </Block>
           <Block title="Suivi de la demande">
             {select(
