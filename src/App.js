@@ -51,6 +51,7 @@ import AnnualReport from './components/admin/AnnualReport';
 import ActivitiesPage from './components/activities/ActivitiesPage';
 import ActivityPage from './components/activities/ActivityPage';
 import AttendancePage from './components/activities/AttendancePage';
+import OutingConsentPage from './components/activities/OutingConsentPage';
 import KioskPage from './components/kiosk/KioskPage';
 import ConsentPage from './pages/ConsentPage';
 import { EmailPauseBanner } from './components/admin/EmailPause';
@@ -215,6 +216,11 @@ function App() {
             <Route path="/activites/:id" element={<ActivityPage />} />
             {/* Adult going with the students: ticks the presences (no account) */}
             <Route path="/sortie/:token" element={<AttendancePage />} />
+            {/* Parent: outing authorisation signed online (no account) */}
+            <Route
+              path="/autorisation-sortie/:token"
+              element={<OutingConsentPage />}
+            />
             {/* Short link (QR code in the rooms): the "Mes élèves" tab */}
             <Route path="/emarger" element={<Navigate to="/login?onglet=eleves" replace />} />
 

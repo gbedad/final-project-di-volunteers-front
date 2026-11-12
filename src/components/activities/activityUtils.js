@@ -84,8 +84,12 @@ export const familyMessage = (a) =>
     `Sortie culturelle : ${a.title}`,
     `${frDate(a.date)}${hours(a) ? `, ${hours(a)}` : ''}`,
     a.meeting_point || a.place
-      ? `Rendez-vous : ${a.meeting_point || a.place}`
+      ? `Rendez-vous : ${a.meeting_point || a.place}${a.meeting_time ? ` à ${a.meeting_time}` : ''}`
       : null,
+    a.meeting_point2
+      ? `Ou : ${a.meeting_point2}${a.meeting_time2 ? ` à ${a.meeting_time2}` : ''}`
+      : null,
+    a.bring ? `À apporter : ${a.bring}` : null,
     a.place && a.meeting_point ? `Lieu : ${a.place}` : null,
     Number(a.fee) > 0
       ? `Participation aux frais : ${euros(a.fee)}`
@@ -94,3 +98,26 @@ export const familyMessage = (a) =>
   ]
     .filter(Boolean)
     .join('\n');
+
+export const ATTENDANCES = [
+  { value: 'présent', label: 'Présent', color: 'success' },
+  { value: 'absent', label: 'Absent', color: 'error' },
+  { value: 'excusé', label: 'Excusé', color: 'default' },
+];
+export const attendanceLabel = (v) =>
+  ATTENDANCES.find((a) => a.value === v)?.label || '—';
+export const WAYS = [
+  { value: 'accompagné', label: 'Accompagné(e)' },
+  { value: 'seul', label: 'Seul(e)' },
+];
+export const CONSENT_STATES = {
+  'à demander': { label: 'Autorisation à demander', color: 'warning' },
+  demandée: { label: 'Autorisation demandée', color: 'info' },
+  signée: { label: 'Autorisation signée en ligne', color: 'success' },
+  reçue: { label: 'Autorisation reçue (papier)', color: 'success' },
+};
+// "2 h 30" from minutes
+export const durationText = (m) =>
+  m
+    ? `${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, '0')}` : ''}`
+    : '—';

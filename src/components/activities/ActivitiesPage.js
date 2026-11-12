@@ -26,7 +26,8 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import PageHeader from '../admin/PageHeader';
-import { isCulture } from '../../js/roles';
+import { RefundsList } from './Expenses';
+import { isCulture, isManager } from '../../js/roles';
 import {
   ACTIVITY_STATUSES,
   BASE_URL,
@@ -85,6 +86,14 @@ const ActivityCard = ({ a, onOpen }) => {
             sx={{ mb: 1 }}>
             <Chip size="small" color={st.color} label={st.label} />
             {a.kind && <Chip size="small" variant="outlined" label={a.kind} />}
+            {a.program && (
+              <Chip
+                size="small"
+                variant="outlined"
+                color="secondary"
+                label={a.program}
+              />
+            )}
           </Stack>
           <Typography
             variant="h6"
@@ -128,7 +137,10 @@ const ActivitiesPage = () => {
   const manager = isCulture(userLogged?.user?.role);
   const [items, setItems] = useState(null);
   const [error, setError] = useState(false);
-  const [view, setView] = useState('avenir');
+  // From À traiter: the refunds
+  const [view, setView] = useState(
+    location.state?.open === 'remboursements' ? 'remboursements' : 'avenir'
+  );
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState('');
 
@@ -188,12 +200,16 @@ const ActivitiesPage = () => {
         sx={{ mb: 2 }}>
         <ToggleButton value="avenir">À venir</ToggleButton>
         <ToggleButton value="passees">Passées</ToggleButton>
+        <ToggleButton value="remboursements">À rembourser</ToggleButton>
       </ToggleButtonGroup>
       {error && (
         <Alert severity="error">La liste n'a pas pu être chargée.</Alert>
       )}
       {!items && !error && <LinearProgress />}
-      {items && !shown.length && (
+      {view === 'remboursements' && (
+        <RefundsList manager={isManager(userLogged?.user?.role)} />
+      )}
+      {view !== 'remboursements' && items && !shown.length && (
         <Alert severity="info">
           {view === 'avenir'
             ? 'Aucune activité à venir.'
@@ -210,9 +226,10 @@ const ActivitiesPage = () => {
             md: 'repeat(3, minmax(0, 1fr))',
           },
         }}>
-        {shown.map((a) => (
-          <ActivityCard key={a.id} a={a} onOpen={() => open(a.id)} />
-        ))}
+        {view !== 'remboursements' &&
+          shown.map((a) => (
+            <ActivityCard key={a.id} a={a} onOpen={() => open(a.id)} />
+          ))}
       </Box>
       <Dialog
         open={creating}

@@ -35,6 +35,7 @@ import TopicsEditor from './TopicsEditor';
 import StudentPairs from './StudentPairs';
 import ParentalConsent from './ParentalConsent';
 import StudentFees from './StudentFees';
+import StudentMembership from './StudentMembership';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -358,6 +359,11 @@ const StudentPage = () => {
             title="Participation aux frais"
             note="Selon le quotient familial (QF) de la famille.">
             <StudentFees student={student} canEdit={canEdit} set={set} />
+          </Block>
+          <Block
+            title="Cotisation annuelle"
+            note="10 € par an, en plus de la participation : obligatoire pour participer aux sorties.">
+            <StudentMembership studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block
             title="Accord des parents"

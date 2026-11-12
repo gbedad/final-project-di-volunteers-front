@@ -84,7 +84,16 @@ const AttendancePage = () => {
       </Typography>
       {(a.meeting_point || a.place) && (
         <Typography variant="body2" color="text.secondary">
-          {a.meeting_point || a.place}
+          Rendez-vous : {a.meeting_point || a.place}
+          {a.meeting_time ? ` à ${a.meeting_time}` : ''}
+          {a.meeting_point2
+            ? ` · ou ${a.meeting_point2}${a.meeting_time2 ? ` à ${a.meeting_time2}` : ''}`
+            : ''}
+        </Typography>
+      )}
+      {a.bring && (
+        <Typography variant="body2" color="text.secondary">
+          À apporter : {a.bring}
         </Typography>
       )}
       {!page.open ? (
@@ -104,6 +113,21 @@ const AttendancePage = () => {
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography fontWeight={600}>{s.name}</Typography>
+                    <Typography
+                      variant="caption"
+                      color={
+                        s.departure === 'seul'
+                          ? 'warning.dark'
+                          : 'text.secondary'
+                      }
+                      component="div">
+                      {s.departure === 'seul'
+                        ? 'Repart seul(e)'
+                        : s.departure === 'accompagné'
+                          ? 'Un adulte vient le/la chercher'
+                          : 'Départ : non précisé'}
+                      {s.consent ? '' : ' · autorisation manquante'}
+                    </Typography>
                     {s.parent && (
                       <Typography variant="body2" color="text.secondary">
                         {s.parent.name ? `${s.parent.name} : ` : 'Parent : '}

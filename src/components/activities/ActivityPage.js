@@ -7,15 +7,12 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   Chip,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
-  FormControlLabel,
   IconButton,
   LinearProgress,
   Menu,
@@ -32,22 +29,22 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
-import TimeInput from '../TimeInput';
 import FlyerDialog from './Flyer';
+import InfoForm from './InfoForm';
+import RegistrationDialog from './RegistrationDialog';
+import { BudgetPanel } from './Expenses';
 import ImageIcon from '@mui/icons-material/Image';
 import { LEVELS } from '../../js/volunteerSearch';
 import { isCulture } from '../../js/roles';
 import {
+  CONSENT_STATES,
   ACTIVITY_STATUSES,
   BASE_URL,
-  EDITABLE_STATUSES,
-  KINDS,
   PAYMENT_METHODS,
   euros,
   familyMessage,
   frDate,
   hours,
-  resizeImage,
   today,
 } from './activityUtils';
 
@@ -68,273 +65,6 @@ const PRINT_CSS = `
   .activity-sheet, .activity-sheet * { visibility: visible !important; }
   .activity-sheet { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
 }`;
-
-// ---- Infos ----
-const InfoTab = ({ a, canEdit, onSaved, onDeleted }) => {
-  const [form, setForm] = useState(a);
-  const [busy, setBusy] = useState(false);
-  useEffect(() => setForm(a), [a]);
-  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const save = async () => {
-    setBusy(true);
-    try {
-      const { data } = await axios.patch(
-        `${BASE_URL}/admin/activites/${a.id}`,
-        {
-          title: form.title,
-          kind: form.kind,
-          status: form.status,
-          date: form.date,
-          start_time: form.start_time,
-          end_time: form.end_time,
-          place: form.place,
-          meeting_point: form.meeting_point,
-          levels: form.levels,
-          places: form.places,
-          deadline: form.deadline,
-          fee: form.fee,
-          adults_per_students: form.adults_per_students,
-          description: form.description,
-          image: form.image,
-        }
-      );
-      toast.success('Activité enregistrée', { position: 'bottom-left' });
-      onSaved(data);
-    } catch (err) {
-      toastError(err, "L'activité n'a pas pu être enregistrée");
-    } finally {
-      setBusy(false);
-    }
-  };
-  const pickImage = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const image = await resizeImage(file);
-      setForm((f) => ({ ...f, image }));
-    } catch {
-      toast.error('Image illisible', { position: 'bottom-left' });
-    }
-  };
-  const remove = async () => {
-    try {
-      await axios.delete(`${BASE_URL}/admin/activites/${a.id}`);
-      onDeleted();
-    } catch (err) {
-      toastError(err, "L'activité n'a pas pu être supprimée");
-    }
-  };
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const grid = {
-    display: 'grid',
-    gap: 2,
-    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-  };
-  return (
-    <Stack spacing={2}>
-      <Box sx={grid}>
-        <TextField
-          size="small"
-          label="Titre"
-          value={form.title || ''}
-          onChange={set('title')}
-          disabled={!canEdit}
-          sx={{ gridColumn: { sm: '1 / -1' } }}
-        />
-        <TextField
-          select
-          size="small"
-          label="Type"
-          value={form.kind || ''}
-          onChange={set('kind')}
-          disabled={!canEdit}>
-          <MenuItem value="">—</MenuItem>
-          {KINDS.map((k) => (
-            <MenuItem key={k} value={k}>
-              {k}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          select
-          size="small"
-          label="Statut"
-          value={form.status}
-          onChange={set('status')}
-          disabled={!canEdit}>
-          {EDITABLE_STATUSES.map((s) => (
-            <MenuItem key={s} value={s}>
-              {ACTIVITY_STATUSES[s].label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          size="small"
-          type="date"
-          label="Date"
-          value={form.date || ''}
-          onChange={set('date')}
-          InputLabelProps={{ shrink: true }}
-          disabled={!canEdit}
-        />
-        <Stack direction="row" spacing={1}>
-          <TimeInput
-            label="Début"
-            value={form.start_time || ''}
-            onChange={(t) => setForm((f) => ({ ...f, start_time: t }))}
-            options={undefined}
-            sx={{ flex: 1 }}
-            disabled={!canEdit}
-          />
-          <TimeInput
-            label="Fin"
-            value={form.end_time || ''}
-            after={form.start_time}
-            onChange={(t) => setForm((f) => ({ ...f, end_time: t }))}
-            sx={{ flex: 1 }}
-            disabled={!canEdit}
-          />
-        </Stack>
-        <TextField
-          size="small"
-          label="Lieu"
-          value={form.place || ''}
-          onChange={set('place')}
-          disabled={!canEdit}
-        />
-        <TextField
-          size="small"
-          label="Point de rendez-vous"
-          value={form.meeting_point || ''}
-          onChange={set('meeting_point')}
-          disabled={!canEdit}
-        />
-        <TextField
-          size="small"
-          type="number"
-          label="Places (élèves)"
-          value={form.places ?? ''}
-          onChange={set('places')}
-          inputProps={{ min: 1 }}
-          disabled={!canEdit}
-        />
-        <TextField
-          size="small"
-          type="date"
-          label="Inscriptions jusqu'au"
-          value={form.deadline || ''}
-          onChange={set('deadline')}
-          InputLabelProps={{ shrink: true }}
-          disabled={!canEdit}
-        />
-        <TextField
-          size="small"
-          type="number"
-          label="Participation par élève (€)"
-          value={form.fee ?? 0}
-          onChange={set('fee')}
-          inputProps={{ min: 0, step: 0.5 }}
-          helperText="0 : gratuit pour les familles"
-          disabled={!canEdit}
-        />
-        <TextField
-          size="small"
-          type="number"
-          label="Un adulte pour … élèves"
-          value={form.adults_per_students ?? 8}
-          onChange={set('adults_per_students')}
-          inputProps={{ min: 1 }}
-          disabled={!canEdit}
-        />
-        <Autocomplete
-          multiple
-          size="small"
-          options={LEVELS}
-          value={form.levels || []}
-          onChange={(e, v) => setForm((f) => ({ ...f, levels: v }))}
-          disabled={!canEdit}
-          sx={{ gridColumn: { sm: '1 / -1' } }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Niveaux conseillés"
-              placeholder="Tous niveaux si vide"
-            />
-          )}
-        />
-        <TextField
-          size="small"
-          label="Description"
-          value={form.description || ''}
-          onChange={set('description')}
-          multiline
-          minRows={4}
-          disabled={!canEdit}
-          sx={{ gridColumn: { sm: '1 / -1' } }}
-        />
-      </Box>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={2}
-        alignItems={{ sm: 'center' }}>
-        {form.image && (
-          <Box
-            component="img"
-            src={form.image}
-            alt=""
-            sx={{ width: 200, maxWidth: '100%', borderRadius: 1 }}
-          />
-        )}
-        {canEdit && (
-          <Stack direction="row" spacing={1}>
-            <Button component="label" size="small" variant="outlined">
-              {form.image ? "Changer l'image" : 'Ajouter une image'}
-              <input hidden type="file" accept="image/*" onChange={pickImage} />
-            </Button>
-            {form.image && (
-              <Button
-                size="small"
-                color="inherit"
-                onClick={() => setForm((f) => ({ ...f, image: null }))}>
-                Retirer
-              </Button>
-            )}
-          </Stack>
-        )}
-      </Stack>
-      {canEdit && (
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          flexWrap="wrap"
-          gap={1}>
-          <Button color="error" onClick={() => setConfirmDelete(true)}>
-            Supprimer l'activité
-          </Button>
-          <Button variant="contained" disabled={busy} onClick={save}>
-            Enregistrer
-          </Button>
-        </Stack>
-      )}
-      <Dialog open={confirmDelete} onClose={() => setConfirmDelete(false)}>
-        <DialogTitle>Supprimer « {a.title} » ?</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Les inscriptions ({a.registrations.length}) et les accompagnateurs
-            sont supprimés aussi. Pour une sortie qui n'aura pas lieu, préférez
-            le statut « Annulée ».
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDelete(false)}>Garder</Button>
-          <Button color="error" variant="contained" onClick={remove}>
-            Supprimer
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Stack>
-  );
-};
 
 // ---- Registrations ----
 const PaymentDialog = ({ r, onClose, onSaved }) => {
@@ -488,7 +218,15 @@ const TutoringNotice = ({ r, canEdit, onChanged }) => {
   );
 };
 
-const RegistrationRow = ({ r, a, canEdit, onChanged, onPay, placeFree }) => {
+const RegistrationRow = ({
+  r,
+  a,
+  canEdit,
+  onChanged,
+  onPay,
+  onOpen,
+  placeFree,
+}) => {
   const [menu, setMenu] = useState(null);
   const patch = async (body) => {
     try {
@@ -523,7 +261,15 @@ const RegistrationRow = ({ r, a, canEdit, onChanged, onPay, placeFree }) => {
             alignItems="center"
             flexWrap="wrap"
             useFlexGap>
-            <Typography fontWeight={600}>{fullName(r)}</Typography>
+            <Typography
+              fontWeight={600}
+              onClick={onOpen}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' },
+              }}>
+              {fullName(r)}
+            </Typography>
             <Typography variant="body2" color="text.secondary">
               {r.level || ''}
             </Typography>
@@ -541,24 +287,30 @@ const RegistrationRow = ({ r, a, canEdit, onChanged, onPay, placeFree }) => {
               flexWrap="wrap"
               useFlexGap
               sx={{ mt: 0.5 }}>
-              <FormControlLabel
-                sx={{ mr: 1 }}
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={!!r.consent_at}
-                    disabled={!canEdit}
-                    onChange={(e) =>
-                      patch({ consent_at: e.target.checked ? today() : null })
-                    }
-                  />
-                }
+              <Chip
+                size="small"
+                color={CONSENT_STATES[r.consent_state]?.color || 'warning'}
+                variant={r.consent_at ? 'filled' : 'outlined'}
                 label={
-                  <Typography variant="body2">
-                    Autorisation de sortie
-                  </Typography>
+                  CONSENT_STATES[r.consent_state]?.label ||
+                  'Autorisation à demander'
                 }
+                onClick={onOpen}
               />
+              <Chip
+                size="small"
+                variant="outlined"
+                color={r.membership ? 'default' : 'warning'}
+                label={
+                  r.membership
+                    ? `${r.kind} · cotisation à jour`
+                    : `${r.kind} · cotisation à demander`
+                }
+                onClick={onOpen}
+              />
+              {r.departure === 'seul' && (
+                <Chip size="small" variant="outlined" label="Repart seul(e)" />
+              )}
               {owes || paid ? (
                 <Chip
                   size="small"
@@ -764,6 +516,9 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
   const [students, setStudents] = useState([]);
   const [picked, setPicked] = useState(null);
   const [paying, setPaying] = useState(null);
+  // One registered child's sheet (kept by id: the list reloads)
+  const [detail, setDetail] = useState(null);
+  const detailed = a.registrations.find((x) => x.id === detail);
   const [newStudent, setNewStudent] = useState(false);
   // A tutoring session at the time of the outing: what to do
   const [clash, setClash] = useState(null);
@@ -950,8 +705,19 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
           placeFree={placeFree}
           onChanged={reload}
           onPay={() => setPaying(r)}
+          onOpen={() => setDetail(r.id)}
         />
       ))}
+      {detailed && (
+        <RegistrationDialog
+          r={detailed}
+          a={a}
+          canEdit={canEdit}
+          onPay={() => setPaying(detailed)}
+          onClose={() => setDetail(null)}
+          onChanged={reload}
+        />
+      )}
       {paying && (
         <PaymentDialog
           r={paying}
@@ -1027,7 +793,11 @@ const StaffTab = ({ a, canEdit, reload }) => {
                   size="small"
                   variant="outlined"
                   label={
-                    s.role === 'responsable' ? 'Responsable' : 'Accompagnateur'
+                    s.role === 'responsable'
+                      ? 'Responsable'
+                      : s.role === 'parent'
+                        ? `Parent${s.child_first_name ? ` de ${s.child_first_name}` : ''}`
+                        : 'Accompagnateur'
                   }
                 />
               </Stack>
@@ -1112,7 +882,25 @@ const StaffTab = ({ a, canEdit, reload }) => {
               onChange={set('role')}>
               <MenuItem value="responsable">Responsable</MenuItem>
               <MenuItem value="accompagnateur">Accompagnateur</MenuItem>
+              <MenuItem value="parent">Parent d'un enfant inscrit</MenuItem>
             </TextField>
+            {form.role === 'parent' && (
+              <TextField
+                select
+                size="small"
+                label="Parent de"
+                value={form.student_id || ''}
+                onChange={set('student_id')}
+                sx={{ gridColumn: { sm: '1 / -1' } }}>
+                {a.registrations
+                  .filter((r) => r.status === 'inscrit')
+                  .map((r) => (
+                    <MenuItem key={r.student_id} value={r.student_id}>
+                      {fullName(r)}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            )}
             <TextField
               size="small"
               label="Téléphone"
@@ -1140,126 +928,6 @@ const StaffTab = ({ a, canEdit, reload }) => {
   );
 };
 
-// ---- Budget ----
-const BudgetTab = ({ a, canEdit, reload }) => {
-  const [costs, setCosts] = useState(a.costs || []);
-  useEffect(() => setCosts(a.costs || []), [a.costs]);
-  const update = (i, k, v) =>
-    setCosts((c) => c.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
-  const save = async () => {
-    try {
-      await axios.patch(`${BASE_URL}/admin/activites/${a.id}`, { costs });
-      toast.success('Budget enregistré', { position: 'bottom-left' });
-      reload();
-    } catch (err) {
-      toastError(err, "Le budget n'a pas pu être enregistré");
-    }
-  };
-  const b = a.budget;
-  const Row = ({ label, value, strong, hint }) => (
-    <Stack direction="row" justifyContent="space-between" sx={{ py: 0.5 }}>
-      <Box>
-        <Typography variant="body2" fontWeight={strong ? 700 : 400}>
-          {label}
-        </Typography>
-        {hint && (
-          <Typography variant="caption" color="text.secondary">
-            {hint}
-          </Typography>
-        )}
-      </Box>
-      <Typography
-        variant="body2"
-        fontWeight={strong ? 700 : 400}
-        sx={{ fontVariantNumeric: 'tabular-nums' }}>
-        {value}
-      </Typography>
-    </Stack>
-  );
-  return (
-    <Stack spacing={2}>
-      <Paper variant="outlined" sx={{ p: 2 }}>
-        <Typography fontWeight={600} sx={{ mb: 1 }}>
-          Coûts d'achat
-        </Typography>
-        <Stack spacing={1}>
-          {costs.map((c, i) => (
-            <Stack key={i} direction="row" spacing={1} alignItems="center">
-              <TextField
-                size="small"
-                label="Poste"
-                placeholder="Billets, transport…"
-                value={c.label}
-                onChange={(e) => update(i, 'label', e.target.value)}
-                sx={{ flex: 1 }}
-                disabled={!canEdit}
-              />
-              <TextField
-                size="small"
-                type="number"
-                label="Montant (€)"
-                value={c.amount ?? ''}
-                onChange={(e) => update(i, 'amount', e.target.value)}
-                sx={{ width: 130 }}
-                inputProps={{ min: 0, step: 0.01 }}
-                disabled={!canEdit}
-              />
-              {canEdit && (
-                <IconButton
-                  size="small"
-                  aria-label="Retirer"
-                  onClick={() => setCosts((x) => x.filter((_, j) => j !== i))}>
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              )}
-            </Stack>
-          ))}
-        </Stack>
-        {canEdit && (
-          <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
-            <Button
-              size="small"
-              onClick={() =>
-                setCosts((c) => [...c, { label: '', amount: '' }])
-              }>
-              Ajouter un poste
-            </Button>
-            <Button size="small" variant="contained" onClick={save}>
-              Enregistrer
-            </Button>
-          </Stack>
-        )}
-      </Paper>
-      <Paper variant="outlined" sx={{ p: 2 }}>
-        <Row label="Coût total" value={euros(b.costs)} strong />
-        {b.per_student !== null && (
-          <Row label="Coût par élève inscrit" value={euros(b.per_student)} />
-        )}
-        <Divider sx={{ my: 1 }} />
-        <Row
-          label="Participations attendues"
-          value={euros(b.expected)}
-          hint={`${euros(a.fee)} par élève, sauf exceptions`}
-        />
-        <Row label="Participations encaissées" value={euros(b.received)} />
-        <Row label="Reste à encaisser" value={euros(b.still_due)} />
-        <Divider sx={{ my: 1 }} />
-        <Row
-          label="Reste à charge de l'association (prévu)"
-          value={euros(b.left_planned)}
-          strong
-          hint="Coût total moins les participations attendues"
-        />
-        <Row
-          label="Reste à charge à ce jour"
-          value={euros(b.left_now)}
-          hint="Coût total moins les participations encaissées"
-        />
-      </Paper>
-    </Stack>
-  );
-};
-
 // Printable list for the day (only shown when printing)
 const PresenceSheet = ({ a }) => (
   <Box className="activity-sheet" sx={{ display: 'none', p: 2, fontSize: 12 }}>
@@ -1280,6 +948,7 @@ const PresenceSheet = ({ a }) => (
           <th>Élève</th>
           <th>Niveau</th>
           <th>Parent à appeler</th>
+          <th>Arrive / repart</th>
           <th>Autorisation</th>
           <th>Payé</th>
           <th>Présent</th>
@@ -1293,9 +962,16 @@ const PresenceSheet = ({ a }) => (
               <td>{fullName(r)}</td>
               <td>{r.level || ''}</td>
               <td>
-                {[r.parent1_firstname, r.parent1_phone || r.parent2_phone]
+                {[
+                  r.parent1_firstname,
+                  r.emergency_phone || r.parent1_phone || r.parent2_phone,
+                ]
                   .filter(Boolean)
                   .join(' ')}
+              </td>
+              <td>
+                {r.arrival || '?'} /{' '}
+                {r.departure === 'seul' ? 'SEUL(E)' : r.departure || '?'}
               </td>
               <td>{r.consent_at ? 'oui' : 'NON'}</td>
               <td>
@@ -1337,6 +1013,16 @@ const ActivityPage = () => {
   const [error, setError] = useState(false);
   const [tab, setTab] = useState(0);
   const [flyer, setFlyer] = useState(false);
+  // Programmes already used, offered when typing one
+  const [programs, setPrograms] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/admin/activites`)
+      .then(({ data }) =>
+        setPrograms([...new Set(data.map((x) => x.program).filter(Boolean))])
+      )
+      .catch(() => {});
+  }, []);
   const load = useCallback(() => {
     axios
       .get(`${BASE_URL}/admin/activites/${id}`)
@@ -1429,8 +1115,9 @@ const ActivityPage = () => {
       </Tabs>
       {flyer && <FlyerDialog a={a} onClose={() => setFlyer(false)} />}
       {tab === 0 && (
-        <InfoTab
+        <InfoForm
           a={a}
+          programs={programs}
           canEdit={canEdit}
           onSaved={setA}
           onDeleted={() => navigate('/activites', { state: { userLogged } })}
@@ -1438,7 +1125,7 @@ const ActivityPage = () => {
       )}
       {tab === 1 && <RegistrationsTab a={a} canEdit={canEdit} reload={load} />}
       {tab === 2 && <StaffTab a={a} canEdit={canEdit} reload={load} />}
-      {tab === 3 && <BudgetTab a={a} canEdit={canEdit} reload={load} />}
+      {tab === 3 && <BudgetPanel a={a} canEdit={canEdit} reload={load} />}
     </Container>
   );
 };
