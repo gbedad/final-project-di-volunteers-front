@@ -389,7 +389,7 @@ const PairDialog = ({
                     Modifier le créneau, la modalité ou le lieu
                   </Button>
                   <Button size="small" onClick={() => setConfirming(true)}>
-                    Ajouter une séance confirmée
+                    Renseigner une séance passée
                   </Button>
                   {['actif', 'en pause'].includes(pair.status) && (
                     <Button size="small" onClick={() => setNoSession(true)}>
@@ -433,6 +433,8 @@ const PairDialog = ({
           open
           url={`${BASE_URL}/admin/binomes/${pair.id}/pas-de-seance`}
           firstName={pair.student?.first_name}
+          schedule={pair.schedule}
+          allowPast
           onClose={() => setNoSession(false)}
           onSaved={() => {
             setNoSession(false);

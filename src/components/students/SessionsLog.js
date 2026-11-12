@@ -75,7 +75,7 @@ const FILTERS = [
   { value: 'absent', label: 'Absents', color: 'error' },
   { value: 'no_report', label: 'Sans compte-rendu', color: 'warning' },
   { value: 'unsigned', label: 'Non signées', color: 'warning' },
-  { value: 'attendue', label: 'Rien d’enregistré', color: 'warning' },
+  { value: 'attendue', label: 'Non renseignées', color: 'warning' },
   { value: 'prevenue', label: 'Pas de séance (prévenu)' },
 ];
 const matchesFilter = (r, f) =>
@@ -135,7 +135,7 @@ const presenceOf = (r) =>
     : r.kind === 'attendue'
       ? r.today
         ? 'Pas encore émargée'
-        : 'Rien d’enregistré'
+        : 'Non renseignée'
       : r.attendance === 'absent'
         ? 'Absent'
         : r.attendance === 'annulé'
@@ -353,12 +353,12 @@ const SessionsLog = () => {
             <Button
               size="small"
               sx={{ minWidth: 0, px: 0.5 }}
-              title="La séance a eu lieu (appel, message…) : l'enregistrer"
+              title="Que s'est-il passé ? Elle a eu lieu, l'élève n'est pas venu, ou pas de séance"
               onClick={(e) => {
                 e.stopPropagation();
                 setConfirming(row);
               }}>
-              Confirmer
+              Renseigner
             </Button>
           )}
         </Stack>
@@ -594,8 +594,8 @@ const SessionsLog = () => {
         compte{totals.noReport > 1 ? 's' : ''}-rendu
         {totals.noReport > 1 ? 's' : ''} manquant
         {totals.noReport > 1 ? 's' : ''} · {totals.expected} séance
-        {totals.expected > 1 ? 's' : ''} attendue
-        {totals.expected > 1 ? 's' : ''} sans rien d'enregistré
+        {totals.expected > 1 ? 's' : ''} non renseignée
+        {totals.expected > 1 ? 's' : ''}
         {totals.told
           ? ` · ${totals.told} sans séance (prévenu${totals.told > 1 ? 's' : ''})`
           : ''}
@@ -640,6 +640,7 @@ const SessionsLog = () => {
         open={!!confirming}
         pair={confirming?.pair}
         date={confirming?.date}
+        slot={confirming?.slot}
         onClose={() => setConfirming(null)}
         onSaved={() => setReload((n) => n + 1)}
       />

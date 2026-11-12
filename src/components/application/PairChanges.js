@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -39,14 +40,51 @@ export const breakDates = (b) =>
 const failed = (err, text) =>
   toast.error(err.response?.data?.error || text, { position: 'top-center' });
 
+const DAYS_FR = [
+  'Dimanche',
+  'Lundi',
+  'Mardi',
+  'Mercredi',
+  'Jeudi',
+  'Vendredi',
+  'Samedi',
+];
+// Slot days of the pair between two days (the current slot; school holidays
+// are checked by the server, here only shown as a reminder)
+const slotDays = (schedule, from, to, max = 60) => {
+  const out = [];
+  if (!from || !to || to < from) return out;
+  const d = new Date(`${from}T12:00:00Z`);
+  for (let i = 0; i <= max; i += 1) {
+    const day = d.toISOString().slice(0, 10);
+    if (day > to) break;
+    for (const s of schedule || []) {
+      if (s.day === DAYS_FR[d.getUTCDay()]) out.push({ day, slot: s });
+    }
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return out;
+};
+const SHOWN_DAYS = 6;
+
 // "Pas de séance": a day or a period, with a reason. url: the tutor's or
-// the team's endpoint
-export const NoSessionDialog = ({ open, url, firstName, onClose, onSaved }) => {
+// the team's endpoint; schedule: the pair's slots (sessions concerned);
+// allowPast: the team, afterwards
+export const NoSessionDialog = ({
+  open,
+  url,
+  firstName,
+  schedule,
+  allowPast = false,
+  onClose,
+  onSaved,
+}) => {
   const [from, setFrom] = useState(today());
   const [to, setTo] = useState('');
   const [reason, setReason] = useState('');
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
+  const concerned = slotDays(schedule, from, to || from);
   const save = async () => {
     setBusy(true);
     try {
@@ -76,7 +114,7 @@ export const NoSessionDialog = ({ open, url, firstName, onClose, onSaved }) => {
               size="small"
               label="Le (ou du)"
               value={from}
-              inputProps={{ min: today() }}
+              inputProps={allowPast ? {} : { min: today() }}
               onChange={(e) => setFrom(e.target.value)}
               InputLabelProps={{ shrink: true }}
               fullWidth
@@ -92,6 +130,27 @@ export const NoSessionDialog = ({ open, url, firstName, onClose, onSaved }) => {
               fullWidth
             />
           </Stack>
+          {from && (!to || to >= from) && (
+            <Alert
+              severity={concerned.length ? 'info' : 'warning'}
+              sx={{ py: 0 }}>
+              {concerned.length
+                ? `Séance${concerned.length > 1 ? 's' : ''} concernée${
+                    concerned.length > 1 ? 's' : ''
+                  } : ${concerned
+                    .slice(0, SHOWN_DAYS)
+                    .map(
+                      (c) =>
+                        `${frDay(c.day)} ${c.slot.startTime}–${c.slot.endTime}`
+                    )
+                    .join(', ')}${
+                    concerned.length > SHOWN_DAYS
+                      ? ` et ${concerned.length - SHOWN_DAYS} autre(s)`
+                      : ''
+                  }`
+                : 'Aucun créneau du binôme sur ces dates : rien à annuler.'}
+            </Alert>
+          )}
           <TextField
             select
             size="small"

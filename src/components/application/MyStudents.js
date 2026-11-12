@@ -293,6 +293,7 @@ const MyStudents = () => {
           open
           url={`${BASE_URL}/my/binomes/${noSession.id}/pas-de-seance`}
           firstName={noSession.student.first_name}
+          schedule={noSession.schedule}
           onClose={() => setNoSession(null)}
           onSaved={() => {
             setNoSession(null);

@@ -13,16 +13,28 @@ import {
   Typography,
 } from '@mui/material';
 import { durationLabel } from './Sessions';
+import { BREAK_REASONS } from '../application/PairChanges';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const today = () =>
   new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
 
-const ATTENDANCES = [
-  { value: 'présent', label: 'La séance a eu lieu' },
+// What happened: no choice made in advance
+const OUTCOMES = [
+  { value: 'présent', label: 'Elle a eu lieu' },
   { value: 'absent', label: "L'élève n'est pas venu" },
-  { value: 'annulé', label: 'Séance annulée' },
+  { value: 'pas', label: 'Pas de séance' },
 ];
+const OUTCOME_HINTS = {
+  absent: 'Absence sans prévenir : comptée dans le taux d’absence.',
+  pas: 'La séance n’était pas due (vacances, empêchement prévenu…) : ni séance, ni absence.',
+};
+const dayLabel = (d) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString('fr-FR', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'numeric',
+  });
 const CHANNELS = [
   { value: 'appel_tuteur', label: 'Appel au tuteur' },
   { value: 'message_tuteur', label: 'Message au tuteur' },
@@ -31,18 +43,21 @@ const CHANNELS = [
 ];
 const DURATIONS = [30, 45, 60, 75, 90, 120];
 
-// A session the team knows took place, with no sign-in (no MyCogniverse,
-// Jotform or Zoom): pair: { id, student, tutor }, date: prefilled day
-const ConfirmSession = ({ open, pair, date, onClose, onSaved }) => {
+// A session with nothing recorded (no MyCogniverse, Jotform or Zoom): what
+// the team knows happened. It took place, the student did not come, or there
+// was no session (recorded as a "Pas de séance", with its reason).
+// pair: { id, student, tutor }, date: prefilled day, slot: that day's slot
+const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
   const [form, setForm] = useState({});
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     if (open) {
       setForm({
         date: date || today(),
-        attendance: 'présent',
+        attendance: null,
         duration_minutes: '',
         channel: 'appel_tuteur',
+        reason: '',
         note: '',
       });
     }
@@ -53,8 +68,17 @@ const ConfirmSession = ({ open, pair, date, onClose, onSaved }) => {
   const save = async () => {
     setBusy(true);
     try {
-      await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, form);
-      toast.success('Séance enregistrée', { position: 'bottom-left' });
+      if (form.attendance === 'pas') {
+        await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/pas-de-seance`, {
+          from: form.date,
+          to: form.date,
+          reason: form.reason,
+          note: form.note,
+        });
+      } else {
+        await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, form);
+      }
+      toast.success('C’est renseigné', { position: 'bottom-left' });
       onSaved?.();
       onClose();
     } catch (err) {
@@ -70,7 +94,9 @@ const ConfirmSession = ({ open, pair, date, onClose, onSaved }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>
-        Confirmer une séance
+        {date
+          ? `Séance du ${dayLabel(date)}${slot ? `, ${slot.startTime}–${slot.endTime}` : ''}`
+          : 'Renseigner une séance'}
         <Typography variant="body2" color="text.secondary">
           {pair.student?.first_name} {pair.student?.last_name} ·{' '}
           {pair.tutor?.first_name} {pair.tutor?.last_name}
@@ -78,31 +104,34 @@ const ConfirmSession = ({ open, pair, date, onClose, onSaved }) => {
       </DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
-          <Typography variant="body2" color="text.secondary">
-            Séance sans émargement (ni MyCogniverse, ni Jotform, ni Zoom) dont
-            l'association est sûre. Le compte-rendu du tuteur reste attendu.
-          </Typography>
-          <TextField
-            size="small"
-            type="date"
-            label="Date de la séance"
-            value={form.date || ''}
-            onChange={set('date')}
-            inputProps={{ max: today() }}
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            select
-            size="small"
-            label="La séance"
-            value={form.attendance || 'présent'}
-            onChange={set('attendance')}>
-            {ATTENDANCES.map((a) => (
-              <MenuItem key={a.value} value={a.value}>
-                {a.label}
-              </MenuItem>
+          {!date && (
+            <TextField
+              size="small"
+              type="date"
+              label="Date de la séance"
+              value={form.date || ''}
+              onChange={set('date')}
+              inputProps={{ max: today() }}
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+          <Typography fontWeight={600}>Que s'est-il passé ?</Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+            {OUTCOMES.map((o) => (
+              <Button
+                key={o.value}
+                variant={form.attendance === o.value ? 'contained' : 'outlined'}
+                onClick={() => setForm((f) => ({ ...f, attendance: o.value }))}
+                sx={{ flex: 1 }}>
+                {o.label}
+              </Button>
             ))}
-          </TextField>
+          </Stack>
+          {OUTCOME_HINTS[form.attendance] && (
+            <Typography variant="caption" color="text.secondary">
+              {OUTCOME_HINTS[form.attendance]}
+            </Typography>
+          )}
           {form.attendance === 'présent' && (
             <TextField
               select
@@ -120,34 +149,66 @@ const ConfirmSession = ({ open, pair, date, onClose, onSaved }) => {
               ))}
             </TextField>
           )}
-          <TextField
-            select
-            size="small"
-            label="Comment l'avez-vous confirmé ?"
-            value={form.channel || 'appel_tuteur'}
-            onChange={set('channel')}>
-            {CHANNELS.map((c) => (
-              <MenuItem key={c.value} value={c.value}>
-                {c.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            size="small"
-            label="Précision"
-            placeholder="Ex. : appel du 12/11, séance faite à la médiathèque"
-            value={form.note || ''}
-            onChange={set('note')}
-            multiline
-            minRows={2}
-          />
+          {form.attendance === 'pas' && (
+            <TextField
+              select
+              size="small"
+              label="Motif"
+              value={form.reason}
+              onChange={set('reason')}>
+              {BREAK_REASONS.map((r) => (
+                <MenuItem key={r.value} value={r.value}>
+                  {r.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {['présent', 'absent'].includes(form.attendance) && (
+            <TextField
+              select
+              size="small"
+              label="Comment l'avez-vous su ?"
+              value={form.channel || 'appel_tuteur'}
+              onChange={set('channel')}>
+              {CHANNELS.map((c) => (
+                <MenuItem key={c.value} value={c.value}>
+                  {c.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {form.attendance && (
+            <TextField
+              size="small"
+              label="Précision"
+              placeholder={
+                form.attendance === 'pas'
+                  ? 'Ex. : élève malade, prévenu par la famille'
+                  : 'Ex. : appel du 12/11, séance faite à la médiathèque'
+              }
+              value={form.note || ''}
+              onChange={set('note')}
+              multiline
+              minRows={2}
+            />
+          )}
+          {form.attendance === 'présent' && (
+            <Typography variant="caption" color="text.secondary">
+              Le compte-rendu du tuteur reste attendu.
+            </Typography>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Annuler</Button>
         <Button
           variant="contained"
-          disabled={busy || !form.date}
+          disabled={
+            busy ||
+            !form.date ||
+            !form.attendance ||
+            (form.attendance === 'pas' && !form.reason)
+          }
           onClick={save}>
           Enregistrer
         </Button>
