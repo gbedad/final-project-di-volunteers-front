@@ -25,6 +25,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PeopleIcon from '@mui/icons-material/People';
 import InsightsIcon from '@mui/icons-material/Insights';
 import SchoolIcon from '@mui/icons-material/School';
+import EuroIcon from '@mui/icons-material/Euro';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -158,6 +159,7 @@ function ResponsiveAppBar() {
     students: ['/eleves'],
     pairs: ['/binomes'],
     activities: ['/activites'],
+    accounting: ['/encaissements'],
     connections: ['/connexions'],
     todo: ['/a-traiter'],
     controls: ['/controles'],
@@ -184,6 +186,10 @@ function ResponsiveAppBar() {
 
   const handlePairs = () => {
     navigate(`/binomes`, { state: { userLogged } });
+  };
+
+  const handleAccounting = () => {
+    navigate(`/encaissements`, { state: { userLogged } });
   };
 
   const handleActivities = () => {
@@ -720,6 +726,16 @@ function ResponsiveAppBar() {
                             <InsightsIcon fontSize="small" />
                           </ListItemIcon>
                           Analyse
+                        </MenuItem>
+                      )}
+                      {isManager(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleAccounting}
+                          {...currentProps('accounting')}>
+                          <ListItemIcon>
+                            <EuroIcon fontSize="small" />
+                          </ListItemIcon>
+                          Encaissements
                         </MenuItem>
                       )}
                       {isManager(userLogged.user.role) && (

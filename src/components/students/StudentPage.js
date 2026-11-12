@@ -37,6 +37,7 @@ import ParentalConsent from './ParentalConsent';
 import StudentFees from './StudentFees';
 import StudentMembership from './StudentMembership';
 import FamilyConvention from './FamilyConvention';
+import StudentPayments from './StudentPayments';
 import AddressField from '../AddressField';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
@@ -401,6 +402,12 @@ const StudentPage = () => {
             title="Participation aux frais"
             note="Selon le quotient familial (QF) de la famille.">
             <StudentFees student={student} canEdit={canEdit} set={set} />
+            {canEdit && (
+              <StudentPayments
+                studentId={student.id}
+                refresh={JSON.stringify(student.fee || null)}
+              />
+            )}
           </Block>
           <Block
             title="Cotisation annuelle"
@@ -408,7 +415,7 @@ const StudentPage = () => {
             <StudentMembership studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block
-            title="Autorisation parentale générique"
+            title="Accord de principe préalable"
             note="Obligatoire avant le début du tutorat.">
             <ParentalConsent
               student={student}

@@ -48,6 +48,7 @@ import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
 import TodoPage from './components/admin/TodoPage';
 import AnnualReport from './components/admin/AnnualReport';
+import AccountingPage from './components/admin/AccountingPage';
 import ActivitiesPage from './components/activities/ActivitiesPage';
 import ActivityPage from './components/activities/ActivityPage';
 import AttendancePage from './components/activities/AttendancePage';
@@ -194,6 +195,7 @@ function App() {
             <Route path="/equipe" element={<Team />} />
             <Route path="/analyse" element={<Analysis />} />
             <Route path="/rapport-annuel" element={<AnnualReport />} />
+            <Route path="/encaissements" element={<AccountingPage />} />
             <Route path="/connexions" element={<Connections />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />

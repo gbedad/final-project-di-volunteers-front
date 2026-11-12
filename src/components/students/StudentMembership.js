@@ -14,7 +14,19 @@ import {
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const METHODS = ['espèces', 'chèque', 'virement', 'carte', 'autre'];
+// AssoConnect link: the usual means; the others are exceptional
+const METHODS = [
+  'assoconnect',
+  'espèces',
+  'chèque',
+  'virement',
+  'carte',
+  'autre',
+];
+const methodLabel = (m) =>
+  m === 'assoconnect'
+    ? 'Lien AssoConnect'
+    : `${m.charAt(0).toUpperCase()}${m.slice(1)} (exceptionnel)`;
 const today = () =>
   new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
 // "2026-2027" from 1 September
@@ -32,7 +44,7 @@ const StudentMembership = ({ studentId, canEdit }) => {
   const [list, setList] = useState(null);
   const [form, setForm] = useState({
     amount: 10,
-    method: 'espèces',
+    method: 'assoconnect',
     paid_at: today(),
   });
   const load = useCallback(() => {
@@ -104,7 +116,7 @@ const StudentMembership = ({ studentId, canEdit }) => {
             fullWidth>
             {METHODS.map((m) => (
               <MenuItem key={m} value={m}>
-                {m.charAt(0).toUpperCase() + m.slice(1)}
+                {methodLabel(m)}
               </MenuItem>
             ))}
           </TextField>

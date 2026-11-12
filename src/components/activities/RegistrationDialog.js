@@ -54,7 +54,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
   });
   const [member, setMember] = useState({
     amount: 10,
-    method: 'espèces',
+    method: 'assoconnect',
     paid_at: today(),
   });
   const run = async (fn, done, fail) => {

@@ -71,7 +71,7 @@ const PaymentDialog = ({ r, onClose, onSaved }) => {
   const [form, setForm] = useState({
     fee_override: r.fee_override ?? '',
     paid_amount: r.paid_amount ?? r.due,
-    paid_method: r.paid_method || 'espèces',
+    paid_method: r.paid_method || 'assoconnect',
     paid_at: r.paid_at || today(),
   });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));

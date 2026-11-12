@@ -26,7 +26,9 @@ export const KINDS = [
   'Atelier',
   'Autre',
 ];
+// AssoConnect link: the usual means; the others are exceptional
 export const PAYMENT_METHODS = [
+  { value: 'assoconnect', label: 'Lien AssoConnect' },
   { value: 'espèces', label: 'Espèces' },
   { value: 'chèque', label: 'Chèque' },
   { value: 'virement', label: 'Virement' },
