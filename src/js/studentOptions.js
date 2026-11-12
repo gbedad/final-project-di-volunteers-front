@@ -14,6 +14,8 @@ export const STUDENT_STATUSES = [
   { value: 'En pause', color: 'default' },
   { value: 'Terminé', color: 'default' },
   { value: 'Abandon', color: 'default' },
+  // Cultural activities only, no tutoring asked
+  { value: 'Activités culturelles seulement', color: 'secondary' },
 ];
 export const statusColor = (status) =>
   STUDENT_STATUSES.find((s) => s.value === status)?.color || 'default';

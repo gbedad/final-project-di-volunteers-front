@@ -120,6 +120,14 @@ export default function SignIn() {
           return;
         } catch {}
       }
+      // People in charge of the outings: their only page
+      if (saved?.token && saved?.user?.role === 'culture') {
+        try {
+          await axios.get(`${BASE_URL}/check-token`);
+          navigate('/activites', { replace: true, state: { userLogged: saved } });
+          return;
+        } catch {}
+      }
       const rightAccount = candidateId || studentId
         ? isStaff(saved?.user?.role)
         : saved?.user?.role === 'volunteer';
@@ -229,6 +237,8 @@ export default function SignIn() {
           } else {
             navigate('/view-users', { state: { userLogged } });
           }
+        } else if (userLogged.user.role === 'culture') {
+          navigate('/activites', { state: { userLogged } });
         } else {
           console.log('Loading.....');
         }

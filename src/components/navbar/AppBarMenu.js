@@ -25,6 +25,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PeopleIcon from '@mui/icons-material/People';
 import InsightsIcon from '@mui/icons-material/Insights';
 import SchoolIcon from '@mui/icons-material/School';
+import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -32,7 +33,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
 
 import logo from '../../assets/mycogniverse3.gif';
-import { isStaff, isManager } from '../../js/roles';
+import { isStaff, isManager, isCulture } from '../../js/roles';
 import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import RuleIcon from '@mui/icons-material/Rule';
@@ -156,6 +157,7 @@ function ResponsiveAppBar() {
     analysis: ['/analyse', '/rapport-annuel'],
     students: ['/eleves'],
     pairs: ['/binomes'],
+    activities: ['/activites'],
     connections: ['/connexions'],
     todo: ['/a-traiter'],
     controls: ['/controles'],
@@ -182,6 +184,10 @@ function ResponsiveAppBar() {
 
   const handlePairs = () => {
     navigate(`/binomes`, { state: { userLogged } });
+  };
+
+  const handleActivities = () => {
+    navigate(`/activites`, { state: { userLogged } });
   };
 
   const handleStudents = () => {
@@ -688,6 +694,16 @@ function ResponsiveAppBar() {
                           Binômes
                         </MenuItem>
                       )}
+                      {isCulture(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handleActivities}
+                          {...currentProps('activities')}>
+                          <ListItemIcon>
+                            <TheaterComedyIcon fontSize="small" />
+                          </ListItemIcon>
+                          Activités culturelles
+                        </MenuItem>
+                      )}
                       <MenuItem
                         onClick={handleAdminFiles}
                         {...currentProps('documents')}>
@@ -726,6 +742,24 @@ function ResponsiveAppBar() {
                           Connexions
                         </MenuItem>
                       )}
+                      <Divider />
+                      <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                          <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        Déconnexion
+                      </MenuItem>
+                    </div>
+                  ) : userLogged.user.role === 'culture' ? (
+                    <div>
+                      <MenuItem
+                        onClick={handleActivities}
+                        {...currentProps('activities')}>
+                        <ListItemIcon>
+                          <TheaterComedyIcon fontSize="small" />
+                        </ListItemIcon>
+                        Activités culturelles
+                      </MenuItem>
                       <Divider />
                       <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
