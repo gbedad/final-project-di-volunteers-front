@@ -41,7 +41,11 @@ const openBlob = (data) => {
 
 // Family convention of the year: sent at registration to one legal
 // guardian, signed online, countersigned automatically; or a paper one
-const FamilyConvention = ({ studentId, canEdit }) => {
+const euro = (n) =>
+  `${Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 2 })} €`;
+
+// fee: the participation computed by the "Participation aux frais" block
+const FamilyConvention = ({ studentId, canEdit, fee }) => {
   const [data, setData] = useState(null);
   const [team, setTeam] = useState(null);
   const [to, setTo] = useState({ parent: 1, channel: 'email' });
@@ -251,72 +255,60 @@ const FamilyConvention = ({ studentId, canEdit }) => {
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
                 pt: 1,
               }}>
+              {/* The amounts are those of the "Participation aux frais"
+                  block (updated as soon as the QF is saved) */}
               <Box sx={{ gridColumn: { sm: '1 / -1' } }}>
                 <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
                   Participation aux frais
                 </Typography>
-                <ToggleButtonGroup
-                  exclusive
-                  size="small"
-                  value={team.participation_mode}
-                  onChange={(e, v) =>
-                    v && setTeam((t) => ({ ...t, participation_mode: v }))
-                  }>
-                  <ToggleButton value="trimestre">Par trimestre</ToggleButton>
-                  <ToggleButton value="annee">Pour l'année</ToggleButton>
-                  <ToggleButton value="horaire">Tarif horaire</ToggleButton>
-                </ToggleButtonGroup>
+                {!fee?.amount ? (
+                  <Alert severity="info">
+                    Elle se calcule dès que le quotient familial (ou « QF non
+                    communiqué ») est saisi dans le bloc « Participation aux
+                    frais ».
+                  </Alert>
+                ) : fee.mode === 'hourly' ? (
+                  <Typography variant="body2">
+                    {euro(fee.amount)} par heure
+                    {fee.pack5 ? ` (5 heures : ${euro(fee.pack5)})` : ''},
+                    caution {euro(fee.deposit || 200)}
+                    {fee.deposit
+                      ? ''
+                      : ' (celle de la tranche 7, le barème horaire n’en prévoit pas)'}
+                    . Écrit après « autre : » dans la convention.
+                  </Typography>
+                ) : (
+                  <Stack spacing={1}>
+                    <ToggleButtonGroup
+                      exclusive
+                      size="small"
+                      value={
+                        team.participation_mode === 'annee'
+                          ? 'annee'
+                          : 'trimestre'
+                      }
+                      onChange={(e, v) =>
+                        v && setTeam((t) => ({ ...t, participation_mode: v }))
+                      }>
+                      <ToggleButton value="trimestre">
+                        {euro(fee.amount)} par trimestre
+                      </ToggleButton>
+                      <ToggleButton value="annee">
+                        {euro(fee.amount * 3)} pour l'année
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                    <Typography variant="body2">
+                      Caution : {euro(fee.deposit)}
+                    </Typography>
+                  </Stack>
+                )}
+                {fee?.amount ? (
+                  <Typography variant="caption" color="text.secondary">
+                    Repris du bloc « Participation aux frais » : pour un autre
+                    montant, utilisez « Montant corrigé ».
+                  </Typography>
+                ) : null}
               </Box>
-              {data.defaults.source ? (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ gridColumn: { sm: '1 / -1' } }}>
-                  Calcul automatique : {data.defaults.source}. Modifiez
-                  seulement pour un cas particulier.
-                </Typography>
-              ) : (
-                <Alert severity="warning" sx={{ gridColumn: { sm: '1 / -1' } }}>
-                  QF non renseigné : saisissez le quotient familial sur la fiche
-                  (bloc « Participation aux frais ») pour calculer la
-                  participation et la caution, ou indiquez-les ici.
-                </Alert>
-              )}
-              {team.participation_mode === 'trimestre' && (
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Montant par trimestre (€)"
-                  value={team.montant_trimestre ?? ''}
-                  onChange={set('montant_trimestre')}
-                />
-              )}
-              {team.participation_mode === 'annee' && (
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Montant pour l'année (€)"
-                  value={team.montant_annee ?? ''}
-                  onChange={set('montant_annee')}
-                />
-              )}
-              {team.participation_mode === 'horaire' && (
-                <TextField
-                  size="small"
-                  label="Tarif horaire"
-                  placeholder="45 € par heure (5 heures : 200 €)"
-                  value={team.tarif_horaire || ''}
-                  onChange={set('tarif_horaire')}
-                  helperText="Écrit après « autre : »"
-                />
-              )}
-              <TextField
-                size="small"
-                type="number"
-                label="Caution (€)"
-                value={team.caution_montant ?? ''}
-                onChange={set('caution_montant')}
-              />
               <TextField
                 size="small"
                 label="Autre (type d'aide)"
@@ -393,7 +385,7 @@ const FamilyConvention = ({ studentId, canEdit }) => {
                   size="small"
                   variant="contained"
                   startIcon={<SendIcon />}
-                  disabled={busy || !data.parents.length}
+                  disabled={busy || !data.parents.length || !fee?.amount}
                   onClick={send}>
                   Envoyer
                 </Button>

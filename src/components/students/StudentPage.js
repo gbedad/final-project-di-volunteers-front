@@ -410,7 +410,7 @@ const StudentPage = () => {
           <Block
             title="Convention d'engagement"
             note="À envoyer dès l'inscription : signée en ligne par un responsable légal, contresignée automatiquement.">
-            <FamilyConvention studentId={student.id} canEdit={canEdit} />
+            <FamilyConvention studentId={student.id} canEdit={canEdit} fee={student.fee} />
           </Block>
           <Block
             title="Accord des parents"
