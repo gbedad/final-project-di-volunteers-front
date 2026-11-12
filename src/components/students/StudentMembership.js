@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
+  Box,
   Button,
   Chip,
   IconButton,
@@ -84,14 +85,15 @@ const StudentMembership = ({ studentId, canEdit }) => {
         />
       )}
       {!current && canEdit && (
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+        // Two by two: the block is narrow
+        <Box sx={{ display: 'grid', gap: 1, gridTemplateColumns: '1fr 1fr' }}>
           <TextField
             size="small"
             type="number"
             label="Montant (€)"
             value={form.amount}
             onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            sx={{ width: 120 }}
+            fullWidth
           />
           <TextField
             select
@@ -99,7 +101,7 @@ const StudentMembership = ({ studentId, canEdit }) => {
             label="Moyen"
             value={form.method}
             onChange={(e) => setForm({ ...form, method: e.target.value })}
-            sx={{ minWidth: 130 }}>
+            fullWidth>
             {METHODS.map((m) => (
               <MenuItem key={m} value={m}>
                 {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -113,11 +115,12 @@ const StudentMembership = ({ studentId, canEdit }) => {
             value={form.paid_at}
             onChange={(e) => setForm({ ...form, paid_at: e.target.value })}
             InputLabelProps={{ shrink: true }}
+            fullWidth
           />
           <Button variant="outlined" onClick={save}>
             Enregistrer
           </Button>
-        </Stack>
+        </Box>
       )}
       {list.length > 0 && (
         <Stack spacing={0.5}>
