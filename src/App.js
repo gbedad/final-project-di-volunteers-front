@@ -54,6 +54,7 @@ import AttendancePage from './components/activities/AttendancePage';
 import OutingConsentPage from './components/activities/OutingConsentPage';
 import KioskPage from './components/kiosk/KioskPage';
 import ConsentPage from './pages/ConsentPage';
+import FamilyConventionPage from './pages/FamilyConventionPage';
 import { EmailPauseBanner } from './components/admin/EmailPause';
 
 import { AuthProvider } from './AuthContext.js';
@@ -212,6 +213,11 @@ function App() {
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/binomes/seances" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
+            {/* Parent: family convention signed online (no account) */}
+            <Route
+              path="/convention-famille/:token"
+              element={<FamilyConventionPage />}
+            />
             <Route path="/activites" element={<ActivitiesPage />} />
             <Route path="/activites/:id" element={<ActivityPage />} />
             {/* Adult going with the students: ticks the presences (no account) */}

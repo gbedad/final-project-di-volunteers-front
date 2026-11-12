@@ -36,6 +36,7 @@ import StudentPairs from './StudentPairs';
 import ParentalConsent from './ParentalConsent';
 import StudentFees from './StudentFees';
 import StudentMembership from './StudentMembership';
+import FamilyConvention from './FamilyConvention';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -276,6 +277,19 @@ const StudentPage = () => {
                 </Stack>
               </Box>
             ))}
+            {/* Home address (the convention's "demeurant…") */}
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Adresse de l'élève
+              </Typography>
+              <Stack spacing={1}>
+                {text('address', 'Adresse (numéro et rue)')}
+                <Stack direction="row" spacing={1}>
+                  {text('zipcode', 'Code postal', { sx: { maxWidth: 140 } })}
+                  {text('city', 'Ville')}
+                </Stack>
+              </Stack>
+            </Box>
           </Block>
 
           <Block title="Orientation">
@@ -364,6 +378,11 @@ const StudentPage = () => {
             title="Cotisation annuelle"
             note="10 € par an, en plus de la participation : obligatoire pour participer aux sorties.">
             <StudentMembership studentId={student.id} canEdit={canEdit} />
+          </Block>
+          <Block
+            title="Convention d'engagement"
+            note="À envoyer dès l'inscription : signée en ligne par un responsable légal, contresignée automatiquement.">
+            <FamilyConvention studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block
             title="Accord des parents"
