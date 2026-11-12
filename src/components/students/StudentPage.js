@@ -37,6 +37,7 @@ import ParentalConsent from './ParentalConsent';
 import StudentFees from './StudentFees';
 import StudentMembership from './StudentMembership';
 import FamilyConvention from './FamilyConvention';
+import AddressField from '../AddressField';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
 import {
@@ -283,7 +284,34 @@ const StudentPage = () => {
                 Adresse de l'élève
               </Typography>
               <Stack spacing={1}>
-                {text('address', 'Adresse (numéro et rue)')}
+                <AddressField
+                  url={`${BASE_URL}/admin/adresses`}
+                  label="Adresse (numéro et rue)"
+                  value={student.address}
+                  disabled={!canEdit}
+                  // Typed freely: no longer the address recognised
+                  onText={(v) => {
+                    set('address', v);
+                    if (student.address_citycode) {
+                      set('address_citycode', null);
+                      set('address_lat', null);
+                      set('address_lon', null);
+                    }
+                  }}
+                  onPick={(a) => {
+                    set('address', a.street);
+                    set('zipcode', a.postcode);
+                    set('city', a.city);
+                    set('address_citycode', a.citycode);
+                    set('address_lat', a.lat);
+                    set('address_lon', a.lon);
+                  }}
+                  helperText={
+                    student.address_citycode
+                      ? `Adresse reconnue (code commune ${student.address_citycode})`
+                      : 'Tapez le début de l’adresse, puis choisissez-la dans la liste'
+                  }
+                />
                 <Stack direction="row" spacing={1}>
                   {text('zipcode', 'Code postal', { sx: { maxWidth: 140 } })}
                   {text('city', 'Ville')}

@@ -19,6 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 import SignaturePad from '../components/application/SignaturePad';
+import AddressField from '../components/AddressField';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -235,10 +236,14 @@ const FamilyConventionPage = () => {
             </MenuItem>
           ))}
         </TextField>
-        <TextField
+        <AddressField
+          url={`${BASE_URL}/convention-famille/${token}/adresses`}
+          size="medium"
           label="Votre adresse"
           value={form.adresse}
-          onChange={set('adresse')}
+          onText={(v) => setForm((f) => ({ ...f, adresse: v, geo: null }))}
+          onPick={(a) => setForm((f) => ({ ...f, adresse: a.label, geo: a }))}
+          helperText="Tapez le début de l'adresse, puis choisissez-la dans la liste"
         />
         <TextField
           label="Téléphone"
