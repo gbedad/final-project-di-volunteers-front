@@ -139,7 +139,11 @@ const presenceOf = (r) =>
       : r.attendance === 'absent'
         ? 'Absent'
         : r.attendance === 'annulé'
-          ? 'Annulée'
+          ? r.cancelled_by === 'tuteur'
+            ? 'Annulée par le tuteur'
+            : r.cancelled_by === 'eleve'
+              ? "Annulée par l'élève"
+              : 'Annulée'
           : r.late
             ? 'Présent, en retard'
             : 'Présent';

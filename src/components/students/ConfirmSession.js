@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
+  Box,
   Button,
   Checkbox,
   Dialog,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { durationLabel } from './Sessions';
-import { BREAK_REASONS } from '../application/PairChanges';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const today = () =>
@@ -25,11 +25,17 @@ const today = () =>
 const OUTCOMES = [
   { value: 'présent', label: 'Elle a eu lieu' },
   { value: 'absent', label: "L'élève n'est pas venu" },
-  { value: 'pas', label: 'Pas de séance' },
+  { value: 'annule_eleve', label: "Annulée par l'élève" },
+  { value: 'annule_tuteur', label: 'Annulée par le tuteur' },
 ];
+// Cancelled: by whom (attendance 'annulé')
+const CANCELLED = { annule_eleve: 'eleve', annule_tuteur: 'tuteur' };
 const OUTCOME_HINTS = {
   absent: 'Absence sans prévenir : comptée dans le taux d’absence.',
-  pas: 'La séance n’était pas due (vacances, empêchement prévenu…) : ni séance, ni absence.',
+  annule_eleve:
+    'La séance était prévue et ne s’est pas faite à cause de l’élève (ni heures, ni absence).',
+  annule_tuteur:
+    'La séance était prévue et ne s’est pas faite à cause du tuteur (ni heures, ni absence).',
 };
 const dayLabel = (d) =>
   new Date(`${d}T12:00:00Z`).toLocaleDateString('fr-FR', {
@@ -47,7 +53,7 @@ const DURATIONS = [30, 45, 60, 75, 90, 120];
 
 // A session with nothing recorded (no MyCogniverse, Jotform or Zoom): what
 // the team knows happened. It took place, the student did not come, or there
-// was no session (recorded as a "Pas de séance", with its reason).
+// was cancelled, by the student or by the tutor.
 // pair: { id, student, tutor }, date: prefilled day, slot: that day's slot
 const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
   const [form, setForm] = useState({});
@@ -60,7 +66,6 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
         duration_minutes: '',
         late: false,
         channel: 'appel_tuteur',
-        reason: '',
         note: '',
       });
     }
@@ -71,16 +76,12 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
   const save = async () => {
     setBusy(true);
     try {
-      if (form.attendance === 'pas') {
-        await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/pas-de-seance`, {
-          from: form.date,
-          to: form.date,
-          reason: form.reason,
-          note: form.note,
-        });
-      } else {
-        await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, form);
-      }
+      const cancelledBy = CANCELLED[form.attendance];
+      await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, {
+        ...form,
+        attendance: cancelledBy ? 'annulé' : form.attendance,
+        cancelled_by: cancelledBy || null,
+      });
       toast.success('C’est renseigné', { position: 'bottom-left' });
       onSaved?.();
       onClose();
@@ -119,17 +120,23 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
             />
           )}
           <Typography fontWeight={600}>Que s'est-il passé ?</Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          {/* Two by two: held / not come, cancelled by the student / tutor */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 1,
+            }}>
             {OUTCOMES.map((o) => (
               <Button
                 key={o.value}
                 variant={form.attendance === o.value ? 'contained' : 'outlined'}
                 onClick={() => setForm((f) => ({ ...f, attendance: o.value }))}
-                sx={{ flex: 1 }}>
+                sx={{ lineHeight: 1.25 }}>
                 {o.label}
               </Button>
             ))}
-          </Stack>
+          </Box>
           {OUTCOME_HINTS[form.attendance] && (
             <Typography variant="caption" color="text.secondary">
               {OUTCOME_HINTS[form.attendance]}
@@ -170,21 +177,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
               }
             />
           )}
-          {form.attendance === 'pas' && (
-            <TextField
-              select
-              size="small"
-              label="Motif"
-              value={form.reason}
-              onChange={set('reason')}>
-              {BREAK_REASONS.map((r) => (
-                <MenuItem key={r.value} value={r.value}>
-                  {r.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-          {['présent', 'absent'].includes(form.attendance) && (
+          {form.attendance && (
             <TextField
               select
               size="small"
@@ -203,7 +196,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
               size="small"
               label="Précision"
               placeholder={
-                form.attendance === 'pas'
+                CANCELLED[form.attendance]
                   ? 'Ex. : élève malade, prévenu par la famille'
                   : 'Ex. : appel du 12/11, séance faite à la médiathèque'
               }
@@ -227,8 +220,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
           disabled={
             busy ||
             !form.date ||
-            !form.attendance ||
-            (form.attendance === 'pas' && !form.reason)
+            !form.attendance
           }
           onClick={save}>
           Enregistrer

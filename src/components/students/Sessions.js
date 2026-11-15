@@ -31,6 +31,29 @@ const ATTENDANCE = {
   absent: { label: 'Élève absent', color: 'warning' },
   annulé: { label: 'Annulée', color: 'default' },
 };
+// Choices of the report: a cancelled session says by whom
+const CHOICES = {
+  présent: 'Séance faite',
+  absent: 'Élève absent',
+  annule_eleve: "Annulée par l'élève",
+  annule_tuteur: 'Annulée par le tuteur',
+};
+const CANCELLED = { annule_eleve: 'eleve', annule_tuteur: 'tuteur' };
+export const CANCELLED_LABELS = {
+  eleve: "Annulée par l'élève",
+  tuteur: 'Annulée par le tuteur',
+};
+const choiceOf = (s) =>
+  s.attendance === 'annulé'
+    ? s.cancelled_by === 'tuteur'
+      ? 'annule_tuteur'
+      : 'annule_eleve'
+    : s.attendance;
+// Label of a recorded session
+const attendanceLabel = (s) =>
+  s.attendance === 'annulé' && CANCELLED_LABELS[s.cancelled_by]
+    ? CANCELLED_LABELS[s.cancelled_by]
+    : ATTENDANCE[s.attendance]?.label || s.attendance;
 export const PROGRESS_LABELS = {
   1: 'Grosses difficultés',
   2: 'Difficile',
@@ -113,7 +136,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
       ? {
           date: String(session.date).slice(0, 10),
           duration_minutes: session.duration_minutes || '',
-          attendance: session.attendance,
+          attendance: choiceOf(session),
           late: !!session.late,
           work: session.work || '',
           progress: session.progress || 3,
@@ -141,6 +164,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
   // Not when the association already set an exceptional session that day
   const askExtra =
     !editing &&
+    !CANCELLED[form.attendance] &&
     offSlotDay(pair, form.date) &&
     !(pair?.extras || []).some((e) => e.date === form.date);
   const extra = askExtra && form.extra;
@@ -159,6 +183,8 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
         const { extra: _, start_time, end_time, ...rest } = form;
         await axios.post(`${BASE_URL}/my/binomes/${pair.id}/seances`, {
           ...rest,
+          attendance: CANCELLED[form.attendance] ? 'annulé' : form.attendance,
+          cancelled_by: CANCELLED[form.attendance] || null,
           ...(extra && {
             extra: { start_time, end_time },
             duration_minutes: null,
@@ -213,9 +239,9 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
               value={form.attendance}
               onChange={(e) => set('attendance', e.target.value)}
               sx={{ flex: 1, minWidth: 180 }}>
-              {Object.entries(ATTENDANCE).map(([value, a]) => (
+              {Object.entries(CHOICES).map(([value, label]) => (
                 <MenuItem key={value} value={value}>
-                  {a.label}
+                  {label}
                 </MenuItem>
               ))}
             </TextField>
@@ -400,7 +426,7 @@ export const SessionList = ({
               <Chip
                 size="small"
                 color={ATTENDANCE[s.attendance]?.color}
-                label={ATTENDANCE[s.attendance]?.label || s.attendance}
+                label={attendanceLabel(s)}
               />
               {s.student_signed_at && (
                 <Tooltip
