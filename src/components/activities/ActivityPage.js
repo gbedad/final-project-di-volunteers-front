@@ -35,7 +35,7 @@ import RegistrationDialog from './RegistrationDialog';
 import { BudgetPanel } from './Expenses';
 import ImageIcon from '@mui/icons-material/Image';
 import { LEVELS } from '../../js/volunteerSearch';
-import { isCulture } from '../../js/roles';
+import { isCulture, isManager } from '../../js/roles';
 import {
   CONSENT_STATES,
   ACTIVITY_STATUSES,
@@ -155,7 +155,9 @@ const sessionText = (c) =>
   `Séance de tutorat ${c.slot.startTime}–${c.slot.endTime}${
     c.subjects?.length ? ` (${c.subjects.join(', ')})` : ''
   }${c.tutor ? ` avec ${c.tutor}` : ''}`;
-const TutoringNotice = ({ r, canEdit, onChanged }) => {
+// Telling the tutor (session cancelled): the admins only, not the people in
+// charge of the outings
+const TutoringNotice = ({ r, canTell, onChanged }) => {
   const [busy, setBusy] = useState(false);
   const open = r.tutoring.filter((c) =>
     ['conflit', 'à vérifier'].includes(c.state)
@@ -205,7 +207,7 @@ const TutoringNotice = ({ r, canEdit, onChanged }) => {
           }`}
         />
       ))}
-      {canEdit && open.length > 0 && (
+      {canTell && open.length > 0 && (
         <Button
           size="small"
           sx={{ alignSelf: 'flex-start' }}
@@ -222,6 +224,7 @@ const RegistrationRow = ({
   r,
   a,
   canEdit,
+  canTell,
   onChanged,
   onPay,
   onOpen,
@@ -345,7 +348,7 @@ const RegistrationRow = ({
             </Stack>
           )}
           {r.status === 'inscrit' && (r.tutoring || []).length > 0 && (
-            <TutoringNotice r={r} canEdit={canEdit} onChanged={onChanged} />
+            <TutoringNotice r={r} canTell={canTell} onChanged={onChanged} />
           )}
           {r.status === 'attente' && canEdit && placeFree && (
             <Button
@@ -512,7 +515,7 @@ const NewStudentDialog = ({ onClose, onCreated }) => {
   );
 };
 
-const RegistrationsTab = ({ a, canEdit, reload }) => {
+const RegistrationsTab = ({ a, canEdit, canTell, reload }) => {
   const [students, setStudents] = useState([]);
   const [picked, setPicked] = useState(null);
   const [paying, setPaying] = useState(null);
@@ -643,22 +646,34 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
                 </Typography>
               ))}
               <Typography variant="body2" color="text.secondary">
-                Prévenir le tuteur annule la séance ce jour-là (« Pas de séance
-                », motif : élève indisponible) et lui envoie un e-mail. Si
-                l'élève se désiste, la séance est rétablie et le tuteur prévenu.
+                {canTell
+                  ? "Prévenir le tuteur annule la séance ce jour-là (« Pas de séance », motif : élève indisponible) et lui envoie un e-mail. Si l'élève se désiste, la séance est rétablie et le tuteur prévenu."
+                  : "C'est un administrateur qui prévient le tuteur : signalez-lui cette inscription."}
               </Typography>
             </Stack>
           </DialogContent>
           <DialogActions sx={{ flexWrap: 'wrap', gap: 1 }}>
             <Button onClick={() => setClash(null)}>Annuler</Button>
-            <Button color="inherit" onClick={() => save(clash.student, false)}>
-              Inscrire sans toucher à la séance
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => save(clash.student, true)}>
-              Inscrire et prévenir le tuteur
-            </Button>
+            {canTell ? (
+              <>
+                <Button
+                  color="inherit"
+                  onClick={() => save(clash.student, false)}>
+                  Inscrire sans toucher à la séance
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => save(clash.student, true)}>
+                  Inscrire et prévenir le tuteur
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={() => save(clash.student, false)}>
+                Inscrire
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       )}
@@ -702,6 +717,7 @@ const RegistrationsTab = ({ a, canEdit, reload }) => {
           r={r}
           a={a}
           canEdit={canEdit}
+          canTell={canTell}
           placeFree={placeFree}
           onChanged={reload}
           onPay={() => setPaying(r)}
@@ -1009,6 +1025,7 @@ const ActivityPage = () => {
       }
     })();
   const canEdit = isCulture(userLogged?.user?.role);
+  const canTell = isManager(userLogged?.user?.role);
   const [a, setA] = useState(null);
   const [error, setError] = useState(false);
   const [tab, setTab] = useState(0);
@@ -1123,7 +1140,14 @@ const ActivityPage = () => {
           onDeleted={() => navigate('/activites', { state: { userLogged } })}
         />
       )}
-      {tab === 1 && <RegistrationsTab a={a} canEdit={canEdit} reload={load} />}
+      {tab === 1 && (
+        <RegistrationsTab
+          a={a}
+          canEdit={canEdit}
+          canTell={canTell}
+          reload={load}
+        />
+      )}
       {tab === 2 && <StaffTab a={a} canEdit={canEdit} reload={load} />}
       {tab === 3 && <BudgetPanel a={a} canEdit={canEdit} reload={load} />}
     </Container>
