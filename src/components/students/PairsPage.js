@@ -4,16 +4,14 @@ import {
   Box,
   Chip,
   Container,
-  IconButton,
-  InputAdornment,
+  Divider,
   Stack,
   Tab,
   Tabs,
-  TextField,
+  Typography,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
+import FilterBar from '../FilterBar';
 import { DataGrid, frFR } from '@mui/x-data-grid';
 import PageHeader from '../admin/PageHeader';
 import PairDialog, { AlertChips } from './PairDialog';
@@ -254,43 +252,9 @@ const PairsPage = () => {
           <Stack
             direction="row"
             flexWrap="wrap"
-            gap={1.5}
             alignItems="center"
-            sx={{ mb: 1.5 }}>
-            <TextField
-              size="small"
-              label="Rechercher un binôme"
-              placeholder="Élève, tuteur, matière, jour…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
-              sx={{ width: { xs: '100%', sm: 320 } }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                ),
-                endAdornment: query ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      size="small"
-                      onClick={() => setQuery('')}
-                      aria-label="Effacer">
-                      <ClearIcon fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                ) : null,
-              }}
-            />
-            <Chip
-              label="Masquer la démo"
-              variant={hideDemo ? 'filled' : 'outlined'}
-              color={hideDemo ? 'primary' : 'default'}
-              onClick={() => setHideDemo(!hideDemo)}
-            />
-          </Stack>
-          <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
+            gap={1}
+            sx={{ mb: 2 }}>
             {FILTERS.map((f) => (
               <Chip
                 key={f.value}
@@ -300,7 +264,34 @@ const PairsPage = () => {
                 onClick={() => setFilter(f.value)}
               />
             ))}
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+            <Chip
+              label="Masquer la démo"
+              variant={hideDemo ? 'filled' : 'outlined'}
+              color={hideDemo ? 'primary' : 'default'}
+              onClick={() => setHideDemo(!hideDemo)}
+            />
           </Stack>
+          <FilterBar
+            search={{
+              label: 'Rechercher un binôme',
+              placeholder: 'Élève, tuteur, matière, jour…',
+              value: query,
+              onChange: setQuery,
+            }}
+            onReset={() => {
+              setQuery('');
+              setFilter('all');
+            }}
+            canReset={!!query || filter !== 'all'}
+            end={
+              <Typography variant="body2">
+                <b>
+                  {rows.length} binôme{rows.length > 1 ? 's' : ''}
+                </b>
+              </Typography>
+            }
+          />
           <Box sx={{ height: 600, width: '100%', bgcolor: 'background.paper' }}>
             <DataGrid
               // "lea" finds "Léa"

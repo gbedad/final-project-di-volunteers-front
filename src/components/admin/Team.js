@@ -249,7 +249,7 @@ const Team = () => {
             sx={{ flex: 1 }}
           />
           <Button type="submit" variant="contained" disabled={!email.trim()}>
-            Rechercher
+            Trouver la personne
           </Button>
         </Stack>
         {searchError && (

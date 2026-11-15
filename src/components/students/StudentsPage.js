@@ -15,8 +15,6 @@ import {
   Checkbox,
   Divider,
   FormControlLabel,
-  IconButton,
-  InputAdornment,
   MenuItem,
   Stack,
   TextField,
@@ -24,9 +22,9 @@ import {
   Typography,
 } from '@mui/material';
 import { DataGrid, frFR } from '@mui/x-data-grid';
+import FilterBar from '../FilterBar';
+import { matchesWords } from '../../js/textSearch';
 import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
 
 import PageHeader from '../admin/PageHeader';
 import { RequestDialog } from './ParentalConsent';
@@ -50,10 +48,7 @@ import {
 } from '../../js/studentOptions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const GRID_LOCALE = {
-  ...frFR.components.MuiDataGrid.defaultProps.localeText,
-  toolbarQuickFilterPlaceholder: 'Rechercher un nom…',
-};
+const GRID_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 const currentRole = () => {
   try {
@@ -80,17 +75,9 @@ const FEE_LABELS = {
 };
 const feeLabel = (k) => FEE_LABELS[k] || `Tranche ${k.slice(1)}`;
 
-// Search without accents or case: "zoe" finds "Zoé"
-const norm = (v) =>
-  String(v || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
 // Name of the student or of a parent, school, parent's e-mail or phone
-const matchesText = (s, q) => {
-  const words = norm(q).split(/\s+/).filter(Boolean);
-  if (!words.length) return true;
-  const text = norm(
+const matchesText = (s, q) =>
+  matchesWords(
     [
       s.first_name,
       s.last_name,
@@ -104,13 +91,9 @@ const matchesText = (s, q) => {
       s.parent2_lastname,
       s.parent2_email,
       s.parent2_phone,
-    ].join(' ')
+    ],
+    q
   );
-  const digits = text.replace(/[^\d]/g, '');
-  return words.every(
-    (w) => text.includes(w) || (/^\d{4,}$/.test(w) && digits.includes(w))
-  );
-};
 
 const age = (birthDate) => {
   if (!birthDate) return '';
@@ -486,88 +469,77 @@ const StudentsPage = () => {
         />
       </Box>
 
-      <Stack
-        direction="row"
-        flexWrap="wrap"
-        gap={1.5}
-        alignItems="center"
-        sx={{ mb: 2 }}>
-        <TextField
-          size="small"
-          label="Rechercher un élève"
-          placeholder="Nom, parent, établissement, téléphone…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          sx={{ width: 280 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
-            endAdornment: query ? (
-              <InputAdornment position="end">
-                <IconButton
-                  size="small"
-                  onClick={() => setQuery('')}
-                  aria-label="Effacer">
-                  <ClearIcon fontSize="small" />
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-          }}
-        />
-        <Autocomplete
-          size="small"
-          options={SUBJECTS}
-          value={subject}
-          onChange={(e, v) => setSubject(v)}
-          sx={{ width: 220 }}
-          renderInput={(params) => <TextField {...params} label="Matière" />}
-        />
-        <Autocomplete
-          size="small"
-          options={STUDENT_LEVELS}
-          value={level}
-          onChange={(e, v) => setLevel(v)}
-          sx={{ width: 150 }}
-          renderInput={(params) => <TextField {...params} label="Niveau" />}
-        />
-        <Autocomplete
-          size="small"
-          options={DAYS}
-          value={day}
-          onChange={(e, v) => setDay(v)}
-          sx={{ width: 150 }}
-          renderInput={(params) => <TextField {...params} label="Jour" />}
-        />
-        <Button
-          variant="outlined"
-          disabled={!filtered}
-          onClick={() => {
-            setSubject(null);
-            setLevel(null);
-            setDay(null);
-            setStatus(null);
-            setConsent(null);
-            setTranche(null);
-            setQuery('');
-          }}>
-          Réinitialiser
-        </Button>
-        {tranche && (
-          <Chip
-            label={feeLabel(tranche)}
-            onDelete={() => setTranche(null)}
-            color="primary"
-          />
-        )}
-        <Typography variant="body2" sx={{ ml: 1 }}>
-          <b>
-            {rows.length} élève{rows.length > 1 ? 's' : ''}
-          </b>
-        </Typography>
-      </Stack>
+      <FilterBar
+        search={{
+          label: 'Rechercher un élève',
+          placeholder: 'Nom, parent, établissement, téléphone…',
+          value: query,
+          onChange: setQuery,
+        }}
+        criteriaKey="students.criteriaOpen"
+        criteriaCount={[subject, level, day].filter(Boolean).length}
+        criteriaTitle={
+          <Typography variant="subtitle2">
+            Besoins et disponibilités de l'élève
+          </Typography>
+        }
+        criteria={
+          <Stack direction="row" flexWrap="wrap" gap={1}>
+            <Autocomplete
+              size="small"
+              options={SUBJECTS}
+              value={subject}
+              onChange={(e, v) => setSubject(v)}
+              sx={{ width: 220 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Matière" />
+              )}
+            />
+            <Autocomplete
+              size="small"
+              options={STUDENT_LEVELS}
+              value={level}
+              onChange={(e, v) => setLevel(v)}
+              sx={{ width: 150 }}
+              renderInput={(params) => <TextField {...params} label="Niveau" />}
+            />
+            <Autocomplete
+              size="small"
+              options={DAYS}
+              value={day}
+              onChange={(e, v) => setDay(v)}
+              sx={{ width: 150 }}
+              renderInput={(params) => <TextField {...params} label="Jour" />}
+            />
+          </Stack>
+        }
+        onReset={() => {
+          setSubject(null);
+          setLevel(null);
+          setDay(null);
+          setStatus(null);
+          setConsent(null);
+          setTranche(null);
+          setQuery('');
+        }}
+        canReset={filtered}
+        end={
+          <>
+            {tranche && (
+              <Chip
+                label={feeLabel(tranche)}
+                onDelete={() => setTranche(null)}
+                color="primary"
+              />
+            )}
+            <Typography variant="body2">
+              <b>
+                {rows.length} élève{rows.length > 1 ? 's' : ''}
+              </b>
+            </Typography>
+          </>
+        }
+      />
 
       {canEdit && (
         <BulkConsentButton

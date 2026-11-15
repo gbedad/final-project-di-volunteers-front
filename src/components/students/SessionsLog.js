@@ -6,9 +6,8 @@ import {
   Button,
   Box,
   Chip,
-  IconButton,
+  Divider,
   Link,
-  InputAdornment,
   MenuItem,
   Stack,
   TextField,
@@ -21,8 +20,7 @@ import {
   GridToolbarExport,
   frFR,
 } from '@mui/x-data-grid';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
+import FilterBar from '../FilterBar';
 import HistoryIcon from '@mui/icons-material/History';
 import PairDialog from './PairDialog';
 import { durationLabel, formatHours } from './Sessions';
@@ -469,9 +467,39 @@ const SessionsLog = () => {
       <Stack
         direction="row"
         flexWrap="wrap"
-        gap={1.5}
         alignItems="center"
-        sx={{ mb: 1.5 }}>
+        gap={1}
+        sx={{ mb: 2 }}>
+        {FILTERS.map((f) => (
+          <Chip
+            key={f.value}
+            label={`${f.label} ${searched.filter((r) => matchesFilter(r, f.value)).length}`}
+            color={f.color || 'primary'}
+            variant={filter === f.value ? 'filled' : 'outlined'}
+            onClick={() => setFilter(f.value)}
+          />
+        ))}
+        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+        <Chip
+          label="Masquer la démo"
+          variant={hideDemo ? 'filled' : 'outlined'}
+          color={hideDemo ? 'primary' : 'default'}
+          onClick={() => setHideDemo(!hideDemo)}
+        />
+      </Stack>
+      <FilterBar
+        search={{
+          label: 'Rechercher une séance',
+          placeholder: 'Élève, tuteur, matière, remarque…',
+          value: query,
+          onChange: setQuery,
+        }}
+        onReset={() => {
+          setQuery('');
+          setFilter('all');
+          setPeriodKey('month');
+        }}
+        canReset={!!query || filter !== 'all' || periodKey !== 'month'}>
         <TextField
           select
           size="small"
@@ -508,50 +536,7 @@ const SessionsLog = () => {
             />
           </>
         )}
-        <TextField
-          size="small"
-          label="Rechercher"
-          placeholder="Élève, tuteur, matière, remarque…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
-          sx={{ width: { xs: '100%', sm: 300 } }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
-            endAdornment: query ? (
-              <InputAdornment position="end">
-                <IconButton
-                  size="small"
-                  onClick={() => setQuery('')}
-                  aria-label="Effacer">
-                  <ClearIcon fontSize="small" />
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-          }}
-        />
-        <Chip
-          label="Masquer la démo"
-          variant={hideDemo ? 'filled' : 'outlined'}
-          color={hideDemo ? 'primary' : 'default'}
-          onClick={() => setHideDemo(!hideDemo)}
-        />
-      </Stack>
-      <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
-        {FILTERS.map((f) => (
-          <Chip
-            key={f.value}
-            label={`${f.label} ${searched.filter((r) => matchesFilter(r, f.value)).length}`}
-            color={f.color || 'primary'}
-            variant={filter === f.value ? 'filled' : 'outlined'}
-            onClick={() => setFilter(f.value)}
-          />
-        ))}
-      </Stack>
+      </FilterBar>
       {error && (
         <Alert severity="error" sx={{ mb: 1.5 }}>
           Le journal des séances n'a pas pu être chargé.

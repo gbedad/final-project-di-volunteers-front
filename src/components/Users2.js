@@ -5,13 +5,10 @@ import {
   Badge,
   Box,
   Chip,
-  Collapse,
   Divider,
   Link,
-  Paper,
   Typography,
   Stack,
-  Button,
   Autocomplete,
   TextField,
   Tooltip,
@@ -53,8 +50,7 @@ import {
 import DashboardToolbar from './admin/DashboardToolbar';
 import { frFR } from '@mui/x-data-grid';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import TuneIcon from '@mui/icons-material/Tune';
-import SearchField from './SearchField';
+import FilterBar from './FilterBar';
 import { matchesWords } from '../js/textSearch';
 import { isManager } from '../js/roles';
 import TimeInput from './TimeInput';
@@ -236,10 +232,6 @@ export default function DataGridDemo(props) {
   const [showDemo, setShowDemo] = useSessionState('dashboard.demo', true);
   // Name, e-mail or phone; the other criteria are folded below it
   const [query, setQuery] = useSessionState('dashboard.query', '');
-  const [criteriaOpen, setCriteriaOpen] = useSessionState(
-    'dashboard.criteriaOpen',
-    false
-  );
   // Column filters of the table
   const [gridFilterModel, setGridFilterModel] = useSessionState(
     'dashboard.gridFilter',
@@ -1162,33 +1154,17 @@ export default function DataGridDemo(props) {
 
       {/* Search: the name first, as on every list; what the volunteers can
           teach and when they are free, folded below */}
-      <Stack
-        direction="row"
-        flexWrap="wrap"
-        gap={1.5}
-        alignItems="center"
-        sx={{ mb: 1 }}>
-        <SearchField
-          label="Rechercher un bénévole"
-          placeholder="Nom, e-mail, téléphone…"
-          value={query}
-          onChange={setQuery}
-        />
-        <Button
-          variant={criteriaOpen ? 'contained' : 'outlined'}
-          disableElevation
-          startIcon={<TuneIcon />}
-          onClick={() => setCriteriaOpen(!criteriaOpen)}
-          aria-expanded={criteriaOpen}>
-          Plus de critères{criteriaCount ? ` (${criteriaCount})` : ''}
-        </Button>
-        <Button onClick={resetFilters} disabled={!hasFilters}>
-          Réinitialiser
-        </Button>
-      </Stack>
-      <Collapse in={criteriaOpen}>
-        <Paper variant="outlined" sx={{ p: 2, mb: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
+      <FilterBar
+        search={{
+          label: 'Rechercher un bénévole',
+          placeholder: 'Nom, e-mail, téléphone…',
+          value: query,
+          onChange: setQuery,
+        }}
+        criteriaKey="dashboard.criteriaOpen"
+        criteriaCount={criteriaCount}
+        criteriaTitle={
+          <Stack direction="row" alignItems="center" spacing={1}>
             <Typography variant="subtitle2">
               Trouver un tuteur pour un élève
             </Typography>
@@ -1196,6 +1172,11 @@ export default function DataGridDemo(props) {
               <HelpOutlineIcon fontSize="small" color="action" />
             </Tooltip>
           </Stack>
+        }
+        onReset={resetFilters}
+        canReset={hasFilters}
+        sx={{ mb: 1 }}
+        criteria={
           <Stack direction="row" flexWrap="wrap" gap={3} alignItems="flex-end">
             <Box>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -1293,8 +1274,8 @@ export default function DataGridDemo(props) {
               />
             </Box>
           </Stack>
-        </Paper>
-      </Collapse>
+        }
+      />
       {/* Always one line, so the page doesn't move when searching */}
       <Typography
         variant="body2"

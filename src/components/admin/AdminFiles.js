@@ -33,6 +33,9 @@ import FileDisplay from '../FileDisplay';
 import { getFileUrl, fileNameOf } from '../../js/fileUrl';
 import { isManager } from '../../js/roles';
 import PageHeader from './PageHeader';
+import FilterBar from '../FilterBar';
+import { matchesWords } from '../../js/textSearch';
+import { useSessionState } from '../../js/useSessionState';
 import ConventionTemplateCard from './ConventionTemplateCard';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -40,7 +43,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const gridToolbar = {
   slots: { toolbar: GridToolbar },
   slotProps: {
-    toolbar: { showQuickFilter: true, csvOptions: { delimiter: ';' } },
+    // The search is above the table, as on every list
+    toolbar: { csvOptions: { delimiter: ';' } },
   },
 };
 
@@ -75,6 +79,7 @@ const AdminFiles = () => {
   const [missing, setMissing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('all');
+  const [query, setQuery] = useSessionState('files.query', '');
   const [hideDeclined, setHideDeclined] = useState(true);
   const [onlyToCountersign, setOnlyToCountersign] = useState(false);
   const [previewPath, setPreviewPath] = useState(null);
@@ -285,14 +290,18 @@ const AdminFiles = () => {
 
   const visibleFiles = useMemo(
     () =>
-      typeFilter === 'all'
-        ? files
-        : files.filter((f) =>
-            typeFilter === 'convention'
+      files.filter(
+        (f) =>
+          (typeFilter === 'all' ||
+            (typeFilter === 'convention'
               ? ['convention', 'convention_final'].includes(f.doc_type)
-              : (f.doc_type || 'other') === typeFilter
-          ),
-    [files, typeFilter]
+              : (f.doc_type || 'other') === typeFilter)) &&
+          matchesWords(
+            [f.user?.first_name, f.user?.last_name, f.user?.email, f.filename],
+            query
+          )
+      ),
+    [files, typeFilter, query]
   );
 
   const toCountersign = missing.filter(
@@ -304,8 +313,11 @@ const AdminFiles = () => {
         .filter((u) => !hideDeclined || u.status !== 'Déclinée')
         .filter(
           (u) => !onlyToCountersign || u.convention_state === 'to_countersign'
+        )
+        .filter((u) =>
+          matchesWords([u.first_name, u.last_name, u.email, u.phone], query)
         ),
-    [missing, hideDeclined, onlyToCountersign]
+    [missing, hideDeclined, onlyToCountersign, query]
   );
 
   return (
@@ -336,6 +348,27 @@ const AdminFiles = () => {
             <ToggleButton value="convention">Conventions</ToggleButton>
             <ToggleButton value="other">Autres</ToggleButton>
           </ToggleButtonGroup>
+          <FilterBar
+            search={{
+              label: 'Rechercher un document',
+              placeholder: 'Bénévole, e-mail, nom du fichier…',
+              value: query,
+              onChange: setQuery,
+            }}
+            onReset={() => {
+              setQuery('');
+              setTypeFilter('all');
+            }}
+            canReset={!!query || typeFilter !== 'all'}
+            end={
+              <Typography variant="body2">
+                <b>
+                  {visibleFiles.length} document
+                  {visibleFiles.length > 1 ? 's' : ''}
+                </b>
+              </Typography>
+            }
+          />
           <Box sx={{ height: 600, width: '100%' }}>
             <DataGrid
               // "lea" finds "Léa"
@@ -357,26 +390,40 @@ const AdminFiles = () => {
 
       {tab === 1 && (
         <>
-          <FormControlLabel
-            sx={{ mb: 1 }}
-            control={
-              <Switch
-                checked={hideDeclined}
-                onChange={(e) => setHideDeclined(e.target.checked)}
-              />
-            }
-            label="Masquer les candidatures déclinées"
-          />
-          <FormControlLabel
-            sx={{ mb: 1, ml: 2 }}
-            control={
-              <Switch
-                checked={onlyToCountersign}
-                onChange={(e) => setOnlyToCountersign(e.target.checked)}
-              />
-            }
-            label={`Seulement les conventions à contresigner (${toCountersign})`}
-          />
+          <FilterBar
+            search={{
+              label: 'Rechercher un bénévole',
+              placeholder: 'Nom, e-mail, téléphone…',
+              value: query,
+              onChange: setQuery,
+            }}
+            onReset={() => {
+              setQuery('');
+              setHideDeclined(true);
+              setOnlyToCountersign(false);
+            }}
+            canReset={!!query || !hideDeclined || onlyToCountersign}>
+            <FormControlLabel
+              sx={{ mr: 0 }}
+              control={
+                <Switch
+                  checked={hideDeclined}
+                  onChange={(e) => setHideDeclined(e.target.checked)}
+                />
+              }
+              label="Masquer les candidatures déclinées"
+            />
+            <FormControlLabel
+              sx={{ mr: 0 }}
+              control={
+                <Switch
+                  checked={onlyToCountersign}
+                  onChange={(e) => setOnlyToCountersign(e.target.checked)}
+                />
+              }
+              label={`Seulement les conventions à contresigner (${toCountersign})`}
+            />
+          </FilterBar>
           <Box sx={{ height: 600, width: '100%' }}>
             <DataGrid
               // "lea" finds "Léa"

@@ -20,6 +20,9 @@ import {
 import DownloadIcon from '@mui/icons-material/Download';
 import PageHeader from './PageHeader';
 import { STATUS } from '../students/StudentPayments';
+import FilterBar from '../FilterBar';
+import { matchesWords } from '../../js/textSearch';
+import { useSessionState } from '../../js/useSessionState';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const euro = (n) =>
@@ -92,6 +95,7 @@ const Ledger = () => {
   const [period, setPeriod] = useState('annee');
   const [nature, setNature] = useState('');
   const [method, setMethod] = useState('');
+  const [query, setQuery] = useSessionState('ledger.query', '');
   const [data, setData] = useState(null);
   useEffect(() => {
     setData(null);
@@ -115,9 +119,19 @@ const Ledger = () => {
       (data?.rows || []).filter(
         (r) =>
           (!nature || r.nature === nature) &&
-          (!method || r.method_label === method)
+          (!method || r.method_label === method) &&
+          matchesWords(
+            [
+              r.student,
+              r.reference,
+              r.detail,
+              NATURES[r.nature],
+              r.method_label,
+            ],
+            query
+          )
       ),
-    [data, nature, method]
+    [data, nature, method, query]
   );
   const download = () => {
     const blob = new Blob([`﻿${csv(rows)}`], {
@@ -132,55 +146,77 @@ const Ledger = () => {
   const total = rows.reduce((n, r) => n + r.amount, 0);
   return (
     <Stack spacing={2}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+      <FilterBar
+        sx={{ mb: 0 }}
+        search={{
+          label: 'Rechercher un encaissement',
+          placeholder: 'Élève, référence…',
+          value: query,
+          onChange: setQuery,
+        }}
+        criteriaKey="ledger.criteriaOpen"
+        criteriaCount={[nature, method].filter(Boolean).length}
+        criteria={
+          <Stack direction="row" flexWrap="wrap" gap={1}>
+            <TextField
+              select
+              size="small"
+              label="Nature"
+              value={nature}
+              onChange={(e) => setNature(e.target.value)}
+              sx={{ minWidth: 160 }}>
+              <MenuItem value="">Toutes</MenuItem>
+              {Object.entries(NATURES).map(([k, l]) => (
+                <MenuItem key={k} value={k}>
+                  {l}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              size="small"
+              label="Moyen"
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+              sx={{ minWidth: 170 }}>
+              <MenuItem value="">Tous</MenuItem>
+              {data.by_method.map((m) => (
+                <MenuItem key={m.label} value={m.label}>
+                  {m.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Stack>
+        }
+        onReset={() => {
+          setQuery('');
+          setNature('');
+          setMethod('');
+          setPeriod('annee');
+        }}
+        canReset={!!query || !!nature || !!method || period !== 'annee'}
+        end={
+          <Button
+            startIcon={<DownloadIcon />}
+            onClick={download}
+            disabled={!rows.length}>
+            Export CSV
+          </Button>
+        }>
         <TextField
           select
           size="small"
           label="Période"
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          sx={{ minWidth: 220 }}>
+          sx={{ minWidth: 200 }}>
           {Object.entries(P).map(([k, [label]]) => (
             <MenuItem key={k} value={k}>
               {label}
             </MenuItem>
           ))}
         </TextField>
-        <TextField
-          select
-          size="small"
-          label="Nature"
-          value={nature}
-          onChange={(e) => setNature(e.target.value)}
-          sx={{ minWidth: 160 }}>
-          <MenuItem value="">Toutes</MenuItem>
-          {Object.entries(NATURES).map(([k, l]) => (
-            <MenuItem key={k} value={k}>
-              {l}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          select
-          size="small"
-          label="Moyen"
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
-          sx={{ minWidth: 170 }}>
-          <MenuItem value="">Tous</MenuItem>
-          {data.by_method.map((m) => (
-            <MenuItem key={m.label} value={m.label}>
-              {m.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button
-          startIcon={<DownloadIcon />}
-          onClick={download}
-          disabled={!rows.length}>
-          Export CSV
-        </Button>
-      </Stack>
+      </FilterBar>
       <Box
         sx={{
           display: 'grid',
@@ -280,6 +316,7 @@ const Ledger = () => {
 const ToCollect = () => {
   const navigate = useNavigate();
   const [list, setList] = useState(null);
+  const [query, setQuery] = useSessionState('collect.query', '');
   useEffect(() => {
     axios
       .get(`${BASE_URL}/admin/encaissements/a-encaisser`)
@@ -288,14 +325,24 @@ const ToCollect = () => {
   }, []);
   if (!list) return <LinearProgress />;
   if (!list.length) return <Alert severity="success">Rien à encaisser.</Alert>;
+  const shown = list.filter((s) => matchesWords([s.name, s.parent], query));
   return (
     <Stack spacing={1}>
+      <FilterBar
+        sx={{ mb: 0.5 }}
+        search={{
+          label: 'Rechercher une famille',
+          placeholder: 'Élève, parent, téléphone…',
+          value: query,
+          onChange: setQuery,
+        }}
+      />
       <Typography variant="body2">
         {list.length} famille{list.length > 1 ? 's' : ''} ·{' '}
         {euro(list.reduce((n, s) => n + s.owed, 0))} à encaisser. Envoyez le
         lien AssoConnect, puis enregistrez le paiement sur la fiche de l'élève.
       </Typography>
-      {list.map((s) => (
+      {shown.map((s) => (
         <Paper
           key={s.id}
           variant="outlined"
@@ -339,6 +386,7 @@ const ToCollect = () => {
 
 const Deposits = () => {
   const [list, setList] = useState(null);
+  const [query, setQuery] = useSessionState('deposits.query', '');
   const load = useCallback(() => {
     axios
       .get(`${BASE_URL}/admin/encaissements/cautions`)
@@ -364,15 +412,25 @@ const Deposits = () => {
       <Alert severity="info">Aucune caution enregistrée cette année.</Alert>
     );
   const held = list.filter((d) => d.status === 'reçue');
+  const shown = list.filter((d) => matchesWords([d.student], query));
   return (
     <Stack spacing={1}>
+      <FilterBar
+        sx={{ mb: 0.5 }}
+        search={{
+          label: 'Rechercher un élève',
+          placeholder: 'Prénom, nom…',
+          value: query,
+          onChange: setQuery,
+        }}
+      />
       <Typography variant="body2">
         {held.length} caution{held.length > 1 ? 's' : ''} détenue
         {held.length > 1 ? 's' : ''} ·{' '}
         {euro(held.reduce((n, d) => n + d.amount, 0))}. En fin d'année : «
         Rendue », ou « Encaissée » si elle est gardée.
       </Typography>
-      {list.map((d) => (
+      {shown.map((d) => (
         <Paper key={d.id} variant="outlined" sx={{ p: 1.5 }}>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
