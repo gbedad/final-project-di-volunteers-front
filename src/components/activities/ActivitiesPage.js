@@ -86,6 +86,10 @@ const ActivityCard = ({ a, onOpen }) => {
             useFlexGap
             sx={{ mb: 1 }}>
             <Chip size="small" color={st.color} label={st.label} />
+            {/* Someone else's outing: read only */}
+            {a.can_edit === false && (
+              <Chip size="small" variant="outlined" label="Consultation" />
+            )}
             {a.kind && <Chip size="small" variant="outlined" label={a.kind} />}
             {a.program && (
               <Chip
@@ -116,20 +120,18 @@ const ActivityCard = ({ a, onOpen }) => {
           {a.owner && (
             <Typography variant="body2" color="text.secondary" noWrap>
               Responsable : {a.owner}
-              {a.can_edit === false ? ' · consultation' : ''}
             </Typography>
           )}
-          <Stack direction="row" spacing={2} sx={{ mt: 1.5 }}>
-            <Typography variant="body2">
-              <b>{a.registered}</b>
-              {a.places ? ` / ${a.places}` : ''} inscrit
-              {a.registered > 1 ? 's' : ''}
-              {a.waiting ? ` · ${a.waiting} en attente` : ''}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {Number(a.fee) > 0 ? euros(a.fee) : NO_FEE}
-            </Typography>
-          </Stack>
+          <Typography variant="body2" sx={{ mt: 1.5 }}>
+            <b>{a.registered}</b>
+            {a.places ? ` / ${a.places}` : ''} inscrit
+            {a.registered > 1 ? 's' : ''}
+            {a.waiting ? ` · ${a.waiting} en attente` : ''}
+          </Typography>
+          {/* Its own line: "Cotisation annuelle à jour" is long */}
+          <Typography variant="body2" color="text.secondary">
+            {Number(a.fee) > 0 ? `Participation ${euros(a.fee)}` : NO_FEE}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
