@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   Chip,
+  Collapse,
   Divider,
   Link,
   Paper,
@@ -52,6 +53,9 @@ import {
 import DashboardToolbar from './admin/DashboardToolbar';
 import { frFR } from '@mui/x-data-grid';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import TuneIcon from '@mui/icons-material/Tune';
+import SearchField from './SearchField';
+import { matchesWords } from '../js/textSearch';
 import { isManager } from '../js/roles';
 import TimeInput from './TimeInput';
 
@@ -96,12 +100,8 @@ const dayLabels = existingDays.map((d) => d.label);
 //   };
 // }
 
-// Grid texts in French; the quick search is about names and e-mails, not
-// the tutor search above
-const GRID_LOCALE = {
-  ...frFR.components.MuiDataGrid.defaultProps.localeText,
-  toolbarQuickFilterPlaceholder: 'Rechercher un nom, un e-mail…',
-};
+// Grid texts in French (the search by name is above the table)
+const GRID_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 // Former volunteers, hidden unless their chip is chosen
 const ARCHIVED = 'Archivé';
@@ -234,11 +234,26 @@ export default function DataGridDemo(props) {
   );
   const [sortModel, setSortModel] = useSessionState('dashboard.sort', []);
   const [showDemo, setShowDemo] = useSessionState('dashboard.demo', true);
-  // Column filters and the quick search of the toolbar
+  // Name, e-mail or phone; the other criteria are folded below it
+  const [query, setQuery] = useSessionState('dashboard.query', '');
+  const [criteriaOpen, setCriteriaOpen] = useSessionState(
+    'dashboard.criteriaOpen',
+    false
+  );
+  // Column filters of the table
   const [gridFilterModel, setGridFilterModel] = useSessionState(
     'dashboard.gridFilter',
     { items: [] }
   );
+  // The search of the table's toolbar (before it moved above): kept
+  useEffect(() => {
+    const words = gridFilterModel.quickFilterValues || [];
+    if (!words.length) return;
+    setQuery((q) => q || words.join(' '));
+    setGridFilterModel((m) => ({ ...m, quickFilterValues: [] }));
+    // once, on opening
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [paginationModel, setPaginationModel] = useSessionState(
     'dashboard.page',
     { page: 0, pageSize: 30 }
@@ -700,7 +715,11 @@ export default function DataGridDemo(props) {
         timeFrom,
         timeTo,
         cohort: selectedCohort,
-      }).filter((u) => showDemo || !u.is_demo),
+      }).filter(
+        (u) =>
+          (showDemo || !u.is_demo) &&
+          matchesWords([u.first_name, u.last_name, u.email, u.phone], query)
+      ),
     // cleanedArray is rebuilt from users on every render
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -713,6 +732,7 @@ export default function DataGridDemo(props) {
       timeTo,
       selectedCohort,
       showDemo,
+      query,
     ]
   );
   const demoCount = (users || []).filter((u) => u.is_demo).length;
@@ -755,8 +775,14 @@ export default function DataGridDemo(props) {
           ),
     [searched, current, statusFilter]
   );
+  // Folded criteria in use: counted on their button
+  const criteriaCount =
+    [subject, levelFrom || levelTo, timeFrom || timeTo, selectedCohort].filter(
+      Boolean
+    ).length + (days.length > 0 ? 1 : 0);
   const hasFilters =
     [
+      query.trim(),
       subject,
       levelFrom,
       levelTo,
@@ -790,6 +816,7 @@ export default function DataGridDemo(props) {
     gridFilterModel.items.length > 0 ||
     (gridFilterModel.quickFilterValues || []).length > 0;
   const details = [
+    query.trim() && `« ${query.trim()} »`,
     teach && `${plural ? 'enseignent' : 'enseigne'} ${teach}`,
     when && `${plural ? 'disponibles' : 'disponible'} ${when}`,
     selectedCohort && `cohorte ${selectedCohort}`,
@@ -815,6 +842,7 @@ export default function DataGridDemo(props) {
   );
 
   const resetFilters = () => {
+    setQuery('');
     setSubject(null);
     setLevelFrom(null);
     setLevelTo(null);
@@ -1132,121 +1160,141 @@ export default function DataGridDemo(props) {
         )}
       </Stack>
 
-      {/* Search on what the volunteers can teach and when they are free */}
-      <Paper variant="outlined" sx={{ p: 2, mb: 1 }}>
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
-          <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>
-            Rechercher un tuteur
-          </Typography>
-          <Tooltip title={<SearchHelp />} arrow placement="right">
-            <HelpOutlineIcon fontSize="small" color="action" />
-          </Tooltip>
-        </Stack>
-        <Stack direction="row" flexWrap="wrap" gap={3} alignItems="flex-end">
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Que peut-il enseigner ?
+      {/* Search: the name first, as on every list; what the volunteers can
+          teach and when they are free, folded below */}
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        gap={1.5}
+        alignItems="center"
+        sx={{ mb: 1 }}>
+        <SearchField
+          label="Rechercher un bénévole"
+          placeholder="Nom, e-mail, téléphone…"
+          value={query}
+          onChange={setQuery}
+        />
+        <Button
+          variant={criteriaOpen ? 'contained' : 'outlined'}
+          disableElevation
+          startIcon={<TuneIcon />}
+          onClick={() => setCriteriaOpen(!criteriaOpen)}
+          aria-expanded={criteriaOpen}>
+          Plus de critères{criteriaCount ? ` (${criteriaCount})` : ''}
+        </Button>
+        <Button onClick={resetFilters} disabled={!hasFilters}>
+          Réinitialiser
+        </Button>
+      </Stack>
+      <Collapse in={criteriaOpen}>
+        <Paper variant="outlined" sx={{ p: 2, mb: 1 }}>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
+            <Typography variant="subtitle2">
+              Trouver un tuteur pour un élève
             </Typography>
-            <Stack direction="row" spacing={1}>
-              {/* What: subject and level range, in the same topic */}
+            <Tooltip title={<SearchHelp />} arrow placement="right">
+              <HelpOutlineIcon fontSize="small" color="action" />
+            </Tooltip>
+          </Stack>
+          <Stack direction="row" flexWrap="wrap" gap={3} alignItems="flex-end">
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Que peut-il enseigner ?
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={1}>
+                {/* What: subject and level range, in the same topic */}
+                <Autocomplete
+                  value={subject}
+                  onChange={(event, value) => setSubject(value)}
+                  options={subjects.map((o) => o.label)}
+                  sx={{ width: 210 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Matière" size="small" />
+                  )}
+                />
+                <Autocomplete
+                  value={levelFrom}
+                  onChange={(event, value) => {
+                    setLevelFrom(value);
+                    if (value && levelTo && LEVELS.indexOf(levelTo) < LEVELS.indexOf(value))
+                      setLevelTo(value);
+                  }}
+                  options={LEVELS}
+                  sx={{ width: 130 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Niveau de" size="small" />
+                  )}
+                />
+                <Autocomplete
+                  value={levelTo}
+                  onChange={(event, value) => setLevelTo(value)}
+                  options={
+                    levelFrom ? LEVELS.slice(LEVELS.indexOf(levelFrom)) : LEVELS
+                  }
+                  sx={{ width: 130 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Niveau à" size="small" />
+                  )}
+                />
+              </Stack>
+            </Box>
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Quand est-il disponible ?
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={1}>
+                {/* When: days and time window, in the same availability slot */}
+                <Autocomplete
+                  multiple
+                  value={days}
+                  onChange={(event, value) => setDays(value)}
+                  options={dayLabels}
+                  // Short text instead of chips: the field keeps its height
+                  renderTags={(value) => (
+                    <Typography noWrap sx={{ pl: 1, maxWidth: 120 }}>
+                      {value.map((d) => d.slice(0, 3)).join(', ')}
+                    </Typography>
+                  )}
+                  sx={{ width: 200 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Jours" size="small" />
+                  )}
+                />
+                <TimeInput
+                  label="Heure de"
+                  value={timeFrom}
+                  onChange={(value) => {
+                    setTimeFrom(value || null);
+                    if (value && timeTo && timeTo <= value) setTimeTo(null);
+                  }}
+                  sx={{ width: 130 }}
+                />
+                <TimeInput
+                  label="Heure à"
+                  value={timeTo}
+                  after={timeFrom}
+                  onChange={(value) => setTimeTo(value || null)}
+                  sx={{ width: 130 }}
+                />
+              </Stack>
+            </Box>
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Cohorte
+              </Typography>
               <Autocomplete
-                value={subject}
-                onChange={(event, value) => setSubject(value)}
-                options={subjects.map((o) => o.label)}
-                sx={{ width: 210 }}
+                value={selectedCohort}
+                onChange={(event, newValue) => setSelectedCohort(newValue)}
+                options={cohortOptions}
+                sx={{ width: 150 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Matière" size="small" />
+                  <TextField {...params} label="Année" size="small" />
                 )}
               />
-              <Autocomplete
-                value={levelFrom}
-                onChange={(event, value) => {
-                  setLevelFrom(value);
-                  if (value && levelTo && LEVELS.indexOf(levelTo) < LEVELS.indexOf(value))
-                    setLevelTo(value);
-                }}
-                options={LEVELS}
-                sx={{ width: 130 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Niveau de" size="small" />
-                )}
-              />
-              <Autocomplete
-                value={levelTo}
-                onChange={(event, value) => setLevelTo(value)}
-                options={
-                  levelFrom ? LEVELS.slice(LEVELS.indexOf(levelFrom)) : LEVELS
-                }
-                sx={{ width: 130 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Niveau à" size="small" />
-                )}
-              />
-            </Stack>
-          </Box>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Quand est-il disponible ?
-            </Typography>
-            <Stack direction="row" spacing={1}>
-              {/* When: days and time window, in the same availability slot */}
-              <Autocomplete
-                multiple
-                value={days}
-                onChange={(event, value) => setDays(value)}
-                options={dayLabels}
-                // Short text instead of chips: the field keeps its height
-                renderTags={(value) => (
-                  <Typography noWrap sx={{ pl: 1, maxWidth: 120 }}>
-                    {value.map((d) => d.slice(0, 3)).join(', ')}
-                  </Typography>
-                )}
-                sx={{ width: 200 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Jours" size="small" />
-                )}
-              />
-              <TimeInput
-                label="Heure de"
-                value={timeFrom}
-                onChange={(value) => {
-                  setTimeFrom(value || null);
-                  if (value && timeTo && timeTo <= value) setTimeTo(null);
-                }}
-                sx={{ width: 130 }}
-              />
-              <TimeInput
-                label="Heure à"
-                value={timeTo}
-                after={timeFrom}
-                onChange={(value) => setTimeTo(value || null)}
-                sx={{ width: 130 }}
-              />
-            </Stack>
-          </Box>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Cohorte
-            </Typography>
-            <Autocomplete
-              value={selectedCohort}
-              onChange={(event, newValue) => setSelectedCohort(newValue)}
-              options={cohortOptions}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Année" size="small" />
-              )}
-            />
-          </Box>
-          <Button
-            variant="outlined"
-            onClick={resetFilters}
-            disabled={!hasFilters}
-            sx={{ ml: 'auto' }}>
-            Réinitialiser
-          </Button>
-        </Stack>
-      </Paper>
+            </Box>
+          </Stack>
+        </Paper>
+      </Collapse>
       {/* Always one line, so the page doesn't move when searching */}
       <Typography
         variant="body2"

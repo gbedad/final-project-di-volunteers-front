@@ -5,12 +5,12 @@ import {
   GridToolbarDensitySelector,
   GridToolbarExportContainer,
   GridToolbarFilterButton,
-  GridToolbarQuickFilter,
   GridCsvExportMenuItem,
 } from '@mui/x-data-grid';
 
 // Toolbar of the dashboard grid (texts in French through the grid's
-// localeText). No "Add record": the rows it added were never saved.
+// localeText); the search by name is above the table. No "Add record": the
+// rows it added were never saved.
 const DashboardToolbar = () => (
   <GridToolbarContainer>
     <GridToolbarColumnsButton />
@@ -26,7 +26,6 @@ const DashboardToolbar = () => (
         }}
       />
     </GridToolbarExportContainer>
-    <GridToolbarQuickFilter sx={{ width: 260 }} />
   </GridToolbarContainer>
 );
 
