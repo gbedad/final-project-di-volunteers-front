@@ -34,7 +34,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 // import Link from '@mui/material/Link';
 
 import logo from '../../assets/mycogniverse3.gif';
-import { isStaff, isManager, isCulture } from '../../js/roles';
+import { isStaff, isManager, isCulture, isCultureOnly } from '../../js/roles';
 import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import RuleIcon from '@mui/icons-material/Rule';
@@ -766,7 +766,7 @@ function ResponsiveAppBar() {
                         Déconnexion
                       </MenuItem>
                     </div>
-                  ) : userLogged.user.role === 'culture' ? (
+                  ) : isCultureOnly(userLogged.user.role) ? (
                     <div>
                       <MenuItem
                         onClick={handleActivities}

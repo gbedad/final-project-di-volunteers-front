@@ -29,7 +29,7 @@ import { AuthContext } from '../AuthContext';
 import PasswordInput from './PasswordInput';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
-import { isManager, isStaff } from '../js/roles';
+import { isManager, isStaff, isCultureOnly } from '../js/roles';
 import { refreshSession } from '../js/auth';
 
 function Copyright(props) {
@@ -121,7 +121,7 @@ export default function SignIn() {
         } catch {}
       }
       // People in charge of the outings: their only page
-      if (saved?.token && saved?.user?.role === 'culture') {
+      if (saved?.token && isCultureOnly(saved?.user?.role)) {
         try {
           await axios.get(`${BASE_URL}/check-token`);
           navigate('/activites', { replace: true, state: { userLogged: saved } });
@@ -237,7 +237,7 @@ export default function SignIn() {
           } else {
             navigate('/view-users', { state: { userLogged } });
           }
-        } else if (userLogged.user.role === 'culture') {
+        } else if (isCultureOnly(userLogged.user.role)) {
           navigate('/activites', { state: { userLogged } });
         } else {
           console.log('Loading.....');

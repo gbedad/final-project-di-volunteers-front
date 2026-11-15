@@ -37,15 +37,15 @@ const currentUser = () => {
 // Roles the current user may give to a newly invited member
 const invitableRoles = (myRole) =>
   myRole === 'superadmin'
-    ? ['interviewer', 'culture', 'admin', 'superadmin']
+    ? ['interviewer', 'culture', 'superculture', 'admin', 'superadmin']
     : myRole === 'admin'
-      ? ['interviewer', 'culture']
+      ? ['interviewer', 'culture', 'superculture']
       : [];
 
 // Roles the current user may give, depending on the target's current role
 const assignableRoles = (myRole, targetRole) => {
   if (myRole === 'superadmin') return Object.keys(ROLE_LABELS);
-  const forAdmins = ['volunteer', 'interviewer', 'culture'];
+  const forAdmins = ['volunteer', 'interviewer', 'culture', 'superculture'];
   if (myRole === 'admin' && forAdmins.includes(targetRole)) {
     return forAdmins;
   }

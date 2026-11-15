@@ -35,7 +35,7 @@ import RegistrationDialog from './RegistrationDialog';
 import { BudgetPanel } from './Expenses';
 import ImageIcon from '@mui/icons-material/Image';
 import { LEVELS } from '../../js/volunteerSearch';
-import { isCulture, isManager } from '../../js/roles';
+import { isCulture, isManager, ROLE_LABELS } from '../../js/roles';
 import {
   CONSENT_STATES,
   ACTIVITY_STATUSES,
@@ -217,6 +217,50 @@ const TutoringNotice = ({ r, canTell, onChanged }) => {
         </Button>
       )}
     </Stack>
+  );
+};
+
+// Who is in charge of the outing; changed by "superculture" and the admins
+const OwnerLine = ({ a, onChanged }) => {
+  const [people, setPeople] = useState(null);
+  useEffect(() => {
+    if (!a.can_change_owner) return;
+    axios
+      .get(`${BASE_URL}/admin/activites-responsables`)
+      .then(({ data }) => setPeople(data))
+      .catch(() => setPeople([]));
+  }, [a.can_change_owner]);
+  const change = async (ownerId) => {
+    try {
+      await axios.patch(`${BASE_URL}/admin/activites/${a.id}`, {
+        owner_id: ownerId,
+      });
+      toast.success('Responsable changé', { position: 'bottom-left' });
+      onChanged();
+    } catch (err) {
+      toastError(err, "Le responsable n'a pas pu être changé");
+    }
+  };
+  if (!a.can_change_owner || !people?.length)
+    return (
+      <Typography variant="body2" color="text.secondary">
+        Responsable : {a.owner || '—'}
+      </Typography>
+    );
+  return (
+    <TextField
+      select
+      size="small"
+      label="Responsable de la sortie"
+      value={people.some((p) => p.id === a.owner_id) ? a.owner_id : ''}
+      onChange={(e) => change(e.target.value)}
+      sx={{ mt: 1.5, minWidth: 240, maxWidth: '100%' }}>
+      {people.map((p) => (
+        <MenuItem key={p.id} value={p.id}>
+          {p.first_name} {p.last_name} · {ROLE_LABELS[p.role] || p.role}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 };
 
@@ -1044,7 +1088,7 @@ const ActivityPage = () => {
         return null;
       }
     })();
-  const canEdit = isCulture(userLogged?.user?.role);
+  const cultureRole = isCulture(userLogged?.user?.role);
   const canTell = isManager(userLogged?.user?.role);
   const [a, setA] = useState(null);
   const [error, setError] = useState(false);
@@ -1076,6 +1120,8 @@ const ActivityPage = () => {
     );
   }
   if (!a) return <LinearProgress sx={{ mt: 4 }} />;
+  // "culture": only the outings it is in charge of; the others, read only
+  const canEdit = cultureRole && a.can_edit !== false;
   const st = ACTIVITY_STATUSES[a.shown_status] || ACTIVITY_STATUSES.brouillon;
   const registered = a.registrations.filter(
     (r) => r.status === 'inscrit'
@@ -1108,6 +1154,13 @@ const ActivityPage = () => {
         {hours(a) ? ` · ${hours(a)}` : ''}
         {a.place ? ` · ${a.place}` : ''}
       </Typography>
+      <OwnerLine a={a} onChanged={load} />
+      {cultureRole && !canEdit && (
+        <Alert severity="info" sx={{ mt: 1.5 }}>
+          Sortie gérée par {a.owner || 'un autre responsable'} : vous pouvez la
+          consulter, pas la modifier.
+        </Alert>
+      )}
       <Stack
         direction="row"
         spacing={1}

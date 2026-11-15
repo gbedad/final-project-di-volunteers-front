@@ -112,6 +112,12 @@ const ActivityCard = ({ a, onOpen }) => {
               {a.place}
             </Typography>
           )}
+          {a.owner && (
+            <Typography variant="body2" color="text.secondary" noWrap>
+              Responsable : {a.owner}
+              {a.can_edit === false ? ' · consultation' : ''}
+            </Typography>
+          )}
           <Stack direction="row" spacing={2} sx={{ mt: 1.5 }}>
             <Typography variant="body2">
               <b>{a.registered}</b>
