@@ -581,17 +581,25 @@ const RegistrationsTab = ({ a, canEdit, canTell, reload }) => {
       toastError(err, "L'inscription n'a pas pu être enregistrée");
     }
   };
+  // Choosing a name only selects the student: the registration is the
+  // "Inscrire" button
+  const [adding, setAdding] = useState(false);
   const add = async (student) => {
-    if (!student) return;
-    let found = [];
+    if (!student || adding) return;
+    setAdding(true);
     try {
-      ({ data: found } = await axios.get(
-        `${BASE_URL}/admin/activites/${a.id}/conflits`,
-        { params: { student_id: student.id } }
-      ));
-    } catch {}
-    if (found.length) setClash({ student, found });
-    else save(student, false);
+      let found = [];
+      try {
+        ({ data: found } = await axios.get(
+          `${BASE_URL}/admin/activites/${a.id}/conflits`,
+          { params: { student_id: student.id } }
+        ));
+      } catch {}
+      if (found.length) setClash({ student, found });
+      else await save(student, false);
+    } finally {
+      setAdding(false);
+    }
   };
   const registered = a.registrations.filter((r) => r.status === 'inscrit');
   const waiting = a.registrations.filter((r) => r.status === 'attente');
@@ -601,24 +609,36 @@ const RegistrationsTab = ({ a, canEdit, canTell, reload }) => {
   return (
     <Stack spacing={2}>
       {canEdit && (
-        <Autocomplete
-          size="small"
-          options={options}
-          groupBy={(o) => o.group}
-          value={picked}
-          onChange={(e, v) => add(v)}
-          getOptionLabel={(s) =>
-            `${s.first_name} ${s.last_name || ''} · ${s.level || 'niveau ?'}`
-          }
-          isOptionEqualToValue={(o, v) => o.id === v.id}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Inscrire un élève"
-              placeholder="Prénom ou nom"
-            />
-          )}
-        />
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          alignItems={{ sm: 'center' }}>
+          <Autocomplete
+            size="small"
+            options={options}
+            groupBy={(o) => o.group}
+            value={picked}
+            onChange={(e, v) => setPicked(v)}
+            getOptionLabel={(s) =>
+              `${s.first_name} ${s.last_name || ''} · ${s.level || 'niveau ?'}`
+            }
+            isOptionEqualToValue={(o, v) => o.id === v.id}
+            sx={{ flex: 1 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Élève à inscrire"
+                placeholder="Prénom ou nom"
+              />
+            )}
+          />
+          <Button
+            variant="contained"
+            disabled={!picked || adding}
+            onClick={() => add(picked)}>
+            {placeFree ? 'Inscrire' : "Mettre en liste d'attente"}
+          </Button>
+        </Stack>
       )}
       {canEdit && (
         <Button
