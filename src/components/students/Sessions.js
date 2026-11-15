@@ -388,7 +388,9 @@ export const SessionList = ({
   onEdit,
   limit,
 }) => {
-  const shown = limit ? sessions.slice(0, limit) : sessions;
+  // "Voir tout": the older reports too (to complete or correct them)
+  const [all, setAll] = useState(false);
+  const shown = limit && !all ? sessions.slice(0, limit) : sessions;
   if (!sessions.length) {
     return (
       <Typography variant="body2" color="text.secondary">
@@ -502,9 +504,16 @@ export const SessionList = ({
         </Stack>
       ))}
       {limit && sessions.length > limit && (
-        <Typography variant="caption" color="text.secondary">
-          … et {sessions.length - limit} plus ancien(s)
-        </Typography>
+        <Button
+          size="small"
+          sx={{ alignSelf: 'flex-start' }}
+          onClick={() => setAll(!all)}>
+          {all
+            ? 'Voir moins'
+            : `Voir tout (${sessions.length - limit} plus ancien${
+                sessions.length - limit > 1 ? 's' : ''
+              })`}
+        </Button>
       )}
     </Stack>
   );
