@@ -112,6 +112,8 @@ const matchesText = (r, q) => {
   return words.every((w) => text.includes(w));
 };
 
+// Badge of an exceptional session
+const EXTRA_SHORT = { supplementaire: 'Suppl.', remplacement: 'Rempl.' };
 const fullName = (p) => (p ? `${p.first_name} ${p.last_name}` : '—');
 const dateLabel = (s) =>
   new Date(`${s}T12:00:00Z`).toLocaleDateString('fr-FR', {
@@ -271,13 +273,15 @@ const SessionsLog = () => {
     {
       field: 'slot',
       headerName: 'Créneau prévu',
-      width: 135,
-      // Exported with "(ancien créneau)"; shown with an icon
+      width: 165,
+      // Exported with "(ancien créneau)" or the exceptional session; shown
+      // with an icon or a badge
       valueGetter: ({ row }) =>
         (row.slot
           ? `${row.slot.startTime}–${row.slot.endTime}`
           : 'hors créneau') +
-        (row.slot_changed_since ? ' (ancien créneau)' : ''),
+        (row.extra ? ` (${EXTRA_SHORT[row.extra.kind]})` : '') +
+        (row.slot_changed_since && !row.extra ? ' (ancien créneau)' : ''),
       renderCell: ({ row }) => (
         <Stack direction="row" spacing={0.5} alignItems="center">
           <span>
@@ -285,7 +289,27 @@ const SessionsLog = () => {
               ? `${row.slot.startTime}–${row.slot.endTime}`
               : 'hors créneau'}
           </span>
-          {row.slot_changed_since && (
+          {row.extra && (
+            <Tooltip
+              title={[
+                row.extra.kind_label,
+                row.extra.replaces_date &&
+                  `à la place de la séance du ${new Date(
+                    `${row.extra.replaces_date}T12:00:00Z`
+                  ).toLocaleDateString('fr-FR')}`,
+                row.extra.note,
+              ]
+                .filter(Boolean)
+                .join(' · ')}>
+              <Chip
+                size="small"
+                color="secondary"
+                variant="outlined"
+                label={EXTRA_SHORT[row.extra.kind]}
+              />
+            </Tooltip>
+          )}
+          {row.slot_changed_since && !row.extra && (
             <Tooltip
               title={`Ancien créneau, en vigueur à cette date. Créneau actuel depuis le ${new Date(
                 `${row.slot_changed_since}T12:00:00Z`

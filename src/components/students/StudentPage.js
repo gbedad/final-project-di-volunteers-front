@@ -38,6 +38,7 @@ import StudentFees from './StudentFees';
 import StudentMembership from './StudentMembership';
 import FamilyConvention from './FamilyConvention';
 import StudentPayments from './StudentPayments';
+import StudentIncidents from './StudentIncidents';
 import AddressField from '../AddressField';
 import { useStudentAutoSave } from '../../js/useStudentAutoSave';
 import { isManager } from '../../js/roles';
@@ -397,6 +398,11 @@ const StudentPage = () => {
               canEdit={canEdit}
               onChanged={reloadStatus}
             />
+          </Block>
+          <Block
+            title="Incidents"
+            note="Retard de 15 minutes ou plus, absence non prévenue, comportement… Reportés dans Contrôles jusqu'à leur traitement.">
+            <StudentIncidents studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block
             title="Participation aux frais"

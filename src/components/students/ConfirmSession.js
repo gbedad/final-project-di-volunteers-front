@@ -3,10 +3,12 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   MenuItem,
   Stack,
   TextField,
@@ -56,6 +58,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
         date: date || today(),
         attendance: null,
         duration_minutes: '',
+        late: false,
         channel: 'appel_tuteur',
         reason: '',
         note: '',
@@ -148,6 +151,24 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
                 </MenuItem>
               ))}
             </TextField>
+          )}
+          {form.attendance === 'présent' && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={!!form.late}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, late: e.target.checked }))
+                  }
+                />
+              }
+              label={
+                <Typography variant="body2">
+                  L'élève est arrivé avec 15 minutes de retard ou plus
+                </Typography>
+              }
+            />
           )}
           {form.attendance === 'pas' && (
             <TextField

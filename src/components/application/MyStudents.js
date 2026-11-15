@@ -20,7 +20,13 @@ import {
 } from '@mui/material';
 
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { SessionDialog, SessionList, formatHours } from '../students/Sessions';
+import {
+  SessionDialog,
+  SessionList,
+  canEditReport,
+  formatHours,
+} from '../students/Sessions';
+import { ExtrasList } from '../students/ExtraSessions';
 import SignInCard from './SignInCard';
 import InstallApp from './InstallApp';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -60,6 +66,8 @@ const MyStudents = () => {
   const [declining, setDeclining] = useState(null);
   const [reason, setReason] = useState('');
   const [reporting, setReporting] = useState(null);
+  // A report the tutor comes back to: { pair, session }
+  const [editingReport, setEditingReport] = useState(null);
   // "Pas de séance" and "Le créneau a changé" (also from the e-mail link)
   const [noSession, setNoSession] = useState(null);
   const [slotFor, setSlotFor] = useState(null);
@@ -200,6 +208,7 @@ const MyStudents = () => {
               <Box sx={{ mt: 2 }}>
                 {pair.status !== 'terminé' && (
                   <Stack spacing={1} sx={{ mb: 1.5 }}>
+                    <ExtrasList extras={pair.extras} />
                     <BreaksList
                       breaks={pair.breaks}
                       deleteUrl={(id) => `${BASE_URL}/my/pas-de-seance/${id}`}
@@ -270,6 +279,10 @@ const MyStudents = () => {
                   canDelete={(session) =>
                     Date.now() - new Date(session.created_at) < 30 * DAY
                   }
+                  canEdit={(session) =>
+                    pair.status !== 'terminé' && canEditReport(session)
+                  }
+                  onEdit={(session) => setEditingReport({ pair, session })}
                   onDeleted={load}
                 />
                 {pair.status !== 'terminé' && (
@@ -310,6 +323,15 @@ const MyStudents = () => {
             setSlotFor(null);
             load();
           }}
+        />
+      )}
+      {editingReport && (
+        <SessionDialog
+          open
+          pair={editingReport.pair}
+          session={editingReport.session}
+          onClose={() => setEditingReport(null)}
+          onSaved={load}
         />
       )}
       {reporting && (

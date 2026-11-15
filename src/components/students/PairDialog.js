@@ -22,6 +22,7 @@ import {
 import { SessionList, formatHours } from './Sessions';
 import SlotsEditor from './SlotsEditor';
 import ConfirmSession from './ConfirmSession';
+import { ExtraSessionDialog, ExtrasList } from './ExtraSessions';
 import { isManager } from '../../js/roles';
 import { MODALITIES } from '../../js/studentOptions';
 import { BreaksList, NoSessionDialog } from '../application/PairChanges';
@@ -206,6 +207,9 @@ const PairDialog = ({
   const [applying, setApplying] = useState(false);
   const [breaks, setBreaks] = useState([]);
   const [noSession, setNoSession] = useState(false);
+  // Exceptional sessions (in addition, or instead of a regular one)
+  const [extras, setExtras] = useState([]);
+  const [addingExtra, setAddingExtra] = useState(false);
   const manager = isManager(currentRole());
   // Another pair opened (the student's page passes a new object each time:
   // only the id counts)
@@ -228,6 +232,10 @@ const PairDialog = ({
       .get(`${BASE_URL}/admin/binomes/${pairId}/pas-de-seance`)
       .then(({ data }) => setBreaks(data))
       .catch(() => setBreaks([]));
+    axios
+      .get(`${BASE_URL}/admin/binomes/${pairId}/exceptionnelles`)
+      .then(({ data }) => setExtras(data))
+      .catch(() => setExtras([]));
   }, [pairId]);
   const dismissRequest = async () => {
     try {
@@ -396,6 +404,11 @@ const PairDialog = ({
                       Pas de séance (prévenu)
                     </Button>
                   )}
+                  {['actif', 'en pause'].includes(pair.status) && (
+                    <Button size="small" onClick={() => setAddingExtra(true)}>
+                      Séance exceptionnelle
+                    </Button>
+                  )}
                 </Stack>
               )
             )}
@@ -404,6 +417,22 @@ const PairDialog = ({
                 Ce binôme continue pendant les vacances scolaires.
               </Typography>
             )}
+            <ExtrasList
+              extras={extras.filter(
+                (e) =>
+                  new Date(`${e.date}T12:00:00Z`) > Date.now() - 30 * 86400000
+              )}
+              cancelUrl={
+                manager
+                  ? (id) => `${BASE_URL}/admin/exceptionnelles/${id}`
+                  : null
+              }
+              firstName={pair.student?.first_name}
+              onChanged={() => {
+                load();
+                onChanged?.();
+              }}
+            />
             <BreaksList
               breaks={breaks}
               deleteUrl={(id) => `${BASE_URL}/admin/pas-de-seance/${id}`}
@@ -443,6 +472,16 @@ const PairDialog = ({
           }}
         />
       )}
+      <ExtraSessionDialog
+        open={addingExtra}
+        pair={pair}
+        breaks={breaks}
+        onClose={() => setAddingExtra(false)}
+        onSaved={() => {
+          load();
+          onChanged?.();
+        }}
+      />
       <ConfirmSession
         open={confirming}
         pair={pair}

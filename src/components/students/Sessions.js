@@ -19,6 +19,8 @@ import {
   Typography,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/EditOutlined';
+import { EXTRA_BADGES } from './ExtraSessions';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -91,31 +93,83 @@ const openSignature = async (id) => {
   }
 };
 
-export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
-  const [form, setForm] = useState({
-    date: today(),
-    duration_minutes: defaultDuration(pair),
-    // What was signed in today: an absence stays an absence
-    attendance: signedToday(pair)?.attendance || 'présent',
-    late: !!signedToday(pair)?.late,
-    work: '',
-    progress: 3,
-    remark: '',
-  });
+// The tutor may come back to a report this many days after the session
+export const EDIT_DAYS = 30;
+export const canEditReport = (s) =>
+  new Date(`${String(s.date).slice(0, 10)}T12:00:00Z`) >
+  Date.now() - EDIT_DAYS * 86400000;
+// A day that is not one of the pair's slot days (a session in addition?)
+const offSlotDay = (pair, date) =>
+  !!date &&
+  !(pair?.schedule || []).some(
+    (x) => x.day === DAYS_FR[new Date(`${date}T12:00:00Z`).getUTCDay()]
+  );
+
+// New report, or the tutor comes back to one (session: the report; the
+// date, the attendance and the duration stay as recorded)
+export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
+  const [form, setForm] = useState(
+    session
+      ? {
+          date: String(session.date).slice(0, 10),
+          duration_minutes: session.duration_minutes || '',
+          attendance: session.attendance,
+          late: !!session.late,
+          work: session.work || '',
+          progress: session.progress || 3,
+          remark: session.remark || '',
+        }
+      : {
+          date: today(),
+          duration_minutes: defaultDuration(pair),
+          // What was signed in today: an absence stays an absence
+          attendance: signedToday(pair)?.attendance || 'présent',
+          late: !!signedToday(pair)?.late,
+          work: '',
+          progress: 3,
+          remark: '',
+          // A session in addition to the slot, held that day
+          extra: false,
+          start_time: '',
+          end_time: '',
+        }
+  );
   const [saving, setSaving] = useState(false);
   const set = (field, value) => setForm((f) => ({ ...f, [field]: value }));
   const held = form.attendance === 'présent';
+  const editing = !!session;
+  // Not when the association already set an exceptional session that day
+  const askExtra =
+    !editing &&
+    offSlotDay(pair, form.date) &&
+    !(pair?.extras || []).some((e) => e.date === form.date);
+  const extra = askExtra && form.extra;
 
   const save = async () => {
     setSaving(true);
     try {
-      await axios.post(`${BASE_URL}/my/binomes/${pair.id}/seances`, {
-        ...form,
-        progress: held ? form.progress : null,
-      });
-      toast.success('Compte-rendu enregistré, merci !', {
-        position: 'top-center',
-      });
+      if (editing) {
+        await axios.patch(`${BASE_URL}/my/seances/${session.id}`, {
+          work: form.work,
+          remark: form.remark,
+          late: held && form.late,
+          progress: held ? form.progress : null,
+        });
+      } else {
+        const { extra: _, start_time, end_time, ...rest } = form;
+        await axios.post(`${BASE_URL}/my/binomes/${pair.id}/seances`, {
+          ...rest,
+          ...(extra && {
+            extra: { start_time, end_time },
+            duration_minutes: null,
+          }),
+          progress: held ? form.progress : null,
+        });
+      }
+      toast.success(
+        editing ? 'Compte-rendu modifié.' : 'Compte-rendu enregistré, merci !',
+        { position: 'top-center' }
+      );
       onSaved();
       onClose();
     } catch (err) {
@@ -134,7 +188,8 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>
-        Compte-rendu · {pair?.student?.first_name} {pair?.student?.initial}
+        {editing ? 'Modifier le compte-rendu' : 'Compte-rendu'} ·{' '}
+        {pair?.student?.first_name} {pair?.student?.initial}
       </DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
@@ -146,6 +201,7 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
               InputLabelProps={{ shrink: true }}
               inputProps={{ max: today() }}
               value={form.date}
+              disabled={editing}
               onChange={(e) => set('date', e.target.value)}
               sx={{ flex: 1, minWidth: 170 }}
             />
@@ -153,6 +209,7 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
               select
               size="small"
               label="La séance"
+              disabled={editing}
               value={form.attendance}
               onChange={(e) => set('attendance', e.target.value)}
               sx={{ flex: 1, minWidth: 180 }}>
@@ -162,11 +219,12 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
                 </MenuItem>
               ))}
             </TextField>
-            {held && (
+            {held && !extra && (
               <TextField
                 select
                 size="small"
                 label="Durée"
+                disabled={editing}
                 value={form.duration_minutes}
                 onChange={(e) => set('duration_minutes', e.target.value)}
                 sx={{ width: 120 }}>
@@ -180,6 +238,48 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
               </TextField>
             )}
           </Stack>
+          {askExtra && (
+            <Stack spacing={1}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={!!form.extra}
+                    onChange={(e) => set('extra', e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    Séance supplémentaire, en plus du créneau habituel
+                  </Typography>
+                }
+              />
+              {form.extra && (
+                <Stack direction="row" spacing={1}>
+                  <TextField
+                    size="small"
+                    type="time"
+                    label="Début"
+                    value={form.start_time}
+                    onChange={(e) => set('start_time', e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ step: 300 }}
+                    sx={{ flex: 1 }}
+                  />
+                  <TextField
+                    size="small"
+                    type="time"
+                    label="Fin"
+                    value={form.end_time}
+                    onChange={(e) => set('end_time', e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ step: 300 }}
+                    sx={{ flex: 1 }}
+                  />
+                </Stack>
+              )}
+            </Stack>
+          )}
           {held && (
             <>
               <FormControlLabel
@@ -231,8 +331,9 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
             onChange={(e) => set('remark', e.target.value)}
           />
           <Typography variant="caption" color="text.secondary">
-            Vous pouvez écrire un compte-rendu après chaque séance, ou un seul
-            par mois qui résume la période.
+            {editing
+              ? `Vous pouvez revenir sur un compte-rendu pendant ${EDIT_DAYS} jours après la séance. La date, la présence et la durée ne changent pas : demandez à l'association si elles sont fausses.`
+              : 'Vous pouvez écrire un compte-rendu après chaque séance, ou un seul par mois qui résume la période.'}
           </Typography>
         </Stack>
       </DialogContent>
@@ -240,7 +341,9 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
         <Button onClick={onClose}>Annuler</Button>
         <Button
           variant="contained"
-          disabled={saving || !form.date}
+          disabled={
+            saving || !form.date || (extra && (!form.start_time || !form.end_time))
+          }
           onClick={save}>
           Enregistrer
         </Button>
@@ -250,7 +353,15 @@ export const SessionDialog = ({ open, pair, onClose, onSaved }) => {
 };
 
 // Reports of a pair, newest first; canDelete(session) decides the bin
-export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
+// canEdit(session) shows the pencil, onEdit(session) opens the report
+export const SessionList = ({
+  sessions,
+  canDelete,
+  onDeleted,
+  canEdit,
+  onEdit,
+  limit,
+}) => {
   const shown = limit ? sessions.slice(0, limit) : sessions;
   if (!sessions.length) {
     return (
@@ -318,6 +429,14 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
               {s.late && (
                 <Chip size="small" color="warning" variant="outlined" label="Retard" />
               )}
+              {s.extra_kind && (
+                <Chip
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                  label={EXTRA_BADGES[s.extra_kind] || s.extra_kind}
+                />
+              )}
               {s.duration_minutes && (
                 <Typography variant="caption" color="text.secondary">
                   {durationLabel(s.duration_minutes)}
@@ -338,6 +457,14 @@ export const SessionList = ({ sessions, canDelete, onDeleted, limit }) => {
               </Typography>
             )}
           </Stack>
+          {canEdit?.(s) && (
+            <IconButton
+              size="small"
+              aria-label="Modifier le compte-rendu"
+              onClick={() => onEdit(s)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          )}
           {canDelete?.(s) && (
             <IconButton
               size="small"

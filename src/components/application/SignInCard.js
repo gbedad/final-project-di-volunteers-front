@@ -228,16 +228,29 @@ const minutesOf = (hhmm) => {
 // End of the session, in one go: was the student there (on time, late or
 // absent), the student's signature, then the report. Date and time are set
 // by the server; lateness is what the tutor says (Charte: 15 min or more).
+// Exceptional session of today, set by the association
+const extraToday = (pair) =>
+  (pair.extras || []).find((e) => e.date === today()) || null;
+
 const SignInCard = ({ pairs, onChanged }) => {
   const [busy, setBusy] = useState(null);
-  const active = pairs.filter((p) => p.status === 'actif' && needsSignIn(p));
+  // On site today: the pair's place, or that of today's exceptional session
+  const active = pairs.filter(
+    (p) =>
+      p.status === 'actif' &&
+      (extraToday(p) ? !extraToday(p).remote : needsSignIn(p))
+  );
   if (!active.length) return null;
   const day = DAYS_FR[new Date().getDay()];
-  // Students with a slot today first
+  const slotToday = (pair) => {
+    const extra = extraToday(pair);
+    return extra
+      ? { startTime: extra.start_time, endTime: extra.end_time, extra }
+      : (pair.schedule || []).find((s) => s.day === day) || null;
+  };
+  // Students with a session today first
   const sorted = [...active].sort(
-    (a, b) =>
-      Number((b.schedule || []).some((s) => s.day === day)) -
-      Number((a.schedule || []).some((s) => s.day === day))
+    (a, b) => Number(!!slotToday(b)) - Number(!!slotToday(a))
   );
 
   const signIn = async (pair, attendance, late = false) => {
@@ -280,7 +293,7 @@ const SignInCard = ({ pairs, onChanged }) => {
           const done = (pair.sessions || []).find(
             (s) => String(s.date).slice(0, 10) === today()
           );
-          const slot = (pair.schedule || []).find((s) => s.day === day);
+          const slot = slotToday(pair);
           // Before the planned end: a reminder, never blocking
           const early =
             !done && slot && nowMinutes() < minutesOf(slot.endTime) - 10;
@@ -293,7 +306,9 @@ const SignInCard = ({ pairs, onChanged }) => {
                   variant="body2"
                   color="text.secondary">
                   {slot
-                    ? ` · aujourd'hui ${slot.startTime}–${slot.endTime}`
+                    ? ` · aujourd'hui ${slot.startTime}–${slot.endTime}${
+                        slot.extra ? ' (séance exceptionnelle)' : ''
+                      }`
                     : ''}
                 </Typography>
               </Typography>
