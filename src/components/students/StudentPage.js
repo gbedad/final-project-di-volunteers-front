@@ -401,7 +401,7 @@ const StudentPage = () => {
           </Block>
           <Block
             title="Incidents"
-            note="Retard de 15 minutes ou plus, absence non prévenue, comportement… Reportés dans Contrôles jusqu'à leur traitement.">
+            note="Retard de 15 minutes ou plus, absence non prévenue, comportement… Reportés dans À traiter jusqu'à leur traitement.">
             <StudentIncidents studentId={student.id} canEdit={canEdit} />
           </Block>
           <Block

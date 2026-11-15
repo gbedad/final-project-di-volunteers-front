@@ -25,7 +25,7 @@ const failed = (err, text) =>
 const EMPTY = { type: '', date: '', binome_id: '', note: '' };
 
 // Incidents of the student, declared by type; open ones are listed in
-// "Contrôles" until marked as dealt with. canEdit: managers (declare, deal
+// "À traiter" until marked as dealt with. canEdit: managers (declare, deal
 // with, delete).
 const StudentIncidents = ({ studentId, canEdit }) => {
   const [data, setData] = useState(null);
@@ -56,7 +56,7 @@ const StudentIncidents = ({ studentId, canEdit }) => {
       )
       .catch(() => setPairs([]));
   }, [studentId]);
-  // Opened from "Contrôles": the block is shown
+  // Opened from "À traiter": the block is shown
   useEffect(() => {
     if (data && location.state?.open === 'incidents') {
       box.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -115,8 +115,7 @@ const StudentIncidents = ({ studentId, canEdit }) => {
       )}
       {open > 0 && (
         <Typography variant="body2" color="error" sx={{ mb: 1 }}>
-          {open} incident{open > 1 ? 's' : ''} à traiter (visible
-          {open > 1 ? 's' : ''} dans Contrôles)
+          {open} incident{open > 1 ? 's' : ''} à traiter
         </Typography>
       )}
       <Stack spacing={1.25}>
