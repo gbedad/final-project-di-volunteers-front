@@ -28,6 +28,7 @@ import {
   WAYS,
   euros,
   today,
+  NO_FEE,
 } from './activityUtils';
 
 const toastError = (err, text) =>
@@ -307,7 +308,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                   ? r.paid_amount !== null && r.paid_amount !== undefined
                     ? `Payé ${euros(r.paid_amount)} sur ${euros(r.due)}`
                     : `${euros(r.due)} à payer`
-                  : 'Gratuit'}
+                  : `Pas de participation : ${NO_FEE.toLowerCase()} demandée`}
               </Typography>
               {canEdit && (
                 <Button size="small" onClick={onPay}>

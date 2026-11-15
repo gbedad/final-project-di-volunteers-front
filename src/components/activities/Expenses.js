@@ -30,6 +30,7 @@ import {
   durationText,
   euros,
   today,
+  NO_FEE,
 } from './activityUtils';
 
 const toastError = (err, text) =>
@@ -392,7 +393,11 @@ export const BudgetPanel = ({ a, canEdit, reload }) => {
         <Row
           label="Participations attendues"
           value={euros(b.expected)}
-          hint={`${euros(a.fee)} par enfant, sauf exceptions`}
+          hint={
+            Number(a.fee) > 0
+              ? `${euros(a.fee)} par enfant, sauf exceptions`
+              : NO_FEE
+          }
         />
         <Row label="Participations encaissées" value={euros(b.received)} />
         <Row label="Reste à encaisser" value={euros(b.still_due)} />

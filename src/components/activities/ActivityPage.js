@@ -358,7 +358,8 @@ const RegistrationRow = ({
               {r.departure === 'seul' && (
                 <Chip size="small" variant="outlined" label="Repart seul(e)" />
               )}
-              {owes || paid ? (
+              {/* No participation: the membership chip says the rest */}
+              {(owes || paid) && (
                 <Chip
                   size="small"
                   variant={paid ? 'filled' : 'outlined'}
@@ -372,13 +373,6 @@ const RegistrationRow = ({
                       ? `Payé ${euros(r.paid_amount)}`
                       : `À payer ${euros(r.due)}`
                   }
-                  onClick={canEdit ? onPay : undefined}
-                />
-              ) : (
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  label="Gratuit"
                   onClick={canEdit ? onPay : undefined}
                 />
               )}
@@ -1059,7 +1053,9 @@ const PresenceSheet = ({ a }) => (
                   ? r.paid_amount !== null
                     ? euros(r.paid_amount)
                     : `à payer ${euros(r.due)}`
-                  : 'gratuit'}
+                  : r.membership
+                    ? 'cotisation à jour'
+                    : 'COTISATION À PAYER'}
               </td>
               <td>☐</td>
             </tr>

@@ -499,7 +499,7 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
           value={form.fee ?? 0}
           onChange={set('fee')}
           inputProps={{ min: 0, step: 0.5 }}
-          helperText="0 : gratuit. Les parents accompagnateurs ne paient pas."
+          helperText="0 : seulement la cotisation annuelle à jour. Les parents accompagnateurs ne paient pas."
           disabled={d}
         />
         <TextField

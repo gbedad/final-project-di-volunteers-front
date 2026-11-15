@@ -47,6 +47,10 @@ export const frDate = (d, opts = {}) =>
         ...opts,
       })
     : 'Date à fixer';
+// No participation for the outing: only the yearly membership, which a
+// child taking part must have paid
+export const NO_FEE = 'Cotisation annuelle à jour';
+
 export const euros = (n) =>
   n === null || n === undefined
     ? '—'
@@ -95,7 +99,7 @@ export const familyMessage = (a) =>
     a.place && a.meeting_point ? `Lieu : ${a.place}` : null,
     Number(a.fee) > 0
       ? `Participation aux frais : ${euros(a.fee)}`
-      : 'Sortie gratuite pour les familles',
+      : `Participation aux frais : ${NO_FEE.toLowerCase()}`,
     'Merci de rendre l’autorisation de sortie signée avant le départ.',
   ]
     .filter(Boolean)

@@ -14,7 +14,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import PrintIcon from '@mui/icons-material/Print';
 import logoUrl from '../../assets/LogoASB.png';
-import { euros, frDate, hours } from './activityUtils';
+import { euros, frDate, hours, NO_FEE } from './activityUtils';
 
 // Portrait image, fit for WhatsApp, Instagram and an A4 print
 const W = 1080;
@@ -188,7 +188,7 @@ export const drawFlyer = async (canvas, a, callToAction) => {
 
   // Price and places, as two badges
   const badges = [
-    Number(a.fee) > 0 ? `Participation ${euros(a.fee)}` : 'Gratuit',
+    Number(a.fee) > 0 ? `Participation ${euros(a.fee)}` : NO_FEE,
     a.places ? `${a.places} places` : null,
   ].filter(Boolean);
   let x = 60;
@@ -197,7 +197,7 @@ export const drawFlyer = async (canvas, a, callToAction) => {
     const w = ctx.measureText(b).width + 48;
     if (x + w > W - 60) break;
     ctx.fillStyle =
-      b === 'Gratuit' || b.startsWith('Participation') ? PURPLE : TEAL;
+      b === NO_FEE || b.startsWith('Participation') ? PURPLE : TEAL;
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(x, y - 10, w, 60, 30);
     else ctx.rect(x, y - 10, w, 60);

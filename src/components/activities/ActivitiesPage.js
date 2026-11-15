@@ -35,6 +35,7 @@ import {
   frDate,
   hours,
   today,
+  NO_FEE,
 } from './activityUtils';
 
 const userOf = (location) => {
@@ -126,7 +127,7 @@ const ActivityCard = ({ a, onOpen }) => {
               {a.waiting ? ` · ${a.waiting} en attente` : ''}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {Number(a.fee) > 0 ? euros(a.fee) : 'Gratuit'}
+              {Number(a.fee) > 0 ? euros(a.fee) : NO_FEE}
             </Typography>
           </Stack>
         </CardContent>
