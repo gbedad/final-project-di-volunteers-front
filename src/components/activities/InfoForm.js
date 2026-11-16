@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
@@ -158,6 +158,46 @@ const Notes = ({ a, canEdit, onSaved }) => {
   );
 };
 
+// Volunteer time shown in hours: "2,5"
+const hoursOf = (minutes) =>
+  minutes ? String(Math.round((minutes / 60) * 10) / 10).replace('.', ',') : '';
+
+// Fields saved by "Enregistrer"
+const FIELDS = [
+  'title',
+  'kind',
+  'status',
+  'program',
+  'objective',
+  'description',
+  'link',
+  'levels',
+  'image',
+  'date',
+  'start_time',
+  'end_time',
+  'place',
+  'meeting_point',
+  'meeting_time',
+  'meeting_point2',
+  'meeting_time2',
+  'return_point',
+  'return_time',
+  'return_point2',
+  'return_time2',
+  'bring',
+  'organizer_id',
+  'ambassador_brief',
+  'whatsapp_group',
+  'places',
+  'deadline',
+  'fee',
+  'adults_per_students',
+  'prep',
+  'debrief',
+  'review',
+];
+
 // The activity's information, in four parts
 const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
   const [form, setForm] = useState(a);
@@ -166,6 +206,17 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
   // Names the organiser is chosen from (team and validated tutors)
   const [organizers, setOrganizers] = useState([]);
   useEffect(() => setForm(a), [a]);
+  // Leaving the page with changes not saved: the browser asks first
+  const unsaved = useRef(false);
+  useEffect(() => {
+    const warn = (e) => {
+      if (!unsaved.current) return;
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, []);
   useEffect(() => {
     axios
       .get(`${BASE_URL}/admin/activites-organisateurs`)
@@ -177,41 +228,7 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
   const save = async () => {
     setBusy(true);
     try {
-      const fields = [
-        'title',
-        'kind',
-        'status',
-        'program',
-        'objective',
-        'description',
-        'link',
-        'levels',
-        'image',
-        'date',
-        'start_time',
-        'end_time',
-        'place',
-        'meeting_point',
-        'meeting_time',
-        'meeting_point2',
-        'meeting_time2',
-        'return_point',
-        'return_time',
-        'return_point2',
-        'return_time2',
-        'bring',
-        'organizer_id',
-        'ambassador_brief',
-        'whatsapp_group',
-        'places',
-        'deadline',
-        'fee',
-        'adults_per_students',
-        'prep',
-        'debrief',
-        'review',
-      ];
-      const body = Object.fromEntries(fields.map((k) => [k, form[k] ?? null]));
+      const body = Object.fromEntries(FIELDS.map((k) => [k, form[k] ?? null]));
       body.volunteer_minutes =
         form.volunteer_hours === undefined
           ? a.volunteer_minutes
@@ -250,15 +267,19 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
     }
   };
   const d = !canEdit;
+  // Something typed and not saved yet: the bar at the bottom says so
+  const dirty =
+    canEdit &&
+    (FIELDS.some(
+      (k) => JSON.stringify(form[k] ?? null) !== JSON.stringify(a[k] ?? null)
+    ) ||
+      (form.volunteer_hours !== undefined &&
+        String(form.volunteer_hours) !== hoursOf(a.volunteer_minutes)));
+  unsaved.current = dirty;
   const volunteerHours =
     form.volunteer_hours !== undefined
       ? form.volunteer_hours
-      : a.volunteer_minutes
-        ? String(Math.round((a.volunteer_minutes / 60) * 10) / 10).replace(
-            '.',
-            ','
-          )
-        : '';
+      : hoursOf(a.volunteer_minutes);
 
   return (
     <Stack spacing={2}>
@@ -639,10 +660,39 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
           <Button color="error" onClick={() => setConfirmDelete(true)}>
             Supprimer l'activité
           </Button>
-          <Button variant="contained" disabled={busy} onClick={save}>
+        </Stack>
+      )}
+      {/* Always in sight while filling in the form */}
+      {canEdit && (
+        <Paper
+          elevation={dirty ? 6 : 1}
+          sx={{
+            position: 'sticky',
+            bottom: 8,
+            zIndex: 2,
+            px: 2,
+            py: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 1,
+            flexWrap: 'wrap',
+            borderLeft: 4,
+            borderColor: dirty ? 'warning.main' : 'success.main',
+          }}>
+          <Typography
+            variant="body2"
+            color={dirty ? 'warning.dark' : 'text.secondary'}
+            fontWeight={dirty ? 600 : 400}>
+            {dirty ? 'Modifications non enregistrées' : 'Tout est enregistré'}
+          </Typography>
+          <Button
+            variant="contained"
+            disabled={busy || !dirty}
+            onClick={save}>
             Enregistrer
           </Button>
-        </Stack>
+        </Paper>
       )}
 
       <Notes
