@@ -163,7 +163,15 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
   const [form, setForm] = useState(a);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // Names the organiser is chosen from (team and validated tutors)
+  const [organizers, setOrganizers] = useState([]);
   useEffect(() => setForm(a), [a]);
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/admin/activites-organisateurs`)
+      .then(({ data }) => setOrganizers(data))
+      .catch(() => setOrganizers([]));
+  }, []);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const setValue = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
   const save = async () => {
@@ -187,8 +195,13 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
         'meeting_time',
         'meeting_point2',
         'meeting_time2',
+        'return_point',
+        'return_time',
+        'return_point2',
+        'return_time2',
         'bring',
-        'responsible',
+        'organizer_id',
+        'ambassador_brief',
         'whatsapp_group',
         'places',
         'deadline',
@@ -337,6 +350,18 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
         />
         <TextField
           size="small"
+          label="Présentation détaillée pour les ambassadeurs"
+          placeholder="Ce qu'il faut savoir pour proposer la sortie : le lieu, le déroulé, l'intérêt pour les enfants, les questions fréquentes des familles…"
+          value={form.ambassador_brief || ''}
+          onChange={set('ambassador_brief')}
+          multiline
+          minRows={4}
+          disabled={d}
+          sx={full}
+          helperText="Pas sur le flyer des familles : à copier ou partager depuis « Pour les ambassadeurs »."
+        />
+        <TextField
+          size="small"
           label="Lien (programme, billetterie)"
           placeholder="https://"
           value={form.link || ''}
@@ -425,13 +450,13 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
         />
         <TextField
           size="small"
-          label="Point de rendez-vous 1"
+          label="Rendez-vous aller 1"
           value={form.meeting_point || ''}
           onChange={set('meeting_point')}
           disabled={d}
         />
         <TimeInput
-          label="Heure du rendez-vous 1"
+          label="Heure aller 1"
           value={form.meeting_time || ''}
           onChange={setValue('meeting_time')}
           sx={{ width: '100%' }}
@@ -439,18 +464,50 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
         />
         <TextField
           size="small"
-          label="Point de rendez-vous 2 (facultatif)"
+          label="Rendez-vous aller 2 (facultatif)"
           value={form.meeting_point2 || ''}
           onChange={set('meeting_point2')}
           disabled={d}
         />
         <TimeInput
-          label="Heure du rendez-vous 2"
+          label="Heure aller 2"
           value={form.meeting_time2 || ''}
           onChange={setValue('meeting_time2')}
           sx={{ width: '100%' }}
           disabled={d}
         />
+        <TextField
+          size="small"
+          label="Rendez-vous retour 1"
+          value={form.return_point || ''}
+          onChange={set('return_point')}
+          disabled={d}
+        />
+        <TimeInput
+          label="Heure retour 1"
+          value={form.return_time || ''}
+          onChange={setValue('return_time')}
+          sx={{ width: '100%' }}
+          disabled={d}
+        />
+        <TextField
+          size="small"
+          label="Rendez-vous retour 2 (facultatif)"
+          value={form.return_point2 || ''}
+          onChange={set('return_point2')}
+          disabled={d}
+        />
+        <TimeInput
+          label="Heure retour 2"
+          value={form.return_time2 || ''}
+          onChange={setValue('return_time2')}
+          sx={{ width: '100%' }}
+          disabled={d}
+        />
+        <Typography variant="caption" color="text.secondary" sx={full}>
+          À l'inscription, chaque élève reçoit les points 1 (aller et retour) ;
+          vous pouvez les changer dans sa fiche d'inscription.
+        </Typography>
         <TextField
           size="small"
           label="À apporter"
@@ -460,12 +517,30 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
           disabled={d}
           sx={full}
         />
-        <TextField
+        <Autocomplete
           size="small"
-          label="Responsable"
-          value={form.responsible || ''}
-          onChange={set('responsible')}
+          options={organizers}
+          value={
+            organizers.find((o) => o.id === form.organizer_id) ||
+            (form.organizer_id
+              ? { id: form.organizer_id, first_name: form.organizer || '', last_name: '' }
+              : null)
+          }
+          onChange={(e, o) => setValue('organizer_id')(o ? o.id : null)}
+          getOptionLabel={(o) => `${o.first_name} ${o.last_name}`.trim()}
+          isOptionEqualToValue={(o, v) => o.id === v.id}
           disabled={d}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Organisateur"
+              helperText={
+                !form.organizer_id && form.responsible
+                  ? `Avant : « ${form.responsible} »`
+                  : "Ne donne pas l'accès à la sortie (voir « Responsable de la sortie »)"
+              }
+            />
+          )}
         />
         <TextField
           size="small"

@@ -84,17 +84,41 @@ export const resizeImage = (file, max = 900) =>
     reader.readAsDataURL(file);
   });
 
+// Meeting points, there ('aller') and back ('retour'): "Nation à 09:30"
+const POINT_KEYS = {
+  aller: [
+    ['meeting_point', 'meeting_time'],
+    ['meeting_point2', 'meeting_time2'],
+  ],
+  retour: [
+    ['return_point', 'return_time'],
+    ['return_point2', 'return_time2'],
+  ],
+};
+export const pointText = (a, way, n) => {
+  const [p, t] = POINT_KEYS[way][n - 1] || [];
+  return p && a[p] ? `${a[p]}${a[t] ? ` à ${a[t]}` : ''}` : null;
+};
+// Points of the outing, as choices (1 and 2 when given)
+export const pointChoices = (a, way) =>
+  [1, 2].map((n) => ({ n, text: pointText(a, way, n) })).filter((c) => c.text);
+// The student's point: the one chosen, else point 1
+export const studentPoint = (a, r, way) =>
+  pointText(a, way, (way === 'aller' ? r.meeting_choice : r.return_choice) || 1);
+
 // Text for the families' WhatsApp groups
 export const familyMessage = (a) =>
   [
     `Sortie culturelle : ${a.title}`,
     `${frDate(a.date)}${hours(a) ? `, ${hours(a)}` : ''}`,
-    a.meeting_point || a.place
-      ? `Rendez-vous : ${a.meeting_point || a.place}${a.meeting_time ? ` à ${a.meeting_time}` : ''}`
+    pointText(a, 'aller', 1) || a.place
+      ? `Rendez-vous aller : ${pointText(a, 'aller', 1) || a.place}`
       : null,
-    a.meeting_point2
-      ? `Ou : ${a.meeting_point2}${a.meeting_time2 ? ` à ${a.meeting_time2}` : ''}`
+    pointText(a, 'aller', 2) ? `ou : ${pointText(a, 'aller', 2)}` : null,
+    pointText(a, 'retour', 1)
+      ? `Retour : ${pointText(a, 'retour', 1)}`
       : null,
+    pointText(a, 'retour', 2) ? `ou : ${pointText(a, 'retour', 2)}` : null,
     a.bring ? `À apporter : ${a.bring}` : null,
     a.place && a.meeting_point ? `Lieu : ${a.place}` : null,
     Number(a.fee) > 0
@@ -104,6 +128,37 @@ export const familyMessage = (a) =>
   ]
     .filter(Boolean)
     .join('\n');
+
+// Page for the ambassadors who offer the outing: everything to present it
+export const ambassadorText = (a) =>
+  [
+    `${a.title.toUpperCase()}`,
+    `${frDate(a.date).replace(/^./, (c) => c.toUpperCase())}${hours(a) ? `, ${hours(a)}` : ''}`,
+    a.place ? `Lieu : ${a.place}` : null,
+    a.levels?.length ? `Pour : ${a.levels.join(', ')}` : null,
+    pointText(a, 'aller', 1)
+      ? `Rendez-vous aller : ${[pointText(a, 'aller', 1), pointText(a, 'aller', 2)].filter(Boolean).join(' ou ')}`
+      : null,
+    pointText(a, 'retour', 1)
+      ? `Retour : ${[pointText(a, 'retour', 1), pointText(a, 'retour', 2)].filter(Boolean).join(' ou ')}`
+      : null,
+    Number(a.fee) > 0
+      ? `Participation : ${euros(a.fee)} par enfant`
+      : `Participation : ${NO_FEE.toLowerCase()}`,
+    a.places ? `Places : ${a.places}` : null,
+    a.deadline
+      ? `Inscriptions jusqu'au ${new Date(`${a.deadline}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+      : null,
+    a.organizer
+      ? `Organisateur : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+      : null,
+    '',
+    a.ambassador_brief || a.description || '',
+    a.link ? `\nEn savoir plus : ${a.link}` : null,
+  ]
+    .filter((l) => l !== null)
+    .join('\n')
+    .trim();
 
 export const ATTENDANCES = [
   { value: 'présent', label: 'Présent', color: 'success' },

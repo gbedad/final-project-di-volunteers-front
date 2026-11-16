@@ -27,6 +27,7 @@ import {
   PAYMENT_METHODS,
   WAYS,
   euros,
+  pointChoices,
   today,
   NO_FEE,
 } from './activityUtils';
@@ -52,7 +53,12 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
     arrival: r.arrival || '',
     departure: r.departure || '',
     emergency_phone: r.emergency_phone || '',
+    // Meeting points of the child (set by the team, point 1 by default)
+    meeting_choice: r.meeting_choice || (pointChoices(a, 'aller').length ? 1 : ''),
+    return_choice: r.return_choice || (pointChoices(a, 'retour').length ? 1 : ''),
   });
+  const there = pointChoices(a, 'aller');
+  const back = pointChoices(a, 'retour');
   const [member, setMember] = useState({
     amount: 10,
     method: 'assoconnect',
@@ -318,8 +324,48 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
             </Stack>
           </Part>
 
-          <Part title="Arrivée et départ">
+          <Part title="Rendez-vous, arrivée et départ">
             <Stack spacing={1.5}>
+              {(there.length > 0 || back.length > 0) && (
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  {there.length > 0 && (
+                    <TextField
+                      select
+                      size="small"
+                      label="Rendez-vous aller"
+                      value={ways.meeting_choice}
+                      onChange={(e) =>
+                        setWays({ ...ways, meeting_choice: e.target.value })
+                      }
+                      disabled={!canEdit}
+                      sx={{ flex: 1, minWidth: 0 }}>
+                      {there.map((c) => (
+                        <MenuItem key={c.n} value={c.n}>
+                          {c.n} · {c.text}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                  {back.length > 0 && (
+                    <TextField
+                      select
+                      size="small"
+                      label="Rendez-vous retour"
+                      value={ways.return_choice}
+                      onChange={(e) =>
+                        setWays({ ...ways, return_choice: e.target.value })
+                      }
+                      disabled={!canEdit}
+                      sx={{ flex: 1, minWidth: 0 }}>
+                      {back.map((c) => (
+                        <MenuItem key={c.n} value={c.n}>
+                          {c.n} · {c.text}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                </Stack>
+              )}
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 <TextField
                   select
@@ -365,18 +411,33 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                 }
                 disabled={!canEdit}
               />
+              <Typography variant="body2" color="text.secondary">
+                Tél. de l'élève : {r.student_phone || 'non renseigné'} · Parent
+                : {r.parent1_phone || r.parent2_phone || 'non renseigné'}
+              </Typography>
               {canEdit && (
                 <Button
                   size="small"
                   variant="outlined"
                   sx={{ alignSelf: 'flex-start' }}
                   disabled={busy}
-                  onClick={() => patch(ways, 'Enregistré')}>
+                  onClick={() =>
+                    patch(
+                      {
+                        ...ways,
+                        meeting_choice: ways.meeting_choice || null,
+                        return_choice: ways.return_choice || null,
+                      },
+                      'Enregistré'
+                    )
+                  }>
                   Enregistrer
                 </Button>
               )}
               <Typography variant="caption" color="text.secondary">
-                Rempli par le parent quand il signe l'autorisation en ligne.
+                Arrivée, départ et téléphone : remplis par le parent quand il
+                signe l'autorisation en ligne. Les rendez-vous sont choisis par
+                l'équipe.
               </Typography>
             </Stack>
           </Part>

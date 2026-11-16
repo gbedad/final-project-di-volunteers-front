@@ -31,9 +31,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
 import FlyerDialog from './Flyer';
 import InfoForm from './InfoForm';
+import ChatTab from './ChatTab';
 import RegistrationDialog from './RegistrationDialog';
 import { BudgetPanel } from './Expenses';
 import ImageIcon from '@mui/icons-material/Image';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import ShareIcon from '@mui/icons-material/Share';
 import { LEVELS } from '../../js/volunteerSearch';
 import { isCulture, isManager, ROLE_LABELS } from '../../js/roles';
 import {
@@ -41,8 +44,10 @@ import {
   ACTIVITY_STATUSES,
   BASE_URL,
   PAYMENT_METHODS,
+  ambassadorText,
   euros,
   familyMessage,
+  pointChoices,
   frDate,
   hours,
   today,
@@ -60,10 +65,11 @@ const copy = async (text, done) => {
 };
 const fullName = (r) => `${r.first_name} ${r.last_name || ''}`.trim();
 const PRINT_CSS = `
+@page { size: A4 landscape; margin: 10mm; }
 @media print {
   body * { visibility: hidden !important; }
   .activity-sheet, .activity-sheet * { visibility: visible !important; }
-  .activity-sheet { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+  .activity-sheet { position: absolute; left: 0; top: 0; width: 100%; box-sizing: border-box; display: block !important; }
 }`;
 
 // ---- Registrations ----
@@ -357,6 +363,15 @@ const RegistrationRow = ({
               />
               {r.departure === 'seul' && (
                 <Chip size="small" variant="outlined" label="Repart seul(e)" />
+              )}
+              {(pointChoices(a, 'aller').length > 1 ||
+                pointChoices(a, 'retour').length > 1) && (
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  label={`RDV aller ${r.meeting_choice || 1} · retour ${r.return_choice || 1}`}
+                  onClick={onOpen}
+                />
               )}
               {/* No participation: the membership chip says the rest */}
               {(owes || paid) && (
@@ -1002,29 +1017,108 @@ const StaffTab = ({ a, canEdit, reload }) => {
   );
 };
 
+// For the ambassadors who offer the outing: the detailed presentation, to
+// copy or share (WhatsApp, e-mail…)
+const AmbassadorDialog = ({ a, onClose }) => {
+  const text = ambassadorText(a);
+  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+  const share = async () => {
+    try {
+      await navigator.share({ title: a.title, text });
+    } catch (err) {
+      if (err?.name !== 'AbortError') {
+        toast.error('Partage impossible : copiez le texte', {
+          position: 'bottom-left',
+        });
+      }
+    }
+  };
+  return (
+    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Pour les ambassadeurs</DialogTitle>
+      <DialogContent>
+        {!a.ambassador_brief && (
+          <Alert severity="info" sx={{ mb: 1.5 }}>
+            Pas encore de présentation détaillée : la description est reprise.
+            Complétez « Présentation détaillée pour les ambassadeurs » dans
+            l'onglet Infos.
+          </Alert>
+        )}
+        <TextField
+          fullWidth
+          multiline
+          minRows={10}
+          value={text}
+          InputProps={{ readOnly: true }}
+          onFocus={(e) => e.target.select()}
+        />
+      </DialogContent>
+      <DialogActions sx={{ flexWrap: 'wrap', gap: 1 }}>
+        <Button onClick={onClose}>Fermer</Button>
+        {canShare && (
+          <Button startIcon={<ShareIcon />} onClick={share}>
+            Partager
+          </Button>
+        )}
+        <Button
+          variant="contained"
+          startIcon={<ContentCopyIcon />}
+          onClick={() => copy(text, 'Présentation copiée')}>
+          Copier
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 // Printable list for the day (only shown when printing)
 const PresenceSheet = ({ a }) => (
   <Box className="activity-sheet" sx={{ display: 'none', p: 2, fontSize: 12 }}>
     <style>{PRINT_CSS}</style>
     <Typography variant="h6">{a.title}</Typography>
     <Typography variant="body2" sx={{ mb: 1 }}>
-      {frDate(a.date)} {hours(a)} · {a.meeting_point || a.place || ''}
+      {frDate(a.date)} {hours(a)} · {a.place || ''}
+      {a.organizer
+        ? ` · Organisateur : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+        : ''}
+    </Typography>
+    <Typography variant="body2" sx={{ mb: 1 }}>
+      {[
+        pointChoices(a, 'aller')
+          .map((c) => `Aller ${c.n} : ${c.text}`)
+          .join(' · '),
+        pointChoices(a, 'retour')
+          .map((c) => `Retour ${c.n} : ${c.text}`)
+          .join(' · '),
+      ]
+        .filter(Boolean)
+        .join(' — ')}
     </Typography>
     <Box
       component="table"
       sx={{
         width: '100%',
         borderCollapse: 'collapse',
-        '& td, & th': { border: '1px solid #999', p: 0.5, textAlign: 'left' },
+        // Landscape A4: every column fits, long names wrap
+        fontSize: 11,
+        '& td, & th': {
+          border: '1px solid #999',
+          p: '2px 4px',
+          textAlign: 'left',
+          verticalAlign: 'top',
+        },
       }}>
       <thead>
         <tr>
           <th>Élève</th>
           <th>Niveau</th>
+          <th>Établissement</th>
+          <th>Tél. élève</th>
           <th>Parent à appeler</th>
+          <th>Aller</th>
+          <th>Retour</th>
           <th>Arrive / repart</th>
           <th>Autorisation</th>
-          <th>Payé</th>
           <th>Présent</th>
         </tr>
       </thead>
@@ -1035,6 +1129,8 @@ const PresenceSheet = ({ a }) => (
             <tr key={r.id}>
               <td>{fullName(r)}</td>
               <td>{r.level || ''}</td>
+              <td>{r.school_name || ''}</td>
+              <td>{r.student_phone || ''}</td>
               <td>
                 {[
                   r.parent1_firstname,
@@ -1043,20 +1139,18 @@ const PresenceSheet = ({ a }) => (
                   .filter(Boolean)
                   .join(' ')}
               </td>
+              {/* The point's number: the points are listed above */}
+              <td>
+                {pointChoices(a, 'aller').length ? r.meeting_choice || 1 : ''}
+              </td>
+              <td>
+                {pointChoices(a, 'retour').length ? r.return_choice || 1 : ''}
+              </td>
               <td>
                 {r.arrival || '?'} /{' '}
                 {r.departure === 'seul' ? 'SEUL(E)' : r.departure || '?'}
               </td>
               <td>{r.consent_at ? 'oui' : 'NON'}</td>
-              <td>
-                {r.due > 0
-                  ? r.paid_amount !== null
-                    ? euros(r.paid_amount)
-                    : `à payer ${euros(r.due)}`
-                  : r.membership
-                    ? 'cotisation à jour'
-                    : 'COTISATION À PAYER'}
-              </td>
               <td>☐</td>
             </tr>
           ))}
@@ -1090,6 +1184,9 @@ const ActivityPage = () => {
   const [error, setError] = useState(false);
   const [tab, setTab] = useState(0);
   const [flyer, setFlyer] = useState(false);
+  const [ambassadors, setAmbassadors] = useState(false);
+  // Messages of the "Chat" tab (its label)
+  const [chatCount, setChatCount] = useState(null);
   // Programmes already used, offered when typing one
   const [programs, setPrograms] = useState([]);
   useEffect(() => {
@@ -1151,6 +1248,12 @@ const ActivityPage = () => {
         {a.place ? ` · ${a.place}` : ''}
       </Typography>
       <OwnerLine a={a} onChanged={load} />
+      {a.organizer && (
+        <Typography variant="body2" color="text.secondary">
+          Organisateur : {a.organizer}
+          {a.organizer_phone ? ` · ${a.organizer_phone}` : ''}
+        </Typography>
+      )}
       {cultureRole && !canEdit && (
         <Alert severity="info" sx={{ mt: 1.5 }}>
           Sortie gérée par {a.owner || 'un autre responsable'} : vous pouvez la
@@ -1182,6 +1285,13 @@ const ActivityPage = () => {
         <Button
           size="small"
           variant="outlined"
+          startIcon={<CampaignIcon />}
+          onClick={() => setAmbassadors(true)}>
+          Pour les ambassadeurs
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
           startIcon={<PrintIcon />}
           disabled={!registered}
           onClick={() => window.print()}>
@@ -1198,8 +1308,19 @@ const ActivityPage = () => {
         <Tab label={`Inscrits (${registered})`} />
         <Tab label={`Accompagnateurs (${a.staff.length})`} />
         <Tab label="Budget" />
+        <Tab label={`Chat (${chatCount ?? (a.chat || []).length})`} />
       </Tabs>
-      {flyer && <FlyerDialog a={a} onClose={() => setFlyer(false)} />}
+      {flyer && (
+        <FlyerDialog
+          a={a}
+          canEdit={canEdit}
+          onSaved={setA}
+          onClose={() => setFlyer(false)}
+        />
+      )}
+      {ambassadors && (
+        <AmbassadorDialog a={a} onClose={() => setAmbassadors(false)} />
+      )}
       {tab === 0 && (
         <InfoForm
           a={a}
@@ -1219,6 +1340,7 @@ const ActivityPage = () => {
       )}
       {tab === 2 && <StaffTab a={a} canEdit={canEdit} reload={load} />}
       {tab === 3 && <BudgetPanel a={a} canEdit={canEdit} reload={load} />}
+      {tab === 4 && <ChatTab activityId={a.id} onCount={setChatCount} />}
     </Container>
   );
 };

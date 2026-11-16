@@ -12,7 +12,13 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { BASE_URL, frDate, hours } from './activityUtils';
+import {
+  BASE_URL,
+  frDate,
+  hours,
+  pointChoices,
+  studentPoint,
+} from './activityUtils';
 
 // The adult going with the students ticks who is there, on their phone,
 // through their own link (no account)
@@ -84,11 +90,18 @@ const AttendancePage = () => {
       </Typography>
       {(a.meeting_point || a.place) && (
         <Typography variant="body2" color="text.secondary">
-          Rendez-vous : {a.meeting_point || a.place}
-          {a.meeting_time ? ` à ${a.meeting_time}` : ''}
-          {a.meeting_point2
-            ? ` · ou ${a.meeting_point2}${a.meeting_time2 ? ` à ${a.meeting_time2}` : ''}`
-            : ''}
+          Aller :{' '}
+          {pointChoices(a, 'aller')
+            .map((c) => `${c.n}. ${c.text}`)
+            .join(' · ') || a.place}
+        </Typography>
+      )}
+      {a.return_point && (
+        <Typography variant="body2" color="text.secondary">
+          Retour :{' '}
+          {pointChoices(a, 'retour')
+            .map((c) => `${c.n}. ${c.text}`)
+            .join(' · ')}
         </Typography>
       )}
       {a.bring && (
@@ -128,6 +141,29 @@ const AttendancePage = () => {
                           : 'Départ : non précisé'}
                       {s.consent ? '' : ' · autorisation manquante'}
                     </Typography>
+                    {(studentPoint(a, s, 'aller') ||
+                      studentPoint(a, s, 'retour')) && (
+                      <Typography variant="body2" color="text.secondary">
+                        {[
+                          studentPoint(a, s, 'aller') &&
+                            `Aller : ${studentPoint(a, s, 'aller')}`,
+                          studentPoint(a, s, 'retour') &&
+                            `Retour : ${studentPoint(a, s, 'retour')}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </Typography>
+                    )}
+                    {s.school && (
+                      <Typography variant="body2" color="text.secondary">
+                        {s.school}
+                      </Typography>
+                    )}
+                    {s.phone && (
+                      <Typography variant="body2" color="text.secondary">
+                        Élève : <a href={`tel:${s.phone}`}>{s.phone}</a>
+                      </Typography>
+                    )}
                     {s.parent && (
                       <Typography variant="body2" color="text.secondary">
                         {s.parent.name ? `${s.parent.name} : ` : 'Parent : '}

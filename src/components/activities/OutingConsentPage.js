@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import SignaturePad from '../application/SignaturePad';
-import { BASE_URL } from './activityUtils';
+import { BASE_URL, studentPoint } from './activityUtils';
 
 // The parent authorises the outing, on their phone, through a personal link
 const OutingConsentPage = () => {
@@ -142,11 +142,12 @@ const OutingConsentPage = () => {
     form.departure &&
     form.emergency_phone.replace(/\D/g, '').length >= 9 &&
     signature;
+  // The child's meeting points (set by the association), there and back
   const rdv = [
-    a.meeting_point &&
-      `${a.meeting_point}${a.meeting_time ? ` à ${a.meeting_time}` : ''}`,
-    a.meeting_point2 &&
-      `${a.meeting_point2}${a.meeting_time2 ? ` à ${a.meeting_time2}` : ''}`,
+    studentPoint(a, a, 'aller') &&
+      `aller : ${studentPoint(a, a, 'aller')}`,
+    studentPoint(a, a, 'retour') &&
+      `retour : ${studentPoint(a, a, 'retour')}`,
   ].filter(Boolean);
   const Ways = ({ field, label, options }) => (
     <Box>
@@ -180,7 +181,7 @@ const OutingConsentPage = () => {
           <Paper variant="outlined" sx={{ p: 1.5 }}>
             {rdv.length > 0 && (
               <Typography variant="body2">
-                <b>Rendez-vous :</b> {rdv.join(' ou ')}
+                <b>Rendez-vous de {page.child}</b> — {rdv.join(' · ')}
               </Typography>
             )}
             {a.bring && (
