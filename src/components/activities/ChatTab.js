@@ -128,13 +128,21 @@ const ChatTab = ({ activityId, onCount }) => {
         onScroll={onScroll}
         spacing={1.25}
         sx={{
-          // Fixed height: the page does not move, the messages scroll
+          // Fixed height: the page does not move, the messages scroll,
+          // with a visible scrollbar
           height: { xs: '55vh', sm: 440 },
           overflowY: 'auto',
           mb: 2,
-          pr: 0.5,
+          pr: 1,
           // The few first messages at the bottom, near the input
           '& > :first-of-type': { mt: 'auto' },
+          scrollbarWidth: 'thin',
+          scrollbarColor: (t) => `${t.palette.grey[400]} transparent`,
+          '&::-webkit-scrollbar': { width: 8 },
+          '&::-webkit-scrollbar-thumb': {
+            bgcolor: 'grey.400',
+            borderRadius: 4,
+          },
         }}>
         {messages === null && (
           <Typography variant="body2" color="text.secondary">
