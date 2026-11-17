@@ -150,7 +150,7 @@ export const ambassadorText = (a) =>
       ? `Inscriptions jusqu'au ${new Date(`${a.deadline}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
       : null,
     a.organizer
-      ? `Organisateur : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+      ? `Responsable : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
       : null,
     '',
     a.ambassador_brief || a.description || '',

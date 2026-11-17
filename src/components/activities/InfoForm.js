@@ -554,11 +554,11 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Organisateur"
+              label="Responsable"
               helperText={
                 !form.organizer_id && form.responsible
                   ? `Avant : « ${form.responsible} »`
-                  : "Ne donne pas l'accès à la sortie (voir « Responsable de la sortie »)"
+                  : "Qui prend en charge les enfants. Vide : le rédacteur de l'activité"
               }
             />
           )}

@@ -48,7 +48,7 @@ export const FLYER_FIELDS = [
   { key: 'presentation', label: 'Présentation ambassadeurs' },
   { key: 'participation', label: 'Participation' },
   { key: 'places', label: 'Places' },
-  { key: 'organisateur', label: 'Organisateur' },
+  { key: 'organisateur', label: 'Responsable' },
   { key: 'cta', label: "Comment s'inscrire" },
 ];
 // Flyers by destination; "familles" is the flyer as it was (same fields)
@@ -209,7 +209,7 @@ export const drawFlyer = async (
       : null,
     on('organisateur') && a.organizer
       ? [
-          'Organisateur',
+          'Responsable',
           `${a.organizer}${a.organizer_phone ? ` · ${a.organizer_phone}` : ''}`,
         ]
       : null,

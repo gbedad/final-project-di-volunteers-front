@@ -117,9 +117,9 @@ const ActivityCard = ({ a, onOpen }) => {
               {a.place}
             </Typography>
           )}
-          {a.owner && (
+          {a.organizer && (
             <Typography variant="body2" color="text.secondary" noWrap>
-              Responsable : {a.owner}
+              Responsable : {a.organizer}
             </Typography>
           )}
           <Typography variant="body2" sx={{ mt: 1.5 }}>

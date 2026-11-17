@@ -27,6 +27,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/EditOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
 import FlyerDialog from './Flyer';
@@ -226,7 +227,8 @@ const TutoringNotice = ({ r, canTell, onChanged }) => {
   );
 };
 
-// Who is in charge of the outing; changed by "superculture" and the admins
+// Who writes the outing on MyCogniverse (and may change it); changed by
+// "superculture" and the admins
 const OwnerLine = ({ a, onChanged }) => {
   const [people, setPeople] = useState(null);
   useEffect(() => {
@@ -241,23 +243,23 @@ const OwnerLine = ({ a, onChanged }) => {
       await axios.patch(`${BASE_URL}/admin/activites/${a.id}`, {
         owner_id: ownerId,
       });
-      toast.success('Responsable changé', { position: 'bottom-left' });
+      toast.success('Rédacteur changé', { position: 'bottom-left' });
       onChanged();
     } catch (err) {
-      toastError(err, "Le responsable n'a pas pu être changé");
+      toastError(err, "Le rédacteur n'a pas pu être changé");
     }
   };
   if (!a.can_change_owner || !people?.length)
     return (
       <Typography variant="body2" color="text.secondary">
-        Responsable : {a.owner || '—'}
+        Rédacteur de l'activité : {a.owner || '—'}
       </Typography>
     );
   return (
     <TextField
       select
       size="small"
-      label="Responsable de la sortie"
+      label="Rédacteur de l'activité"
       value={people.some((p) => p.id === a.owner_id) ? a.owner_id : ''}
       onChange={(e) => change(e.target.value)}
       sx={{ mt: 1.5, minWidth: 240, maxWidth: '100%' }}>
@@ -821,6 +823,65 @@ const RegistrationsTab = ({ a, canEdit, canTell, reload }) => {
   );
 };
 
+// Name, role (parent of which child), phone and e-mail of an adult
+const StaffFields = ({ a, form, set }) => (
+  <Box
+    sx={{
+      display: 'grid',
+      gap: 1,
+      gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+    }}>
+    <TextField
+      size="small"
+      label="Nom"
+      value={form.name}
+      onChange={set('name')}
+    />
+    <TextField
+      select
+      size="small"
+      label="Rôle"
+      value={form.role}
+      onChange={set('role')}>
+      {/* Former role, now the outing's "Responsable" (onglet Infos) */}
+      {form.role === 'responsable' && (
+        <MenuItem value="responsable">Responsable</MenuItem>
+      )}
+      <MenuItem value="accompagnateur">Accompagnateur</MenuItem>
+      <MenuItem value="parent">Parent d'un enfant inscrit</MenuItem>
+    </TextField>
+    {form.role === 'parent' && (
+      <TextField
+        select
+        size="small"
+        label="Parent de"
+        value={form.student_id || ''}
+        onChange={set('student_id')}
+        sx={{ gridColumn: { sm: '1 / -1' } }}>
+        {a.registrations
+          .filter((r) => r.status === 'inscrit')
+          .map((r) => (
+            <MenuItem key={r.student_id} value={r.student_id}>
+              {fullName(r)}
+            </MenuItem>
+          ))}
+      </TextField>
+    )}
+    <TextField
+      size="small"
+      label="Téléphone"
+      value={form.phone || ''}
+      onChange={set('phone')}
+    />
+    <TextField
+      size="small"
+      label="E-mail"
+      value={form.email || ''}
+      onChange={set('email')}
+    />
+  </Box>
+);
+
 // ---- Adults ----
 const StaffTab = ({ a, canEdit, reload }) => {
   const [form, setForm] = useState({
@@ -831,6 +892,26 @@ const StaffTab = ({ a, canEdit, reload }) => {
   });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const linkOf = (s) => `${window.location.origin}/sortie/${s.token}`;
+  // The adult being changed (a copy of its fields)
+  const [editing, setEditing] = useState(null);
+  const setEdit = (k) => (e) =>
+    setEditing((f) => ({ ...f, [k]: e.target.value }));
+  const saveEdit = async () => {
+    const { id, name, phone, email, role, student_id } = editing;
+    try {
+      await axios.patch(`${BASE_URL}/admin/accompagnateurs/${id}`, {
+        name,
+        phone,
+        email,
+        role,
+        student_id,
+      });
+      setEditing(null);
+      reload();
+    } catch (err) {
+      toastError(err, "L'accompagnateur n'a pas pu être modifié");
+    }
+  };
   const add = async () => {
     try {
       await axios.post(
@@ -873,140 +954,133 @@ const StaffTab = ({ a, canEdit, reload }) => {
         sur son téléphone, sans compte. Le lien s'ouvre la veille de la sortie
         et jusqu'à deux jours après. Envoyez-le par SMS ou WhatsApp.
       </Typography>
-      {a.staff.map((s) => (
-        <Paper key={s.id} variant="outlined" sx={{ p: 1.5 }}>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={1}
-            justifyContent="space-between">
-            <Box sx={{ minWidth: 0 }}>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography fontWeight={600}>{s.name}</Typography>
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  label={
-                    s.role === 'responsable'
-                      ? 'Responsable'
-                      : s.role === 'parent'
-                        ? `Parent${s.child_first_name ? ` de ${s.child_first_name}` : ''}`
-                        : 'Accompagnateur'
-                  }
-                />
-              </Stack>
-              <Typography variant="body2" color="text.secondary">
-                {[s.phone, s.email].filter(Boolean).join(' · ') ||
-                  'Pas de contact'}
-              </Typography>
-            </Box>
-            {canEdit && (
-              <Stack
-                direction="row"
-                spacing={0.5}
-                alignItems="center"
-                flexWrap="wrap"
-                useFlexGap>
-                <Button
-                  size="small"
-                  startIcon={<ContentCopyIcon />}
-                  onClick={() =>
-                    copy(
-                      `Bonjour ${s.name}, voici votre lien pour cocher les présences de la sortie « ${a.title} » : ${linkOf(s)}`,
-                      'Message avec le lien copié'
-                    )
-                  }>
-                  Copier le lien
-                </Button>
-                <Button
-                  size="small"
-                  color="inherit"
-                  onClick={() =>
-                    act(
-                      () =>
-                        axios.post(
-                          `${BASE_URL}/admin/accompagnateurs/${s.id}/nouveau-lien`
-                        ),
-                      "Le lien n'a pas pu être renouvelé"
-                    )
-                  }>
-                  Nouveau lien
-                </Button>
-                <IconButton
-                  size="small"
-                  aria-label="Retirer"
-                  onClick={() =>
-                    act(
-                      () =>
-                        axios.delete(
-                          `${BASE_URL}/admin/accompagnateurs/${s.id}`
-                        ),
-                      "L'accompagnateur n'a pas pu être retiré"
-                    )
-                  }>
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </Stack>
-            )}
-          </Stack>
-        </Paper>
-      ))}
+      {a.staff.map((s) =>
+        editing?.id === s.id ? (
+          <Paper key={s.id} variant="outlined" sx={{ p: 1.5 }}>
+            <Typography fontWeight={600} sx={{ mb: 1 }}>
+              Modifier {s.name}
+            </Typography>
+            <StaffFields a={a} form={editing} set={setEdit} />
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={!editing.name?.trim()}
+                onClick={saveEdit}>
+                Enregistrer
+              </Button>
+              <Button size="small" onClick={() => setEditing(null)}>
+                Annuler
+              </Button>
+            </Stack>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 0.5 }}>
+              Son lien reste le même.
+            </Typography>
+          </Paper>
+        ) : (
+          <Paper key={s.id} variant="outlined" sx={{ p: 1.5 }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1}
+              justifyContent="space-between">
+              <Box sx={{ minWidth: 0 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Typography fontWeight={600}>{s.name}</Typography>
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label={
+                      s.role === 'responsable'
+                        ? 'Responsable'
+                        : s.role === 'parent'
+                          ? `Parent${s.child_first_name ? ` de ${s.child_first_name}` : ''}`
+                          : 'Accompagnateur'
+                    }
+                  />
+                </Stack>
+                <Typography variant="body2" color="text.secondary">
+                  {[s.phone, s.email].filter(Boolean).join(' · ') ||
+                    'Pas de contact'}
+                </Typography>
+              </Box>
+              {canEdit && (
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  alignItems="center"
+                  flexWrap="wrap"
+                  useFlexGap>
+                  <Button
+                    size="small"
+                    startIcon={<ContentCopyIcon />}
+                    onClick={() =>
+                      copy(
+                        `Bonjour ${s.name}, voici votre lien pour cocher les présences de la sortie « ${a.title} » : ${linkOf(s)}`,
+                        'Message avec le lien copié'
+                      )
+                    }>
+                    Copier le lien
+                  </Button>
+                  <Button
+                    size="small"
+                    color="inherit"
+                    onClick={() =>
+                      act(
+                        () =>
+                          axios.post(
+                            `${BASE_URL}/admin/accompagnateurs/${s.id}/nouveau-lien`
+                          ),
+                        "Le lien n'a pas pu être renouvelé"
+                      )
+                    }>
+                    Nouveau lien
+                  </Button>
+                  <IconButton
+                    size="small"
+                    aria-label="Modifier"
+                    title="Modifier"
+                    onClick={() =>
+                      setEditing({
+                        id: s.id,
+                        name: s.name || '',
+                        phone: s.phone || '',
+                        email: s.email || '',
+                        role: s.role,
+                        student_id: s.student_id || '',
+                      })
+                    }>
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    aria-label="Retirer"
+                    title="Retirer"
+                    onClick={() =>
+                      act(
+                        () =>
+                          axios.delete(
+                            `${BASE_URL}/admin/accompagnateurs/${s.id}`
+                          ),
+                        "L'accompagnateur n'a pas pu être retiré"
+                      )
+                    }>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
+              )}
+            </Stack>
+          </Paper>
+        )
+      )}
       {canEdit && (
         <Paper variant="outlined" sx={{ p: 1.5 }}>
           <Typography fontWeight={600} sx={{ mb: 1 }}>
             Ajouter un accompagnateur
           </Typography>
-          <Box
-            sx={{
-              display: 'grid',
-              gap: 1,
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-            }}>
-            <TextField
-              size="small"
-              label="Nom"
-              value={form.name}
-              onChange={set('name')}
-            />
-            <TextField
-              select
-              size="small"
-              label="Rôle"
-              value={form.role}
-              onChange={set('role')}>
-              <MenuItem value="responsable">Responsable</MenuItem>
-              <MenuItem value="accompagnateur">Accompagnateur</MenuItem>
-              <MenuItem value="parent">Parent d'un enfant inscrit</MenuItem>
-            </TextField>
-            {form.role === 'parent' && (
-              <TextField
-                select
-                size="small"
-                label="Parent de"
-                value={form.student_id || ''}
-                onChange={set('student_id')}
-                sx={{ gridColumn: { sm: '1 / -1' } }}>
-                {a.registrations
-                  .filter((r) => r.status === 'inscrit')
-                  .map((r) => (
-                    <MenuItem key={r.student_id} value={r.student_id}>
-                      {fullName(r)}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            )}
-            <TextField
-              size="small"
-              label="Téléphone"
-              value={form.phone}
-              onChange={set('phone')}
-            />
-            <TextField
-              size="small"
-              label="E-mail"
-              value={form.email}
-              onChange={set('email')}
-            />
-          </Box>
+          <StaffFields a={a} form={form} set={set} />
           <Button
             sx={{ mt: 1 }}
             variant="contained"
@@ -1083,7 +1157,7 @@ const PresenceSheet = ({ a }) => (
     <Typography variant="body2" sx={{ mb: 1 }}>
       {frDate(a.date)} {hours(a)} · {a.place || ''}
       {a.organizer
-        ? ` · Organisateur : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+        ? ` · Responsable : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
         : ''}
     </Typography>
     <Typography variant="body2" sx={{ mb: 1 }}>
@@ -1254,13 +1328,13 @@ const ActivityPage = () => {
       <OwnerLine a={a} onChanged={load} />
       {a.organizer && (
         <Typography variant="body2" color="text.secondary">
-          Organisateur : {a.organizer}
+          Responsable : {a.organizer}
           {a.organizer_phone ? ` · ${a.organizer_phone}` : ''}
         </Typography>
       )}
       {cultureRole && !canEdit && (
         <Alert severity="info" sx={{ mt: 1.5 }}>
-          Sortie gérée par {a.owner || 'un autre responsable'} : vous pouvez la
+          Sortie rédigée par {a.owner || 'un autre rédacteur'} : vous pouvez la
           consulter, pas la modifier.
         </Alert>
       )}
