@@ -192,7 +192,7 @@ const FIELDS = [
   'places',
   'deadline',
   'fee',
-  'adults_per_students',
+  'companions',
   'prep',
   'debrief',
   'review',
@@ -601,10 +601,11 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
         <TextField
           size="small"
           type="number"
-          label="Un adulte pour … enfants"
-          value={form.adults_per_students ?? 8}
-          onChange={set('adults_per_students')}
-          inputProps={{ min: 1 }}
+          label="Nombre d'accompagnants prévus"
+          value={form.companions ?? ''}
+          onChange={set('companions')}
+          inputProps={{ min: 0 }}
+          helperText="Adultes qui encadrent les enfants (bénévoles, parents)."
           disabled={d}
         />
       </Section>

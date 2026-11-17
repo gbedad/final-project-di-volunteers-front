@@ -851,18 +851,22 @@ const StaffTab = ({ a, canEdit, reload }) => {
       toastError(err, text);
     }
   };
-  const registered = a.registrations.filter(
-    (r) => r.status === 'inscrit'
-  ).length;
-  const needed = Math.ceil(registered / (a.adults_per_students || 8));
+  // Adults planned (onglet Infos) and those already named here
+  const planned = a.companions ?? null;
+  const missing = planned !== null ? planned - a.staff.length : 0;
   return (
     <Stack spacing={2}>
-      {registered > 0 && a.staff.length < needed && (
+      {missing > 0 && (
         <Alert severity="warning">
-          {registered} élèves inscrits : il faut au moins {needed} adulte
-          {needed > 1 ? 's' : ''} (un pour {a.adults_per_students || 8} élèves).{' '}
-          {a.staff.length} prévu{a.staff.length > 1 ? 's' : ''}.
+          {planned} accompagnant{planned > 1 ? 's' : ''} prévu
+          {planned > 1 ? 's' : ''}, {a.staff.length} inscrit
+          {a.staff.length > 1 ? 's' : ''} ici : il en manque {missing}.
         </Alert>
+      )}
+      {planned === null && (
+        <Typography variant="body2" color="text.secondary">
+          Nombre d'accompagnants prévus : à indiquer dans l'onglet Infos.
+        </Typography>
       )}
       <Typography variant="body2" color="text.secondary">
         Chaque accompagnateur reçoit son propre lien pour cocher les présences
@@ -1306,7 +1310,9 @@ const ActivityPage = () => {
         sx={{ mt: 2, mb: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Tab label="Infos" />
         <Tab label={`Inscrits (${registered})`} />
-        <Tab label={`Accompagnateurs (${a.staff.length})`} />
+        <Tab
+          label={`Accompagnateurs (${a.staff.length}${a.companions != null ? `/${a.companions}` : ''})`}
+        />
         <Tab label="Budget" />
         <Tab label={`Chat (${chatCount ?? (a.chat || []).length})`} />
       </Tabs>
