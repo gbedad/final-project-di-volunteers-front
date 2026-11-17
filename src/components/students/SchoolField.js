@@ -12,12 +12,15 @@ const SchoolField = ({ value, onChange }) => {
   const [input, setInput] = useState('');
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  // The last search failed (server or directory out of reach)
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const q = input.trim();
     if (q.length < 3 || q === schoolLabel(value)) return undefined;
     const timer = setTimeout(async () => {
       setLoading(true);
+      setFailed(false);
       try {
         const { data } = await axios.get(`${BASE_URL}/admin/schools`, {
           params: { q },
@@ -25,6 +28,7 @@ const SchoolField = ({ value, onChange }) => {
         setOptions(data);
       } catch {
         setOptions([]);
+        setFailed(true);
       } finally {
         setLoading(false);
       }
@@ -47,7 +51,9 @@ const SchoolField = ({ value, onChange }) => {
       noOptionsText={
         input.trim().length < 3
           ? 'Tapez au moins 3 lettres'
-          : 'Aucun établissement'
+          : failed
+            ? 'Recherche indisponible pour le moment : continuez à taper ou réessayez'
+            : 'Aucun établissement'
       }
       renderOption={(props, option) => (
         <li {...props} key={option.uai || option.name}>
