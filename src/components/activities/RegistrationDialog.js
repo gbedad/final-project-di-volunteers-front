@@ -20,6 +20,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EmailIcon from '@mui/icons-material/Email';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {
   ATTENDANCES,
   BASE_URL,
@@ -118,6 +119,31 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
     } catch (err) {
       toastError(err, 'Document indisponible');
     }
+  };
+  // Authorisation received on paper: its scan (photo or PDF), kept with the
+  // student's documents; the authorisation is then marked received
+  const sendScan = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > 9 * 1024 * 1024) {
+      toast.error('Fichier trop lourd (9 Mo au plus)', {
+        position: 'bottom-left',
+      });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () =>
+      run(
+        () =>
+          axios.post(
+            `${BASE_URL}/admin/inscriptions-activites/${r.id}/autorisation-papier`,
+            { file: reader.result, name: file.name }
+          ),
+        'Scan de l’autorisation enregistré',
+        "Le scan n'a pas pu être enregistré"
+      );
+    reader.readAsDataURL(file);
   };
   const consent =
     CONSENT_STATES[r.consent_state] || CONSENT_STATES['à demander'];
@@ -232,6 +258,34 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                     <Typography variant="body2">Reçue sur papier</Typography>
                   }
                 />
+              )}
+              {r.consent_state === 'reçue' && r.consent_file_id && (
+                <Button
+                  size="small"
+                  startIcon={<PictureAsPdfIcon />}
+                  onClick={openPdf}
+                  sx={{ alignSelf: 'flex-start' }}>
+                  Voir le scan de l'autorisation
+                </Button>
+              )}
+              {canEdit && r.consent_state !== 'signée' && (
+                <Button
+                  component="label"
+                  size="small"
+                  variant="outlined"
+                  startIcon={<UploadFileIcon />}
+                  disabled={busy}
+                  sx={{ alignSelf: 'flex-start' }}>
+                  {r.consent_file_id
+                    ? 'Remplacer le scan'
+                    : "Joindre le scan de l'autorisation papier"}
+                  <input
+                    hidden
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={sendScan}
+                  />
+                </Button>
               )}
             </Stack>
           </Part>
