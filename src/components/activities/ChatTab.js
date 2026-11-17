@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import {
   Box,
   Button,
+  IconButton,
   InputAdornment,
   Paper,
   Stack,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import SendIcon from '@mui/icons-material/Send';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import { BASE_URL } from './activityUtils';
 
 // Who is connected (first name shown before what they type)
@@ -41,7 +43,13 @@ const ChatTab = ({ activityId, onCount }) => {
   const [messages, setMessages] = useState(null);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
-  const end = useRef(null);
+  // The window of messages (fixed height, scrolls by itself)
+  const box = useRef(null);
+  // At the bottom (or a message just sent): the new ones are shown
+  const atBottom = useRef(true);
+  const stick = useRef(true);
+  // Own message asked to be deleted (its time)
+  const [deleting, setDeleting] = useState(null);
 
   const show = useCallback(
     (list) => {
@@ -61,11 +69,20 @@ const ChatTab = ({ activityId, onCount }) => {
     const t = setInterval(load, REFRESH_MS);
     return () => clearInterval(t);
   }, [load]);
-  // The last message in sight
+  // The last messages in sight, as in WhatsApp: unless one scrolled up to
+  // read older ones (a message sent always brings back to the bottom)
   const count = messages?.length || 0;
   useEffect(() => {
-    end.current?.scrollIntoView({ block: 'nearest' });
-  }, [count]);
+    const el = box.current;
+    if (el && (stick.current || atBottom.current))
+      el.scrollTop = el.scrollHeight;
+    stick.current = false;
+  }, [count, messages]);
+  const onScroll = () => {
+    const el = box.current;
+    if (el)
+      atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+  };
 
   const send = async () => {
     if (!text.trim()) return;
@@ -76,6 +93,7 @@ const ChatTab = ({ activityId, onCount }) => {
         { text }
       );
       setText('');
+      stick.current = true;
       show(data);
     } catch (err) {
       toast.error(
@@ -87,9 +105,37 @@ const ChatTab = ({ activityId, onCount }) => {
     }
   };
 
+  const remove = async (m) => {
+    try {
+      const { data } = await axios.delete(
+        `${BASE_URL}/admin/activites/${activityId}/chat`,
+        { data: { at: m.at } }
+      );
+      setDeleting(null);
+      show(data);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Le message n'a pas pu être supprimé",
+        { position: 'bottom-left' }
+      );
+    }
+  };
+
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>
-      <Stack spacing={1.25} sx={{ maxHeight: 480, overflowY: 'auto', mb: 2 }}>
+      <Stack
+        ref={box}
+        onScroll={onScroll}
+        spacing={1.25}
+        sx={{
+          // Fixed height: the page does not move, the messages scroll
+          height: { xs: '55vh', sm: 440 },
+          overflowY: 'auto',
+          mb: 2,
+          pr: 0.5,
+          // The few first messages at the bottom, near the input
+          '& > :first-of-type': { mt: 'auto' },
+        }}>
         {messages === null && (
           <Typography variant="body2" color="text.secondary">
             Chargement…
@@ -124,13 +170,41 @@ const ChatTab = ({ activityId, onCount }) => {
                 sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
                 <b>{m.by} :</b> {m.text}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {when(m.at)}
-              </Typography>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography variant="caption" color="text.secondary">
+                  {when(m.at)}
+                </Typography>
+                {mine && deleting !== m.at && (
+                  <IconButton
+                    size="small"
+                    aria-label="Supprimer mon message"
+                    title="Supprimer mon message"
+                    onClick={() => setDeleting(m.at)}
+                    sx={{ p: 0.25 }}>
+                    <DeleteIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                )}
+                {mine && deleting === m.at && (
+                  <>
+                    <Button
+                      size="small"
+                      color="error"
+                      sx={{ minWidth: 0, py: 0 }}
+                      onClick={() => remove(m)}>
+                      Supprimer
+                    </Button>
+                    <Button
+                      size="small"
+                      sx={{ minWidth: 0, py: 0 }}
+                      onClick={() => setDeleting(null)}>
+                      Garder
+                    </Button>
+                  </>
+                )}
+              </Stack>
             </Box>
           );
         })}
-        <div ref={end} />
       </Stack>
       <Stack direction="row" spacing={1} alignItems="flex-end">
         <TextField
