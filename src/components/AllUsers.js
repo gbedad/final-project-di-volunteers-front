@@ -169,8 +169,8 @@ function DashboardContent() {
           }}>
           <Container maxWidth="xxl" sx={{ mt: 4, mb: 2 }}>
             <PageHeader
-              title="Tuteurs bénévoles"
-              subtitle="Candidats et tuteurs : recherche, suivi des candidatures et actions groupées. Les statistiques sont dans « Analyse »."
+              title="Bénévoles"
+              subtitle="Candidats (au tutorat et autres) et bénévoles : recherche, suivi des candidatures et actions groupées. Les statistiques sont dans « Analyse »."
               actions={
                 <Stack
                   direction="row"

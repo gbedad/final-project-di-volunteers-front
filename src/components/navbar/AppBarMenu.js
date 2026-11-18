@@ -678,7 +678,7 @@ function ResponsiveAppBar() {
                         <ListItemIcon>
                           <PeopleIcon fontSize="small" />
                         </ListItemIcon>
-                        Tuteurs bénévoles
+                        Bénévoles
                       </MenuItem>
                       {isManager(userLogged.user.role) && (
                         <MenuItem

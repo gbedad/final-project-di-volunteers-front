@@ -371,7 +371,7 @@ const ChangeUserStatus = () => {
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/view-users', { state: { userLogged } })}
           sx={{ mt: 2 }}>
-          Tuteurs bénévoles
+          Bénévoles
         </Button>
         <Stack
           direction={'row'}
