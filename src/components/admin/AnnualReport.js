@@ -15,28 +15,19 @@ import {
 } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import {
+  Bars,
+  Figure,
+  Section,
+  fr,
+  frDate,
+  monthLabel,
+  years,
+  OutingFigures,
+  outingSummary,
+} from './reportParts';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const fr = (n) =>
-  n === null || n === undefined
-    ? '—'
-    : Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 1 });
-// "1er septembre 2026" (French ordinal on the first of the month)
-const frDate = (s) =>
-  new Date(`${s}T12:00:00Z`)
-    .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(/^1 /, '1er ');
-const monthLabel = (m) =>
-  new Date(`${m}-15T12:00:00Z`).toLocaleDateString('fr-FR', {
-    month: 'long',
-  });
-// School years offered: the current one and the three before
-const years = () => {
-  const now = new Date();
-  const y = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
-  return [0, 1, 2, 3].map((i) => `${y - i}-${y - i + 1}`);
-};
-
 // Printed: no menu, no buttons, figures kept together
 const PRINT_CSS = `
 @media print {
@@ -46,90 +37,6 @@ const PRINT_CSS = `
   .report-block { break-inside: avoid; }
   .report-page { margin: 0 !important; max-width: none !important; }
 }`;
-
-const Figure = ({ value, label, detail }) => (
-  <Box sx={{ minWidth: 0 }}>
-    <Typography
-      variant="h4"
-      color="primary"
-      sx={{ fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
-      {value}
-    </Typography>
-    <Typography variant="body2" fontWeight={600}>
-      {label}
-    </Typography>
-    {detail && (
-      <Typography variant="caption" color="text.secondary">
-        {detail}
-      </Typography>
-    )}
-  </Box>
-);
-
-// One row of a breakdown: label, value, bar to scale
-const Bars = ({ rows, valueKey = 'count', unit = '', total }) => {
-  const max = Math.max(1, ...rows.map((r) => r[valueKey]));
-  return (
-    <Stack spacing={0.75}>
-      {rows.map((r) => (
-        <Box
-          key={r.label}
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 11rem) 1fr auto',
-            gap: 1.5,
-            alignItems: 'center',
-          }}>
-          <Typography variant="body2" noWrap title={r.label}>
-            {r.label}
-          </Typography>
-          <Box sx={{ bgcolor: 'action.hover', borderRadius: 1, height: 10 }}>
-            <Box
-              sx={{
-                width: `${(r[valueKey] / max) * 100}%`,
-                bgcolor: 'primary.main',
-                height: '100%',
-                borderRadius: 1,
-              }}
-            />
-          </Box>
-          <Typography
-            variant="body2"
-            sx={{
-              fontVariantNumeric: 'tabular-nums',
-              minWidth: 72,
-              textAlign: 'right',
-            }}>
-            {fr(r[valueKey])}
-            {unit}
-            {total ? ` (${Math.round((r[valueKey] * 100) / total)} %)` : ''}
-          </Typography>
-        </Box>
-      ))}
-    </Stack>
-  );
-};
-
-const Section = ({ title, children, note }) => (
-  <Paper
-    variant="outlined"
-    className="report-block"
-    sx={{ p: 2.5, minWidth: 0 }}>
-    <Typography variant="h6" component="h2" sx={{ mb: 1.5 }}>
-      {title}
-    </Typography>
-    {children}
-    {note && (
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        component="p"
-        sx={{ mt: 1.5 }}>
-        {note}
-      </Typography>
-    )}
-  </Paper>
-);
 
 // Annual report for the funders: one school year, printable
 const AnnualReport = () => {
@@ -153,7 +60,10 @@ const AnnualReport = () => {
         `${f.sessions} séances réalisées, soit ${fr(f.hours)} heures de tutorat (dont ${fr(f.remote_hours)} h à distance).`,
         `Élèves : ${data.cycles.map((c) => `${c.count} en ${c.label.toLowerCase()}`).join(', ')}, venant de ${data.schools.count} établissements.`,
         `Quotient familial médian : ${data.qf.median !== null ? `${fr(data.qf.median)} €` : 'non disponible'}.`,
-      ].join('\n')
+        data.outings ? outingSummary(data.outings) : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
     : '';
   const copy = async () => {
     try {
@@ -336,6 +246,25 @@ const AnnualReport = () => {
               />
             </Section>
           </Box>
+
+          {/* Cultural outings of the same year */}
+          {data.outings && (
+            <Paper variant="outlined" className="report-block" sx={{ p: 2.5 }}>
+              <Typography variant="h6" component="h2" sx={{ mb: 1 }}>
+                Activités culturelles
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2.5 }}>
+                {/* Under its own title: without "Activités culturelles :" */}
+                {outingSummary(data.outings).replace(
+                  /^Activités culturelles : (.)/,
+                  (m, c) => c.toUpperCase()
+                )}
+              </Typography>
+              {data.outings.figures.outings > 0 && (
+                <OutingFigures o={data.outings} />
+              )}
+            </Paper>
+          )}
 
           <Paper
             variant="outlined"

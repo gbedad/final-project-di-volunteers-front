@@ -27,6 +27,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import PageHeader from './PageHeader';
 import StudentAnalysis from './StudentAnalysis';
+import OutingAnalysis from './OutingAnalysis';
 import { useSessionState } from '../../js/useSessionState';
 
 import { ACTIVE_TUTORS } from '../../js/volunteerSearch';
@@ -184,6 +185,7 @@ const Analysis = () => {
         onChange={(e, value) => value && setView(value)}>
         <ToggleButton value="tutors">Tuteurs</ToggleButton>
         <ToggleButton value="students">Élèves</ToggleButton>
+        <ToggleButton value="outings">Sorties</ToggleButton>
       </ToggleButtonGroup>
       {/* For the funders: the figures of a school year */}
       <Button
@@ -251,6 +253,20 @@ const Analysis = () => {
     } catch {}
     navigate('/view-users', { state: { userLogged } });
   };
+
+  // Cultural outings of a school year
+  if (view === 'outings') {
+    return (
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <PageHeader
+          title="Analyse"
+          subtitle="Sorties culturelles : participation des enfants, accompagnateurs, budget."
+          actions={viewToggle}
+        />
+        <OutingAnalysis />
+      </Container>
+    );
+  }
 
   if (view === 'students') {
     return (
