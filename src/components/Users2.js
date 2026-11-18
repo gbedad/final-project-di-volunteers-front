@@ -1000,19 +1000,16 @@ export default function DataGridDemo(props) {
         const site =
           item.skill.where_location && checkLocation(item.skill.where_location);
 
-        if (item.mission === null) {
-          return null;
-        }
-
-        return createData(
+        // Accounts created by the team (no registration mission) are kept
+        const row = createData(
           item.id,
 
           item.first_name,
           item.last_name,
           item.email,
           item.phone,
-          item.mission.title || null,
-          item.mission.location || null,
+          item.mission?.title || null,
+          item.mission?.location || null,
           site,
           item.skill,
           item.created_at,
@@ -1027,6 +1024,12 @@ export default function DataGridDemo(props) {
           item.cohorte_year || [],
           item.is_demo
         );
+        // Tutoring and/or outings (column "Activités")
+        return {
+          ...row,
+          engagements: item.engagements,
+          engagements_wished: item.engagements_wished,
+        };
       })
       .filter((item) => item !== null);
     setRows(newRows);

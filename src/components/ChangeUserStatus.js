@@ -565,8 +565,8 @@ const ChangeUserStatus = () => {
                   <ListItemText
                     primary="Message de motivation"
                     secondary={user.message}
-                    // primary={user.mission.title}
-                    // secondary={user.mission.description}
+                    // primary={user.mission?.title}
+                    // secondary={user.mission?.description}
                   />
                 </ListItem>
                 <ListItem>
@@ -575,7 +575,7 @@ const ChangeUserStatus = () => {
                       <MapIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={user.mission.location} secondary="" />
+                  <ListItemText primary={user.mission?.location} secondary="" />
                 </ListItem>
                 <ListItem>
                   <ListItemAvatar>
@@ -631,8 +631,8 @@ const ChangeUserStatus = () => {
                               component="div">
                               <ListItemText
                                 // primary={user.message}
-                                primary={user.mission.title}
-                                secondary={user.mission.description}
+                                primary={user.mission?.title}
+                                secondary={user.mission?.description}
                               />
                             </Typography>
                           </Paper>

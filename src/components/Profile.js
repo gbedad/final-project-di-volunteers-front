@@ -452,8 +452,8 @@ const ProfilePage = ({ status }) => {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={user.mission.title}
-                    secondary={user.mission.description}
+                    primary={user.mission?.title}
+                    secondary={user.mission?.description}
                   />
                 </ListItem>
                 <ListItem>
@@ -462,7 +462,7 @@ const ProfilePage = ({ status }) => {
                       <MapIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={user.mission.location} secondary="" />
+                  <ListItemText primary={user.mission?.location} secondary="" />
                 </ListItem> */}
                 {/* {editing ? (
                   <label>
@@ -783,7 +783,7 @@ const ProfilePage = ({ status }) => {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={user.mission.title}
+                    primary={user.mission?.title}
                     secondary={
                       <React.Fragment>
                         <Typography
@@ -791,7 +791,7 @@ const ProfilePage = ({ status }) => {
                           component="span"
                           variant="body2"
                           color="text.primary">
-                          user.mission.description
+                          user.mission?.description
                         </Typography>
                       </React.Fragment>
                     }
@@ -803,7 +803,7 @@ const ProfilePage = ({ status }) => {
                       <MapIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={user.mission.location} secondary="" />
+                  <ListItemText primary={user.mission?.location} secondary="" />
                 </ListItem>
               </List>
             )}
