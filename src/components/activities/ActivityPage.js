@@ -1149,6 +1149,11 @@ const AmbassadorDialog = ({ a, onClose }) => {
   );
 };
 
+// First name and last name of the parent (parent 2 when parent 1 has none)
+const parentName = (r) =>
+  [r.parent1_firstname, r.parent1_lastname].filter(Boolean).join(' ') ||
+  [r.parent2_firstname, r.parent2_lastname].filter(Boolean).join(' ');
+
 // Printable list for the day (only shown when printing)
 const PresenceSheet = ({ a }) => (
   <Box className="activity-sheet" sx={{ display: 'none', p: 2, fontSize: 12 }}>
@@ -1211,7 +1216,7 @@ const PresenceSheet = ({ a }) => (
               <td>{r.student_phone || ''}</td>
               <td>
                 {[
-                  r.parent1_firstname,
+                  parentName(r),
                   r.emergency_phone || r.parent1_phone || r.parent2_phone,
                 ]
                   .filter(Boolean)
