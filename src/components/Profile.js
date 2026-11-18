@@ -436,7 +436,9 @@ const ProfilePage = ({ status }) => {
           <BorderedBoxWithLabel
             label="Vos données personnelles"
             sx={{ display: 'flex' }}>
-            {user.mission ? (
+            {/* The account is known (with or without a registration
+                mission: accounts created by the team have none) */}
+            {user.id ? (
               <List
                 sx={{
                   width: '100%',
