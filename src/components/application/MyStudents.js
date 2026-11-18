@@ -29,6 +29,7 @@ import {
 import { ExtrasList } from '../students/ExtraSessions';
 import SignInCard from './SignInCard';
 import InstallApp from './InstallApp';
+import TutorialCard from './TutorialCard';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { BreaksList, NoSessionDialog, SlotRequestDialog } from './PairChanges';
@@ -129,6 +130,7 @@ const MyStudents = () => {
   return (
     <Stack spacing={2} sx={{ maxWidth: 820, mx: 'auto', my: 2 }}>
       <InstallApp />
+      <TutorialCard />
       <SignInCard pairs={pairs} onChanged={load} />
       {pairs.map((pair) => {
         const s = pair.student;

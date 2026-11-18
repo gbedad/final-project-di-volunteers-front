@@ -37,6 +37,7 @@ import FilterBar from '../FilterBar';
 import { matchesWords } from '../../js/textSearch';
 import { useSessionState } from '../../js/useSessionState';
 import ConventionTemplateCard from './ConventionTemplateCard';
+import TutorialsAdmin from './TutorialsAdmin';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -324,6 +325,7 @@ const AdminFiles = () => {
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <PageHeader title="Documents des bénévoles" />
       <ConventionTemplateCard canReplace={canDelete} />
+      <TutorialsAdmin canEdit={canDelete} />
 
       <Tabs value={tab} onChange={(e, value) => setTab(value)} sx={{ mb: 2 }}>
         <Tab label={`Tous les documents (${files.length})`} />

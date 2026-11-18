@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import {
   Box,
   Button,
+  Link,
   Paper,
   Rating,
   Stack,
@@ -16,6 +17,7 @@ import EventBusyIcon from '@mui/icons-material/EventBusy';
 import DrawIcon from '@mui/icons-material/Draw';
 import SignaturePad from './SignaturePad';
 import { PROGRESS_LABELS } from '../students/Sessions';
+import { tutorialPath, useTutorials } from '../../js/tutorials';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const DAYS_FR = [
@@ -204,6 +206,27 @@ const QuickReport = ({ pair, session, onChanged }) => {
           </Button>
         </Stack>
       </Stack>
+    </Box>
+  );
+};
+
+// "Need help?" under the card, when the video tutorial of the sign-in has
+// been sent by the team (opens in a new tab: the sign-in stays as it is)
+const HelpLink = () => {
+  const tutorial = (useTutorials() || []).find(
+    (t) => t.slug === 'emargement' && t.has_video
+  );
+  if (!tutorial) return null;
+  return (
+    <Box component="span" sx={{ display: 'block', mt: 0.75 }}>
+      Besoin d'aide ?{' '}
+      <Link
+        href={tutorialPath(tutorial.slug)}
+        target="_blank"
+        rel="noopener"
+        fontWeight={600}>
+        Voir le tutoriel vidéo
+      </Link>
     </Box>
   );
 };
@@ -420,6 +443,7 @@ const SignInCard = ({ pairs, onChanged }) => {
         votre compte-rendu. La date et l'heure sont enregistrées
         automatiquement. Séances à distance : le rapport Zoom fait foi, pas
         besoin d'émarger.
+        <HelpLink />
       </Typography>
     </Paper>
   );

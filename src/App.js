@@ -48,6 +48,7 @@ import StudentPage from './components/students/StudentPage';
 import PairsPage from './components/students/PairsPage';
 import TodoPage from './components/admin/TodoPage';
 import AnnualReport from './components/admin/AnnualReport';
+import TutorialPage from './pages/TutorialPage';
 import AccountingPage from './components/admin/AccountingPage';
 import ActivitiesPage from './components/activities/ActivitiesPage';
 import ActivityPage from './components/activities/ActivityPage';
@@ -212,6 +213,8 @@ function App() {
                 />
               }
             />
+            <Route path="/tutoriel" element={<TutorialPage />} />
+            <Route path="/tutoriel/:slug" element={<TutorialPage />} />
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/binomes/seances" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
