@@ -29,6 +29,7 @@ import MyStudents from './application/MyStudents';
 import ApplicationChecklist from './application/ApplicationChecklist';
 import DocumentSlots from './application/DocumentSlots';
 import MissingBanner from './application/MissingBanner';
+import Engagements from './application/Engagements';
 import {
   useApplicationProgress,
   missingItems,
@@ -95,24 +96,26 @@ function a11yProps(index) {
 // Sections of the volunteer's space; the convention opens after the
 // interview, the students once validated
 const EARLY = ['Compte créé', 'A renseigner', 'A télécharger', 'A interviewer'];
-const sectionsOf = (status, ownSpace, missing) =>
+// Accompanying volunteer (tutor false): no convention, no students
+const sectionsOf = (status, ownSpace, missing, tutor = true) =>
   [
     { index: 0, label: 'Mon statut' },
     { index: 1, label: 'Mon profil', items: missing?.profile },
     { index: 2, label: 'Mes disponibilités', items: missing?.wishes, disabled: status === 'Déclinée' },
     { index: 3, label: 'Mes documents', items: missing?.documents, disabled: status === 'Déclinée' },
-    { index: 4, label: 'Ma convention', disabled: EARLY.includes(status) || status === 'Déclinée' },
+    { index: 4, label: 'Ma convention', hidden: !tutor, disabled: !tutor || EARLY.includes(status) || status === 'Déclinée' },
     ownSpace && {
       index: 5,
       label: 'Mes élèves',
-      disabled: !['Validé', 'A conserver'].includes(status),
+      hidden: !tutor,
+      disabled: !tutor || !['Validé', 'A conserver'].includes(status),
     },
   ].filter(Boolean);
 
 // Phone header. Validated tutor: "Mes élèves" + a "Mon dossier" menu with
 // the application sections. Candidate: the sections on one scrolling line.
-const MobileTabs = ({ value, setValue, status, ownSpace, tabState, missing, folderMenu, setFolderMenu, tutor }) => {
-  const sections = sectionsOf(status, ownSpace, missing);
+const MobileTabs = ({ value, setValue, status, ownSpace, tabState, missing, folderMenu, setFolderMenu, tutor, isTutor }) => {
+  const sections = sectionsOf(status, ownSpace, missing, isTutor).filter((x) => !x.hidden);
   if (tutor) {
     const folder = sections.filter((x) => x.index !== 5);
     const current = folder.find((x) => x.index === value);
@@ -294,6 +297,11 @@ const BasicTabs = () => {
   // The volunteer's own space (not an admin editing a profile)
   const ownSpace = String(userId) === String(location.state?.userLogged?.user?.id);
   const missing = progress ? missingItems(progress) : null;
+  // Tutor, or accompanying volunteer (outings only: no convention, no
+  // students, no tutoring wishes)
+  const isTutor = progress?.tutor !== false;
+  // The account (activities wished and given)
+  const [account, setAccount] = useState(null);
   const tabState = (items) =>
     !items || status === 'Déclinée'
       ? {}
@@ -316,10 +324,10 @@ const BasicTabs = () => {
   // candidate): back to the status
   useEffect(() => {
     if (!status) return;
-    const section = sectionsOf(status, ownSpace, missing).find((x) => x.index === value);
+    const section = sectionsOf(status, ownSpace, missing, isTutor).find((x) => x.index === value);
     if (section?.disabled) setValue(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, value]);
+  }, [status, value, isTutor]);
 
   const getUser = async () => {
     try {
@@ -328,6 +336,7 @@ const BasicTabs = () => {
       );
       // console.log(response.data.status);
       setStatus(response.data.status);
+      setAccount(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -388,7 +397,8 @@ const BasicTabs = () => {
                 missing={missing}
                 folderMenu={folderMenu}
                 setFolderMenu={setFolderMenu}
-                tutor={ownSpace && TUTOR_STATUSES.includes(status)}
+                tutor={ownSpace && isTutor && TUTOR_STATUSES.includes(status)}
+                isTutor={isTutor}
               />
             )}
             <Box sx={{ display: screenSize === 'lg' ? 'block' : 'none' }}>
@@ -421,9 +431,12 @@ const BasicTabs = () => {
                   {...tabState(missing?.documents)}
                   disabled={status === 'Déclinée'}
                 />
+                {/* Kept (hidden) for an accompanying volunteer: the tabs
+                    are numbered by their position */}
                 <Tab
                   label="MA CONVENTION"
                   {...a11yProps(3)}
+                  sx={isTutor ? undefined : { display: 'none' }}
                   disabled={
                     status === 'Compte créé' ||
                     status === 'A renseigner' ||
@@ -445,6 +458,7 @@ const BasicTabs = () => {
                   <Tab
                     label="MES ÉLÈVES"
                     {...a11yProps(5)}
+                    sx={isTutor ? undefined : { display: 'none' }}
                     disabled={!['Validé', 'A conserver'].includes(status)}
                   />
                 )}
@@ -507,6 +521,7 @@ const BasicTabs = () => {
               handleChange={handleChange}
               finished={finished}
               conventionState={progress?.convention?.state}
+              tutor={isTutor}
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -521,7 +536,12 @@ const BasicTabs = () => {
               items={missing?.wishes}
               done="Vos souhaits et disponibilités sont complets."
             />
-            <Skills userId={userId} />
+            <Engagements
+              userId={userId}
+              user={account}
+              onSaved={getUser}
+            />
+            {isTutor && <Skills userId={userId} />}
           </TabPanel>
           <TabPanel value={value} index={3}>
             <div>

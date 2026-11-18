@@ -912,6 +912,17 @@ const StaffTab = ({ a, canEdit, reload }) => {
       toastError(err, "L'accompagnateur n'a pas pu être modifié");
     }
   };
+  // Validated volunteers given the outings: picked, their name and
+  // contact are filled in
+  const [volunteers, setVolunteers] = useState([]);
+  useEffect(() => {
+    if (!canEdit) return;
+    axios
+      .get(`${BASE_URL}/admin/activites-benevoles`)
+      .then(({ data }) => setVolunteers(data))
+      .catch(() => setVolunteers([]));
+  }, [canEdit]);
+  const already = new Set(a.staff.map((s) => s.user_id).filter(Boolean));
   const add = async () => {
     try {
       await axios.post(
@@ -995,9 +1006,11 @@ const StaffTab = ({ a, canEdit, reload }) => {
                     label={
                       s.role === 'responsable'
                         ? 'Responsable'
-                        : s.role === 'parent'
-                          ? `Parent${s.child_first_name ? ` de ${s.child_first_name}` : ''}`
-                          : 'Accompagnateur'
+                        : s.user_id && s.role === 'accompagnateur'
+                          ? 'Bénévole accompagnateur'
+                          : s.role === 'parent'
+                            ? `Parent${s.child_first_name ? ` de ${s.child_first_name}` : ''}`
+                            : 'Accompagnateur'
                     }
                   />
                 </Stack>
@@ -1080,6 +1093,38 @@ const StaffTab = ({ a, canEdit, reload }) => {
           <Typography fontWeight={600} sx={{ mb: 1 }}>
             Ajouter un accompagnateur
           </Typography>
+          {volunteers.length > 0 && (
+            <Autocomplete
+              size="small"
+              options={volunteers}
+              getOptionLabel={(v) => `${v.first_name} ${v.last_name}`.trim()}
+              getOptionDisabled={(v) => already.has(v.id)}
+              isOptionEqualToValue={(o, v) => o.id === v.id}
+              value={volunteers.find((v) => v.id === form.user_id) || null}
+              onChange={(e, v) =>
+                setForm((f) =>
+                  v
+                    ? {
+                        ...f,
+                        user_id: v.id,
+                        name: `${v.first_name} ${v.last_name}`.trim(),
+                        phone: v.phone || '',
+                        email: v.email || '',
+                        role: 'accompagnateur',
+                      }
+                    : { ...f, user_id: null }
+                )
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Choisir un bénévole accompagnateur"
+                  helperText="Ou saisir ci-dessous (parent, autre adulte)"
+                />
+              )}
+              sx={{ mb: 1.5 }}
+            />
+          )}
           <StaffFields a={a} form={form} set={set} />
           <Button
             sx={{ mt: 1 }}

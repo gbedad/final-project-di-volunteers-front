@@ -39,6 +39,7 @@ import { parsePhoneNumber } from 'awesome-phonenumber';
 import WhatsAppButton from './WhatsAppButton';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import { AvailabilityChip } from './application/Availability';
+import { engagementLabel, engagementsOf } from '../js/engagements';
 import EmailButton from './EmailButton';
 import BulkActions from './admin/BulkActions';
 import { useSessionState } from '../js/useSessionState';
@@ -407,6 +408,27 @@ export default function DataGridDemo(props) {
       headerName: 'Statut',
 
       width: 110,
+    },
+    // Tutoring and/or outings (given by the team, else wished): filter
+    // "contient Culture" for the accompanying volunteers
+    {
+      field: 'engagements',
+      headerName: 'Activités',
+      width: 150,
+      valueGetter: (params) =>
+        engagementsOf(params.row).map(engagementLabel).join(', '),
+      renderCell: ({ row }) => (
+        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+          {engagementsOf(row).map((e) => (
+            <Chip
+              key={e}
+              size="small"
+              variant={row.engagements?.length ? 'filled' : 'outlined'}
+              label={engagementLabel(e)}
+            />
+          ))}
+        </Box>
+      ),
     },
     {
       field: 'is_available',

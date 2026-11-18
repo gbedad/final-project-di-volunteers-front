@@ -90,20 +90,29 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
   if (progress.status === 'Déclinée') return null;
 
   const { profile, wishes, documents } = progress;
+  // Accompanying volunteer (outings only): no CV, no convention; B3 and
+  // attestation d'honorabilité before the validation
+  const tutor = progress.tutor !== false;
   const missing = missingItems(progress);
   const toFill = (items) => `À indiquer : ${joinFrench(items)}`;
   const sent = !EARLY_STATUSES.includes(progress.status);
   // After the interview: the convention is part of the application
   const convention = progress.convention;
   const conventionAsked =
-    CONVENTION_STATUSES.includes(progress.status) ||
-    (convention && convention.state !== 'to_sign');
+    tutor &&
+    (CONVENTION_STATUSES.includes(progress.status) ||
+      (convention && convention.state !== 'to_sign'));
+  // After the interview, the accompanying volunteer gives B3 + attestation
+  const companionDocsAsked =
+    !tutor && CONVENTION_STATUSES.includes(progress.status);
   const conventionDone = convention?.state === 'complete';
-  const steps = [profile, wishes, documents.cv && documents.id, sent];
+  const docsDone = (documents.cv || !tutor) && documents.id;
+  const steps = [profile, wishes, docsDone, sent];
   if (conventionAsked) steps.push(conventionDone);
+  if (companionDocsAsked) steps.push(documents.b3 && documents.honorability);
   const done = steps.filter(Boolean).length;
   const missingDocs = [
-    !documents.cv && 'CV',
+    tutor && !documents.cv && 'CV',
     !documents.id && "pièce d'identité",
   ].filter(Boolean);
 
@@ -132,18 +141,24 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
         />
         <Item
           done={wishes}
-          title="Mes souhaits et disponibilités"
+          title={
+            tutor
+              ? 'Mes souhaits et disponibilités'
+              : 'Mes activités et disponibilités'
+          }
           detail={wishes ? 'Remplis' : toFill(missing.wishes)}
           action="Compléter"
           onAction={() => onGoToTab(2)}
         />
         <Item
-          done={documents.cv && documents.id}
+          done={docsDone}
           title="Mes documents"
           detail={
             missingDocs.length
               ? `À déposer : ${missingDocs.join(' et ')}`
-              : "CV et pièce d'identité déposés"
+              : tutor
+                ? "CV et pièce d'identité déposés"
+                : "Pièce d'identité déposée"
           }
           action="Déposer"
           onAction={() => onGoToTab(3)}
@@ -155,7 +170,9 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
           detail={
             documents.b3
               ? 'Déposé'
-              : 'À fournir avant la signature de la convention (pas nécessaire pour l’entretien)'
+              : tutor
+                ? 'À fournir avant la signature de la convention (pas nécessaire pour l’entretien)'
+                : 'À fournir avant la validation (pas nécessaire pour l’entretien)'
           }
           action="Déposer"
           onAction={() => onGoToTab(3)}
@@ -180,8 +197,9 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
             onAction={() => onGoToTab(4)}
           />
         )}
-        {/* Only asked once the convention is signed */}
-        {progress.conventionSigned && (
+        {/* Only asked once the convention is signed (accompanying
+            volunteer: from the start) */}
+        {(progress.conventionSigned || !tutor) && (
           <Item
             done={documents.honorability}
             optional
@@ -189,11 +207,13 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
             detail={
               documents.honorability
                 ? 'Reçue'
-                : progress.honorabilityDue
-                  ? `À fournir avant le ${new Date(
-                      progress.honorabilityDue
-                    ).toLocaleDateString('fr-FR')}`
-                  : 'À fournir au plus tard un mois après la signature de la convention'
+                : !tutor
+                  ? 'À fournir avant la validation (vous accompagnerez des enfants)'
+                  : progress.honorabilityDue
+                    ? `À fournir avant le ${new Date(
+                        progress.honorabilityDue
+                      ).toLocaleDateString('fr-FR')}`
+                    : 'À fournir au plus tard un mois après la signature de la convention'
             }
             action="Déposer"
             onAction={() => onGoToTab(3)}
@@ -204,14 +224,20 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
       {sent ? (
         <Alert severity="success" sx={{ mt: 1 }}>
           {progress.status === 'Validé'
-            ? 'Votre candidature est validée. Bienvenue parmi les tuteurs bénévoles !'
-            : !conventionAsked
-              ? "Votre dossier a été envoyé. Nous vous contacterons pour organiser l'entretien."
-              : conventionDone
-                ? "Votre convention est complète : l'association va valider votre dossier."
-                : convention?.state === 'to_countersign'
-                  ? 'Merci ! Votre convention est en cours de signature par la présidente.'
-                  : 'Votre entretien est passé : dernière étape, signer votre convention.'}
+            ? tutor
+              ? 'Votre candidature est validée. Bienvenue parmi les tuteurs bénévoles !'
+              : 'Votre candidature est validée. Bienvenue parmi les bénévoles accompagnateurs !'
+            : companionDocsAsked
+              ? documents.b3 && documents.honorability
+                ? "Vos documents sont complets : l'association va valider votre dossier."
+                : "Votre entretien est passé : dernière étape, déposer votre extrait B3 et votre attestation d'honorabilité."
+              : !conventionAsked
+                ? "Votre dossier a été envoyé. Nous vous contacterons pour organiser l'entretien."
+                : conventionDone
+                  ? "Votre convention est complète : l'association va valider votre dossier."
+                  : convention?.state === 'to_countersign'
+                    ? 'Merci ! Votre convention est en cours de signature par la présidente.'
+                    : 'Votre entretien est passé : dernière étape, signer votre convention.'}
         </Alert>
       ) : (
         <Box sx={{ mt: 1, textAlign: 'center' }}>

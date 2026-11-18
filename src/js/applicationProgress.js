@@ -37,18 +37,27 @@ export const useApplicationProgress = (userId) => {
 export const missingItems = (progress) => {
   if (!progress) return { profile: [], wishes: [], documents: [] };
   const { details, documents } = progress;
+  // Accompanying volunteer (outings, no tutoring): no subjects nor weekly
+  // hours, no CV
+  const tutor = progress.tutor !== false;
   return {
     profile: [
       !details.address && 'votre adresse',
       !details.activity && 'votre activité',
     ].filter(Boolean),
-    wishes: [
-      !details.topics && 'les matières et niveaux',
-      !details.slots && 'vos jours et heures',
-      !details.places && 'un site (ou une modalité à distance)',
-    ].filter(Boolean),
+    wishes: (tutor
+      ? [
+          !details.topics && 'les matières et niveaux',
+          !details.slots && 'vos jours et heures',
+          !details.places && 'un site (ou une modalité à distance)',
+        ]
+      : [
+          !details.engagements && 'vos activités',
+          !details.periods && 'vos périodes de disponibilité',
+        ]
+    ).filter(Boolean),
     documents: [
-      !documents.cv && 'votre CV',
+      tutor && !documents.cv && 'votre CV',
       !documents.id && "votre pièce d'identité",
     ].filter(Boolean),
   };

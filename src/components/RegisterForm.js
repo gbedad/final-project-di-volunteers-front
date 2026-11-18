@@ -35,6 +35,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'react-phone-number-input/style.css';
 import PasswordInput from './PasswordInput';
+import { EngagementChoices } from './application/Engagements';
 import MotivationCounter, {
   MOTIVATION_MIN,
   MOTIVATION_MAX,
@@ -100,6 +101,8 @@ const RegisterForm = ({ mission }) => {
   const [phone, setPhone] = useState('');
   const [birth_date, setBirthDate] = useState('');
   const [message, setMessage] = useState('');
+  // Tutoring, outings…: at least one
+  const [engagements, setEngagements] = useState([]);
   const [errors, setErrors] = useState({});
   const [emailTaken, setEmailTaken] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -142,6 +145,9 @@ const RegisterForm = ({ mission }) => {
     if (!isStrongPassword()) {
       found.password = 'Le mot de passe ne respecte pas toutes les règles';
     }
+    if (!engagements.length) {
+      found.engagements = 'Choisissez au moins une activité';
+    }
     if (message.trim().length < MOTIVATION_MIN) {
       found.message = `Dites-nous en quelques mots pourquoi vous postulez (${MOTIVATION_MIN} caractères minimum)`;
     } else if (message.trim().length > MOTIVATION_MAX) {
@@ -173,6 +179,7 @@ const RegisterForm = ({ mission }) => {
         phone,
         birth_date,
         message,
+        engagements_wished: engagements,
         mission_id: typeof propsData === 'number' ? propsData : 1,
       });
       toast.success('Votre compte est créé, vous pouvez vous connecter.', {
@@ -343,6 +350,19 @@ const RegisterForm = ({ mission }) => {
                       </Box>
                     ))}
                   </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography fontWeight={600} sx={{ mb: 0.5 }}>
+                    Je souhaite m'engager pour
+                  </Typography>
+                  <EngagementChoices
+                    value={engagements}
+                    onChange={(list) => {
+                      setEngagements(list);
+                      setErrors(({ engagements: _, ...rest }) => rest);
+                    }}
+                    error={errors.engagements}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Textarea

@@ -8,14 +8,32 @@ const formatDate = (value) => new Date(value).toLocaleDateString('fr-FR');
 const DocumentsBanner = ({ progress }) => {
   if (!progress) return null;
   const { documents, conventionSigned, honorabilityDue } = progress;
+  // Accompanying volunteer: no CV, no convention; B3 and attestation
+  // d'honorabilité before the validation
+  const tutor = progress.tutor !== false;
   const missing = [
-    !documents.cv && 'votre CV',
+    tutor && !documents.cv && 'votre CV',
     !documents.id && "votre pièce d'identité",
+  ].filter(Boolean);
+  const companionMissing = [
+    !documents.b3 && 'votre extrait de casier judiciaire (B3)',
+    !documents.honorability && "votre attestation d'honorabilité",
   ].filter(Boolean);
 
   let severity;
   let text;
-  if (missing.length) {
+  if (!tutor && !missing.length) {
+    severity = companionMissing.length ? 'info' : 'success';
+    text = companionMissing.length ? (
+      <>
+        Pièce d'identité déposée : vous pouvez envoyer votre dossier. À fournir
+        avant la validation (vous accompagnerez des enfants) :{' '}
+        <b>{joinFrench(companionMissing)}</b>.
+      </>
+    ) : (
+      "Tous vos documents sont déposés : pièce d'identité, extrait B3 et attestation d'honorabilité."
+    );
+  } else if (missing.length) {
     severity = 'warning';
     text = (
       <>

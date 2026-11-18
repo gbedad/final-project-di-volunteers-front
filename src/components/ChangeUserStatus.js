@@ -96,6 +96,8 @@ import DocumentSlots from './application/DocumentSlots';
 
 import { existingStatuses } from '../options/existingOptions';
 import CohortTransferList from './Cohorts';
+import EngagementsAdmin from './admin/EngagementsAdmin';
+import { isTutorUser } from '../js/engagements';
 
 // Statuses that send an email to the volunteer (asked for confirmation)
 const EMAIL_STATUSES = ['A finaliser', 'Validé'];
@@ -931,6 +933,15 @@ const ChangeUserStatus = () => {
             </BorderedBoxWithLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
+            {/* Tutoring and/or outings: wished by the volunteer, given by
+                the team */}
+            <BorderedBoxWithLabel label="Activités" sx={{ display: 'flex' }}>
+              <EngagementsAdmin
+                user={user}
+                canEdit={isManager(userLogged.user.role)}
+                onChanged={reloadUser}
+              />
+            </BorderedBoxWithLabel>
             <BorderedBoxWithLabel label="Quoi & quand" sx={{ display: 'flex' }}>
               {user.skill ? (
                 <>
@@ -1069,7 +1080,9 @@ const ChangeUserStatus = () => {
                 <DocumentSlots userId={user.id} />
               </Box>
             </BorderedBoxWithLabel>
-            {/* Volunteer's signature, president's countersignature, validation */}
+            {/* Volunteer's signature, president's countersignature,
+                validation (tutors only: no convention for the outings) */}
+            {isTutorUser(user) && (
             <BorderedBoxWithLabel label="Convention" sx={{ display: 'flex' }}>
               <ConventionSteps
                 userId={user.id}
@@ -1081,6 +1094,7 @@ const ChangeUserStatus = () => {
                 }
               />
             </BorderedBoxWithLabel>
+            )}
           </Grid>
         </Grid>
         {selectedFile && (

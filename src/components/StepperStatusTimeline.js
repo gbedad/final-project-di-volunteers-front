@@ -82,6 +82,36 @@ const CONVENTION_STEP = {
   },
 };
 
+// Accompanying volunteer (outings only): no tutoring wishes, no
+// convention but the B3 and the attestation d'honorabilité
+const COMPANION_STEPS = {
+  1: {
+    label: 'Mes activités et disponibilités',
+    label_realised: 'Mes activités et disponibilités sont renseignées',
+    label_waiting: "J'ai renseigné mes activités et disponibilités",
+    description:
+      'Indiquez les activités que vous souhaitez accompagner et vos périodes de disponibilité.',
+  },
+  2: {
+    description:
+      "Merci de déposer votre pièce d'identité (sauf, bien sûr, si vous l'avez déjà fait !).",
+  },
+  4: {
+    label: 'Il ne reste plus qu’à déposer vos derniers documents',
+    label_realised: 'Mes derniers documents sont déposés',
+    label_waiting: '',
+    description:
+      "Comme vous accompagnerez des enfants : votre extrait de casier judiciaire (B3) et votre attestation d'honorabilité, dans l'onglet « Mes documents ».",
+    description_waiting: "Merci ! L'association va valider votre candidature.",
+  },
+  5: {
+    description_waiting:
+      "Bienvenue à l'association Séphora Berrebi ! L'équipe vous proposera les prochaines sorties à accompagner.",
+    description:
+      "Bienvenue à l'association Séphora Berrebi ! L'équipe vous proposera les prochaines sorties à accompagner.",
+  },
+};
+
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -95,11 +125,17 @@ const HtmlTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function StepperStatusTimeline(props) {
-  const { userStatusStep, handleChange, finished, conventionState } = props;
+  const { userStatusStep, handleChange, finished, tutor = true } = props;
+  // No convention for an accompanying volunteer
+  const conventionState = tutor ? props.conventionState : undefined;
   // The convention step follows the real signatures, not only the status
   const conventionStep = CONVENTION_STEP[conventionState];
   const stepOf = (step, index) =>
-    index === 4 && conventionStep ? { ...step, ...conventionStep } : step;
+    !tutor
+      ? { ...step, ...COMPANION_STEPS[index] }
+      : index === 4 && conventionStep
+        ? { ...step, ...conventionStep }
+        : step;
 
   // console.log(userStatusStep);
 
@@ -211,8 +247,10 @@ export default function StepperStatusTimeline(props) {
                               disabled={finished}
                               variant="contained"
                               onClick={(event) => {
+                                // Last documents (accompanying volunteer):
+                                // "Mes documents"
                                 index === 4
-                                  ? handleChange(event, index)
+                                  ? handleChange(event, tutor ? index : 3)
                                   : handleChange(event, index + 1);
                               }}
                               sx={{ mt: 1, mr: 1 }}>
