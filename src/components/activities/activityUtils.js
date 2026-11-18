@@ -1,3 +1,4 @@
+import { showPhone } from '../../js/phone';
 // Shared values of the cultural activities pages
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -150,7 +151,7 @@ export const ambassadorText = (a) =>
       ? `Inscriptions jusqu'au ${new Date(`${a.deadline}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
       : null,
     a.organizer
-      ? `Responsable : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+      ? `Responsable : ${a.organizer}${a.organizer_phone ? ` (${showPhone(a.organizer_phone)})` : ''}`
       : null,
     '',
     a.ambassador_brief || a.description || '',

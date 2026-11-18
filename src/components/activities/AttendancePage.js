@@ -19,6 +19,7 @@ import {
   pointChoices,
   studentPoint,
 } from './activityUtils';
+import { showPhone } from '../../js/phone';
 
 // The adult going with the students ticks who is there, on their phone,
 // through their own link (no account)
@@ -161,13 +162,15 @@ const AttendancePage = () => {
                     )}
                     {s.phone && (
                       <Typography variant="body2" color="text.secondary">
-                        Élève : <a href={`tel:${s.phone}`}>{s.phone}</a>
+                        Élève : <a href={`tel:${s.phone}`}>{showPhone(s.phone)}</a>
                       </Typography>
                     )}
                     {s.parent && (
                       <Typography variant="body2" color="text.secondary">
                         {s.parent.name ? `${s.parent.name} : ` : 'Parent : '}
-                        <a href={`tel:${s.parent.phone}`}>{s.parent.phone}</a>
+                        <a href={`tel:${s.parent.phone}`}>
+                          {showPhone(s.parent.phone)}
+                        </a>
                       </Typography>
                     )}
                   </Box>

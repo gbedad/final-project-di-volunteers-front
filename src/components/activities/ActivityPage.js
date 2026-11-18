@@ -53,6 +53,7 @@ import {
   hours,
   today,
 } from './activityUtils';
+import { showPhone } from '../../js/phone';
 
 const toastError = (err, text) =>
   toast.error(err.response?.data?.error || text, { position: 'bottom-left' });
@@ -901,7 +902,7 @@ const StaffTab = ({ a, canEdit, reload }) => {
     try {
       await axios.patch(`${BASE_URL}/admin/accompagnateurs/${id}`, {
         name,
-        phone,
+        phone: showPhone(phone),
         email,
         role,
         student_id,
@@ -925,10 +926,10 @@ const StaffTab = ({ a, canEdit, reload }) => {
   const already = new Set(a.staff.map((s) => s.user_id).filter(Boolean));
   const add = async () => {
     try {
-      await axios.post(
-        `${BASE_URL}/admin/activites/${a.id}/accompagnateurs`,
-        form
-      );
+      await axios.post(`${BASE_URL}/admin/activites/${a.id}/accompagnateurs`, {
+        ...form,
+        phone: showPhone(form.phone),
+      });
       setForm({ name: '', phone: '', email: '', role: 'accompagnateur' });
       reload();
     } catch (err) {
@@ -1015,7 +1016,7 @@ const StaffTab = ({ a, canEdit, reload }) => {
                   />
                 </Stack>
                 <Typography variant="body2" color="text.secondary">
-                  {[s.phone, s.email].filter(Boolean).join(' · ') ||
+                  {[showPhone(s.phone), s.email].filter(Boolean).join(' · ') ||
                     'Pas de contact'}
                 </Typography>
               </Box>
@@ -1207,7 +1208,7 @@ const PresenceSheet = ({ a }) => (
     <Typography variant="body2" sx={{ mb: 1 }}>
       {frDate(a.date)} {hours(a)} · {a.place || ''}
       {a.organizer
-        ? ` · Responsable : ${a.organizer}${a.organizer_phone ? ` (${a.organizer_phone})` : ''}`
+        ? ` · Responsable : ${a.organizer}${a.organizer_phone ? ` (${showPhone(a.organizer_phone)})` : ''}`
         : ''}
     </Typography>
     <Typography variant="body2" sx={{ mb: 1 }}>
@@ -1258,11 +1259,13 @@ const PresenceSheet = ({ a }) => (
               <td>{fullName(r)}</td>
               <td>{r.level || ''}</td>
               <td>{r.school_name || ''}</td>
-              <td>{r.student_phone || ''}</td>
+              <td>{showPhone(r.student_phone)}</td>
               <td>
                 {[
                   parentName(r),
-                  r.emergency_phone || r.parent1_phone || r.parent2_phone,
+                  showPhone(
+                    r.emergency_phone || r.parent1_phone || r.parent2_phone
+                  ),
                 ]
                   .filter(Boolean)
                   .join(' ')}
@@ -1287,7 +1290,7 @@ const PresenceSheet = ({ a }) => (
     <Typography variant="body2" sx={{ mt: 1 }}>
       Accompagnateurs :{' '}
       {a.staff
-        .map((s) => `${s.name}${s.phone ? ` (${s.phone})` : ''}`)
+        .map((s) => `${s.name}${s.phone ? ` (${showPhone(s.phone)})` : ''}`)
         .join(', ') || '—'}
     </Typography>
   </Box>
@@ -1379,7 +1382,7 @@ const ActivityPage = () => {
       {a.organizer && (
         <Typography variant="body2" color="text.secondary">
           Responsable : {a.organizer}
-          {a.organizer_phone ? ` · ${a.organizer_phone}` : ''}
+          {a.organizer_phone ? ` · ${showPhone(a.organizer_phone)}` : ''}
         </Typography>
       )}
       {cultureRole && !canEdit && (

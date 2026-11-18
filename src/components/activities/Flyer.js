@@ -28,6 +28,7 @@ import {
   NO_FEE,
   pointText,
 } from './activityUtils';
+import { showPhone } from '../../js/phone';
 
 // Portrait image (1080 × 1350), fit for WhatsApp, Instagram and an A4
 // print; square (1080 × 1080) for the social networks
@@ -210,7 +211,7 @@ export const drawFlyer = async (
     on('organisateur') && a.organizer
       ? [
           'Responsable',
-          `${a.organizer}${a.organizer_phone ? ` · ${a.organizer_phone}` : ''}`,
+          `${a.organizer}${a.organizer_phone ? ` · ${showPhone(a.organizer_phone)}` : ''}`,
         ]
       : null,
   ].filter(Boolean);

@@ -32,6 +32,7 @@ import {
   today,
   NO_FEE,
 } from './activityUtils';
+import { showPhone } from '../../js/phone';
 
 const toastError = (err, text) =>
   toast.error(err.response?.data?.error || text, { position: 'bottom-left' });
@@ -466,8 +467,9 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                 disabled={!canEdit}
               />
               <Typography variant="body2" color="text.secondary">
-                Tél. de l'élève : {r.student_phone || 'non renseigné'} · Parent
-                : {r.parent1_phone || r.parent2_phone || 'non renseigné'}
+                Tél. de l'élève : {showPhone(r.student_phone) || 'non renseigné'} ·
+                Parent
+                : {showPhone(r.parent1_phone || r.parent2_phone) || 'non renseigné'}
               </Typography>
               {canEdit && (
                 <Button
