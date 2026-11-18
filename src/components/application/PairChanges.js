@@ -279,7 +279,8 @@ export const BreaksList = ({ breaks, deleteUrl, onChanged }) => {
             Pas de séance {breakDates(b)} · {b.reason_label}
             {b.note ? ` (${b.note})` : ''}
           </Typography>
-          {b.to >= today() && (
+          {/* No delete address: consultation only */}
+          {deleteUrl && b.to >= today() && (
             <IconButton
               size="small"
               aria-label="Retirer"

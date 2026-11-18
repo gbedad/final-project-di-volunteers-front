@@ -23,7 +23,7 @@ import { SessionList, formatHours } from './Sessions';
 import SlotsEditor from './SlotsEditor';
 import ConfirmSession from './ConfirmSession';
 import { ExtraSessionDialog, ExtrasList } from './ExtraSessions';
-import { isManager } from '../../js/roles';
+import { isManager, isStaff } from '../../js/roles';
 import { MODALITIES } from '../../js/studentOptions';
 import { BreaksList, NoSessionDialog } from '../application/PairChanges';
 
@@ -435,7 +435,9 @@ const PairDialog = ({
             />
             <BreaksList
               breaks={breaks}
-              deleteUrl={(id) => `${BASE_URL}/admin/pas-de-seance/${id}`}
+              deleteUrl={
+                manager ? (id) => `${BASE_URL}/admin/pas-de-seance/${id}` : null
+              }
               onChanged={load}
             />
             <Typography fontWeight={600}>Comptes-rendus</Typography>
@@ -448,7 +450,8 @@ const PairDialog = ({
         )}
       </DialogContent>
       <DialogActions>
-        {showStudentLink && pair.student && (
+        {/* The student's page is for the team only */}
+        {showStudentLink && pair.student && isStaff(currentRole()) && (
           <Button onClick={() => navigate(`/eleves/${pair.student_id}`)}>
             Fiche de l'élève
           </Button>

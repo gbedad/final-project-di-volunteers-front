@@ -570,7 +570,7 @@ const SessionsLog = () => {
           Le journal des séances n'a pas pu être chargé.
         </Alert>
       )}
-      {data?.jotform_pending + data?.zoom_pending > 0 && (
+      {manager && data?.jotform_pending + data?.zoom_pending > 0 && (
         <Alert
           severity="warning"
           sx={{ mb: 1.5 }}
@@ -658,7 +658,7 @@ const SessionsLog = () => {
         onSaved={() => setReload((n) => n + 1)}
       />
       <JotformPendingDialog
-        open={pendingOpen}
+        open={manager && pendingOpen}
         onClose={() => setPendingOpen(false)}
         onChanged={() => setReload((n) => n + 1)}
       />
