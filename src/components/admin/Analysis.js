@@ -5,6 +5,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   Container,
   FormControlLabel,
   Grid,
@@ -17,6 +18,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tab,
+  Tabs,
   Switch,
   ToggleButton,
   ToggleButtonGroup,
@@ -28,6 +31,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import PageHeader from './PageHeader';
 import StudentAnalysis from './StudentAnalysis';
 import OutingAnalysis from './OutingAnalysis';
+import { engagementLabel } from '../../js/engagements';
 import { useSessionState } from '../../js/useSessionState';
 
 import { ACTIVE_TUTORS } from '../../js/volunteerSearch';
@@ -40,9 +44,19 @@ const HEAT_RGB = '0, 105, 92';
 const SCOPE_STATUS = { active: ACTIVE_TUTORS, validated: 'Validé', all: null };
 
 const SCOPES = [
-  { value: 'active', label: 'Tuteurs actifs' },
-  { value: 'validated', label: 'Tous les validés' },
-  { value: 'all', label: 'Tous les bénévoles' },
+  { value: 'active', label: 'Actifs', suffix: 'actifs' },
+  { value: 'validated', label: 'Validés', suffix: 'validés' },
+  { value: 'all', label: 'Tous', suffix: '(tous)' },
+];
+// What the volunteers do: every one, tutoring, or the others (outings…)
+const ACTIVITIES = [
+  { value: 'all', label: 'Tous', noun: 'Bénévoles' },
+  { value: 'tutorat', label: 'Tutorat', noun: 'Tuteurs' },
+  {
+    value: 'autres',
+    label: 'Autres activités',
+    noun: 'Bénévoles en activités culturelles ou autres',
+  },
 ];
 
 const session = () => {
@@ -168,6 +182,7 @@ const Yes = ({ ok }) =>
 const Analysis = () => {
   const navigate = useNavigate();
   const [scope, setScope] = useState('active');
+  const [activity, setActivity] = useSessionState('analysis.activity', 'all');
   // Tutors (volunteers, recruitment) or students (requests, pairs)
   const [view, setView] = useSessionState('analysis.view', 'tutors');
   // Demo volunteers are left out of the figures unless asked
@@ -183,7 +198,7 @@ const Analysis = () => {
         color="primary"
         value={view}
         onChange={(e, value) => value && setView(value)}>
-        <ToggleButton value="tutors">Tuteurs</ToggleButton>
+        <ToggleButton value="tutors">Bénévoles</ToggleButton>
         <ToggleButton value="students">Élèves</ToggleButton>
         <ToggleButton value="outings">Sorties</ToggleButton>
       </ToggleButtonGroup>
@@ -207,14 +222,14 @@ const Analysis = () => {
     setError(false);
     try {
       const { data } = await axios.get(`${BASE_URL}/admin/analytics`, {
-        params: { scope, demo: tutorsDemo ? 1 : 0 },
+        params: { scope, activity, demo: tutorsDemo ? 1 : 0 },
       });
       setData(data);
     } catch (err) {
       console.error(err);
       setError(true);
     }
-  }, [scope, tutorsDemo]);
+  }, [scope, activity, tutorsDemo]);
 
   useEffect(() => {
     load();
@@ -291,7 +306,13 @@ const Analysis = () => {
   if (!data) return <LinearProgress sx={{ mt: 4 }} />;
 
   const { tutors, supply, recruitment } = data;
-  const scopeLabel = SCOPES.find((s) => s.value === data.scope).label;
+  // e.g. "Tuteurs actifs", "Bénévoles hors tutorat validés"
+  const activityOf = ACTIVITIES.find(
+    (a) => a.value === (data.activity || 'all')
+  );
+  const scopeLabel = `${activityOf.noun} ${SCOPES.find((s) => s.value === data.scope).suffix}`;
+  // Without tutoring: no subjects, levels nor weekly hours to analyse
+  const tutoring = data.activity !== 'autres';
   const matrixMax = Math.max(
     0,
     ...Object.values(supply.matrix).flatMap((l) => Object.values(l))
@@ -314,24 +335,43 @@ const Analysis = () => {
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <PageHeader
         title="Analyse"
-        subtitle="Profils des tuteurs, offre de tutorat et recrutement."
-        actions={
-          <Stack direction="row" spacing={2} flexWrap="wrap">
-            {viewToggle}
-            <ToggleButtonGroup
-              size="small"
-              exclusive
-              value={scope}
-              onChange={(e, value) => value && setScope(value)}>
-              {SCOPES.map((s) => (
-                <ToggleButton key={s.value} value={s.value}>
-                  {s.label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Stack>
-        }
+        subtitle="Profils des bénévoles, offre de tutorat et recrutement."
+        actions={viewToggle}
       />
+      {/* Which volunteers: what they do, then their status */}
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        flexWrap="wrap"
+        useFlexGap
+        sx={{ mb: 1 }}>
+        <Tabs
+          value={activity}
+          onChange={(e, value) => {
+            setActivity(value);
+            // Those who do other activities are rarely "actifs" tutors yet
+            if (value === 'autres' && scope === 'active') setScope('validated');
+          }}
+          variant="scrollable"
+          allowScrollButtonsMobile
+          sx={{ minHeight: 40, '& .MuiTab-root': { minHeight: 40 } }}>
+          {ACTIVITIES.map((a) => (
+            <Tab key={a.value} value={a.value} label={a.label} />
+          ))}
+        </Tabs>
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={scope}
+          onChange={(e, value) => value && setScope(value)}>
+          {SCOPES.map((s) => (
+            <ToggleButton key={s.value} value={s.value}>
+              {s.label}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Stack>
 
       <FormControlLabel
         sx={{ mb: 1 }}
@@ -341,7 +381,7 @@ const Analysis = () => {
             onChange={(e) => setTutorsDemo(e.target.checked)}
           />
         }
-        label="Inclure les tuteurs de démonstration"
+        label="Inclure les bénévoles de démonstration"
       />
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -349,23 +389,31 @@ const Analysis = () => {
           <Kpi
             label={scopeLabel}
             value={tutors.total}
-            detail={`${tutors.available ?? 0} disponible(s) pour un nouvel élève`}
+            detail={
+              tutoring
+                ? `${tutors.available ?? 0} disponible(s) pour un nouvel élève`
+                : null
+            }
           />
         </Grid>
-        <Grid item xs={6} md={3}>
-          <Kpi
-            label="Profils complets"
-            value={`${percent(tutors.complete, tutors.total)} %`}
-            detail={`${tutors.complete} sur ${tutors.total}`}
-          />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Kpi
-            label="Élèves pouvant être suivis"
-            value={supply.capacity}
-            detail={`d'après ${supply.withProfile} profil(s) renseigné(s)`}
-          />
-        </Grid>
+        {tutoring && (
+          <>
+            <Grid item xs={6} md={3}>
+              <Kpi
+                label="Profils complets"
+                value={`${percent(tutors.complete, tutors.total)} %`}
+                detail={`${tutors.complete} sur ${tutors.total}`}
+              />
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <Kpi
+                label="Élèves pouvant être suivis"
+                value={supply.capacity}
+                detail={`d'après ${supply.withProfile} profil(s) renseigné(s)`}
+              />
+            </Grid>
+          </>
+        )}
         <Grid item xs={6} md={3}>
           <Kpi
             label="Candidatures sans activité"
@@ -375,186 +423,257 @@ const Analysis = () => {
         </Grid>
       </Grid>
 
-      <Section
-        title="Profils des tuteurs"
-        subtitle={`${scopeLabel} : informations renseignées dans « Mes souhaits et disponibilités ».`}>
-        <Bar
-          label="Matières et niveaux manquants"
-          value={tutors.missing.topics}
-          max={tutors.total}
-          detail={`${percent(tutors.missing.topics, tutors.total)} %`}
-        />
-        <Bar
-          label="Créneaux manquants"
-          value={tutors.missing.slots}
-          max={tutors.total}
-          detail={`${percent(tutors.missing.slots, tutors.total)} %`}
-        />
-        <Bar
-          label="Lieux manquants"
-          value={tutors.missing.places}
-          max={tutors.total}
-          detail={`${percent(tutors.missing.places, tutors.total)} %`}
-        />
-        {tutors.incomplete.length > 0 && (
-          <Box sx={{ overflowX: 'auto', mt: 2 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Profil incomplet</TableCell>
-                  <TableCell align="center">Matières</TableCell>
-                  <TableCell align="center">Créneaux</TableCell>
-                  <TableCell align="center">Lieux</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {incomplete.map((t) => (
-                  <TableRow key={t.id} hover>
-                    <TableCell>
-                      <Link
-                        component="button"
-                        onClick={() => openVolunteer(t.id)}>
-                        {t.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Yes ok={t.topics} />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Yes ok={t.slots} />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Yes ok={t.places} />
-                    </TableCell>
+      {!tutoring && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          Bénévoles qui font des activités culturelles ou autres, avec ou sans
+          tutorat : pas d'analyse des matières ni des créneaux ici (voir
+          l'onglet « Tutorat »). Leur participation aux sorties est dans
+          l'onglet « Sorties ».
+        </Alert>
+      )}
+      {!tutoring && (
+        <Section
+          title="Les bénévoles concernés"
+          subtitle="Cliquez sur un nom pour ouvrir sa fiche.">
+          {data.people?.length ? (
+            <Box sx={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Bénévole</TableCell>
+                    <TableCell>Statut</TableCell>
+                    <TableCell>Activités</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            {tutors.incomplete.length > 10 && (
-              <Button
-                size="small"
-                onClick={() =>
-                  setShowAll((s) => ({ ...s, incomplete: !s.incomplete }))
-                }>
-                {showAll.incomplete
-                  ? 'Réduire'
-                  : `Voir les ${tutors.incomplete.length}`}
-              </Button>
+                </TableHead>
+                <TableBody>
+                  {data.people.map((p) => (
+                    <TableRow key={p.id} hover>
+                      <TableCell>
+                        <Link
+                          component="button"
+                          onClick={() => openVolunteer(p.id)}>
+                          {p.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {p.status}
+                        {p.is_active ? ' · actif' : ''}
+                      </TableCell>
+                      <TableCell>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          flexWrap="wrap"
+                          useFlexGap>
+                          {p.activities.map((a) => (
+                            <Chip
+                              key={a}
+                              size="small"
+                              variant="outlined"
+                              label={engagementLabel(a)}
+                            />
+                          ))}
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          ) : (
+            <Typography color="text.secondary">
+              Aucun bénévole dans cette sélection (essayez « Validés » ou « Tous
+              »).
+            </Typography>
+          )}
+        </Section>
+      )}
+      {tutoring && (
+        <>
+          <Section
+            title="Profils des tuteurs"
+            subtitle={`${scopeLabel} : informations renseignées dans « Mes souhaits et disponibilités ».`}>
+            <Bar
+              label="Matières et niveaux manquants"
+              value={tutors.missing.topics}
+              max={tutors.total}
+              detail={`${percent(tutors.missing.topics, tutors.total)} %`}
+            />
+            <Bar
+              label="Créneaux manquants"
+              value={tutors.missing.slots}
+              max={tutors.total}
+              detail={`${percent(tutors.missing.slots, tutors.total)} %`}
+            />
+            <Bar
+              label="Lieux manquants"
+              value={tutors.missing.places}
+              max={tutors.total}
+              detail={`${percent(tutors.missing.places, tutors.total)} %`}
+            />
+            {tutors.incomplete.length > 0 && (
+              <Box sx={{ overflowX: 'auto', mt: 2 }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Profil incomplet</TableCell>
+                      <TableCell align="center">Matières</TableCell>
+                      <TableCell align="center">Créneaux</TableCell>
+                      <TableCell align="center">Lieux</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {incomplete.map((t) => (
+                      <TableRow key={t.id} hover>
+                        <TableCell>
+                          <Link
+                            component="button"
+                            onClick={() => openVolunteer(t.id)}>
+                            {t.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Yes ok={t.topics} />
+                        </TableCell>
+                        <TableCell align="center">
+                          <Yes ok={t.slots} />
+                        </TableCell>
+                        <TableCell align="center">
+                          <Yes ok={t.places} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {tutors.incomplete.length > 10 && (
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      setShowAll((s) => ({ ...s, incomplete: !s.incomplete }))
+                    }>
+                    {showAll.incomplete
+                      ? 'Réduire'
+                      : `Voir les ${tutors.incomplete.length}`}
+                  </Button>
+                )}
+              </Box>
             )}
-          </Box>
-        )}
-      </Section>
+          </Section>
 
-      <Section
-        title="Offre de tutorat"
-        subtitle={`${scopeLabel} ayant renseigné leur profil : ${supply.withProfile}. Cliquez sur une case pour retrouver ces bénévoles dans le tableau de bord.`}>
-        {supply.withProfile === 0 ? (
-          <Alert severity="info">Aucun profil renseigné pour l'instant.</Alert>
-        ) : (
-          <>
-            <Typography variant="subtitle1" sx={{ mt: 1 }}>
-              Nombre de tuteurs par matière et niveau
-            </Typography>
-            <Box sx={{ overflowX: 'auto', mb: 3 }}>
-              <Table size="small" sx={{ width: 'auto' }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell />
-                    {supply.levels.map((l) => (
-                      <TableCell key={l} align="center" sx={{ p: 0.5 }}>
-                        {l}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {supply.subjects.map((subject) => (
-                    <TableRow key={subject}>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                        {subject}
-                      </TableCell>
-                      {supply.levels.map((level) => {
-                        const n = supply.matrix[subject][level] || 0;
-                        return (
-                          <HeatCell
-                            key={level}
-                            value={n}
-                            max={matrixMax}
-                            title={`${n} tuteur(s) en ${subject}, ${level}`}
-                            onClick={() =>
-                              openDashboard({
-                                'dashboard.q.subject': subject,
-                                'dashboard.q.levelFrom': level,
-                                'dashboard.q.levelTo': level,
-                              })
-                            }
-                          />
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
+          <Section
+            title="Offre de tutorat"
+            subtitle={`${scopeLabel} ayant renseigné leur profil : ${supply.withProfile}. Cliquez sur une case pour retrouver ces bénévoles dans le tableau de bord.`}>
+            {supply.withProfile === 0 ? (
+              <Alert severity="info">
+                Aucun profil renseigné pour l'instant.
+              </Alert>
+            ) : (
+              <>
+                <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                  Nombre de tuteurs par matière et niveau
+                </Typography>
+                <Box sx={{ overflowX: 'auto', mb: 3 }}>
+                  <Table size="small" sx={{ width: 'auto' }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                        {supply.levels.map((l) => (
+                          <TableCell key={l} align="center" sx={{ p: 0.5 }}>
+                            {l}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {supply.subjects.map((subject) => (
+                        <TableRow key={subject}>
+                          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                            {subject}
+                          </TableCell>
+                          {supply.levels.map((level) => {
+                            const n = supply.matrix[subject][level] || 0;
+                            return (
+                              <HeatCell
+                                key={level}
+                                value={n}
+                                max={matrixMax}
+                                title={`${n} tuteur(s) en ${subject}, ${level}`}
+                                onClick={() =>
+                                  openDashboard({
+                                    'dashboard.q.subject': subject,
+                                    'dashboard.q.levelFrom': level,
+                                    'dashboard.q.levelTo': level,
+                                  })
+                                }
+                              />
+                            );
+                          })}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
 
-            <Typography variant="subtitle1">
-              Nombre de tuteurs disponibles par jour et heure
-            </Typography>
-            <Box sx={{ overflowX: 'auto', mb: 3 }}>
-              <Table size="small" sx={{ width: 'auto' }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell />
-                    {supply.hours.map((h) => (
-                      <TableCell key={h} align="center" sx={{ p: 0.5 }}>
-                        {h}h
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {supply.days.map((day) => (
-                    <TableRow key={day}>
-                      <TableCell>{day}</TableCell>
-                      {supply.hours.map((h) => {
-                        const n = supply.slots[day][h] || 0;
-                        const pad = (x) => String(x).padStart(2, '0');
-                        return (
-                          <HeatCell
-                            key={h}
-                            value={n}
-                            max={slotsMax}
-                            title={`${n} tuteur(s) libre(s) le ${day.toLowerCase()} de ${h}h à ${h + 1}h`}
-                            onClick={() =>
-                              openDashboard({
-                                'dashboard.q.days': [day],
-                                'dashboard.q.timeFrom': `${pad(h)}:00`,
-                                'dashboard.q.timeTo': `${pad(h + 1)}:00`,
-                              })
-                            }
-                          />
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
+                <Typography variant="subtitle1">
+                  Nombre de tuteurs disponibles par jour et heure
+                </Typography>
+                <Box sx={{ overflowX: 'auto', mb: 3 }}>
+                  <Table size="small" sx={{ width: 'auto' }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                        {supply.hours.map((h) => (
+                          <TableCell key={h} align="center" sx={{ p: 0.5 }}>
+                            {h}h
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {supply.days.map((day) => (
+                        <TableRow key={day}>
+                          <TableCell>{day}</TableCell>
+                          {supply.hours.map((h) => {
+                            const n = supply.slots[day][h] || 0;
+                            const pad = (x) => String(x).padStart(2, '0');
+                            return (
+                              <HeatCell
+                                key={h}
+                                value={n}
+                                max={slotsMax}
+                                title={`${n} tuteur(s) libre(s) le ${day.toLowerCase()} de ${h}h à ${h + 1}h`}
+                                onClick={() =>
+                                  openDashboard({
+                                    'dashboard.q.days': [day],
+                                    'dashboard.q.timeFrom': `${pad(h)}:00`,
+                                    'dashboard.q.timeTo': `${pad(h + 1)}:00`,
+                                  })
+                                }
+                              />
+                            );
+                          })}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
 
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Lieux possibles
-            </Typography>
-            {supply.places.map((p) => (
-              <Bar
-                key={p.label}
-                label={p.label}
-                value={p.count}
-                max={supply.withProfile}
-              />
-            ))}
-          </>
-        )}
-      </Section>
+                <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                  Lieux possibles
+                </Typography>
+                {supply.places.map((p) => (
+                  <Bar
+                    key={p.label}
+                    label={p.label}
+                    value={p.count}
+                    max={supply.withProfile}
+                  />
+                ))}
+              </>
+            )}
+          </Section>
+        </>
+      )}
 
       <Section
         title="Recrutement"
