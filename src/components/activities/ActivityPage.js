@@ -927,16 +927,25 @@ const StaffTab = ({ a, canEdit, reload }) => {
   const already = new Set(a.staff.map((s) => s.user_id).filter(Boolean));
   const add = async () => {
     try {
-      await axios.post(`${BASE_URL}/admin/activites/${a.id}/accompagnateurs`, {
-        ...form,
-        phone: showPhone(form.phone),
-      });
+      const { data } = await axios.post(
+        `${BASE_URL}/admin/activites/${a.id}/accompagnateurs`,
+        { ...form, phone: showPhone(form.phone) }
+      );
+      // Already in the list: the same link is kept (nothing sent to them
+      // stops working)
+      if (data.already) {
+        toast(`${data.name} est déjà dans la liste : son lien est conservé`, {
+          position: 'bottom-left',
+        });
+      }
       setForm({ name: '', phone: '', email: '', role: 'accompagnateur' });
       reload();
     } catch (err) {
       toastError(err, "L'accompagnateur n'a pas pu être ajouté");
     }
   };
+  // Removing, or a new link: what was sent to the adult stops working
+  const [confirm, setConfirm] = useState(null);
   const act = async (fn, text) => {
     try {
       await fn();
@@ -1042,15 +1051,7 @@ const StaffTab = ({ a, canEdit, reload }) => {
                   <Button
                     size="small"
                     color="inherit"
-                    onClick={() =>
-                      act(
-                        () =>
-                          axios.post(
-                            `${BASE_URL}/admin/accompagnateurs/${s.id}/nouveau-lien`
-                          ),
-                        "Le lien n'a pas pu être renouvelé"
-                      )
-                    }>
+                    onClick={() => setConfirm({ kind: 'renew', s })}>
                     Nouveau lien
                   </Button>
                   <IconButton
@@ -1073,15 +1074,7 @@ const StaffTab = ({ a, canEdit, reload }) => {
                     size="small"
                     aria-label="Retirer"
                     title="Retirer"
-                    onClick={() =>
-                      act(
-                        () =>
-                          axios.delete(
-                            `${BASE_URL}/admin/accompagnateurs/${s.id}`
-                          ),
-                        "L'accompagnateur n'a pas pu être retiré"
-                      )
-                    }>
+                    onClick={() => setConfirm({ kind: 'remove', s })}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Stack>
@@ -1090,6 +1083,42 @@ const StaffTab = ({ a, canEdit, reload }) => {
           </Paper>
         )
       )}
+      <Dialog open={!!confirm} onClose={() => setConfirm(null)}>
+        <DialogTitle>
+          {confirm?.kind === 'renew'
+            ? 'Envoyer un nouveau lien ?'
+            : `Retirer ${confirm?.s?.name} ?`}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {confirm?.kind === 'renew'
+              ? "Le lien que cette personne a déjà reçu ne fonctionnera plus : elle devra utiliser le nouveau. À faire seulement si le lien a été perdu ou transmis à quelqu'un d'autre."
+              : "Son lien ne fonctionnera plus sur son téléphone. Les présences qu'elle a déjà cochées sont conservées. Si vous la ré-ajoutez ensuite, elle recevra un nouveau lien : mieux vaut simplement modifier sa fiche (crayon)."}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirm(null)}>Garder</Button>
+          <Button
+            color={confirm?.kind === 'renew' ? 'warning' : 'error'}
+            onClick={() => {
+              const { kind, s } = confirm;
+              setConfirm(null);
+              act(
+                () =>
+                  kind === 'renew'
+                    ? axios.post(
+                        `${BASE_URL}/admin/accompagnateurs/${s.id}/nouveau-lien`
+                      )
+                    : axios.delete(`${BASE_URL}/admin/accompagnateurs/${s.id}`),
+                kind === 'renew'
+                  ? "Le lien n'a pas pu être renouvelé"
+                  : "L'accompagnateur n'a pas pu être retiré"
+              );
+            }}>
+            {confirm?.kind === 'renew' ? 'Nouveau lien' : 'Retirer'}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {canEdit && (
         <Paper variant="outlined" sx={{ p: 1.5 }}>
           <Typography fontWeight={600} sx={{ mb: 1 }}>
