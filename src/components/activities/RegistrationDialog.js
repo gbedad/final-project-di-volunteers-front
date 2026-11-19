@@ -471,25 +471,6 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                 Parent
                 : {showPhone(r.parent1_phone || r.parent2_phone) || 'non renseigné'}
               </Typography>
-              {canEdit && (
-                <Button
-                  size="small"
-                  variant="outlined"
-                  sx={{ alignSelf: 'flex-start' }}
-                  disabled={busy}
-                  onClick={() =>
-                    patch(
-                      {
-                        ...ways,
-                        meeting_choice: ways.meeting_choice || null,
-                        return_choice: ways.return_choice || null,
-                      },
-                      'Enregistré'
-                    )
-                  }>
-                  Enregistrer
-                </Button>
-              )}
               <Typography variant="caption" color="text.secondary">
                 Arrivée, départ et téléphone : remplis par le parent quand il
                 signe l'autorisation en ligne. Les rendez-vous sont choisis par
@@ -516,8 +497,26 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
           </Part>
         </Stack>
       </DialogContent>
-      <DialogActions>
+      {/* Next to "Fermer", not stuck to it */}
+      <DialogActions sx={{ px: 3, pb: 2, gap: 1.5 }}>
         <Button onClick={onClose}>Fermer</Button>
+        {canEdit && (
+          <Button
+            variant="contained"
+            disabled={busy}
+            onClick={() =>
+              patch(
+                {
+                  ...ways,
+                  meeting_choice: ways.meeting_choice || null,
+                  return_choice: ways.return_choice || null,
+                },
+                'Enregistré'
+              )
+            }>
+            Enregistrer
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
