@@ -181,10 +181,14 @@ const FIELDS = [
   'meeting_time',
   'meeting_point2',
   'meeting_time2',
+  'meeting_point3',
+  'meeting_time3',
   'return_point',
   'return_time',
   'return_point2',
   'return_time2',
+  'return_point3',
+  'return_time3',
   'bring',
   'organizer_id',
   'ambassador_brief',
@@ -506,6 +510,20 @@ const InfoForm = ({
         />
         <TextField
           size="small"
+          label="Rendez-vous aller 3 (facultatif)"
+          value={form.meeting_point3 || ''}
+          onChange={set('meeting_point3')}
+          disabled={d}
+        />
+        <TimeInput
+          label="Heure aller 3"
+          value={form.meeting_time3 || ''}
+          onChange={setValue('meeting_time3')}
+          sx={{ width: '100%' }}
+          disabled={d}
+        />
+        <TextField
+          size="small"
           label="Rendez-vous retour 1"
           value={form.return_point || ''}
           onChange={set('return_point')}
@@ -529,6 +547,20 @@ const InfoForm = ({
           label="Heure retour 2"
           value={form.return_time2 || ''}
           onChange={setValue('return_time2')}
+          sx={{ width: '100%' }}
+          disabled={d}
+        />
+        <TextField
+          size="small"
+          label="Rendez-vous retour 3 (facultatif)"
+          value={form.return_point3 || ''}
+          onChange={set('return_point3')}
+          disabled={d}
+        />
+        <TimeInput
+          label="Heure retour 3"
+          value={form.return_time3 || ''}
+          onChange={setValue('return_time3')}
           sx={{ width: '100%' }}
           disabled={d}
         />

@@ -90,19 +90,21 @@ const POINT_KEYS = {
   aller: [
     ['meeting_point', 'meeting_time'],
     ['meeting_point2', 'meeting_time2'],
+    ['meeting_point3', 'meeting_time3'],
   ],
   retour: [
     ['return_point', 'return_time'],
     ['return_point2', 'return_time2'],
+    ['return_point3', 'return_time3'],
   ],
 };
 export const pointText = (a, way, n) => {
   const [p, t] = POINT_KEYS[way][n - 1] || [];
   return p && a[p] ? `${a[p]}${a[t] ? ` à ${a[t]}` : ''}` : null;
 };
-// Points of the outing, as choices (1 and 2 when given)
+// Points of the outing, as choices (1, 2 and 3 when given)
 export const pointChoices = (a, way) =>
-  [1, 2].map((n) => ({ n, text: pointText(a, way, n) })).filter((c) => c.text);
+  [1, 2, 3].map((n) => ({ n, text: pointText(a, way, n) })).filter((c) => c.text);
 // The student's point: the one chosen, else point 1
 export const studentPoint = (a, r, way) =>
   pointText(a, way, (way === 'aller' ? r.meeting_choice : r.return_choice) || 1);
@@ -116,10 +118,12 @@ export const familyMessage = (a) =>
       ? `Rendez-vous aller : ${pointText(a, 'aller', 1) || a.place}`
       : null,
     pointText(a, 'aller', 2) ? `ou : ${pointText(a, 'aller', 2)}` : null,
+    pointText(a, 'aller', 3) ? `ou : ${pointText(a, 'aller', 3)}` : null,
     pointText(a, 'retour', 1)
       ? `Retour : ${pointText(a, 'retour', 1)}`
       : null,
     pointText(a, 'retour', 2) ? `ou : ${pointText(a, 'retour', 2)}` : null,
+    pointText(a, 'retour', 3) ? `ou : ${pointText(a, 'retour', 3)}` : null,
     a.bring ? `À apporter : ${a.bring}` : null,
     a.place && a.meeting_point ? `Lieu : ${a.place}` : null,
     Number(a.fee) > 0
@@ -138,10 +142,10 @@ export const ambassadorText = (a) =>
     a.place ? `Lieu : ${a.place}` : null,
     a.levels?.length ? `Pour : ${a.levels.join(', ')}` : null,
     pointText(a, 'aller', 1)
-      ? `Rendez-vous aller : ${[pointText(a, 'aller', 1), pointText(a, 'aller', 2)].filter(Boolean).join(' ou ')}`
+      ? `Rendez-vous aller : ${pointChoices(a, 'aller').map((c) => c.text).join(' ou ')}`
       : null,
     pointText(a, 'retour', 1)
-      ? `Retour : ${[pointText(a, 'retour', 1), pointText(a, 'retour', 2)].filter(Boolean).join(' ou ')}`
+      ? `Retour : ${pointChoices(a, 'retour').map((c) => c.text).join(' ou ')}`
       : null,
     Number(a.fee) > 0
       ? `Participation : ${euros(a.fee)} par enfant`

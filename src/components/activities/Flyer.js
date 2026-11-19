@@ -188,7 +188,10 @@ export const drawFlyer = async (
   ]);
   // Rows of the tinted block, as shown
   const both = (way) =>
-    [pointText(a, way, 1), pointText(a, way, 2)].filter(Boolean).join(' ou ');
+    [1, 2, 3]
+      .map((n) => pointText(a, way, n))
+      .filter(Boolean)
+      .join(' ou ');
   const lines = [
     on('quand')
       ? [
