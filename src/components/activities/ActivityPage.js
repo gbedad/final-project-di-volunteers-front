@@ -33,6 +33,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import FlyerDialog from './Flyer';
 import InfoForm from './InfoForm';
 import ChatTab from './ChatTab';
+import SessionTab, { SESSION_TEXT } from './SessionTab';
 import RegistrationDialog from './RegistrationDialog';
 import { BudgetPanel } from './Expenses';
 import ImageIcon from '@mui/icons-material/Image';
@@ -1435,13 +1436,25 @@ const ActivityPage = () => {
         variant="scrollable"
         allowScrollButtonsMobile
         sx={{ mt: 2, mb: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Tab label="Infos" />
-        <Tab label={`Inscrits (${registered})`} />
+        <Tab value={0} label="Infos" />
+        <Tab value={1} label={`Inscrits (${registered})`} />
         <Tab
+          value={2}
           label={`Accompagnateurs (${a.staff.length}${a.companions != null ? `/${a.companions}` : ''})`}
         />
-        <Tab label="Budget" />
-        <Tab label={`Chat (${chatCount ?? (a.chat || []).length})`} />
+        {/* Only when the session has a date (Infos) */}
+        {['prep', 'debrief'].map(
+          (kind) =>
+            a[kind]?.date && (
+              <Tab
+                key={kind}
+                value={kind}
+                label={`${SESSION_TEXT[kind].tab} (${a.session_counts?.[kind] || 0})`}
+              />
+            )
+        )}
+        <Tab value={3} label="Budget" />
+        <Tab value={4} label={`Chat (${chatCount ?? (a.chat || []).length})`} />
       </Tabs>
       {flyer && (
         <FlyerDialog
@@ -1459,6 +1472,7 @@ const ActivityPage = () => {
           a={a}
           programs={programs}
           canEdit={canEdit}
+          onOpenTab={setTab}
           onSaved={setA}
           onDeleted={() => navigate('/activites', { state: { userLogged } })}
         />
@@ -1472,6 +1486,16 @@ const ActivityPage = () => {
         />
       )}
       {tab === 2 && <StaffTab a={a} canEdit={canEdit} reload={load} />}
+      {['prep', 'debrief'].includes(tab) && (
+        <SessionTab
+          key={tab}
+          a={a}
+          kind={tab}
+          canEdit={canEdit}
+          canTell={canTell}
+          onChanged={load}
+        />
+      )}
       {tab === 3 && <BudgetPanel a={a} canEdit={canEdit} reload={load} />}
       {tab === 4 && <ChatTab activityId={a.id} onCount={setChatCount} />}
     </Container>

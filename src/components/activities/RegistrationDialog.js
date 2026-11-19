@@ -500,10 +500,14 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
 
           <Part title="Présences">
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-              {a.prep?.date && presence('attendance_prep', 'Préparation')}
               {presence('attendance', 'Sortie')}
-              {a.debrief?.date && presence('attendance_post', 'Retour')}
             </Stack>
+            {(a.prep?.date || a.debrief?.date) && (
+              <Typography variant="caption" color="text.secondary">
+                Présence à la préparation et au retour : onglets «{' '}
+                Préparation » et « Retour » de l'activité.
+              </Typography>
+            )}
             {r.attendance_by && r.attendance_by !== 'équipe' && (
               <Typography variant="caption" color="text.secondary">
                 Présence à la sortie cochée par {r.attendance_by}.

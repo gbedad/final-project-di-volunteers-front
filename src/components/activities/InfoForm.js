@@ -199,7 +199,14 @@ const FIELDS = [
 ];
 
 // The activity's information, in four parts
-const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
+const InfoForm = ({
+  a,
+  programs = [],
+  canEdit,
+  onSaved,
+  onDeleted,
+  onOpenTab,
+}) => {
   const [form, setForm] = useState(a);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -626,6 +633,33 @@ const InfoForm = ({ a, programs = [], canEdit, onSaved, onDeleted }) => {
           onChange={setValue('debrief')}
           disabled={d}
         />
+        {/* The children of each session are in their own tab */}
+        {(a.prep?.date || a.debrief?.date) && (
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            useFlexGap
+            alignItems="center"
+            sx={full}>
+            {[
+              ['prep', 'Préparation', 'à la préparation'],
+              ['debrief', 'Retour', 'au retour'],
+            ].map(
+              ([kind, tabName, where]) =>
+                a[kind]?.date && (
+                  <Button
+                    key={kind}
+                    size="small"
+                    onClick={() => onOpenTab?.(kind)}>
+                    {a.session_counts?.[kind] || 0} enfant
+                    {(a.session_counts?.[kind] || 0) > 1 ? 's' : ''} {where} ·
+                    onglet {tabName}
+                  </Button>
+                )
+            )}
+          </Stack>
+        )}
         <Divider sx={full} />
         <TextField
           size="small"
