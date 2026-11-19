@@ -27,6 +27,7 @@ import AddIcon from '@mui/icons-material/Add';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import PageHeader from '../admin/PageHeader';
 import { RefundsList } from './Expenses';
+import GuidelinesPanel from './GuidelinesPanel';
 import { isCulture, isManager } from '../../js/roles';
 import {
   ACTIVITY_STATUSES,
@@ -152,6 +153,10 @@ const ActivitiesPage = () => {
   );
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState('');
+  const [seenGuidelines, setSeenGuidelines] = useState(false);
+  useEffect(() => {
+    if (view === 'consignes') setSeenGuidelines(true);
+  }, [view]);
 
   useEffect(() => {
     axios
@@ -210,6 +215,7 @@ const ActivitiesPage = () => {
         <ToggleButton value="avenir">À venir</ToggleButton>
         <ToggleButton value="passees">Passées</ToggleButton>
         <ToggleButton value="remboursements">À rembourser</ToggleButton>
+        <ToggleButton value="consignes">Consignes</ToggleButton>
       </ToggleButtonGroup>
       {error && (
         <Alert severity="error">La liste n'a pas pu être chargée.</Alert>
@@ -218,13 +224,26 @@ const ActivitiesPage = () => {
       {view === 'remboursements' && (
         <RefundsList manager={isManager(userLogged?.user?.role)} />
       )}
-      {view !== 'remboursements' && items && !shown.length && (
-        <Alert severity="info">
-          {view === 'avenir'
-            ? 'Aucune activité à venir.'
-            : 'Aucune activité passée.'}
-        </Alert>
+      {/* Kept once opened: the text being written is not lost when the
+          view changes */}
+      {seenGuidelines && (
+        <Box hidden={view !== 'consignes'}>
+          <GuidelinesPanel
+            canEdit={['superadmin', 'admin', 'superculture'].includes(
+              userLogged?.user?.role
+            )}
+          />
+        </Box>
       )}
+      {!['remboursements', 'consignes'].includes(view) &&
+        items &&
+        !shown.length && (
+          <Alert severity="info">
+            {view === 'avenir'
+              ? 'Aucune activité à venir.'
+              : 'Aucune activité passée.'}
+          </Alert>
+        )}
       <Box
         sx={{
           display: 'grid',
@@ -235,7 +254,7 @@ const ActivitiesPage = () => {
             md: 'repeat(3, minmax(0, 1fr))',
           },
         }}>
-        {view !== 'remboursements' &&
+        {!['remboursements', 'consignes'].includes(view) &&
           shown.map((a) => (
             <ActivityCard key={a.id} a={a} onOpen={() => open(a.id)} />
           ))}
