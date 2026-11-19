@@ -35,11 +35,23 @@ export const SESSION_TEXT = {
     tab: 'Préparation',
     title: 'Séance préparatoire',
     sheet: 'préparation',
+    textTitle: 'Compte-rendu de la séance préparatoire',
+    textHint:
+      "Ce qui a été fait avec les enfants, ce qu'ils ont compris, ce qu'il reste à préparer avant la sortie…",
+    printTitle: 'Compte-rendu',
+    saveLabel: 'Enregistrer le compte-rendu',
+    saved: 'Compte-rendu enregistré',
   },
   debrief: {
     tab: 'Retour',
     title: 'Séance de retour (bilan)',
     sheet: 'retour',
+    textTitle: 'Bilan de la séance de retour',
+    textHint:
+      "Ce que les enfants ont dit de la sortie, ce qu'ils ont retenu, ce qui a marché, ce qu'il faudrait refaire…",
+    printTitle: 'Bilan',
+    saveLabel: 'Enregistrer le bilan',
+    saved: 'Bilan enregistré',
   },
 };
 
@@ -178,7 +190,7 @@ const SessionSheet = ({ a, kind, data }) => {
       {s.bilan && (
         <>
           <Typography variant="body2" fontWeight={600} sx={{ mt: 1.5 }}>
-            Bilan
+            {SESSION_TEXT[kind].printTitle}
           </Typography>
           <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
             {s.bilan}
@@ -368,7 +380,7 @@ const SessionTab = ({ a, kind, canEdit, canTell, onChanged }) => {
       await axios.patch(`${BASE_URL}/admin/activites/${a.id}`, {
         [kind]: { ...a[kind], bilan },
       });
-      toast.success('Bilan enregistré', { position: 'bottom-left' });
+      toast.success(text.saved, { position: 'bottom-left' });
       onChanged?.();
     } catch (err) {
       toastError(err, "Le bilan n'a pas pu être enregistré");
@@ -565,17 +577,17 @@ const SessionTab = ({ a, kind, canEdit, canTell, onChanged }) => {
           </Stack>
         </Paper>
       ))}
-      {s && kind === 'debrief' && (
+      {s && (
         <Paper variant="outlined" sx={{ p: 2 }}>
           <Typography fontWeight={600} sx={{ mb: 1 }}>
-            Bilan de la séance de retour
+            {text.textTitle}
           </Typography>
           <TextField
             multiline
             minRows={4}
             fullWidth
             size="small"
-            placeholder="Ce que les enfants ont dit de la sortie, ce qu'ils ont retenu, ce qui a marché, ce qu'il faudrait refaire…"
+            placeholder={text.textHint}
             value={bilan}
             onChange={(e) => setBilan(e.target.value)}
             disabled={!canEdit}
@@ -592,7 +604,7 @@ const SessionTab = ({ a, kind, canEdit, canTell, onChanged }) => {
                 size="small"
                 disabled={bilan === saved || savingBilan}
                 onClick={saveBilan}>
-                Enregistrer le bilan
+                {text.saveLabel}
               </Button>
               {bilan !== saved && (
                 <Typography variant="caption" color="warning.main">
