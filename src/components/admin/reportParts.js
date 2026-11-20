@@ -117,9 +117,10 @@ const plural = (n, one, many) => `${fr(n)} ${n > 1 ? many : one}`;
 export const outingSummary = (o) => {
   const f = o?.figures;
   if (!f || !f.outings) {
-    return f?.coming
+    const base = f?.coming
       ? `Activités culturelles : pas encore de sortie réalisée, ${plural(f.coming, 'sortie prévue', 'sorties prévues')}.`
       : 'Activités culturelles : aucune sortie sur la période.';
+    return [base, sessionSummary(o?.sessions)].filter(Boolean).join(' ');
   }
   return [
     `Activités culturelles : ${plural(f.outings, 'sortie réalisée', 'sorties réalisées')}${f.coming ? ` (et ${fr(f.coming)} à venir)` : ''}, ${plural(f.registrations, 'participation', 'participations')} de ${plural(f.children, 'enfant', 'enfants différents')}${f.tutored ? `, dont ${fr(f.tutored)} suivis en tutorat` : ''}.`,
@@ -132,9 +133,28 @@ export const outingSummary = (o) => {
     f.child_hours
       ? `Environ ${fr(f.child_hours)} heures de sortie cumulées par les enfants.`
       : null,
+    sessionSummary(o.sessions),
   ]
     .filter(Boolean)
     .join(' ');
+};
+
+// Preparation and return sessions, in the summary (after the outings)
+const sessionSummary = (s) => {
+  if (!s) return null;
+  const { prep, debrief, bilans } = s;
+  const parts = [
+    prep.sessions
+      ? `${plural(prep.sessions, 'séance préparatoire réalisée', 'séances préparatoires réalisées')} (${plural(prep.children, 'enfant', 'enfants différents')})`
+      : null,
+    debrief.sessions
+      ? `${plural(debrief.sessions, 'séance de retour réalisée', 'séances de retour réalisées')} (${plural(debrief.children, 'enfant', 'enfants différents')})`
+      : null,
+    bilans.outings
+      ? `un bilan rédigé pour ${fr(bilans.written)} sortie${bilans.written > 1 ? 's' : ''} sur ${fr(bilans.outings)}`
+      : null,
+  ].filter(Boolean);
+  return parts.length ? `Séances préparatoires et bilans : ${parts.join(', ')}.` : null;
 };
 
 const euros = (n) =>
@@ -204,6 +224,48 @@ export const OutingFigures = ({ o }) => {
         value={f.cost_per_child === null ? '—' : euros(f.cost_per_child)}
         label="coût net par participation"
         detail="dépenses moins participations"
+      />
+    </Box>
+  );
+};
+
+// Preparation and return sessions, and bilans: apart from the outings' figures
+export const OutingSessionFigures = ({ o }) => {
+  const s = o.sessions;
+  if (!s) return null;
+  const { prep, debrief, bilans } = s;
+  const detail = (k) => {
+    if (!k.sessions && !k.coming) return 'aucune séance pour l’instant';
+    return [
+      k.children ? plural(k.children, 'enfant', 'enfants différents') : 'aucun enfant saisi',
+      k.attendance_rate === null ? null : `présence ${k.attendance_rate} %`,
+      k.coming ? `${k.coming} à venir` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ');
+  };
+  return (
+    <Box
+      sx={{
+        mt: 3,
+        display: 'grid',
+        gap: 3,
+        gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' },
+      }}>
+      <Figure
+        value={prep.sessions}
+        label="séances préparatoires"
+        detail={detail(prep)}
+      />
+      <Figure
+        value={debrief.sessions}
+        label="séances de retour"
+        detail={detail(debrief)}
+      />
+      <Figure
+        value={`${bilans.written} / ${bilans.outings}`}
+        label="bilans rédigés"
+        detail="sorties réalisées avec un bilan"
       />
     </Box>
   );

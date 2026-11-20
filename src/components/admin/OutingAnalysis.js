@@ -22,6 +22,7 @@ import { useSessionState } from '../../js/useSessionState';
 import {
   Bars,
   OutingFigures,
+  OutingSessionFigures,
   Section,
   monthLabel,
   outingSummary,
@@ -39,6 +40,17 @@ const shortDate = (d) =>
     day: 'numeric',
     month: 'short',
   });
+
+// A preparation or return session in the table: date and children, or a dash
+const SessionCell = ({ s }) =>
+  s ? (
+    <Typography variant="body2">
+      {shortDate(s.date)} · {s.children} enf.
+      {s.status === 'à venir' ? ' (à venir)' : ''}
+    </Typography>
+  ) : (
+    '—'
+  );
 
 // "Sorties" view of the analysis: the cultural outings of a school year
 const OutingAnalysis = () => {
@@ -97,6 +109,7 @@ const OutingAnalysis = () => {
         <>
           <Paper variant="outlined" sx={{ p: 2.5 }}>
             <OutingFigures o={data} />
+            <OutingSessionFigures o={data} />
           </Paper>
           <Alert severity="info" icon={false}>
             {outingSummary(data)}
@@ -142,6 +155,8 @@ const OutingAnalysis = () => {
                       <TableCell align="right">Inscrits</TableCell>
                       <TableCell align="right">Présents</TableCell>
                       <TableCell align="right">Adultes</TableCell>
+                      <TableCell>Préparation</TableCell>
+                      <TableCell>Retour et bilan</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -177,6 +192,21 @@ const OutingAnalysis = () => {
                           {o.marked ? o.present : '—'}
                         </TableCell>
                         <TableCell align="right">{o.adults}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                          <SessionCell s={o.prep} />
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                          <SessionCell s={o.debrief} />
+                          {o.status !== 'annulée' && o.status !== 'à venir' && (
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              sx={{ ml: o.debrief ? 1 : 0 }}
+                              color={o.bilan ? 'success' : 'warning'}
+                              label={o.bilan ? 'bilan' : 'pas de bilan'}
+                            />
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
