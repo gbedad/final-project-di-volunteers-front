@@ -177,7 +177,12 @@ const levelsText = (levels) => {
 export const drawFlyer = async (
   canvas,
   a,
-  { show = CURRENT, cta: callToAction = '', height: H = PORTRAIT } = {}
+  {
+    show = CURRENT,
+    cta: callToAction = '',
+    height: H = PORTRAIT,
+    fixedText = false,
+  } = {}
 ) => {
   const on = (k) => show.includes(k);
   const ctx = canvas.getContext('2d');
@@ -237,15 +242,20 @@ export const drawFlyer = async (
   let cut = false;
   // Title: 76 px on two lines at most; smaller (64, 56, 48 px) when it is
   // longer, up to three lines
-  const titleFit = [
-    [76, 2],
-    [64, 3],
-    [56, 3],
-    [48, 3],
-  ].find(([size, max]) => {
+  // Fixed text size: the title stays at 76 px (up to three lines)
+  const titleFit = (
+    fixedText
+      ? [[76, 3]]
+      : [
+          [76, 2],
+          [64, 3],
+          [56, 3],
+          [48, 3],
+        ]
+  ).find(([size, max]) => {
     ctx.font = `800 ${size}px ${FONT}`;
     return wrap(ctx, a.title, W - 120, Infinity).length <= max;
-  }) || [48, 3];
+  }) || [fixedText ? 76 : 48, 3];
   const titleSize = titleFit[0];
   const titleLH = Math.round(titleSize * 1.13);
   ctx.font = `800 ${titleSize}px ${FONT}`;
@@ -276,7 +286,7 @@ export const drawFlyer = async (
   let descSize = 30;
   let descAll = [];
   let top = STRIP;
-  for (const size of [30, 26, 24]) {
+  for (const size of fixedText ? [30] : [30, 26, 24]) {
     ctx.font = `400 ${size}px ${FONT}`;
     descAll = description ? wrap(ctx, description, W - 120, Infinity) : [];
     descSize = size;
@@ -469,15 +479,18 @@ const FlyerDialog = ({ a, canEdit, onSaved, onClose }) => {
   }, [settings]);
 
   const [cut, setCut] = useState(false);
+  // Text size kept as it is (no automatic reduction), for this flyer only
+  const [fixedText, setFixedText] = useState(false);
   const draw = useCallback(() => {
     if (canvas.current) {
       drawFlyer(canvas.current, a, {
         show: current.fields,
         cta: current.cta,
         height: type.height,
+        fixedText,
       }).then((r) => setCut(!!r?.cut));
     }
-  }, [a, current, type.height]);
+  }, [a, current, type.height, fixedText]);
   useEffect(() => {
     const t = setTimeout(draw, 150);
     return () => clearTimeout(t);
@@ -613,6 +626,20 @@ const FlyerDialog = ({ a, canEdit, onSaved, onClose }) => {
                 multiline
               />
             )}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={fixedText}
+                  onChange={(e) => setFixedText(e.target.checked)}
+                />
+              }
+              label={
+                <Typography variant="body2">
+                  Taille du texte fixe (pas de réduction automatique)
+                </Typography>
+              }
+            />
             {cut && (
               <Alert severity="warning" sx={{ py: 0 }}>
                 Texte trop long pour ce flyer : une partie est coupée.
