@@ -20,6 +20,14 @@ export const ENGAGEMENTS = [
     short: 'Sciences',
     hint: 'Accompagner les ateliers et visites scientifiques',
   },
+  {
+    // Étiquette posée par l'équipe (accord du bénévole) : pas un vœu à cocher
+    value: 'masterclasses',
+    label: 'Master Classe',
+    short: 'Master Classe',
+    hint: 'Proposé aux Master Classes de l\'association (Institut Henri Poincaré)',
+    teamOnly: true,
+  },
 ];
 export const engagementLabel = (v) =>
   ENGAGEMENTS.find((e) => e.value === v)?.short || v;

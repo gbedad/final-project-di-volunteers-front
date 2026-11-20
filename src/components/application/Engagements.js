@@ -27,7 +27,7 @@ const toggle = (list, v) =>
 export const EngagementChoices = ({ value, onChange, error }) => (
   <Box>
     <FormGroup>
-      {ENGAGEMENTS.map((e) => (
+      {ENGAGEMENTS.filter((e) => !e.teamOnly).map((e) => (
         <FormControlLabel
           key={e.value}
           control={
