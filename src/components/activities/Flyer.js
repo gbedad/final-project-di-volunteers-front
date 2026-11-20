@@ -35,6 +35,8 @@ import { showPhone } from '../../js/phone';
 // print; square (1080 × 1080) for the social networks
 const W = 1080;
 const PORTRAIT = 1350;
+// Ambassadors' flyer: taller, for the longer presentation (1080 × 1500)
+const TALL = 1500;
 const SQUARE = 1080;
 
 // What can be shown on a flyer, in the order of the checkboxes
@@ -77,7 +79,7 @@ export const FLYER_TYPES = [
   {
     key: 'ambassadeurs',
     label: 'Ambassadeurs',
-    height: PORTRAIT,
+    height: TALL,
     fields: [
       ...CURRENT.filter((f) => f !== 'description'),
       'retour',
@@ -139,21 +141,28 @@ const loadImage = (src) =>
   });
 
 // Lines of a text within a width (at most maxLines, the last one cut "…")
+// Paragraphs (line breaks of the text box) are kept: an empty line between
+// them, at most one
 const wrap = (ctx, text, width, maxLines) => {
-  const words = String(text || '')
-    .split(/\s+/)
-    .filter(Boolean);
   const lines = [];
-  let line = '';
-  for (const w of words) {
-    const tryLine = line ? `${line} ${w}` : w;
-    if (ctx.measureText(tryLine).width <= width) line = tryLine;
-    else {
-      if (line) lines.push(line);
-      line = w;
+  for (const para of String(text || '').split(/\r?\n/)) {
+    const words = para.split(/\s+/).filter(Boolean);
+    if (!words.length) {
+      if (lines.length && lines[lines.length - 1] !== '') lines.push('');
+      continue;
     }
+    let line = '';
+    for (const w of words) {
+      const tryLine = line ? `${line} ${w}` : w;
+      if (ctx.measureText(tryLine).width <= width) line = tryLine;
+      else {
+        if (line) lines.push(line);
+        line = w;
+      }
+    }
+    if (line) lines.push(line);
   }
-  if (line) lines.push(line);
+  while (lines.length && lines[lines.length - 1] === '') lines.pop();
   if (lines.length > maxLines) {
     const kept = lines.slice(0, maxLines);
     let last = kept[maxLines - 1];
@@ -231,7 +240,7 @@ export const drawFlyer = async (
       on('presentation') ? a.ambassador_brief : null,
     ]
       .filter(Boolean)
-      .join(' ') || null;
+      .join('\n') || null;
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
