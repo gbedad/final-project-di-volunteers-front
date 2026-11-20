@@ -260,6 +260,11 @@ const StudentsPage = () => {
             {row.first_name} {row.last_name}
           </span>
           {row.is_demo && <Chip size="small" label="Démo" />}
+          {row.programmes?.includes('lionnes') && (
+            <Tooltip title="Programme Les Lionnes : cotisation annuelle seulement, pas de participation aux frais">
+              <Chip size="small" color="secondary" variant="outlined" label="Lionnes" />
+            </Tooltip>
+          )}
         </Stack>
       ),
     },
