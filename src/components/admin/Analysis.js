@@ -31,6 +31,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import PageHeader from './PageHeader';
 import StudentAnalysis from './StudentAnalysis';
 import OutingAnalysis from './OutingAnalysis';
+import MasterclassAnalysis from './MasterclassAnalysis';
 import { engagementLabel } from '../../js/engagements';
 import { useSessionState } from '../../js/useSessionState';
 
@@ -201,6 +202,7 @@ const Analysis = () => {
         <ToggleButton value="tutors">Bénévoles</ToggleButton>
         <ToggleButton value="students">Élèves</ToggleButton>
         <ToggleButton value="outings">Sorties</ToggleButton>
+        <ToggleButton value="masterclasses">Master Classes</ToggleButton>
       </ToggleButtonGroup>
       {/* For the funders: the figures of a school year */}
       <Button
@@ -279,6 +281,20 @@ const Analysis = () => {
           actions={viewToggle}
         />
         <OutingAnalysis />
+      </Container>
+    );
+  }
+
+  // Master Classes (figures read from the MCL application)
+  if (view === 'masterclasses') {
+    return (
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <PageHeader
+          title="Analyse"
+          subtitle="Master Classes : élèves accueillies, établissements, satisfaction, ateliers."
+          actions={viewToggle}
+        />
+        <MasterclassAnalysis />
       </Container>
     );
   }

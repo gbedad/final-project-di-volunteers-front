@@ -208,3 +208,51 @@ export const OutingFigures = ({ o }) => {
     </Box>
   );
 };
+
+// Master Classes of the year (figures read from the MCL application)
+export const masterclassSummary = (m) => {
+  const t = m?.totaux;
+  if (!t || !t.editions) {
+    return 'Master Classes : aucune édition sur la période.';
+  }
+  return [
+    `Master Classes : ${plural(t.editions, 'édition', 'éditions')}, ${plural(t.eleves_retenues, 'élève accueillie', 'élèves accueillies')} (dont ${fr(t.eleves_presentes)} présente${t.eleves_presentes > 1 ? 's' : ''}), ${plural(t.etablissements, 'établissement', 'établissements')}, ${plural(t.ateliers, 'atelier', 'ateliers')}.`,
+    t.satisfaction.note_moyenne !== null
+      ? `Satisfaction : ${fr(t.satisfaction.note_moyenne)} / 5 en moyenne (${plural(t.satisfaction.reponses, 'réponse', 'réponses')}).`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
+
+// Key figures of the Master Classes (analysis and report)
+export const MasterclassFigures = ({ m }) => {
+  const t = m.totaux;
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gap: 3,
+        gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+      }}>
+      <Figure
+        value={fr(t.eleves_retenues)}
+        label="élèves accueillies"
+        detail={`dont ${fr(t.eleves_presentes)} présente${t.eleves_presentes > 1 ? 's' : ''} (${plural(t.editions, 'édition', 'éditions')})`}
+      />
+      <Figure value={fr(t.etablissements)} label="établissements" />
+      <Figure
+        value={t.satisfaction.note_moyenne === null ? '—' : `${fr(t.satisfaction.note_moyenne)} / 5`}
+        label="satisfaction moyenne"
+        detail={`${plural(t.satisfaction.reponses, 'réponse', 'réponses')}`}
+      />
+      <Figure value={fr(t.ateliers)} label="ateliers" />
+    </Box>
+  );
+};
+
+// Why a Master Classes block has no figures
+export const masterclassUnavailable = (m) =>
+  m?.status === 'not_configured'
+    ? "Les chiffres des Master Classes ne sont pas connectés (MCL_URL et MCL_STATS_API_KEY)."
+    : "Les chiffres des Master Classes sont momentanément indisponibles (le serveur de l'application peut être en veille).";

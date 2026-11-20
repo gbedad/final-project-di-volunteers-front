@@ -25,6 +25,9 @@ import {
   years,
   OutingFigures,
   outingSummary,
+  MasterclassFigures,
+  masterclassSummary,
+  masterclassUnavailable,
 } from './reportParts';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -61,6 +64,7 @@ const AnnualReport = () => {
         `Élèves : ${data.cycles.map((c) => `${c.count} en ${c.label.toLowerCase()}`).join(', ')}, venant de ${data.schools.count} établissements.`,
         `Quotient familial médian : ${data.qf.median !== null ? `${fr(data.qf.median)} €` : 'non disponible'}.`,
         data.outings ? outingSummary(data.outings) : null,
+        data.masterclasses?.status === 'ok' ? masterclassSummary(data.masterclasses) : null,
       ]
         .filter(Boolean)
         .join('\n')
@@ -264,6 +268,28 @@ const AnnualReport = () => {
                 <OutingFigures o={data.outings} />
               )}
             </Paper>
+          )}
+
+          {/* Master Classes of the same year (read from the MCL application) */}
+          {data.masterclasses?.status === 'ok' ? (
+            <Paper variant="outlined" className="report-block" sx={{ p: 2.5 }}>
+              <Typography variant="h6" component="h2" sx={{ mb: 1 }}>
+                Master Classes
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2.5 }}>
+                {masterclassSummary(data.masterclasses).replace(
+                  /^Master Classes : (.)/,
+                  (m, c) => c.toUpperCase()
+                )}
+              </Typography>
+              {data.masterclasses.totaux.editions > 0 && (
+                <MasterclassFigures m={data.masterclasses} />
+              )}
+            </Paper>
+          ) : (
+            <Alert severity="warning" className="no-print">
+              {masterclassUnavailable(data.masterclasses)}
+            </Alert>
           )}
 
           <Paper
