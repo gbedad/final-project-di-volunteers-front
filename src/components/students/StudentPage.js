@@ -252,6 +252,7 @@ const StudentPage = () => {
             </Stack>
             <SchoolField
               value={student.school}
+              level={student.level}
               onChange={(school) => set('school', school)}
             />
           </Block>

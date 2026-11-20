@@ -42,6 +42,9 @@ export const existingClasses = [
   'Seconde',
   'Première',
   'Terminale',
+  // Classes préparatoires aux grandes écoles, en lycée : 1re et 2e année
+  'Maths sup',
+  'Maths spé',
   'L1',
   'L2',
   'L3',
@@ -109,6 +112,8 @@ export const existingLevels = JSON.stringify([
   { label: 'Seconde' },
   { label: 'Première' },
   { label: 'Terminale' },
+  { label: 'Maths sup' },
+  { label: 'Maths spé' },
   { label: 'L1' },
   { label: 'L2' },
   { label: 'L3' },

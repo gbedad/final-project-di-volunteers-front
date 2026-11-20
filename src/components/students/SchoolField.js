@@ -7,8 +7,9 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export const schoolLabel = (school) =>
   school ? `${school.name}${school.city ? ` (${school.city})` : ''}` : '';
 
-// School from the national directory (name or town); REP / REP+ shown
-const SchoolField = ({ value, onChange }) => {
+// School from the national directory (name or town); REP / REP+ shown.
+// From L1 on (level), the search is among the higher education establishments.
+const SchoolField = ({ value, onChange, level }) => {
   const [input, setInput] = useState('');
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ const SchoolField = ({ value, onChange }) => {
       setFailed(false);
       try {
         const { data } = await axios.get(`${BASE_URL}/admin/schools`, {
-          params: { q },
+          params: { q, level: level || undefined },
         });
         setOptions(data);
       } catch {
@@ -34,7 +35,7 @@ const SchoolField = ({ value, onChange }) => {
       }
     }, 350);
     return () => clearTimeout(timer);
-  }, [input, value]);
+  }, [input, value, level]);
 
   return (
     <Autocomplete
