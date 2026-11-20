@@ -35,6 +35,10 @@ const grid = {
   gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
 };
 const full = { gridColumn: { sm: '1 / -1' } };
+// Longer texts would not fit on the flyers
+const DESCRIPTION_MAX = 500;
+const BRIEF_MAX = 700;
+const counter = (text, max) => `${(text || '').length} / ${max} caractères`;
 
 const Section = ({ title, hint, children }) => (
   <Paper variant="outlined" sx={{ p: 2 }}>
@@ -379,6 +383,8 @@ const InfoForm = ({
           minRows={3}
           disabled={d}
           sx={full}
+          inputProps={{ maxLength: DESCRIPTION_MAX }}
+          helperText={counter(form.description, DESCRIPTION_MAX)}
         />
         <TextField
           size="small"
@@ -390,7 +396,8 @@ const InfoForm = ({
           minRows={4}
           disabled={d}
           sx={full}
-          helperText="Pas sur le flyer des familles : à copier ou partager depuis « Pour les ambassadeurs »."
+          inputProps={{ maxLength: BRIEF_MAX }}
+          helperText={`Pas sur le flyer des familles : à copier ou partager depuis « Pour les ambassadeurs ». ${counter(form.ambassador_brief, BRIEF_MAX)}`}
         />
         <TextField
           size="small"

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -229,32 +230,61 @@ export const drawFlyer = async (
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
-  // Room for everything: the longer the description, the smaller the photo
-  // band (between 260 and 520 px), the description shown whole up to 8 lines
-  ctx.font = `800 76px ${FONT}`;
-  const titleCount = wrap(ctx, a.title, W - 120, 2).length;
+  // Text first: the whole text is kept. The photo band takes the room left
+  // (520 px at most); when it would fall under 260 px, the description font
+  // gets smaller (30, 26, 24 px); the band never goes under 170 px (ribbon).
+  // Anything still too long is cut, and reported as `cut`
+  let cut = false;
+  // Title: 76 px on two lines at most; smaller (64, 56, 48 px) when it is
+  // longer, up to three lines
+  const titleFit = [
+    [76, 2],
+    [64, 3],
+    [56, 3],
+    [48, 3],
+  ].find(([size, max]) => {
+    ctx.font = `800 ${size}px ${FONT}`;
+    return wrap(ctx, a.title, W - 120, Infinity).length <= max;
+  }) || [48, 3];
+  const titleSize = titleFit[0];
+  const titleLH = Math.round(titleSize * 1.13);
+  ctx.font = `800 ${titleSize}px ${FONT}`;
+  const titleAll = wrap(ctx, a.title, W - 120, Infinity);
+  const titleCount = Math.min(3, titleAll.length);
+  cut ||= titleAll.length > 3;
   // A long value (two meeting points) takes two lines
   ctx.font = `500 34px ${FONT}`;
-  const valueLines = lines.map(([, v]) => wrap(ctx, v, W - 400, 2));
+  const valueAll = lines.map(([, v]) => wrap(ctx, v, W - 400, Infinity));
+  cut ||= valueAll.some((l) => l.length > 2);
+  const valueLines = valueAll.map((l) => l.slice(0, 2));
   const extra = valueLines.reduce((n, l) => n + l.length - 1, 0);
   const rows = lines.length;
-  ctx.font = `400 30px ${FONT}`;
-  const descAll = description ? wrap(ctx, description, W - 120, 12) : [];
   // Last line of description at most here (badges and footer below)
   const descLimit = H - 170 - 80 - 40;
-  const above =
+  const aboveFor = (size, n) =>
     90 +
-    (titleCount - 1) * 86 +
+    (titleCount - 1) * titleLH +
     34 +
     44 +
     rows * 58 +
     extra * 40 +
     30 +
-    (Math.max(1, descAll.length) - 1) * 42;
-  const top = Math.max(
-    180,
-    Math.min(H === SQUARE ? 420 : 520, descLimit - above)
-  );
+    (Math.max(1, n) - 1) * Math.round(size * 1.4);
+  const PHOTO_MIN = 260;
+  const STRIP = 170;
+  const PHOTO_MAX = H === SQUARE ? 420 : 520;
+  let descSize = 30;
+  let descAll = [];
+  let top = STRIP;
+  for (const size of [30, 26, 24]) {
+    ctx.font = `400 ${size}px ${FONT}`;
+    descAll = description ? wrap(ctx, description, W - 120, Infinity) : [];
+    descSize = size;
+    top = Math.min(PHOTO_MAX, descLimit - aboveFor(size, descAll.length));
+    if (top >= PHOTO_MIN) break;
+  }
+  top = Math.max(STRIP, top);
+  const descLineH = Math.round(descSize * 1.4);
   if (photo) {
     const ratio = Math.max(W / photo.width, top / photo.height);
     const w = photo.width * ratio;
@@ -288,10 +318,10 @@ export const drawFlyer = async (
   // Title
   let y = top + 90;
   ctx.fillStyle = INK;
-  ctx.font = `800 76px ${FONT}`;
-  const titleLines = wrap(ctx, a.title, W - 120, 2);
-  titleLines.forEach((l, i) => ctx.fillText(l, 60, y + i * 86));
-  y += (titleLines.length - 1) * 86 + 34;
+  ctx.font = `800 ${titleSize}px ${FONT}`;
+  const titleLines = titleAll.slice(0, 3);
+  titleLines.forEach((l, i) => ctx.fillText(l, 60, y + i * titleLH));
+  y += (titleLines.length - 1) * titleLH + 34;
 
   // When and where, in a tinted block
   const blockTop = y;
@@ -323,11 +353,12 @@ export const drawFlyer = async (
   // A few words of description, in the room left
   if (description) {
     ctx.fillStyle = '#3d4c4c';
-    ctx.font = `400 30px ${FONT}`;
-    const room = Math.max(1, Math.floor((badgesY - 40 - y) / 42) + 1);
-    for (const l of wrap(ctx, description, W - 120, Math.min(12, room))) {
+    ctx.font = `400 ${descSize}px ${FONT}`;
+    const room = Math.max(1, Math.floor((badgesY - 40 - y) / descLineH) + 1);
+    cut ||= descAll.length > room;
+    for (const l of descAll.slice(0, room)) {
       ctx.fillText(l, 60, y);
-      y += 42;
+      y += descLineH;
     }
   }
   y = badgesY;
@@ -370,7 +401,11 @@ export const drawFlyer = async (
   } else x = 60;
   ctx.fillStyle = '#ffffff';
   ctx.font = `700 34px ${FONT}`;
-  const cta = on('cta') ? wrap(ctx, callToAction, W - x - 50, 2) : [];
+  const ctaAll = on('cta')
+    ? wrap(ctx, callToAction, W - x - 50, Infinity)
+    : [];
+  cut ||= ctaAll.length > 2;
+  const cta = ctaAll.slice(0, 2);
   let fy = H - footer + (cta.length > 1 ? 70 : 92);
   for (const l of cta) {
     ctx.fillText(l, x, fy);
@@ -379,6 +414,7 @@ export const drawFlyer = async (
   ctx.font = `400 26px ${FONT}`;
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.fillText('Association Séphora Berrebi', x, H - 22);
+  return { cut };
 };
 
 const fileName = (a) =>
@@ -432,13 +468,14 @@ const FlyerDialog = ({ a, canEdit, onSaved, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
+  const [cut, setCut] = useState(false);
   const draw = useCallback(() => {
     if (canvas.current) {
       drawFlyer(canvas.current, a, {
         show: current.fields,
         cta: current.cta,
         height: type.height,
-      });
+      }).then((r) => setCut(!!r?.cut));
     }
   }, [a, current, type.height]);
   useEffect(() => {
@@ -575,6 +612,12 @@ const FlyerDialog = ({ a, canEdit, onSaved, onClose }) => {
                 onChange={(e) => update({ cta: e.target.value })}
                 multiline
               />
+            )}
+            {cut && (
+              <Alert severity="warning" sx={{ py: 0 }}>
+                Texte trop long pour ce flyer : une partie est coupée.
+                Raccourcissez la description ou la présentation.
+              </Alert>
             )}
             <Typography variant="caption" color="text.secondary">
               Repris de l'onglet Infos.{' '}

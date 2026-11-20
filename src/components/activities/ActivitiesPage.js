@@ -79,7 +79,8 @@ const ActivityCard = ({ a, onOpen }) => {
             <TheaterComedyIcon sx={{ fontSize: 56, color: 'text.disabled' }} />
           </Box>
         )}
-        <CardContent sx={{ width: '100%', flex: 1 }}>
+        {/* No width: 100% here, the padding would overflow the card */}
+        <CardContent sx={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>
           <Stack
             direction="row"
             spacing={0.5}
