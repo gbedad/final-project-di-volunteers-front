@@ -224,6 +224,7 @@ const StudentFees = ({ student, canEdit, set }) => {
         label={
           <Typography variant="body2">
             Les Lionnes : cotisation annuelle seulement, pas de participation aux frais
+            ni de caution
           </Typography>
         }
       />
@@ -291,7 +292,7 @@ const StudentFees = ({ student, canEdit, set }) => {
         <Alert severity="info">
           Indiquez le justificatif et le QF pour calculer la participation.
         </Alert>
-      ) : fee.missing === 'level' ? (
+      ) : fee.mode === 'exempt' ? null : fee.missing === 'level' ? (
         <Alert severity="warning">
           Renseignez le niveau de l'élève pour trouver son tarif horaire.
         </Alert>
