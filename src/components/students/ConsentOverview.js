@@ -224,7 +224,7 @@ export const ConsentFilterChips = ({ students, value, onChange }) => {
     <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
       <Tooltip title="Demandes en cours (sauf terminées et abandons)">
         <Typography variant="body2" color="text.secondary">
-          Accord des parents :
+          Accord (parents, ou élève majeur) :
         </Typography>
       </Tooltip>
       {CONSENT_FILTERS.map((f) => (
@@ -238,7 +238,7 @@ export const ConsentFilterChips = ({ students, value, onChange }) => {
         />
       ))}
       {urgent > 0 && (
-        <Tooltip title="Un tuteur est proposé ou actif alors que l'accord des parents manque">
+        <Tooltip title="Un tuteur est proposé ou actif alors que l'accord manque">
           <Chip
             size="small"
             color="error"

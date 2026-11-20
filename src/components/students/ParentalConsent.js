@@ -399,7 +399,7 @@ const ParentalConsent = ({ student, canEdit, onConsentChange }) => {
       />
 
       <Dialog open={!!confirmRevoke} onClose={() => setConfirmRevoke(null)}>
-        <DialogTitle>Retirer l'accord des parents ?</DialogTitle>
+        <DialogTitle>{isAdultStudent(student) ? "Retirer l'accord de l'élève ?" : "Retirer l'accord des parents ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             À faire quand le parent vous a demandé de retirer son accord. Le

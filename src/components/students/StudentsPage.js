@@ -378,7 +378,7 @@ const StudentsPage = () => {
     {
       field: 'consent',
       headerName: 'Accord',
-      description: 'Accord des parents',
+      description: 'Accord des parents, ou de l’élève s’il est majeur',
       width: 100,
       align: 'center',
       headerAlign: 'center',

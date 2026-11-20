@@ -31,7 +31,7 @@ export const priorityLabel = (value) =>
   PRIORITIES.find((p) => p.value === value)?.label || '';
 
 export const SUBJECTS = existingSubjects.map((s) => s.label);
-export const STUDENT_LEVELS = LEVELS.filter((l) => !/^L\d$/.test(l));
+export const STUDENT_LEVELS = LEVELS;
 export const TRACKS = ['Générale', 'Technologique', 'Professionnelle'];
 export const TOPIC_PRIORITIES = [
   { value: 'haute', label: 'Prioritaire' },
