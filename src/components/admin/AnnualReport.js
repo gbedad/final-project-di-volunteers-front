@@ -24,6 +24,7 @@ import {
   monthLabel,
   years,
   OutingFigures,
+  OutingSessionFigures,
   outingSummary,
   MasterclassFigures,
   masterclassSummary,
@@ -265,7 +266,10 @@ const AnnualReport = () => {
                 )}
               </Typography>
               {data.outings.figures.outings > 0 && (
-                <OutingFigures o={data.outings} />
+                <>
+                  <OutingFigures o={data.outings} />
+                  <OutingSessionFigures o={data.outings} />
+                </>
               )}
             </Paper>
           )}
