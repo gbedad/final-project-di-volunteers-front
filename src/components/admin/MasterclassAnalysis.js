@@ -87,8 +87,9 @@ const MasterclassAnalysis = () => {
                   <TableRow>
                     <TableCell>Master Class</TableCell>
                     <TableCell>Date</TableCell>
-                    <TableCell align="right">Élèves accueillies</TableCell>
-                    <TableCell align="right">Présentes</TableCell>
+                    <TableCell align="right">Candidatures reçues</TableCell>
+                    <TableCell align="right">Via établissements</TableCell>
+                    <TableCell align="right">Candidatures individuelles</TableCell>
                     <TableCell align="right">Établissements</TableCell>
                     <TableCell align="right">Ateliers</TableCell>
                     <TableCell align="right">Satisfaction</TableCell>
@@ -102,8 +103,9 @@ const MasterclassAnalysis = () => {
                         {shortDate(e.date)}
                         {!e.terminee && ' (à venir)'}
                       </TableCell>
-                      <TableCell align="right">{e.eleves.retenues}</TableCell>
-                      <TableCell align="right">{e.eleves.presentes}</TableCell>
+                      <TableCell align="right">{e.eleves.candidatures_total}</TableCell>
+                      <TableCell align="right">{e.eleves.via_etablissements}</TableCell>
+                      <TableCell align="right">{e.eleves.candidatures_individuelles}</TableCell>
                       <TableCell align="right">{e.etablissements}</TableCell>
                       <TableCell align="right">{e.ateliers}</TableCell>
                       <TableCell align="right">

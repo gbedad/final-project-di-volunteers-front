@@ -216,7 +216,7 @@ export const masterclassSummary = (m) => {
     return 'Master Classes : aucune édition sur la période.';
   }
   return [
-    `Master Classes : ${plural(t.editions, 'édition', 'éditions')}, ${plural(t.eleves_retenues, 'élève accueillie', 'élèves accueillies')} (dont ${fr(t.eleves_presentes)} présente${t.eleves_presentes > 1 ? 's' : ''}), ${plural(t.etablissements, 'établissement', 'établissements')}, ${plural(t.ateliers, 'atelier', 'ateliers')}.`,
+    `Master Classes : ${plural(t.editions, 'édition', 'éditions')}, ${plural(t.eleves_total, 'élève inscrite', 'élèves inscrites')} (sur ${plural(t.candidatures_total, 'candidature reçue', 'candidatures reçues')} ; ${fr(t.eleves_via_etablissements)} via leur établissement, ${plural(t.eleves_candidatures_individuelles, 'candidature individuelle', 'candidatures individuelles')}), ${plural(t.etablissements, 'établissement', 'établissements')}, ${plural(t.ateliers, 'atelier', 'ateliers')}.`,
     t.satisfaction.note_moyenne !== null
       ? `Satisfaction : ${fr(t.satisfaction.note_moyenne)} / 5 en moyenne (${plural(t.satisfaction.reponses, 'réponse', 'réponses')}).`
       : null,
@@ -233,12 +233,17 @@ export const MasterclassFigures = ({ m }) => {
       sx={{
         display: 'grid',
         gap: 3,
-        gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+        gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(5, 1fr)' },
       }}>
       <Figure
-        value={fr(t.eleves_retenues)}
-        label="élèves accueillies"
-        detail={`dont ${fr(t.eleves_presentes)} présente${t.eleves_presentes > 1 ? 's' : ''} (${plural(t.editions, 'édition', 'éditions')})`}
+        value={fr(t.eleves_total)}
+        label="élèves inscrites"
+        detail={`${fr(t.eleves_via_etablissements)} via leur établissement · ${plural(t.eleves_candidatures_individuelles, 'candidature individuelle', 'candidatures individuelles')}`}
+      />
+      <Figure
+        value={fr(t.candidatures_total)}
+        label="candidatures reçues"
+        detail="refusées comprises"
       />
       <Figure value={fr(t.etablissements)} label="établissements" />
       <Figure
