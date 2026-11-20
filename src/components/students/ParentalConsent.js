@@ -57,10 +57,29 @@ const openFile = async (file) => {
 };
 
 // Request dialog: which parent, which channel; then the link to send
+// From 18 on, the request goes to the student (same rule as the server)
+const isAdultStudent = (student) => {
+  if (!student.birth_date) return false;
+  const b = new Date(student.birth_date);
+  const t = new Date();
+  let age = t.getFullYear() - b.getFullYear();
+  const m = t.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && t.getDate() < b.getDate())) age -= 1;
+  return age >= 18;
+};
+
 export const RequestDialog = ({ student, open, onClose, onSent }) => {
-  const parents = [parent(student, 1), parent(student, 2)].filter(
-    (p) => p.name || p.email || p.phone
-  );
+  const adult = isAdultStudent(student);
+  const parents = adult
+    ? [
+        {
+          n: 1,
+          name: [student.first_name, student.last_name].filter(Boolean).join(' '),
+          email: student.email,
+          phone: student.phone,
+        },
+      ]
+    : [parent(student, 1), parent(student, 2)].filter((p) => p.name || p.email || p.phone);
   const [n, setN] = useState(1);
   const [channel, setChannel] = useState('email');
   const [sending, setSending] = useState(false);
@@ -104,7 +123,7 @@ export const RequestDialog = ({ student, open, onClose, onSent }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Demander l'accord des parents</DialogTitle>
+      <DialogTitle>{adult ? "Demander l'accord de l'élève" : "Demander l'accord des parents"}</DialogTitle>
       <DialogContent>
         {result ? (
           <Stack spacing={2}>

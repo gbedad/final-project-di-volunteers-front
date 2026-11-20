@@ -85,6 +85,10 @@ const ConsentPage = () => {
         if (data.parent_name) {
           setForm((f) => ({ ...f, signer_name: data.parent_name }));
         }
+        // Adult student: the only signer possible is the student
+        if (data.adult) {
+          setForm((f) => ({ ...f, signer_relation: data.relations?.[0] || '' }));
+        }
       })
       .catch((err) => setPage(err.response?.data?.state ? err.response.data : { state: 'invalid' }));
   }, [token]);
@@ -244,18 +248,20 @@ const ConsentPage = () => {
                 onChange={(e) => set('signer_name', e.target.value)}
                 fullWidth
               />
-              <TextField
-                select
-                label={`Votre lien avec ${page.child}`}
-                value={form.signer_relation}
-                onChange={(e) => set('signer_relation', e.target.value)}
-                fullWidth>
-                {(page.relations || []).map((r) => (
-                  <MenuItem key={r} value={r}>
-                    {r}
-                  </MenuItem>
-                ))}
-              </TextField>
+              {!page.adult && (
+                <TextField
+                  select
+                  label={`Votre lien avec ${page.child}`}
+                  value={form.signer_relation}
+                  onChange={(e) => set('signer_relation', e.target.value)}
+                  fullWidth>
+                  {(page.relations || []).map((r) => (
+                    <MenuItem key={r} value={r}>
+                      {r}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
               <SignaturePad onChange={setSignature} />
             </Stack>
           </Paper>

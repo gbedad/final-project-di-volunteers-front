@@ -58,6 +58,8 @@ const StudentFees = ({ student, canEdit, set }) => {
   const hasQf = proof === 'caf' || proof === 'avis';
   const hourly = fee?.mode === 'hourly';
   const agreed = !!fee?.agreed;
+  const programmes = student.programmes || [];
+  const isLionne = programmes.includes('lionnes');
 
   const computeQf = () => {
     const i = Number(parseAmount(income));
@@ -201,6 +203,36 @@ const StudentFees = ({ student, canEdit, set }) => {
             )}
           </Stack>
         </>
+      )}
+
+      <FormControlLabel
+        disabled={!canEdit}
+        control={
+          <Checkbox
+            size="small"
+            checked={isLionne}
+            onChange={(e) =>
+              set(
+                'programmes',
+                e.target.checked
+                  ? [...programmes.filter((k) => k !== 'lionnes'), 'lionnes']
+                  : programmes.filter((k) => k !== 'lionnes')
+              )
+            }
+          />
+        }
+        label={
+          <Typography variant="body2">
+            Les Lionnes : cotisation annuelle seulement, pas de participation aux frais
+          </Typography>
+        }
+      />
+
+      {fee?.mode === 'exempt' && (
+        <Alert severity="info">
+          Élève des Lionnes : pas de participation aux frais, pas de caution. Seule la
+          cotisation annuelle est due.
+        </Alert>
       )}
 
       {hourly && (
