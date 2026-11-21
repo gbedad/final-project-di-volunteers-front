@@ -14,7 +14,12 @@ export const isCulture = (role) =>
 export const isCultureOnly = (role) =>
   ['superculture', 'culture'].includes(role);
 
+// Paid tutoring: its own managers, apart from the free tutoring (server:
+// PAYANT_ROLES in middlewares/authAdmin.js)
+export const isPayant = (role) => ['superadmin', 'gestion_payant'].includes(role);
+
 export const ROLE_LABELS = {
+  gestion_payant: 'Gestion tutorat payant',
   volunteer: 'Bénévole',
   interviewer: 'Interviewer',
   culture: 'Activités culturelles',

@@ -50,6 +50,7 @@ import TodoPage from './components/admin/TodoPage';
 import AnnualReport from './components/admin/AnnualReport';
 import TutorialPage from './pages/TutorialPage';
 import AccountingPage from './components/admin/AccountingPage';
+import PaidTutoring from './components/admin/PaidTutoring';
 import ActivitiesPage from './components/activities/ActivitiesPage';
 import ActivityPage from './components/activities/ActivityPage';
 import AttendancePage from './components/activities/AttendancePage';
@@ -197,6 +198,7 @@ function App() {
             <Route path="/analyse" element={<Analysis />} />
             <Route path="/rapport-annuel" element={<AnnualReport />} />
             <Route path="/encaissements" element={<AccountingPage />} />
+            <Route path="/tutorat-payant" element={<PaidTutoring />} />
             <Route path="/connexions" element={<Connections />} />
             <Route path="/eleves" element={<StudentsPage />} />
             <Route path="/eleves/:id" element={<StudentPage />} />

@@ -39,7 +39,9 @@ import {
   isManager,
   isCulture,
   isCultureOnly,
+  isPayant,
 } from '../../js/roles';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import WifiTetheringIcon from '@mui/icons-material/WifiTethering';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import RuleIcon from '@mui/icons-material/Rule';
@@ -165,6 +167,7 @@ function ResponsiveAppBar() {
     pairs: ['/binomes'],
     activities: ['/activites'],
     accounting: ['/encaissements'],
+    paidTutoring: ['/tutorat-payant'],
     connections: ['/connexions'],
     todo: ['/a-traiter'],
     controls: ['/controles'],
@@ -195,6 +198,10 @@ function ResponsiveAppBar() {
 
   const handleAccounting = () => {
     navigate(`/encaissements`, { state: { userLogged } });
+  };
+
+  const handlePaidTutoring = () => {
+    navigate(`/tutorat-payant`, { state: { userLogged } });
   };
 
   const handleActivities = () => {
@@ -741,6 +748,16 @@ function ResponsiveAppBar() {
                             <EuroIcon fontSize="small" />
                           </ListItemIcon>
                           Encaissements
+                        </MenuItem>
+                      )}
+                      {isPayant(userLogged.user.role) && (
+                        <MenuItem
+                          onClick={handlePaidTutoring}
+                          {...currentProps('paidTutoring')}>
+                          <ListItemIcon>
+                            <PaymentsIcon fontSize="small" />
+                          </ListItemIcon>
+                          Tutorat payant
                         </MenuItem>
                       )}
                       {isManager(userLogged.user.role) && (
