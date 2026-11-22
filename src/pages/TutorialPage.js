@@ -15,8 +15,32 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { tutorialLink, tutorialPath } from '../js/tutorials';
+import { useAuth } from '../AuthContext';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+// After the video: back to the students of a tutor who is signed in (the
+// tutorial is open to everyone; the link to the list is always there)
+const WhereNext = () => {
+  const { isLoggedIn } = useAuth() || {};
+  return (
+    <Stack spacing={1} sx={{ mt: 1 }}>
+      {isLoggedIn && (
+        <Button
+          variant="contained"
+          size="large"
+          fullWidth
+          component={RouterLink}
+          to="/login?onglet=eleves">
+          Retour à mes élèves
+        </Button>
+      )}
+      <Button variant="outlined" fullWidth component={RouterLink} to="/tutoriel">
+        Tous les tutoriels
+      </Button>
+    </Stack>
+  );
+};
 
 // One tutorial: the video, made for a phone, with a link to share
 const Tutorial = ({ slug }) => {
@@ -75,6 +99,7 @@ const Tutorial = ({ slug }) => {
               display: 'block',
             }}
           />
+          <WhereNext />
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <Button size="small" startIcon={<ContentCopyIcon />} onClick={copy}>
               Copier le lien
@@ -116,6 +141,7 @@ const TutorialPage = () => {
         <Alert severity="info">Aucun tutoriel pour l'instant.</Alert>
       ) : (
         <Stack spacing={2}>
+          <WhereNext />
           <Typography variant="h5" component="h1">
             Tutoriels
           </Typography>
