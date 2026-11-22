@@ -8,7 +8,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   LinearProgress,
+  Switch,
   Paper,
   Stack,
   Typography,
@@ -83,6 +85,19 @@ const TutorialRow = ({ tutorial, canEdit, onChanged }) => {
     }
   };
 
+  // The tutors see the video only once published here (the link works then)
+  const publish = async (published) => {
+    try {
+      await axios.post(`${BASE_URL}/admin/tutorials/${tutorial.slug}/publication`, { published });
+      toast.success(published ? 'Publié : les tuteurs voient le tutoriel.' : 'Retiré : les tuteurs ne le voient plus.', {
+        position: 'bottom-left',
+      });
+      onChanged();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Le statut n’a pas pu être enregistré', { position: 'bottom-left' });
+    }
+  };
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(tutorialLink(tutorial.slug));
@@ -109,12 +124,26 @@ const TutorialRow = ({ tutorial, canEdit, onChanged }) => {
         <Typography sx={{ flex: 1, minWidth: 240 }} component="div">
           <b>{tutorial.title}</b>
           <Typography variant="body2" color="text.secondary">
-            {tutorial.has_video
-              ? `En ligne depuis le ${new Date(tutorial.uploaded_at).toLocaleDateString('fr-FR')} · ${mb(tutorial.size)}`
+            {tutorial.has_file
+              ? `Vidéo envoyée le ${new Date(tutorial.uploaded_at).toLocaleDateString('fr-FR')} · ${mb(tutorial.size)}`
               : 'Pas encore de vidéo : le tutoriel n’est pas proposé aux tuteurs.'}
+            {tutorial.has_file &&
+              (tutorial.published ? ' · proposé aux tuteurs' : ' · non proposé aux tuteurs')}
           </Typography>
+          {canEdit && tutorial.has_file && (
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  checked={!!tutorial.published}
+                  onChange={(e) => publish(e.target.checked)}
+                />
+              }
+              label="Proposer aux tuteurs"
+            />
+          )}
         </Typography>
-        {tutorial.has_video && (
+        {tutorial.published && (
           <>
             <Button
               size="small"
@@ -144,9 +173,9 @@ const TutorialRow = ({ tutorial, canEdit, onChanged }) => {
               disabled={progress !== null}
               startIcon={<UploadFileIcon />}
               onClick={() => input.current.click()}>
-              {tutorial.has_video ? 'Remplacer la vidéo' : 'Choisir la vidéo'}
+              {tutorial.has_file ? 'Remplacer la vidéo' : 'Choisir la vidéo'}
             </Button>
-            {tutorial.has_video && (
+            {tutorial.has_file && (
               <Button
                 size="small"
                 color="error"
