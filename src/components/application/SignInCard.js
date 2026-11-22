@@ -18,6 +18,8 @@ import DrawIcon from '@mui/icons-material/Draw';
 import SignaturePad from './SignaturePad';
 import { PROGRESS_LABELS } from '../students/Sessions';
 import { tutorialPath, useTutorials } from '../../js/tutorials';
+import { DeclareTodayDialog } from './DeclareToday';
+
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const DAYS_FR = [
@@ -129,6 +131,7 @@ const QuickReport = ({ pair, session, onChanged }) => {
       // Completes the session signed in today (same day, same tutor)
       await axios.post(`${BASE_URL}/my/binomes/${pair.id}/seances`, {
         date: today(),
+        extra_id: session.extra_id ?? null,
         attendance: 'présent',
         duration_minutes: session.duration_minutes,
         late: !!session.late,
@@ -248,42 +251,57 @@ const minutesOf = (hhmm) => {
   return m ? Number(m[1]) * 60 + Number(m[2]) : null;
 };
 
-// End of the session, in one go: was the student there (on time, late or
-// absent), the student's signature, then the report. Date and time are set
-// by the server; lateness is what the tutor says (Charte: 15 min or more).
-// Exceptional session of today, set by the association
-const extraToday = (pair) =>
-  (pair.extras || []).find((e) => e.date === today()) || null;
-
-const SignInCard = ({ pairs, onChanged, onExtra }) => {
-  const [busy, setBusy] = useState(null);
+// The sessions of today, one line each: the regular slot (unless it was moved)
+// and the exceptional ones (in addition, or moved, remote ones are on Zoom).
+// key: the exceptional session's id, null for the slot
+const linesToday = (pair) => {
   const day = DAYS_FR[new Date().getDay()];
-  const slotToday = (pair) => {
-    const extra = extraToday(pair);
-    return extra
-      ? { startTime: extra.start_time, endTime: extra.end_time, extra }
-      : (pair.schedule || []).find((s) => s.day === day) || null;
-  };
-  // Only the pairs with a session today (their slot, or an exceptional one),
-  // on site: a day without a session shows no "Fin de séance"
-  const active = pairs.filter(
-    (p) =>
-      p.status === 'actif' &&
-      !!slotToday(p) &&
-      (extraToday(p) ? !extraToday(p).remote : needsSignIn(p))
+  const extras = (pair.extras || []).filter((e) => e.date === today());
+  const moved = extras.find((e) => e.kind === 'remplacement');
+  const daySlot = needsSignIn(pair)
+    ? (pair.schedule || []).find((s) => s.day === day) || null
+    : null;
+  const lines = [];
+  if (daySlot && !moved) {
+    lines.push({ key: null, startTime: daySlot.startTime, endTime: daySlot.endTime, extra: null, daySlot });
+  }
+  for (const e of extras) {
+    if (e.remote) continue;
+    lines.push({ key: e.id, startTime: e.start_time, endTime: e.end_time, extra: e, daySlot });
+  }
+  return lines;
+};
+
+// The report or sign-in of a line: its exceptional session, or, when the day
+// has no slot (or the slot was moved), every row of the day (rows written
+// before the extra_id column)
+const rowsOf = (pair, line) => {
+  const solo = !!line.extra && (line.extra.kind === 'remplacement' || !line.daySlot);
+  return (pair.sessions || []).filter(
+    (s) =>
+      String(s.date).slice(0, 10) === today() &&
+      (solo || (s.extra_id ?? null) === line.key)
   );
+};
+
+const SignInCard = ({ pairs, onChanged }) => {
+  const [busy, setBusy] = useState(null);
+  const [adding, setAdding] = useState(null);
+  const [moving, setMoving] = useState(null);
+  // Only the pairs with a session today, on site: a day without a session
+  // shows no « Fin de séance »
+  const active = pairs.filter((p) => p.status === 'actif' && linesToday(p).length);
   if (!active.length) return null;
   // Students with a session today first
-  const sorted = [...active].sort(
-    (a, b) => Number(!!slotToday(b)) - Number(!!slotToday(a))
-  );
+  const sorted = [...active];
 
-  const signIn = async (pair, attendance, late = false) => {
-    setBusy(pair.id);
+  const signIn = async (pair, line, attendance, late = false) => {
+    setBusy(`${pair.id}:${line.key}`);
     try {
       await axios.post(`${BASE_URL}/my/binomes/${pair.id}/emargement`, {
         attendance,
         late,
+        extra_id: line.key,
       });
       toast.success(
         attendance === 'absent'
@@ -297,9 +315,7 @@ const SignInCard = ({ pairs, onChanged, onExtra }) => {
     } catch (err) {
       toast.error(
         err.response?.data?.error || "L'émargement n'a pas pu être enregistré",
-        {
-          position: 'top-center',
-        }
+        { position: 'top-center' }
       );
       if (err.response?.status === 409) onChanged();
     } finally {
@@ -314,154 +330,136 @@ const SignInCard = ({ pairs, onChanged, onExtra }) => {
         <Typography variant="h6">Fin de séance : émarger</Typography>
       </Stack>
       <Stack spacing={1.5}>
-        {sorted.map((pair) => {
-          const done = (pair.sessions || []).find(
-            (s) => String(s.date).slice(0, 10) === today()
-          );
-          const slot = slotToday(pair);
-          // Before the planned end: a reminder, never blocking
-          const early =
-            !done && slot && nowMinutes() < minutesOf(slot.endTime) - 10;
-          return (
-            <Box key={pair.id}>
-              <Typography fontWeight={600}>
-                {pair.student.first_name} {pair.student.initial}
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="text.secondary">
-                  {slot
-                    ? ` · aujourd'hui ${slot.startTime}–${slot.endTime}${
-                        slot.extra ? ' (séance exceptionnelle)' : ''
-                      }`
-                    : ''}
-                </Typography>
-              </Typography>
-              {done ? (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  flexWrap="wrap"
-                  useFlexGap
-                  sx={{ mt: 0.5 }}>
-                  {done.attendance === 'absent' ? (
-                    <EventBusyIcon color="warning" fontSize="small" />
-                  ) : (
-                    <CheckCircleIcon color="success" fontSize="small" />
-                  )}
-                  <Typography variant="body2">
-                    {done.attendance === 'absent'
-                      ? 'Absent'
-                      : done.late
-                        ? 'Présent, en retard'
-                        : "Présent, à l'heure"}{' '}
-                    · émargé à {timeOf(done.created_at)}
+        {sorted.map((pair) =>
+          linesToday(pair).map((line) => {
+            const name = `${pair.student.first_name} ${pair.student.initial}`;
+            const done = rowsOf(pair, line)[0] || null;
+            const busyHere = busy === `${pair.id}:${line.key}`;
+            const early = !done && nowMinutes() < minutesOf(line.endTime) - 10;
+            const label = !line.extra
+              ? `créneau ${line.startTime}–${line.endTime}`
+              : line.extra.kind === 'remplacement'
+                ? `séance déplacée ${line.startTime}–${line.endTime}`
+                : line.daySlot
+                  ? `séance en plus ${line.startTime}–${line.endTime}`
+                  : `séance ${line.startTime}–${line.endTime}`;
+            return (
+              <Box key={`${pair.id}:${line.key}`}>
+                <Typography fontWeight={600}>
+                  {name}
+                  <Typography component="span" variant="body2" color="text.secondary">
+                    {` · aujourd'hui, ${label}`}
                   </Typography>
-                </Stack>
-              ) : null}
-              {done && done.attendance === 'présent' && (
-                <StudentSignature
-                  session={done}
-                  firstName={pair.student.first_name}
-                  onChanged={onChanged}
-                />
-              )}
-              {/* Then the report, once the student signed (or could not) */}
-              {done &&
-                done.attendance === 'présent' &&
-                (done.student_signed_at || done.no_signature) &&
-                (done.work || done.progress || done.remark ? (
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    sx={{ mt: 0.5 }}>
-                    <CheckCircleIcon color="success" fontSize="small" />
+                </Typography>
+                {done ? (
+                  <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap sx={{ mt: 0.5 }}>
+                    {done.attendance === 'absent' ? (
+                      <EventBusyIcon color="warning" fontSize="small" />
+                    ) : (
+                      <CheckCircleIcon color="success" fontSize="small" />
+                    )}
                     <Typography variant="body2">
-                      Compte-rendu enregistré
+                      {done.attendance === 'absent'
+                        ? 'Absent'
+                        : done.late
+                          ? 'Présent, en retard'
+                          : "Présent, à l'heure"}{' '}
+                      · émargé à {timeOf(done.created_at)}
                     </Typography>
                   </Stack>
-                ) : (
-                  <QuickReport
-                    pair={pair}
-                    session={done}
-                    onChanged={onChanged}
-                  />
-                ))}
-              {done ? null : (
-                <Box sx={{ mt: 0.75 }}>
-                  <Typography variant="body2" sx={{ mb: 0.75 }}>
-                    {early
-                      ? `À faire à la fin de la séance (fin prévue à ${slot.endTime}). ${pair.student.first_name} était :`
-                      : `La séance est terminée : ${pair.student.first_name} était :`}
-                  </Typography>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    flexWrap="wrap"
-                    useFlexGap
-                    alignItems="flex-start">
-                    <Button
-                      variant="contained"
-                      size="large"
-                      disabled={busy === pair.id}
-                      onClick={() => signIn(pair, 'présent')}>
-                      Présent, à l'heure
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="large"
-                      disabled={busy === pair.id}
-                      onClick={() => signIn(pair, 'présent', true)}
-                      sx={{ flexDirection: 'column', lineHeight: 1.2 }}>
-                      Présent, en retard
-                      <Typography
-                        component="span"
-                        variant="caption"
-                        sx={{ textTransform: 'none' }}>
-                        15 min ou plus
-                      </Typography>
-                    </Button>
-                    <Button
-                      size="large"
-                      disabled={busy === pair.id}
-                      onClick={() => signIn(pair, 'absent')}>
-                      Absent
-                    </Button>
-                  </Stack>
-                </Box>
-              )}
-              {/* Always visible, also during the signature: a second session today */}
-              {slot && onExtra && (
-                <Box sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Autre séance tenue aujourd'hui, hors de ce créneau ?
-                  </Typography>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    sx={{ mt: 0.5 }}
-                    onClick={() => onExtra(pair)}>
-                    Séance hors créneau
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          );
-        })}
+                ) : null}
+                {done && done.attendance === 'présent' && (
+                  <StudentSignature session={done} firstName={pair.student.first_name} onChanged={onChanged} />
+                )}
+                {done &&
+                  done.attendance === 'présent' &&
+                  (done.student_signed_at || done.no_signature) &&
+                  (done.work || done.progress || done.remark ? (
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                      <CheckCircleIcon color="success" fontSize="small" />
+                      <Typography variant="body2">Compte-rendu enregistré</Typography>
+                    </Stack>
+                  ) : (
+                    <QuickReport pair={pair} session={done} onChanged={onChanged} />
+                  ))}
+                {done ? null : (
+                  <Box sx={{ mt: 0.75 }}>
+                    <Typography variant="body2" sx={{ mb: 0.75 }}>
+                      {early
+                        ? `À faire à la fin de la séance (fin prévue à ${line.endTime}). ${pair.student.first_name} était :`
+                        : `La séance est terminée : ${pair.student.first_name} était :`}
+                    </Typography>
+                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap alignItems="flex-start">
+                      <Button variant="contained" size="large" disabled={busyHere} onClick={() => signIn(pair, line, 'présent')}>
+                        Présent, à l'heure
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="large"
+                        disabled={busyHere}
+                        onClick={() => signIn(pair, line, 'présent', true)}
+                        sx={{ flexDirection: 'column', lineHeight: 1.2 }}>
+                        Présent, en retard
+                        <Typography component="span" variant="caption" sx={{ textTransform: 'none' }}>
+                          15 min ou plus
+                        </Typography>
+                      </Button>
+                      <Button size="large" disabled={busyHere} onClick={() => signIn(pair, line, 'absent')}>
+                        Absent
+                      </Button>
+                    </Stack>
+                    {line.daySlot && !line.extra && (
+                      <Button size="small" variant="text" sx={{ mt: 1 }} onClick={() => setMoving(pair)}>
+                        Le créneau a été déplacé
+                      </Button>
+                    )}
+                  </Box>
+                )}
+              </Box>
+            );
+          })
+        )}
       </Stack>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        component="div"
-        sx={{ mt: 1.5 }}>
+      {/* Once per pair with a slot today: a second session in addition */}
+      {sorted
+        .filter((p) => linesToday(p).some((l) => l.daySlot) && !(p.extras || []).some((e) => e.date === today()))
+        .map((pair) => (
+          <Box key={`plus-${pair.id}`} sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="body2" color="text.secondary">
+              {pair.student.first_name} : une deuxième séance aujourd'hui ?
+            </Typography>
+            <Button size="small" variant="outlined" sx={{ mt: 0.5 }} onClick={() => setAdding(pair)}>
+              Ajouter une séance en plus
+            </Button>
+          </Box>
+        ))}
+      <Typography variant="caption" color="text.secondary" component="div" sx={{ mt: 1.5 }}>
         À la fin de chaque séance : la présence de l'élève, sa signature, puis
         votre compte-rendu. La date et l'heure sont enregistrées
         automatiquement. Séances à distance : le rapport Zoom fait foi, pas
         besoin d'émarger.
         <HelpLink />
       </Typography>
+      <DeclareTodayDialog
+        open={!!moving}
+        pair={moving}
+        mode="moved"
+        onClose={() => setMoving(null)}
+        onDone={() => {
+          setMoving(null);
+          onChanged();
+        }}
+      />
+      <DeclareTodayDialog
+        open={!!adding}
+        pair={adding}
+        mode="plus"
+        onClose={() => setAdding(null)}
+        onDone={() => {
+          setAdding(null);
+          onChanged();
+        }}
+      />
     </Paper>
   );
 };

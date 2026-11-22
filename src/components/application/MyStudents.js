@@ -27,7 +27,8 @@ import {
   formatHours,
 } from '../students/Sessions';
 import { ExtrasList } from '../students/ExtraSessions';
-import SignInCard from './SignInCard';
+import SignInCard, { needsSignIn } from './SignInCard';
+import { DeclareTodayDialog, hasSessionToday } from './DeclareToday';
 import InstallApp from './InstallApp';
 import TutorialCard from './TutorialCard';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -69,6 +70,7 @@ const MyStudents = () => {
   const [reporting, setReporting] = useState(null);
   // The report opened from "Séance hors créneau": the extra session is ticked
   const [reportingExtra, setReportingExtra] = useState(false);
+  const [declaring, setDeclaring] = useState(null);
   // A report the tutor comes back to: { pair, session }
   const [editingReport, setEditingReport] = useState(null);
   // "Pas de séance" and "Le créneau a changé" (also from the e-mail link)
@@ -136,10 +138,6 @@ const MyStudents = () => {
       <SignInCard
         pairs={pairs}
         onChanged={load}
-        onExtra={(pair) => {
-          setReportingExtra(true);
-          setReporting(pair);
-        }}
       />
       {pairs.map((pair) => {
         const s = pair.student;
@@ -242,6 +240,14 @@ const MyStudents = () => {
                         onClick={() => setNoSession(pair)}>
                         Pas de séance
                       </Button>
+                      {needsSignIn(pair) && !hasSessionToday(pair) && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => setDeclaring(pair)}>
+                          Déclarer une séance aujourd'hui
+                        </Button>
+                      )}
                       <Button
                         size="small"
                         variant="outlined"
@@ -249,7 +255,7 @@ const MyStudents = () => {
                           setReportingExtra(true);
                           setReporting(pair);
                         }}>
-                        Séance hors créneau
+                        Déclarer une séance passée
                       </Button>
                       <Button
                         size="small"
@@ -341,6 +347,18 @@ const MyStudents = () => {
           onClose={() => setSlotFor(null)}
           onSaved={() => {
             setSlotFor(null);
+            load();
+          }}
+        />
+      )}
+      {declaring && (
+        <DeclareTodayDialog
+          open
+          pair={declaring}
+          mode="addition"
+          onClose={() => setDeclaring(null)}
+          onDone={() => {
+            setDeclaring(null);
             load();
           }}
         />
