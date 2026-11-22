@@ -1229,6 +1229,7 @@ const AmbassadorDialog = ({ a, canEdit, onSaved, onClose }) => {
               onChange={setText}
               max={AMBASSADOR_MAX}
               minRows={10}
+              withLink
               placeholder={
                 "Ex. :\n*Sortie au musée* 📍 le samedi 14 h\n- le lieu, le déroulé\n- ce qu'il faut savoir pour en parler aux familles"
               }

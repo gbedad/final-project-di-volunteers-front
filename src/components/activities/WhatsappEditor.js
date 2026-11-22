@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
+  Button,
   IconButton,
   Paper,
   Popover,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import LinkIcon from '@mui/icons-material/Link';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -106,8 +108,13 @@ export const WhatsappEditor = ({
   max,
   placeholder,
   minRows = 8,
+  withLink = false,
 }) => {
   const [emoji, setEmoji] = useState(null);
+  // Link: an address typed in a small box, inserted at the cursor (WhatsApp
+  // shows it as a link by itself)
+  const [linkAnchor, setLinkAnchor] = useState(null);
+  const [url, setUrl] = useState('');
   const input = useRef(null);
 
   // A change from the toolbar: the selection is kept for the next click
@@ -136,6 +143,15 @@ export const WhatsappEditor = ({
     // (a space first when it follows a word)
     apply((t, s, e) =>
       insertAt(t, e, e, (e > 0 && !/\s$/.test(t.slice(0, e)) ? ' ' : '') + v)
+    );
+  };
+  const addLink = () => {
+    const link = url.trim();
+    if (!/^https?:\/\/\S+$/i.test(link)) return;
+    setLinkAnchor(null);
+    setUrl('');
+    apply((t, s, e) =>
+      insertAt(t, e, e, (e > 0 && !/\s$/.test(t.slice(0, e)) ? ' ' : '') + link)
     );
   };
   const onKeyDown = (e) => {
@@ -177,6 +193,12 @@ export const WhatsappEditor = ({
             (e) => setEmoji(e.currentTarget),
             <EmojiEmotionsIcon />
           )}
+          {withLink &&
+            tool(
+              'Lien',
+              (e) => setLinkAnchor(e.currentTarget),
+              <LinkIcon />
+            )}
         </Stack>
         <TextField
           multiline
@@ -198,6 +220,36 @@ export const WhatsappEditor = ({
           {value.length} / {max}
         </Typography>
       </Paper>
+      {withLink && (
+        <Popover
+          open={!!linkAnchor}
+          anchorEl={linkAnchor}
+          onClose={() => setLinkAnchor(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+          <Stack spacing={1.5} sx={{ p: 2, width: 300 }}>
+            <Typography variant="body2">Adresse du lien (https://…)</Typography>
+            <TextField
+              autoFocus
+              size="small"
+              placeholder="https://"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addLink();
+                }
+              }}
+            />
+            <Button
+              variant="contained"
+              disabled={!/^https?:\/\/\S+$/i.test(url.trim())}
+              onClick={addLink}>
+              Insérer le lien
+            </Button>
+          </Stack>
+        </Popover>
+      )}
       <Popover
         open={!!emoji}
         anchorEl={emoji}
