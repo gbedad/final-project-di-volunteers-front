@@ -67,6 +67,8 @@ const MyStudents = () => {
   const [declining, setDeclining] = useState(null);
   const [reason, setReason] = useState('');
   const [reporting, setReporting] = useState(null);
+  // The report opened from "Séance hors créneau": the extra session is ticked
+  const [reportingExtra, setReportingExtra] = useState(false);
   // A report the tutor comes back to: { pair, session }
   const [editingReport, setEditingReport] = useState(null);
   // "Pas de séance" and "Le créneau a changé" (also from the e-mail link)
@@ -131,7 +133,14 @@ const MyStudents = () => {
     <Stack spacing={2} sx={{ maxWidth: 820, mx: 'auto', my: 2 }}>
       <InstallApp />
       <TutorialCard />
-      <SignInCard pairs={pairs} onChanged={load} />
+      <SignInCard
+        pairs={pairs}
+        onChanged={load}
+        onExtra={(pair) => {
+          setReportingExtra(true);
+          setReporting(pair);
+        }}
+      />
       {pairs.map((pair) => {
         const s = pair.student;
         return (
@@ -232,6 +241,15 @@ const MyStudents = () => {
                         startIcon={<EventBusyIcon />}
                         onClick={() => setNoSession(pair)}>
                         Pas de séance
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => {
+                          setReportingExtra(true);
+                          setReporting(pair);
+                        }}>
+                        Séance hors créneau
                       </Button>
                       <Button
                         size="small"
@@ -340,7 +358,11 @@ const MyStudents = () => {
         <SessionDialog
           open
           pair={reporting}
-          onClose={() => setReporting(null)}
+          extraMode={reportingExtra}
+          onClose={() => {
+            setReporting(null);
+            setReportingExtra(false);
+          }}
           onSaved={load}
         />
       )}

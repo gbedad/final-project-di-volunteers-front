@@ -255,15 +255,8 @@ const minutesOf = (hhmm) => {
 const extraToday = (pair) =>
   (pair.extras || []).find((e) => e.date === today()) || null;
 
-const SignInCard = ({ pairs, onChanged }) => {
+const SignInCard = ({ pairs, onChanged, onExtra }) => {
   const [busy, setBusy] = useState(null);
-  // On site today: the pair's place, or that of today's exceptional session
-  const active = pairs.filter(
-    (p) =>
-      p.status === 'actif' &&
-      (extraToday(p) ? !extraToday(p).remote : needsSignIn(p))
-  );
-  if (!active.length) return null;
   const day = DAYS_FR[new Date().getDay()];
   const slotToday = (pair) => {
     const extra = extraToday(pair);
@@ -271,6 +264,15 @@ const SignInCard = ({ pairs, onChanged }) => {
       ? { startTime: extra.start_time, endTime: extra.end_time, extra }
       : (pair.schedule || []).find((s) => s.day === day) || null;
   };
+  // Only the pairs with a session today (their slot, or an exceptional one),
+  // on site: a day without a session shows no "Fin de séance"
+  const active = pairs.filter(
+    (p) =>
+      p.status === 'actif' &&
+      !!slotToday(p) &&
+      (extraToday(p) ? !extraToday(p).remote : needsSignIn(p))
+  );
+  if (!active.length) return null;
   // Students with a session today first
   const sorted = [...active].sort(
     (a, b) => Number(!!slotToday(b)) - Number(!!slotToday(a))
@@ -428,6 +430,21 @@ const SignInCard = ({ pairs, onChanged }) => {
                       Absent
                     </Button>
                   </Stack>
+                </Box>
+              )}
+              {/* Always visible, also during the signature: a second session today */}
+              {slot && onExtra && (
+                <Box sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Autre séance tenue aujourd'hui, hors de ce créneau ?
+                  </Typography>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{ mt: 0.5 }}
+                    onClick={() => onExtra(pair)}>
+                    Séance hors créneau
+                  </Button>
                 </Box>
               )}
             </Box>
