@@ -25,7 +25,7 @@ import { EXTRA_BADGES } from './ExtraSessions';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
 const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
-const DURATIONS = [30, 45, 60, 90, 120];
+const DURATIONS = [30, 45, 60, 90, 120, 150, 180];
 const ATTENDANCE = {
   présent: { label: 'Séance faite', color: 'success' },
   absent: { label: 'Élève absent', color: 'warning' },
@@ -130,7 +130,7 @@ const offSlotDay = (pair, date) =>
 
 // New report, or the tutor comes back to one (session: the report; the
 // date, the attendance and the duration stay as recorded)
-export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
+export const SessionDialog = ({ open, pair, session, onClose, onSaved, extraMode = false }) => {
   const [form, setForm] = useState(
     session
       ? {
@@ -152,7 +152,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
           progress: 3,
           remark: '',
           // A session in addition to the slot, held that day
-          extra: false,
+          extra: extraMode,
           start_time: '',
           end_time: '',
         }
@@ -165,7 +165,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
   const askExtra =
     !editing &&
     !CANCELLED[form.attendance] &&
-    offSlotDay(pair, form.date) &&
+    (extraMode || offSlotDay(pair, form.date)) &&
     !(pair?.extras || []).some((e) => e.date === form.date);
   const extra = askExtra && form.extra;
 
@@ -178,6 +178,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
           remark: form.remark,
           late: held && form.late,
           progress: held ? form.progress : null,
+          duration_minutes: held ? Number(form.duration_minutes) || null : null,
         });
       } else {
         const { extra: _, start_time, end_time, ...rest } = form;
@@ -250,7 +251,6 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
                 select
                 size="small"
                 label="Durée"
-                disabled={editing}
                 value={form.duration_minutes}
                 onChange={(e) => set('duration_minutes', e.target.value)}
                 sx={{ width: 120 }}>
@@ -276,7 +276,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
                 }
                 label={
                   <Typography variant="body2">
-                    Séance supplémentaire, en plus du créneau habituel
+                    Séance hors de mon créneau habituel
                   </Typography>
                 }
               />
@@ -358,7 +358,7 @@ export const SessionDialog = ({ open, pair, session, onClose, onSaved }) => {
           />
           <Typography variant="caption" color="text.secondary">
             {editing
-              ? `Vous pouvez revenir sur un compte-rendu pendant ${EDIT_DAYS} jours après la séance. La date, la présence et la durée ne changent pas : demandez à l'association si elles sont fausses.`
+              ? `Vous pouvez revenir sur un compte-rendu pendant ${EDIT_DAYS} jours après la séance. Vous pouvez corriger la durée. La date et la présence ne changent pas : demandez à l'association si elles sont fausses.`
               : 'Vous pouvez écrire un compte-rendu après chaque séance, ou un seul par mois qui résume la période.'}
           </Typography>
         </Stack>
