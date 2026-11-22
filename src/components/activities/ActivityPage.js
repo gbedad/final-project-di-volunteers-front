@@ -31,6 +31,7 @@ import EditIcon from '@mui/icons-material/EditOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
 import FlyerDialog from './Flyer';
+import { Preview, WhatsappEditor } from './WhatsappEditor';
 import InfoForm from './InfoForm';
 import ChatTab from './ChatTab';
 import SessionTab, { SESSION_TEXT } from './SessionTab';
@@ -1171,11 +1172,36 @@ const StaffTab = ({ a, canEdit, reload }) => {
   );
 };
 
-// For the ambassadors who offer the outing: the detailed presentation, to
-// copy or share (WhatsApp, e-mail…)
-const AmbassadorDialog = ({ a, onClose }) => {
-  const text = ambassadorText(a);
+// For the ambassadors who offer the outing: a long text, in the WhatsApp
+// format, written here and saved with the outing; copied or shared to them.
+// Distinct from the text of the ambassadors' flyer (Infos)
+const AMBASSADOR_MAX = 8000;
+const AmbassadorDialog = ({ a, canEdit, onSaved, onClose }) => {
+  const saved = a.ambassador_guide || '';
+  // Nothing written yet: the outing's details are the starting point
+  const [text, setText] = useState(() => saved || ambassadorText(a));
+  const [saving, setSaving] = useState(false);
+  const dirty = text !== saved;
   const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+  const save = async () => {
+    setSaving(true);
+    try {
+      const { data } = await axios.patch(`${BASE_URL}/admin/activites/${a.id}`, {
+        ambassador_guide: text,
+      });
+      onSaved?.(data);
+      toast.success('Texte pour les ambassadeurs enregistré', {
+        position: 'bottom-left',
+      });
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || 'Texte non enregistré',
+        { position: 'bottom-left' }
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
   const share = async () => {
     try {
       await navigator.share({ title: a.title, text });
@@ -1188,38 +1214,64 @@ const AmbassadorDialog = ({ a, onClose }) => {
     }
   };
   return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Pour les ambassadeurs</DialogTitle>
       <DialogContent>
-        {!a.ambassador_brief && (
-          <Alert severity="info" sx={{ mb: 1.5 }}>
-            Pas encore de présentation détaillée : la description est reprise.
-            Complétez « Présentation détaillée pour les ambassadeurs » dans
-            l'onglet Infos.
-          </Alert>
-        )}
-        <TextField
-          fullWidth
-          multiline
-          minRows={10}
-          value={text}
-          InputProps={{ readOnly: true }}
-          onFocus={(e) => e.target.select()}
-        />
+        <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            Texte long pour présenter la sortie aux ambassadeurs, au format
+            WhatsApp. Ce n'est pas le texte du flyer des ambassadeurs (onglet
+            Infos).
+          </Typography>
+          {canEdit ? (
+            <WhatsappEditor
+              value={text}
+              onChange={setText}
+              max={AMBASSADOR_MAX}
+              minRows={10}
+              placeholder={
+                "Ex. :\n*Sortie au musée* 📍 le samedi 14 h\n- le lieu, le déroulé\n- ce qu'il faut savoir pour en parler aux familles"
+              }
+            />
+          ) : (
+            !text.trim() && (
+              <Alert severity="info">Aucun texte rédigé pour l'instant.</Alert>
+            )
+          )}
+          {text.trim() && (
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 0.75 }}>
+                Aperçu dans WhatsApp
+              </Typography>
+              <Preview text={text} />
+            </Box>
+          )}
+        </Stack>
       </DialogContent>
       <DialogActions sx={{ flexWrap: 'wrap', gap: 1 }}>
         <Button onClick={onClose}>Fermer</Button>
+        {canEdit && dirty && (
+          <Chip size="small" color="warning" label="Pas encore enregistré" />
+        )}
+        {canEdit && (
+          <Button
+            variant="contained"
+            disabled={!dirty || saving}
+            onClick={save}>
+            Enregistrer
+          </Button>
+        )}
+        <Button
+          variant="outlined"
+          startIcon={<ContentCopyIcon />}
+          onClick={() => copy(text, 'Texte copié : collez dans WhatsApp')}>
+          Copier
+        </Button>
         {canShare && (
           <Button startIcon={<ShareIcon />} onClick={share}>
             Partager
           </Button>
         )}
-        <Button
-          variant="contained"
-          startIcon={<ContentCopyIcon />}
-          onClick={() => copy(text, 'Présentation copiée')}>
-          Copier
-        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -1494,7 +1546,12 @@ const ActivityPage = () => {
         />
       )}
       {ambassadors && (
-        <AmbassadorDialog a={a} onClose={() => setAmbassadors(false)} />
+        <AmbassadorDialog
+          a={a}
+          canEdit={canEdit}
+          onSaved={setA}
+          onClose={() => setAmbassadors(false)}
+        />
       )}
       {tab === 0 && (
         <InfoForm

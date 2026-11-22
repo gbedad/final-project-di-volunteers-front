@@ -388,7 +388,7 @@ const InfoForm = ({
         />
         <TextField
           size="small"
-          label="Présentation détaillée pour les ambassadeurs"
+          label="Texte du flyer pour les ambassadeurs"
           placeholder="Ce qu'il faut savoir pour proposer la sortie : le lieu, le déroulé, l'intérêt pour les enfants, les questions fréquentes des familles…"
           value={form.ambassador_brief || ''}
           onChange={set('ambassador_brief')}
@@ -397,7 +397,7 @@ const InfoForm = ({
           disabled={d}
           sx={full}
           inputProps={{ maxLength: BRIEF_MAX }}
-          helperText={`Pas sur le flyer des familles : à copier ou partager depuis « Pour les ambassadeurs ». ${counter(form.ambassador_brief, BRIEF_MAX)}`}
+          helperText={`Sur le flyer des ambassadeurs, pas celui des familles. Le texte long « Pour les ambassadeurs » se rédige à part, sur la page de la sortie. ${counter(form.ambassador_brief, BRIEF_MAX)}`}
         />
         <TextField
           size="small"

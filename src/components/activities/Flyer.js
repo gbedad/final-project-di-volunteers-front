@@ -49,7 +49,7 @@ export const FLYER_FIELDS = [
   { key: 'pour', label: 'Niveaux' },
   { key: 'inscription', label: 'Date limite' },
   { key: 'description', label: 'Description' },
-  { key: 'presentation', label: 'Présentation ambassadeurs' },
+  { key: 'presentation', label: 'Texte pour les ambassadeurs' },
   { key: 'participation', label: 'Participation' },
   { key: 'places', label: 'Places' },
   { key: 'organisateur', label: 'Responsable' },
@@ -233,7 +233,7 @@ export const drawFlyer = async (
         ]
       : null,
   ].filter(Boolean);
-  // Description, and the detailed presentation for the ambassadors
+  // Description, and the text for the ambassadors (flyer)
   const description =
     [
       on('description') ? a.description : null,
