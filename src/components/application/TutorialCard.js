@@ -13,36 +13,34 @@ const TutorialCard = () => {
     (t) => t.has_video && t.audience === 'tuteurs'
   );
   if (!available.length) return null;
+  // One tutorial: straight to its video. Several: one entry to the list
+  const one = available.length === 1 ? available[0] : null;
   return (
-    <Stack spacing={1}>
-      {available.map((t) => (
-        <Paper
-          key={t.slug}
-          variant="outlined"
-          sx={{ p: 1.5, bgcolor: 'action.hover' }}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <PlayCircleOutlineIcon color="primary" fontSize="large" />
-            <Stack sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="body2" fontWeight={600}>
-                Tutoriel vidéo : {t.title}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {t.minutes ? `Environ ${t.minutes} minute` : 'Vidéo'}
-                {t.minutes > 1 ? 's' : ''}
-              </Typography>
-            </Stack>
-            <Button
-              size="small"
-              variant="contained"
-              component={RouterLink}
-              to={tutorialPath(t.slug)}
-              state={location.state}>
-              Voir
-            </Button>
-          </Stack>
-        </Paper>
-      ))}
-    </Stack>
+    <Paper variant="outlined" sx={{ p: 1.5, bgcolor: 'action.hover' }}>
+      <Stack direction="row" spacing={1.5} alignItems="center">
+        <PlayCircleOutlineIcon color="primary" fontSize="large" />
+        <Stack sx={{ flex: 1, minWidth: 0 }}>
+          <Typography variant="body2" fontWeight={600}>
+            {one ? `Tutoriel vidéo : ${one.title}` : 'Tutoriels vidéo'}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {one
+              ? one.minutes
+                ? `Environ ${one.minutes} minute${one.minutes > 1 ? 's' : ''}`
+                : 'Vidéo'
+              : `${available.length} vidéos courtes pour vous aider`}
+          </Typography>
+        </Stack>
+        <Button
+          size="small"
+          variant="contained"
+          component={RouterLink}
+          to={one ? tutorialPath(one.slug) : '/tutoriel'}
+          state={location.state}>
+          {one ? 'Voir' : 'Ouvrir'}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
