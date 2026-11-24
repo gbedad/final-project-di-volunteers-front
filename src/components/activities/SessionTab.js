@@ -44,7 +44,7 @@ export const SESSION_TEXT = {
   },
   debrief: {
     tab: 'Retour',
-    title: 'Séance de retour (bilan)',
+    title: 'Séance post-activité',
     sheet: 'retour',
     textTitle: 'Bilan de la séance de retour',
     textHint:
