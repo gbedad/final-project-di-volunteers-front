@@ -46,7 +46,7 @@ export const SESSION_TEXT = {
     tab: 'Post-activité',
     title: 'Séance post-activité',
     sheet: 'retour',
-    textTitle: 'Retour des enfants sur la sortie',
+    textTitle: 'Retour des participants sur la sortie',
     textHint:
       "Ce qui a été fait, ce que les participants ont dit de l'activité, ce qui a fonctionné, ce qu'il faudrait améliorer...",
     printTitle: 'Bilan',
