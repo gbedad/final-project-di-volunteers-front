@@ -215,9 +215,9 @@ const AddDialog = ({ a, kind, data, onClose, onAdded }) => {
       .then(({ data: list }) => setStudents(list))
       .catch(() => setStudents([]));
   }, []);
+  // The children already in the session, and those just chosen here
   const known = new Set([
     ...data.participants.map((p) => p.student_id),
-    ...data.candidates.map((c) => c.student_id),
     ...extra.map((e) => e.student_id),
   ]);
   const options = students.filter(
@@ -252,7 +252,8 @@ const AddDialog = ({ a, kind, data, onClose, onAdded }) => {
       else next.add(id);
       return next;
     });
-  const rows = [...data.candidates, ...extra];
+  // Only the children chosen here: the full list of the registered is not shown
+  const rows = extra;
   const withTutoring = rows.filter(
     (r) => picked.has(r.student_id) && (r.conflicts || []).length
   ).length;
@@ -282,15 +283,10 @@ const AddDialog = ({ a, kind, data, onClose, onAdded }) => {
       <DialogContent>
         <Stack spacing={1.5} sx={{ mt: 0.5 }}>
           <Typography variant="body2" color="text.secondary">
-            Inscrits à la sortie
-            {kind === 'debrief'
-              ? ' (les présents à la sortie sont cochés)'
-              : ''}
+            Cherchez chaque enfant au fur et à mesure de son arrivée.
           </Typography>
           {rows.length === 0 && (
-            <Typography variant="body2">
-              Tous les inscrits sont déjà dans la liste.
-            </Typography>
+            <Typography variant="body2">Aucun enfant choisi pour l'instant.</Typography>
           )}
           {rows.map((r) => (
             <Box key={r.student_id}>
