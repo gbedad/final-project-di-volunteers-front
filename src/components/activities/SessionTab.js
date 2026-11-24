@@ -46,11 +46,11 @@ export const SESSION_TEXT = {
     tab: 'Retour',
     title: 'Séance post-activité',
     sheet: 'retour',
-    textTitle: 'Bilan de la séance de retour',
+    textTitle: 'Retour des enfants sur la sortie',
     textHint:
       "Ce que les enfants ont dit de la sortie, ce qu'ils ont retenu, ce qui a marché, ce qu'il faudrait refaire…",
     printTitle: 'Bilan',
-    saveLabel: 'Enregistrer le bilan',
+    saveLabel: 'Enregistrer le retour',
     saved: 'Bilan enregistré',
   },
 };

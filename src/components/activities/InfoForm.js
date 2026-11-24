@@ -667,7 +667,7 @@ const InfoForm = ({
         />
         <Divider sx={full} />
         <SessionFields
-          label="Séance de retour (bilan avec les enfants)"
+          label="Séance post-activité (avec les enfants)"
           value={form.debrief}
           onChange={setValue('debrief')}
           disabled={d}
