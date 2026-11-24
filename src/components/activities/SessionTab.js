@@ -48,7 +48,7 @@ export const SESSION_TEXT = {
     sheet: 'retour',
     textTitle: 'Retour des enfants sur la sortie',
     textHint:
-      "Ce que les enfants ont dit de la sortie, ce qu'ils ont retenu, ce qui a marché, ce qu'il faudrait refaire…",
+      "Ce qui a été fait, ce que les participants ont dit de l'activité, ce qui a fonctionné, ce qu'il faudrait améliorer...",
     printTitle: 'Bilan',
     saveLabel: 'Enregistrer le retour',
     saved: 'Bilan enregistré',
