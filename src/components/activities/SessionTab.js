@@ -203,17 +203,8 @@ const SessionSheet = ({ a, kind, data }) => {
 
 // "Add children": the registered ones not in the session yet, and others
 const AddDialog = ({ a, kind, data, onClose, onAdded }) => {
-  // The ones present at the outing are ticked for the return session
-  const [picked, setPicked] = useState(
-    () =>
-      new Set(
-        kind === 'debrief'
-          ? data.candidates
-              .filter((c) => c.outing_attendance === 'présent')
-              .map((c) => c.student_id)
-          : []
-      )
-  );
+  // Nobody is ticked by default: the children are added as they come
+  const [picked, setPicked] = useState(() => new Set());
   // Children who are not registered to the outing: found in the base
   const [students, setStudents] = useState([]);
   const [extra, setExtra] = useState([]);
