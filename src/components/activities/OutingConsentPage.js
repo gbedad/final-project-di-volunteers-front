@@ -72,7 +72,7 @@ const OutingConsentPage = () => {
     } catch (err) {
       setSendError(
         err.response?.data?.error ||
-          "L'autorisation n'a pas pu être enregistrée"
+          "L'accord spécifique n'a pas pu être enregistré"
       );
     } finally {
       setBusy(false);
@@ -104,13 +104,40 @@ const OutingConsentPage = () => {
       {a.place && <Typography variant="body2">{a.place}</Typography>}
     </Box>
   );
+  // The child's meeting points (set by the association), there and back
+  const rdv = [
+    studentPoint(a, a, 'aller') && ['Aller', studentPoint(a, a, 'aller')],
+    studentPoint(a, a, 'retour') && ['Retour', studentPoint(a, a, 'retour')],
+  ].filter(Boolean);
+  const meetingPaper = (rdv.length > 0 || a.bring) && (
+    <Paper variant="outlined" sx={{ p: 1.5 }}>
+      {rdv.length > 0 && (
+        <Box sx={{ mb: a.bring ? 1 : 0 }}>
+          <Typography variant="body2" fontWeight={600}>
+            Rendez-vous aller et retour de {page.child}
+          </Typography>
+          {rdv.map(([way, text]) => (
+            <Typography key={way} variant="body2">
+              <b>{way} :</b> {text}
+            </Typography>
+          ))}
+        </Box>
+      )}
+      {a.bring && (
+        <Typography variant="body2">
+          <b>À apporter :</b> {a.bring}
+        </Typography>
+      )}
+    </Paper>
+  );
   if (done || page.state === 'signed') {
     return (
       <Container maxWidth="sm" sx={{ mt: 3, mb: 6 }}>
         <Stack spacing={2}>
           {header}
+          {meetingPaper}
           <Alert severity="success">
-            Merci, votre autorisation pour {page.child} est enregistrée.
+            Merci, votre accord spécifique pour {page.child} est enregistré.
             {done?.copy_sent
               ? ' Votre exemplaire vous a été envoyé par e-mail.'
               : ''}
@@ -142,13 +169,6 @@ const OutingConsentPage = () => {
     form.departure &&
     form.emergency_phone.replace(/\D/g, '').length >= 9 &&
     signature;
-  // The child's meeting points (set by the association), there and back
-  const rdv = [
-    studentPoint(a, a, 'aller') &&
-      `aller : ${studentPoint(a, a, 'aller')}`,
-    studentPoint(a, a, 'retour') &&
-      `retour : ${studentPoint(a, a, 'retour')}`,
-  ].filter(Boolean);
   const Ways = ({ field, label, options }) => (
     <Box>
       <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
@@ -177,20 +197,7 @@ const OutingConsentPage = () => {
     <Container maxWidth="sm" sx={{ mt: 3, mb: 6 }}>
       <Stack spacing={2.5}>
         {header}
-        {(rdv.length > 0 || a.bring) && (
-          <Paper variant="outlined" sx={{ p: 1.5 }}>
-            {rdv.length > 0 && (
-              <Typography variant="body2">
-                <b>Rendez-vous de {page.child}</b> — {rdv.join(' · ')}
-              </Typography>
-            )}
-            {a.bring && (
-              <Typography variant="body2">
-                <b>À apporter :</b> {a.bring}
-              </Typography>
-            )}
-          </Paper>
-        )}
+        {meetingPaper}
         <Typography>
           Pour que <b>{page.child}</b> participe, merci de lire, cocher et
           signer (2 minutes).
@@ -270,7 +277,7 @@ const OutingConsentPage = () => {
           variant="contained"
           disabled={!ready || busy}
           onClick={send}>
-          Signer l'autorisation
+          Signer l'accord spécifique
         </Button>
         {!ready && (
           <Typography variant="caption" color="text.secondary">

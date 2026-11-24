@@ -141,7 +141,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
             `${BASE_URL}/admin/inscriptions-activites/${r.id}/autorisation-papier`,
             { file: reader.result, name: file.name }
           ),
-        'Scan de l’autorisation enregistré',
+        'Scan de l’accord spécifique enregistré',
         "Le scan n'a pas pu être enregistré"
       );
     reader.readAsDataURL(file);
@@ -177,7 +177,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
       </DialogTitle>
       <DialogContent>
         <Stack spacing={2.5} divider={<Divider />}>
-          <Part title="Autorisation de sortie">
+          <Part title="Accord spécifique de sortie">
             <Stack spacing={1}>
               <Chip
                 size="small"
@@ -217,7 +217,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                         startIcon={<EmailIcon />}
                         disabled={busy}
                         onClick={() => askConsent('email', n)}>
-                        E-mail{' '}
+                        Envoi e-mail{' '}
                         {r[`parent${n}_firstname`]
                           ? `à ${r[`parent${n}_firstname`]}`
                           : `au parent ${n}`}
@@ -240,7 +240,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                   startIcon={<PictureAsPdfIcon />}
                   onClick={openPdf}
                   sx={{ alignSelf: 'flex-start' }}>
-                  Voir l'autorisation signée
+                  Voir l'accord signé
                 </Button>
               )}
               {canEdit && r.consent_state !== 'signée' && (
@@ -266,7 +266,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                   startIcon={<PictureAsPdfIcon />}
                   onClick={openPdf}
                   sx={{ alignSelf: 'flex-start' }}>
-                  Voir le scan de l'autorisation
+                  Voir le scan de l'accord
                 </Button>
               )}
               {canEdit && r.consent_state !== 'signée' && (
@@ -279,7 +279,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
                   sx={{ alignSelf: 'flex-start' }}>
                   {r.consent_file_id
                     ? 'Remplacer le scan'
-                    : "Joindre le scan de l'autorisation papier"}
+                    : "Joindre le scan de l'accord papier"}
                   <input
                     hidden
                     type="file"
@@ -473,7 +473,7 @@ const RegistrationDialog = ({ r, a, canEdit, onPay, onClose, onChanged }) => {
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 Arrivée, départ et téléphone : remplis par le parent quand il
-                signe l'autorisation en ligne. Les rendez-vous sont choisis par
+                signe l'accord spécifique en ligne. Les rendez-vous sont choisis par
                 l'équipe.
               </Typography>
             </Stack>

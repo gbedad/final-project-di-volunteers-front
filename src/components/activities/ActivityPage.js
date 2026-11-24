@@ -351,7 +351,7 @@ const RegistrationRow = ({
                 variant={r.consent_at ? 'filled' : 'outlined'}
                 label={
                   CONSENT_STATES[r.consent_state]?.label ||
-                  'Autorisation à demander'
+                  'Accord à demander'
                 }
                 onClick={onOpen}
               />
@@ -782,7 +782,7 @@ const RegistrationsTab = ({ a, canEdit, canTell, reload }) => {
             size="small"
             color="warning"
             variant="outlined"
-            label={`${noConsent} autorisation${noConsent > 1 ? 's' : ''} manquante${noConsent > 1 ? 's' : ''}`}
+            label={`${noConsent} accord${noConsent > 1 ? 's' : ''} spécifique${noConsent > 1 ? 's' : ''} manquant${noConsent > 1 ? 's' : ''}`}
           />
         )}
       </Stack>
@@ -1330,7 +1330,7 @@ const PresenceSheet = ({ a }) => (
           <th>Aller</th>
           <th>Retour</th>
           <th>Arrive / repart</th>
-          <th>Autorisation</th>
+          <th>Accord</th>
           <th>Présent</th>
         </tr>
       </thead>
