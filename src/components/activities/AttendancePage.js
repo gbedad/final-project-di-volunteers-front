@@ -341,7 +341,7 @@ const AttendancePage = () => {
                         : s.departure === 'accompagné'
                           ? 'Un adulte vient le/la chercher'
                           : 'Départ : non précisé'}
-                      {s.consent ? '' : ' · autorisation manquante'}
+                      {s.consent ? '' : ' · accord spécifique manquant'}
                     </Typography>
                     {(studentPoint(a, s, 'aller') ||
                       studentPoint(a, s, 'retour')) && (

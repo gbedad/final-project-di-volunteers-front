@@ -129,7 +129,7 @@ export const familyMessage = (a) =>
     Number(a.fee) > 0
       ? `Participation aux frais : ${euros(a.fee)}`
       : `Participation aux frais : ${NO_FEE.toLowerCase()}`,
-    'Merci de rendre l’autorisation de sortie signée avant le départ.',
+    'Merci de rendre l’accord spécifique signé avant le départ.',
   ]
     .filter(Boolean)
     .join('\n');
@@ -177,10 +177,10 @@ export const WAYS = [
   { value: 'seul', label: 'Seul(e)' },
 ];
 export const CONSENT_STATES = {
-  'à demander': { label: 'Autorisation à demander', color: 'warning' },
-  demandée: { label: 'Autorisation demandée', color: 'info' },
-  signée: { label: 'Autorisation signée en ligne', color: 'success' },
-  reçue: { label: 'Autorisation reçue (papier)', color: 'success' },
+  'à demander': { label: 'Accord à demander', color: 'warning' },
+  demandée: { label: 'Accord demandé', color: 'info' },
+  signée: { label: 'Accord signé en ligne', color: 'success' },
+  reçue: { label: 'Accord reçu (papier)', color: 'success' },
 };
 // "2 h 30" from minutes
 export const durationText = (m) =>
