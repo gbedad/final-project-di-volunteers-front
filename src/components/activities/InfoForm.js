@@ -683,7 +683,7 @@ const InfoForm = ({
             sx={full}>
             {[
               ['prep', 'Préparation', 'à la préparation'],
-              ['debrief', 'Retour', 'au retour'],
+              ['debrief', 'Post-activité', 'à la post-activité'],
             ].map(
               ([kind, tabName, where]) =>
                 a[kind]?.date && (

@@ -170,6 +170,14 @@ export const ATTENDANCES = [
   { value: 'absent', label: 'Absent', color: 'error' },
   { value: 'excusé', label: 'Excusé', color: 'default' },
 ];
+// Émargement of the preparation and post-activité sessions (same values as
+// SESSION_ATTENDANCES on the server)
+export const SESSION_ATTENDANCES = [
+  { value: "à l'heure", label: "À l'heure", color: 'success' },
+  { value: 'en retard', label: 'En retard', color: 'warning' },
+  { value: 'excusé(e)', label: 'Excusé(e)', color: 'default' },
+  { value: 'non excusé(e)', label: 'Non excusé(e)', color: 'error' },
+];
 export const attendanceLabel = (v) =>
   ATTENDANCES.find((a) => a.value === v)?.label || '—';
 export const WAYS = [

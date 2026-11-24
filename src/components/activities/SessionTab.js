@@ -24,7 +24,7 @@ import {
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PrintIcon from '@mui/icons-material/Print';
-import { ATTENDANCES, BASE_URL, frDate } from './activityUtils';
+import { BASE_URL, SESSION_ATTENDANCES, frDate } from './activityUtils';
 import { showPhone } from '../../js/phone';
 
 // Preparation and return sessions of an outing (tabs "Préparation" and
@@ -43,7 +43,7 @@ export const SESSION_TEXT = {
     saved: 'Compte-rendu enregistré',
   },
   debrief: {
-    tab: 'Retour',
+    tab: 'Post-activité',
     title: 'Séance post-activité',
     sheet: 'retour',
     textTitle: 'Retour des enfants sur la sortie',
@@ -552,13 +552,13 @@ const SessionTab = ({ a, kind, canEdit, canTell, onChanged }) => {
               <TextField
                 select
                 size="small"
-                label="Présence"
+                label="Émargement"
                 value={p.attendance || ''}
                 disabled={!canEdit}
                 onChange={(e) => patch(p, e.target.value)}
                 sx={{ minWidth: 130 }}>
                 <MenuItem value="">—</MenuItem>
-                {ATTENDANCES.map((x) => (
+                {SESSION_ATTENDANCES.map((x) => (
                   <MenuItem key={x.value} value={x.value}>
                     {x.label}
                   </MenuItem>
