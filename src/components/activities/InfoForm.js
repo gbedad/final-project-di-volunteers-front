@@ -714,7 +714,7 @@ const InfoForm = ({
       <Section title="Bilan">
         <TextField
           size="small"
-          label="Bilan de la sortie"
+          label="Bilan de l'activité"
           placeholder="Ce qui a marché, retours des enfants, à refaire ?"
           value={form.review || ''}
           onChange={set('review')}
