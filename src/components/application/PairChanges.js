@@ -23,8 +23,6 @@ export const BREAK_REASONS = [
   { value: 'vacances', label: 'Vacances' },
   { value: 'eleve', label: 'Élève indisponible' },
   { value: 'tuteur', label: 'Tuteur indisponible' },
-  { value: 'wa', label: 'Messages groupés WA' },
-  { value: 'non_renseigne', label: 'Non renseigné' },
   { value: 'autre', label: 'Autre' },
 ];
 const today = () =>
