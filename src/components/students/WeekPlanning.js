@@ -251,7 +251,7 @@ const WeekPlanning = () => {
                 </Typography>
               ) : (
                 <Box sx={{ overflowX: 'auto' }}>
-                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900 }}>
+                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900, '& .MuiTableCell-root': { py: 0.5 } }}>
                     <TableHead>
                       <TableRow>
                         <TableCell sx={{ width: '13%' }}>Horaire</TableCell>
@@ -259,8 +259,8 @@ const WeekPlanning = () => {
                         <TableCell sx={{ width: '14%' }}>Tuteur</TableCell>
                         <TableCell sx={{ width: '13%' }}>Matières</TableCell>
                         <TableCell sx={{ width: '9%' }}>Lieu</TableCell>
-                        <TableCell sx={{ width: '24%' }}>Salle</TableCell>
-                        <TableCell sx={{ width: '14%' }}>Remarque</TableCell>
+                        <TableCell sx={{ width: '19%' }}>Salle</TableCell>
+                        <TableCell sx={{ width: '19%' }}>Remarque</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
