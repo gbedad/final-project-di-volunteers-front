@@ -313,7 +313,7 @@ const WeekPlanning = () => {
                                         value={r.room_id || ''}
                                         color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
                                         onChange={(e) => setRoom(r, e.target.value)}
-                                        sx={{ fontSize: '0.85rem' }}
+                                        sx={{ fontSize: '0.85rem', '& .MuiSelect-select': { py: 0.75 } }}
                                         inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
                                         <MenuItem value="">
                                           <em>{r.needs_room ? 'À définir' : 'Aucune'}</em>
