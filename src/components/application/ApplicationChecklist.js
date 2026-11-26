@@ -90,8 +90,8 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
   if (progress.status === 'Déclinée') return null;
 
   const { profile, wishes, documents } = progress;
-  // Accompanying volunteer (outings only): no CV, no convention; B3 and
-  // attestation d'honorabilité before the validation
+  // Accompanying volunteer (outings only): no CV, no convention; B3 before
+  // the validation
   const tutor = progress.tutor !== false;
   const missing = missingItems(progress);
   const toFill = (items) => `À indiquer : ${joinFrench(items)}`;
@@ -102,14 +102,14 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
     tutor &&
     (CONVENTION_STATUSES.includes(progress.status) ||
       (convention && convention.state !== 'to_sign'));
-  // After the interview, the accompanying volunteer gives B3 + attestation
+  // After the interview, the accompanying volunteer gives the B3
   const companionDocsAsked =
     !tutor && CONVENTION_STATUSES.includes(progress.status);
   const conventionDone = convention?.state === 'complete';
   const docsDone = (documents.cv || !tutor) && documents.id;
   const steps = [profile, wishes, docsDone, sent];
   if (conventionAsked) steps.push(conventionDone);
-  if (companionDocsAsked) steps.push(documents.b3 && documents.honorability);
+  if (companionDocsAsked) steps.push(documents.b3);
   const done = steps.filter(Boolean).length;
   const missingDocs = [
     tutor && !documents.cv && 'CV',
@@ -197,28 +197,6 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
             onAction={() => onGoToTab(4)}
           />
         )}
-        {/* Only asked once the convention is signed (accompanying
-            volunteer: from the start) */}
-        {(progress.conventionSigned || !tutor) && (
-          <Item
-            done={documents.honorability}
-            optional
-            title="Mon attestation d'honorabilité"
-            detail={
-              documents.honorability
-                ? 'Reçue'
-                : !tutor
-                  ? 'À fournir avant la validation (vous accompagnerez des enfants)'
-                  : progress.honorabilityDue
-                    ? `À fournir avant le ${new Date(
-                        progress.honorabilityDue
-                      ).toLocaleDateString('fr-FR')}`
-                    : 'À fournir au plus tard un mois après la signature de la convention'
-            }
-            action="Déposer"
-            onAction={() => onGoToTab(3)}
-          />
-        )}
       </List>
 
       {sent ? (
@@ -228,9 +206,9 @@ const ApplicationChecklist = ({ userId, onGoToTab, onStatusChange }) => {
               ? 'Votre candidature est validée. Bienvenue parmi les tuteurs bénévoles !'
               : 'Votre candidature est validée. Bienvenue parmi les bénévoles accompagnateurs !'
             : companionDocsAsked
-              ? documents.b3 && documents.honorability
+              ? documents.b3
                 ? "Vos documents sont complets : l'association va valider votre dossier."
-                : "Votre entretien est passé : dernière étape, déposer votre extrait B3 et votre attestation d'honorabilité."
+                : 'Votre entretien est passé : dernière étape, déposer votre extrait B3.'
               : !conventionAsked
                 ? "Votre dossier a été envoyé. Nous vous contacterons pour organiser l'entretien."
                 : conventionDone

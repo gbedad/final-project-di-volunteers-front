@@ -104,8 +104,8 @@ const EngagementsAdmin = ({ user, canEdit, onChanged }) => {
         ))}
       </FormGroup>
       <Typography variant="caption" color="text.secondary">
-        Sans tutorat : pas de binôme, pas de convention ; B3 et attestation
-        d'honorabilité demandés avant la validation.
+        Sans tutorat : pas de binôme, pas de convention ; B3 demandé avant la
+        validation.
       </Typography>
     </Box>
   );

@@ -21,10 +21,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import FileDisplay from '../FileDisplay';
 import { isManager } from '../../js/roles';
-import {
-  notifyApplicationChanged,
-  useApplicationProgress,
-} from '../../js/applicationProgress';
+import { notifyApplicationChanged } from '../../js/applicationProgress';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -48,12 +45,6 @@ const SLOTS = [
     howTo: 'https://www.service-public.fr/particuliers/vosdroits/F1420',
   },
   {
-    type: 'honorability',
-    label: "Attestation d'honorabilité",
-    hint: 'À fournir au plus tard un mois après la signature de la convention',
-    howTo: 'https://honorabilite.social.gouv.fr/comment-obtenir-mon-attestation',
-  },
-  {
     type: 'other',
     label: 'Autres documents',
     hint: 'Diplômes, attestations…',
@@ -71,7 +62,7 @@ const currentRole = () => {
   }
 };
 
-const Slot = ({ slot, files, userId, canDelete, onChanged, onView, due }) => {
+const Slot = ({ slot, files, userId, canDelete, onChanged, onView }) => {
   const input = useRef(null);
   const [uploading, setUploading] = useState(false);
   const available = files.filter((f) => !isLost(f));
@@ -137,14 +128,6 @@ const Slot = ({ slot, files, userId, canDelete, onChanged, onView, due }) => {
               <OpenInNewIcon sx={{ fontSize: 14 }} />
             </Link>
           )}
-          {due && available.length === 0 && (
-            <Typography
-              variant="body2"
-              color={new Date(due) < new Date() ? 'error.main' : 'warning.dark'}
-              sx={{ fontWeight: 500 }}>
-              À fournir avant le {new Date(due).toLocaleDateString('fr-FR')}
-            </Typography>
-          )}
         </Box>
         <input
           ref={input}
@@ -203,8 +186,6 @@ const Slot = ({ slot, files, userId, canDelete, onChanged, onView, due }) => {
 const DocumentSlots = ({ userId, onChanged }) => {
   const [files, setFiles] = useState([]);
   const [preview, setPreview] = useState(null);
-  // Due date of the attestation d'honorabilité, once the convention is signed
-  const [progress] = useApplicationProgress(userId);
   const role = currentRole();
   // Volunteers manage their own files; interviewers cannot delete
   const canDelete = role === 'volunteer' || isManager(role);
@@ -253,7 +234,6 @@ const DocumentSlots = ({ userId, onChanged }) => {
           canDelete={canDelete}
           onChanged={changed}
           onView={setPreview}
-          due={slot.type === 'honorability' ? progress?.honorabilityDue : null}
         />
       ))}
       {preview && (

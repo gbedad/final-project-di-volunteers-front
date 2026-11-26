@@ -83,7 +83,7 @@ const CONVENTION_STEP = {
 };
 
 // Accompanying volunteer (outings only): no tutoring wishes, no
-// convention but the B3 and the attestation d'honorabilité
+// convention but the B3
 const COMPANION_STEPS = {
   1: {
     label: 'Mes activités et disponibilités',
@@ -101,7 +101,7 @@ const COMPANION_STEPS = {
     label_realised: 'Mes derniers documents sont déposés',
     label_waiting: '',
     description:
-      "Comme vous accompagnerez des enfants : votre extrait de casier judiciaire (B3) et votre attestation d'honorabilité, dans l'onglet « Mes documents ».",
+      "Comme vous accompagnerez des enfants : votre extrait de casier judiciaire (B3), dans l'onglet « Mes documents ».",
     description_waiting: "Merci ! L'association va valider votre candidature.",
   },
   5: {
