@@ -251,16 +251,16 @@ const WeekPlanning = () => {
                 </Typography>
               ) : (
                 <Box sx={{ overflowX: 'auto' }}>
-                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900 }}>
+                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900, '& .MuiTableCell-root': { py: 0.5 } }}>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ width: '14%' }}>Horaire</TableCell>
-                        <TableCell sx={{ width: '15%' }}>Élève</TableCell>
-                        <TableCell sx={{ width: '15%' }}>Tuteur</TableCell>
+                        <TableCell sx={{ width: '13%' }}>Horaire</TableCell>
+                        <TableCell sx={{ width: '13%' }}>Élève</TableCell>
+                        <TableCell sx={{ width: '14%' }}>Tuteur</TableCell>
                         <TableCell sx={{ width: '13%' }}>Matières</TableCell>
-                        <TableCell sx={{ width: '10%' }}>Lieu</TableCell>
+                        <TableCell sx={{ width: '9%' }}>Lieu</TableCell>
                         <TableCell sx={{ width: '19%' }}>Salle</TableCell>
-                        <TableCell sx={{ width: '14%' }}>Remarque</TableCell>
+                        <TableCell sx={{ width: '19%' }}>Remarque</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -272,8 +272,9 @@ const WeekPlanning = () => {
                               <TableRow>
                                 <TableCell
                                   colSpan={7}
-                                  sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', fontWeight: 600, py: 0.5 }}>
-                                  {g.start}–{g.end} · {g.rows.length} binômes sur ce créneau
+                                  sx={{ bgcolor: 'action.hover', color: 'primary.main', fontWeight: 600, fontSize: '0.78rem', py: '2px !important', borderBottom: 0 }}>
+                                  {g.start}–{g.end} · {g.rows.filter((r) => r.kind !== 'pause').length} séance{g.rows.filter((r) => r.kind !== 'pause').length > 1 ? 's' : ''}
+                                  {g.rows.some((r) => r.kind === 'pause') && ` · ${g.rows.filter((r) => r.kind === 'pause').length} en pause`}
                                 </TableCell>
                               </TableRow>
                             )}
@@ -313,7 +314,7 @@ const WeekPlanning = () => {
                                         value={r.room_id || ''}
                                         color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
                                         onChange={(e) => setRoom(r, e.target.value)}
-                                        sx={{ fontSize: '0.85rem' }}
+                                        sx={{ fontSize: '0.85rem', '& .MuiSelect-select': { py: 0.75 } }}
                                         inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
                                         <MenuItem value="">
                                           <em>{r.needs_room ? 'À définir' : 'Aucune'}</em>
@@ -324,20 +325,22 @@ const WeekPlanning = () => {
                                           </MenuItem>
                                         ))}
                                       </Select>
-                                      {r.room_conflict && (
-                                        <Typography variant="caption" color="error" display="block">
-                                          Salle pleine sur ce créneau, avec {r.room_conflict_with.join(', ')}
-                                        </Typography>
-                                      )}
-                                      {!r.room_conflict && r.room_warning && (
-                                        <Typography variant="caption" color="warning.main" display="block">
-                                          {r.room_count} binômes dans cette salle sur ce créneau : {r.room_conflict_with.join(', ')}
-                                        </Typography>
-                                      )}
                                     </>
                                   )}
                                 </TableCell>
-                                <TableCell>{r.remark}</TableCell>
+                                <TableCell>
+                                  {(r.room_conflict || r.room_warning) && (
+                                    <Typography
+                                      component="span"
+                                      variant="body2"
+                                      title={r.room_conflict_with.join(', ')}
+                                      sx={{ fontWeight: 600, whiteSpace: 'nowrap', color: r.room_conflict ? 'error.main' : 'warning.main' }}>
+                                      {r.room_count}/{(week.rooms || []).find((x) => x.id === r.room_id)?.capacite ?? '?'}
+                                    </Typography>
+                                  )}
+                                  {(r.room_conflict || r.room_warning) && r.remark && ' · '}
+                                  {r.remark}
+                                </TableCell>
                               </TableRow>
                             ))}
                           </React.Fragment>
