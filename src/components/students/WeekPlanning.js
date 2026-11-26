@@ -109,6 +109,25 @@ const weekLoad = (week) => {
   return { slots: list, totals, total: totals.reduce((n, x) => n + x, 0) };
 };
 
+// Load per room: one line per room used during the week, one column per day.
+// Each cell lists the slots booked in that room (warning and conflict kept).
+const roomGrid = (week) =>
+  (week.rooms || [])
+    .map((room) => ({
+      room,
+      days: week.days.map((d) =>
+        slotGroups(d.rows.filter((r) => r.room_id === room.id && !r.remote && r.kind !== 'pause')).map((g) => ({
+          ...g,
+          conflict: g.rows.some((r) => r.room_conflict),
+          warning: g.rows.some((r) => r.room_warning),
+        }))
+      ),
+    }))
+    .filter((line) => line.days.some((cells) => cells.length));
+
+// Sessions of each day without a room yet
+const unassignedCounts = (week) => week.days.map((d) => d.rows.filter((r) => r.needs_room).length);
+
 // Planning of one week: a block per day, one line per expected session
 const WeekPlanning = () => {
   const [from, setFrom] = useState(null);
@@ -188,6 +207,7 @@ const WeekPlanning = () => {
           aria-label="Affichage du planning">
           <ToggleButton value="detail" sx={VIOLET_TOGGLE}>Détail</ToggleButton>
           <ToggleButton value="charge" sx={VIOLET_TOGGLE}>Charge</ToggleButton>
+          <ToggleButton value="salles" sx={VIOLET_TOGGLE}>Salles</ToggleButton>
         </ToggleButtonGroup>
         <Box sx={{ flexGrow: 1 }} />
         {view === 'detail' && (
@@ -391,6 +411,78 @@ const WeekPlanning = () => {
             )}
           </Paper>
           )}
+          {view === 'salles' && (() => {
+            const lines = roomGrid(week);
+            const unassigned = unassignedCounts(week);
+            return (
+              <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  Charge par salle
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Séances réservées dans chaque salle, par jour. Orange : seuil d’alerte atteint ; rouge : salle pleine.
+                </Typography>
+                {lines.length === 0 && unassigned.every((n) => n === 0) ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Aucune séance cette semaine.
+                  </Typography>
+                ) : (
+                  <Box sx={{ overflowX: 'auto' }}>
+                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 880 }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ width: '16%' }}>Salle</TableCell>
+                          {week.days.map((d) => (
+                            <TableCell key={d.date} sx={{ width: '12%' }}>
+                              {d.day.slice(0, 3)}
+                              {d.off && (
+                                <Typography variant="caption" display="block" color="warning.main">
+                                  {d.off}
+                                </Typography>
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {lines.map(({ room, days }) => (
+                          <TableRow key={room.id}>
+                            <TableCell sx={{ fontWeight: 600 }}>{room.label}</TableCell>
+                            {days.map((cells, i) => (
+                              <TableCell key={i} sx={{ verticalAlign: 'top' }}>
+                                {cells.length === 0 ? (
+                                  <Typography variant="body2" color="text.disabled">·</Typography>
+                                ) : (
+                                  cells.map((g) => (
+                                    <Typography
+                                      key={`${g.start}-${g.end}`}
+                                      variant="body2"
+                                      sx={{ fontWeight: 600, color: g.conflict ? 'error.main' : g.warning ? 'warning.main' : 'text.primary' }}>
+                                      {g.start}–{g.end} · {g.rows.length} binôme{g.rows.length > 1 ? 's' : ''}
+                                    </Typography>
+                                  ))
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                        {unassigned.some((n) => n > 0) && (
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 600, color: 'warning.main' }}>Sans salle</TableCell>
+                            {unassigned.map((n, i) => (
+                              <TableCell key={i} sx={{ color: n ? 'warning.main' : 'text.disabled' }}>
+                                {n || '·'}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                )}
+              </Paper>
+            );
+          })()}
         </>
       )}
       <RoomsDialog
