@@ -19,6 +19,7 @@ import { PAIR_STATUS } from './StudentPairs';
 import { formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
 import SessionsLog from './SessionsLog';
+import WeekPlanning from './WeekPlanning';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const formatDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
@@ -80,6 +81,7 @@ const PairsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const onSessions = location.pathname.startsWith('/binomes/seances');
+  const onPlanning = location.pathname.startsWith('/binomes/planning');
 
   const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
@@ -231,22 +233,28 @@ const PairsPage = () => {
         subtitle={
           onSessions
             ? 'Toutes les séances d’une période : horaires, émargements, signatures et comptes-rendus. Cliquez sur une séance pour voir son binôme.'
+            : onPlanning
+            ? 'Séances attendues d’une semaine, jour par jour, d’après les créneaux des binômes actifs.'
             : 'Suivi des binômes tuteur / élève : séances, heures et alertes. Cliquez sur un binôme pour voir ses comptes-rendus.'
         }
       />
       <Tabs
-        value={onSessions ? 'seances' : 'binomes'}
+        value={onSessions ? 'seances' : onPlanning ? 'planning' : 'binomes'}
         onChange={(e, v) =>
-          navigate(v === 'seances' ? '/binomes/seances' : '/binomes', {
-            state: location.state,
-          })
+          navigate(
+            v === 'seances' ? '/binomes/seances' : v === 'planning' ? '/binomes/planning' : '/binomes',
+            { state: location.state }
+          )
         }
         sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Tab value="binomes" label="Binômes" />
         <Tab value="seances" label="Séances" />
+        <Tab value="planning" label="Planning" />
       </Tabs>
       {onSessions ? (
         <SessionsLog />
+      ) : onPlanning ? (
+        <WeekPlanning />
       ) : (
         <>
           <Stack
