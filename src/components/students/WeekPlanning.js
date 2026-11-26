@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Alert, Box, Button, Chip, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -99,6 +100,8 @@ const weekLoad = (week) => {
 // Planning of one week: a block per day, one line per expected session
 const WeekPlanning = () => {
   const [from, setFrom] = useState(null);
+  // 'detail': one block per day with the pairs; 'charge': the load table only
+  const [view, setView] = useSessionState('planning.view', 'charge');
   const [week, setWeek] = useState(null);
   const [error, setError] = useState(false);
 
@@ -134,6 +137,15 @@ const WeekPlanning = () => {
         <Button size="small" variant="outlined" endIcon={<ChevronRightIcon />} onClick={() => setFrom(shift(current, 7))} disabled={!current}>
           Semaine suivante
         </Button>
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={view}
+          onChange={(e, v) => v && setView(v)}
+          aria-label="Affichage du planning">
+          <ToggleButton value="detail">Détail</ToggleButton>
+          <ToggleButton value="charge">Charge</ToggleButton>
+        </ToggleButtonGroup>
         <Box sx={{ flexGrow: 1 }} />
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
           Exporter en CSV
@@ -229,6 +241,7 @@ const WeekPlanning = () => {
               )}
             </Paper>
           ))}
+          {view === 'charge' && (
           <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               Charge de la semaine
@@ -289,6 +302,7 @@ const WeekPlanning = () => {
               </Box>
             )}
           </Paper>
+          )}
         </>
       )}
     </Box>
