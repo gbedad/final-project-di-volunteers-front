@@ -65,7 +65,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
       .catch((err) => toast.error(err.response?.data?.error || 'La salle n’a pas pu être ajoutée'));
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Gérer les salles</DialogTitle>
       <DialogContent dividers>
         {!rooms && <Typography variant="body2">Chargement…</Typography>}
@@ -78,14 +78,14 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
                 label="Site"
                 value={r.site}
                 onChange={(e) => save(r.id, { site: e.target.value })}
-                sx={{ minWidth: 130 }}>
+                sx={{ minWidth: 150 }}>
                 {sites.map((s) => (
                   <MenuItem key={s} value={s}>
                     {s}
                   </MenuItem>
                 ))}
               </TextField>
-              <Box sx={{ flexGrow: 1, width: '100%' }}>
+              <Box sx={{ flexGrow: 1, width: '100%', minWidth: 220 }}>
                 <TextField
                   key={`${r.id}-${r.name}`}
                   size="small"
@@ -105,7 +105,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
                 label="Places"
                 defaultValue={r.capacite}
                 inputProps={{ min: 1, max: 10 }}
-                sx={{ width: 96 }}
+                sx={{ width: 130 }}
                 onBlur={(e) => {
                   const v = Number(e.target.value);
                   if (v !== r.capacite) save(r.id, { capacite: v });
@@ -118,7 +118,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
                 label="Alerte dès"
                 defaultValue={r.seuil_alerte ?? ''}
                 inputProps={{ min: 1, max: 10 }}
-                sx={{ width: 110 }}
+                sx={{ width: 140 }}
                 onBlur={(e) => {
                   const raw = e.target.value.trim();
                   const v = raw === '' ? null : Number(raw);
@@ -145,7 +145,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
             ))}
           </TextField>
           <TextField size="small" fullWidth label="Nom de la salle" value={newName} onChange={(e) => setNewName(e.target.value)} />
-          <TextField size="small" type="number" label="Places" value={newCapacite} onChange={(e) => setNewCapacite(e.target.value)} inputProps={{ min: 1, max: 10 }} sx={{ width: 96 }} />
+          <TextField size="small" type="number" label="Places" value={newCapacite} onChange={(e) => setNewCapacite(e.target.value)} inputProps={{ min: 1, max: 10 }} sx={{ width: 130 }} />
           <Button variant="contained" disabled={!newName.trim() || !newSite} onClick={add}>
             Ajouter
           </Button>
