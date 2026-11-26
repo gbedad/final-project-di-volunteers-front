@@ -135,12 +135,14 @@ const unassignedCounts = (week) => week.days.map((d) => d.rows.filter((r) => r.n
 const HEAD_CELL = { color: 'text.secondary', fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.4, whiteSpace: 'nowrap' };
 const dayNumber = (s) => String(Number(s.slice(8, 10)));
 
-// Load cell: the more sessions in the slot, the deeper the green tint (the theme's success green)
-const loadCell = (n, peak) => ({
-  bgcolor: n ? alpha(green[500], 0.08 + 0.3 * (n / peak)) : 'transparent',
-  color: n ? 'text.primary' : 'text.disabled',
-  fontWeight: n ? 700 : 400,
-  fontVariantNumeric: 'tabular-nums',
+// Load card, same look as the room cards: green edge, tint deeper with the
+// number of sessions in the slot (the theme's success green)
+const loadCard = (n, peak) => ({
+  px: 1,
+  py: 0.5,
+  borderRadius: 1,
+  borderLeft: `3px solid ${green[500]}`,
+  bgcolor: alpha(green[500], 0.08 + 0.3 * (n / peak)),
 });
 
 // Slot of the room view: a small card edged by its state (red full, orange at the alert threshold)
@@ -400,7 +402,14 @@ const WeekPlanning = () => {
                   </Typography>
                 ) : (
                   <Box sx={{ overflowX: 'auto' }}>
-                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 560, '& .MuiTableCell-root': { borderColor: 'divider' } }}>
+                    <Table
+                      size="small"
+                      sx={{
+                        tableLayout: 'fixed',
+                        minWidth: 560,
+                        '& .MuiTableCell-root': { borderColor: 'divider', verticalAlign: 'top' },
+                        '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: 'action.hover' },
+                      }}>
                       <TableHead>
                         <TableRow>
                           <TableCell sx={HEAD_CELL}>Créneau</TableCell>
@@ -419,12 +428,25 @@ const WeekPlanning = () => {
                       <TableBody>
                         {load.slots.map((s) => (
                           <TableRow key={`${s.start}-${s.end}`}>
-                            <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                              {s.start}–{s.end}
+                            <TableCell sx={{ py: 1 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+                                {s.start}–{s.end}
+                              </Typography>
                             </TableCell>
                             {s.counts.map((n, i) => (
-                              <TableCell key={i} align="center" sx={loadCell(n, peak)}>
-                                {n || '–'}
+                              <TableCell key={i} sx={{ px: 0.75, py: 1 }}>
+                                {n ? (
+                                  <Box sx={loadCard(n, peak)}>
+                                    <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.3, fontVariantNumeric: 'tabular-nums' }}>
+                                      {n}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.3 }}>
+                                      séance{n > 1 ? 's' : ''}
+                                    </Typography>
+                                  </Box>
+                                ) : (
+                                  <Typography variant="body2" color="text.disabled">–</Typography>
+                                )}
                               </TableCell>
                             ))}
                           </TableRow>
