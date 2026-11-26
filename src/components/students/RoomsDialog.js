@@ -25,6 +25,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
   const [sites, setSites] = useState([]);
   const [newSite, setNewSite] = useState('');
   const [newName, setNewName] = useState('');
+  const [newCapacite, setNewCapacite] = useState(1);
 
   const load = () =>
     axios
@@ -53,9 +54,10 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
 
   const add = () =>
     axios
-      .post(`${BASE_URL}/admin/salles`, { site: newSite, name: newName })
+      .post(`${BASE_URL}/admin/salles`, { site: newSite, name: newName, capacite: Number(newCapacite) || 1 })
       .then(() => {
         setNewName('');
+        setNewCapacite(1);
         toast.success('Salle ajoutée');
         onChanged?.();
         return load();
@@ -96,6 +98,33 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
                   }}
                 />
               </Box>
+              <TextField
+                key={`cap-${r.id}-${r.capacite}`}
+                size="small"
+                type="number"
+                label="Places"
+                defaultValue={r.capacite}
+                inputProps={{ min: 1, max: 10 }}
+                sx={{ width: 96 }}
+                onBlur={(e) => {
+                  const v = Number(e.target.value);
+                  if (v !== r.capacite) save(r.id, { capacite: v });
+                }}
+              />
+              <TextField
+                key={`seuil-${r.id}-${r.seuil_alerte}`}
+                size="small"
+                type="number"
+                label="Alerte dès"
+                defaultValue={r.seuil_alerte ?? ''}
+                inputProps={{ min: 1, max: 10 }}
+                sx={{ width: 110 }}
+                onBlur={(e) => {
+                  const raw = e.target.value.trim();
+                  const v = raw === '' ? null : Number(raw);
+                  if (v !== (r.seuil_alerte ?? null)) save(r.id, { seuil_alerte: v });
+                }}
+              />
               <FormControlLabel
                 control={<Switch checked={r.active} onChange={(e) => save(r.id, { active: e.target.checked })} />}
                 label={r.active ? 'Active' : 'Inactive'}
@@ -116,6 +145,7 @@ const RoomsDialog = ({ open, onClose, onChanged }) => {
             ))}
           </TextField>
           <TextField size="small" fullWidth label="Nom de la salle" value={newName} onChange={(e) => setNewName(e.target.value)} />
+          <TextField size="small" type="number" label="Places" value={newCapacite} onChange={(e) => setNewCapacite(e.target.value)} inputProps={{ min: 1, max: 10 }} sx={{ width: 96 }} />
           <Button variant="contained" disabled={!newName.trim() || !newSite} onClick={add}>
             Ajouter
           </Button>

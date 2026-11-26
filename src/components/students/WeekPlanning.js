@@ -291,7 +291,7 @@ const WeekPlanning = () => {
                                         fullWidth
                                         displayEmpty
                                         value={r.room_id || ''}
-                                        color={r.room_conflict ? 'error' : r.needs_room ? 'warning' : 'primary'}
+                                        color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
                                         onChange={(e) => setRoom(r, e.target.value)}
                                         sx={{ fontSize: '0.85rem' }}
                                         inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
@@ -306,7 +306,12 @@ const WeekPlanning = () => {
                                       </Select>
                                       {r.room_conflict && (
                                         <Typography variant="caption" color="error" display="block">
-                                          Salle déjà prise par {r.room_conflict_with.join(', ')}
+                                          Salle pleine sur ce créneau, avec {r.room_conflict_with.join(', ')}
+                                        </Typography>
+                                      )}
+                                      {!r.room_conflict && r.room_warning && (
+                                        <Typography variant="caption" color="warning.main" display="block">
+                                          {r.room_count} binômes dans cette salle sur ce créneau : {r.room_conflict_with.join(', ')}
                                         </Typography>
                                       )}
                                     </>
