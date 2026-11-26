@@ -325,20 +325,22 @@ const WeekPlanning = () => {
                                           </MenuItem>
                                         ))}
                                       </Select>
-                                      {r.room_conflict && (
-                                        <Typography variant="caption" color="error" display="block" noWrap title={r.room_conflict_with.join(', ')}>
-                                          Salle pleine : {r.room_count} séances pour {(week.rooms || []).find((x) => x.id === r.room_id)?.capacite} places
-                                        </Typography>
-                                      )}
-                                      {!r.room_conflict && r.room_warning && (
-                                        <Typography variant="caption" color="warning.main" display="block" noWrap title={r.room_conflict_with.join(', ')}>
-                                          Salle : {r.room_count} séances en même temps
-                                        </Typography>
-                                      )}
                                     </>
                                   )}
                                 </TableCell>
-                                <TableCell>{r.remark}</TableCell>
+                                <TableCell>
+                                  {(r.room_conflict || r.room_warning) && (
+                                    <Typography
+                                      component="span"
+                                      variant="body2"
+                                      title={r.room_conflict_with.join(', ')}
+                                      sx={{ fontWeight: 600, whiteSpace: 'nowrap', color: r.room_conflict ? 'error.main' : 'warning.main' }}>
+                                      {r.room_count}/{(week.rooms || []).find((x) => x.id === r.room_id)?.capacite ?? '?'}
+                                    </Typography>
+                                  )}
+                                  {(r.room_conflict || r.room_warning) && r.remark && ' · '}
+                                  {r.remark}
+                                </TableCell>
                               </TableRow>
                             ))}
                           </React.Fragment>
