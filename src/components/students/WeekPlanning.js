@@ -273,7 +273,8 @@ const WeekPlanning = () => {
                                 <TableCell
                                   colSpan={7}
                                   sx={{ bgcolor: 'action.hover', color: 'primary.main', fontWeight: 600, fontSize: '0.78rem', py: '2px !important', borderBottom: 0 }}>
-                                  {g.start}–{g.end} · {g.rows.length} binômes sur ce créneau
+                                  {g.start}–{g.end} · {g.rows.filter((r) => r.kind !== 'pause').length} séance{g.rows.filter((r) => r.kind !== 'pause').length > 1 ? 's' : ''}
+                                  {g.rows.some((r) => r.kind === 'pause') && ` · ${g.rows.filter((r) => r.kind === 'pause').length} en pause`}
                                 </TableCell>
                               </TableRow>
                             )}
@@ -326,12 +327,12 @@ const WeekPlanning = () => {
                                       </Select>
                                       {r.room_conflict && (
                                         <Typography variant="caption" color="error" display="block" noWrap title={r.room_conflict_with.join(', ')}>
-                                          Salle pleine : {r.room_count} binômes
+                                          Salle pleine : {r.room_count} séances pour {(week.rooms || []).find((x) => x.id === r.room_id)?.capacite} places
                                         </Typography>
                                       )}
                                       {!r.room_conflict && r.room_warning && (
                                         <Typography variant="caption" color="warning.main" display="block" noWrap title={r.room_conflict_with.join(', ')}>
-                                          {r.room_count} binômes sur ce créneau
+                                          Salle : {r.room_count} séances en même temps
                                         </Typography>
                                       )}
                                     </>
