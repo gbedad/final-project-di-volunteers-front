@@ -254,12 +254,12 @@ const WeekPlanning = () => {
                   <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900 }}>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ width: '14%' }}>Horaire</TableCell>
-                        <TableCell sx={{ width: '15%' }}>Élève</TableCell>
-                        <TableCell sx={{ width: '15%' }}>Tuteur</TableCell>
+                        <TableCell sx={{ width: '13%' }}>Horaire</TableCell>
+                        <TableCell sx={{ width: '13%' }}>Élève</TableCell>
+                        <TableCell sx={{ width: '14%' }}>Tuteur</TableCell>
                         <TableCell sx={{ width: '13%' }}>Matières</TableCell>
-                        <TableCell sx={{ width: '10%' }}>Lieu</TableCell>
-                        <TableCell sx={{ width: '19%' }}>Salle</TableCell>
+                        <TableCell sx={{ width: '9%' }}>Lieu</TableCell>
+                        <TableCell sx={{ width: '24%' }}>Salle</TableCell>
                         <TableCell sx={{ width: '14%' }}>Remarque</TableCell>
                       </TableRow>
                     </TableHead>
@@ -325,13 +325,13 @@ const WeekPlanning = () => {
                                         ))}
                                       </Select>
                                       {r.room_conflict && (
-                                        <Typography variant="caption" color="error" display="block">
-                                          Salle pleine sur ce créneau, avec {r.room_conflict_with.join(', ')}
+                                        <Typography variant="caption" color="error" display="block" noWrap title={r.room_conflict_with.join(', ')}>
+                                          Salle pleine : {r.room_count} binômes
                                         </Typography>
                                       )}
                                       {!r.room_conflict && r.room_warning && (
-                                        <Typography variant="caption" color="warning.main" display="block">
-                                          {r.room_count} binômes dans cette salle sur ce créneau : {r.room_conflict_with.join(', ')}
+                                        <Typography variant="caption" color="warning.main" display="block" noWrap title={r.room_conflict_with.join(', ')}>
+                                          {r.room_count} binômes sur ce créneau
                                         </Typography>
                                       )}
                                     </>
