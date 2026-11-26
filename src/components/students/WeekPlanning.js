@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Alert, Box, Button, Chip, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import toast from 'react-hot-toast';
+import { alpha } from '@mui/material/styles';
+import { green } from '@mui/material/colors';
 import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -16,13 +18,13 @@ const KIND_LABEL = {
   pause: 'Pause',
 };
 
-// Détail / Charge in the theme's secondary colour (violet), apart from the
-// cyan confirmation buttons
-const VIOLET_TOGGLE = {
-  color: 'secondary.main',
-  borderColor: 'secondary.main',
-  '&.Mui-selected': { bgcolor: 'secondary.main', color: '#fff' },
-  '&.Mui-selected:hover': { bgcolor: 'secondary.dark' },
+// Détail / Charge / Salles in the theme's primary colour (cyan), like the
+// other buttons of the site
+const TOGGLE = {
+  color: 'primary.main',
+  borderColor: 'primary.main',
+  '&.Mui-selected': { bgcolor: 'primary.main', color: '#fff' },
+  '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
 };
 
 // Exceptional sessions and replacements stand out: coloured chip and row tint
@@ -128,6 +130,24 @@ const roomGrid = (week) =>
 // Sessions of each day without a room yet
 const unassignedCounts = (week) => week.days.map((d) => d.rows.filter((r) => r.needs_room).length);
 
+// Column headers of the load tables: small, uppercase, muted
+const HEAD_CELL = { color: 'text.secondary', fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.4, whiteSpace: 'nowrap' };
+const dayNumber = (s) => String(Number(s.slice(8, 10)));
+
+// Load cell: the more sessions in the slot, the deeper the green tint (the theme's success green)
+const loadCell = (n, peak) => ({
+  bgcolor: n ? alpha(green[500], 0.08 + 0.3 * (n / peak)) : 'transparent',
+  color: n ? 'text.primary' : 'text.disabled',
+  fontWeight: n ? 700 : 400,
+  fontVariantNumeric: 'tabular-nums',
+});
+
+// Slot of the room view: a small card edged by its state (red full, orange at the alert threshold)
+const slotCard = (t, g) => {
+  const c = g.conflict ? t.palette.error.main : g.warning ? t.palette.warning.main : t.palette.primary.main;
+  return { mb: 0.5, px: 1, py: 0.5, borderRadius: 1, borderLeft: `3px solid ${c}`, bgcolor: alpha(c, 0.08) };
+};
+
 // Planning of one week: a block per day, one line per expected session
 const WeekPlanning = () => {
   const [from, setFrom] = useState(null);
@@ -205,9 +225,9 @@ const WeekPlanning = () => {
           value={view}
           onChange={(e, v) => v && setView(v)}
           aria-label="Affichage du planning">
-          <ToggleButton value="detail" sx={VIOLET_TOGGLE}>Détail</ToggleButton>
-          <ToggleButton value="charge" sx={VIOLET_TOGGLE}>Charge</ToggleButton>
-          <ToggleButton value="salles" sx={VIOLET_TOGGLE}>Salles</ToggleButton>
+          <ToggleButton value="detail" sx={TOGGLE}>Détail</ToggleButton>
+          <ToggleButton value="charge" sx={TOGGLE}>Charge</ToggleButton>
+          <ToggleButton value="salles" sx={TOGGLE}>Salles</ToggleButton>
         </ToggleButtonGroup>
         <Box sx={{ flexGrow: 1 }} />
         {view === 'detail' && (
@@ -352,32 +372,34 @@ const WeekPlanning = () => {
               )}
             </Paper>
           ))}
-          {view === 'charge' && (
-          <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              Charge de la semaine
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Nombre de séances par créneau et par jour (pauses non comptées, sans le détail des binômes).
-            </Typography>
-            {weekLoad(week).slots.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                Aucune séance cette semaine.
-              </Typography>
-            ) : (
-              <Box sx={{ overflowX: 'auto' }}>
-                {(() => {
-                  const load = weekLoad(week);
-                  return (
-                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 560 }}>
+          {view === 'charge' && (() => {
+            const load = weekLoad(week);
+            const peak = Math.max(1, ...load.slots.flatMap((s) => s.counts));
+            return (
+              <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+                <Stack direction="row" alignItems="baseline" justifyContent="space-between" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Charge de la semaine
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Séances par créneau et par jour · pauses non comptées · sans détail des binômes
+                  </Typography>
+                </Stack>
+                {load.slots.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Aucune séance cette semaine.
+                  </Typography>
+                ) : (
+                  <Box sx={{ overflowX: 'auto' }}>
+                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 560, '& .MuiTableCell-root': { borderColor: 'divider' } }}>
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{ width: '20%' }}>Créneau</TableCell>
+                          <TableCell sx={HEAD_CELL}>Créneau</TableCell>
                           {week.days.map((d) => (
-                            <TableCell key={d.date} align="center">
-                              {d.day.slice(0, 3)}
+                            <TableCell key={d.date} align="center" sx={HEAD_CELL}>
+                              {d.day.slice(0, 3)} {dayNumber(d.date)}
                               {d.off && (
-                                <Typography variant="caption" display="block" color="warning.main">
+                                <Typography variant="caption" display="block" color="warning.main" sx={{ textTransform: 'none', fontWeight: 500 }}>
                                   {d.off}
                                 </Typography>
                               )}
@@ -386,60 +408,68 @@ const WeekPlanning = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {load.slots.map((s, idx) => (
-                          <TableRow key={`${s.start}-${s.end}`} sx={{ bgcolor: idx % 2 ? "action.hover" : "transparent" }}>
-                            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                        {load.slots.map((s) => (
+                          <TableRow key={`${s.start}-${s.end}`}>
+                            <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
                               {s.start}–{s.end}
                             </TableCell>
                             {s.counts.map((n, i) => (
-                              <TableCell key={i} align="center" sx={{ color: n ? 'text.primary' : 'text.disabled', fontWeight: n ? 600 : 400 }}>
-                                {n || '·'}
+                              <TableCell key={i} align="center" sx={loadCell(n, peak)}>
+                                {n || '–'}
                               </TableCell>
                             ))}
                           </TableRow>
                         ))}
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
+                        <TableRow sx={{ bgcolor: 'action.hover' }}>
+                          <TableCell sx={{ fontWeight: 700, borderTop: (t) => `2px solid ${t.palette.divider}` }}>Total</TableCell>
                           {load.totals.map((n, i) => (
-                            <TableCell key={i} align="center" sx={{ fontWeight: 700 }}>
+                            <TableCell key={i} align="center" sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums', borderTop: (t) => `2px solid ${t.palette.divider}` }}>
                               {n}
                             </TableCell>
                           ))}
                         </TableRow>
                       </TableBody>
                     </Table>
-                  );
-                })()}
-              </Box>
-            )}
-          </Paper>
-          )}
+                  </Box>
+                )}
+              </Paper>
+            );
+          })()}
           {view === 'salles' && (() => {
             const lines = roomGrid(week);
             const unassigned = unassignedCounts(week);
             return (
               <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  Charge par salle
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Séances réservées dans chaque salle, par jour. Orange : seuil d’alerte atteint ; rouge : salle pleine.
-                </Typography>
+                <Stack direction="row" alignItems="baseline" justifyContent="space-between" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Charge par salle
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Séances réservées par salle et par jour · orange : seuil d’alerte · rouge : salle pleine
+                  </Typography>
+                </Stack>
                 {lines.length === 0 && unassigned.every((n) => n === 0) ? (
                   <Typography variant="body2" color="text.secondary">
                     Aucune séance cette semaine.
                   </Typography>
                 ) : (
                   <Box sx={{ overflowX: 'auto' }}>
-                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 880 }}>
+                    <Table
+                      size="small"
+                      sx={{
+                        tableLayout: 'fixed',
+                        minWidth: 880,
+                        '& .MuiTableCell-root': { borderColor: 'divider', verticalAlign: 'top' },
+                        '& .MuiTableBody-root .MuiTableRow-root:hover': { bgcolor: 'action.hover' },
+                      }}>
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{ width: '16%' }}>Salle</TableCell>
+                          <TableCell sx={{ ...HEAD_CELL, width: '16%' }}>Salle</TableCell>
                           {week.days.map((d) => (
-                            <TableCell key={d.date} sx={{ width: '12%' }}>
-                              {d.day.slice(0, 3)}
+                            <TableCell key={d.date} sx={{ ...HEAD_CELL, width: '12%' }}>
+                              {d.day.slice(0, 3)} {dayNumber(d.date)}
                               {d.off && (
-                                <Typography variant="caption" display="block" color="warning.main">
+                                <Typography variant="caption" display="block" color="warning.main" sx={{ textTransform: 'none', fontWeight: 500 }}>
                                   {d.off}
                                 </Typography>
                               )}
@@ -450,19 +480,28 @@ const WeekPlanning = () => {
                       <TableBody>
                         {lines.map(({ room, days }) => (
                           <TableRow key={room.id}>
-                            <TableCell sx={{ fontWeight: 600 }}>{room.label}</TableCell>
+                            <TableCell sx={{ py: 1 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
+                                {room.name}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {room.site}
+                              </Typography>
+                            </TableCell>
                             {days.map((cells, i) => (
-                              <TableCell key={i} sx={{ verticalAlign: 'top' }}>
+                              <TableCell key={i} sx={{ px: 0.75, py: 1 }}>
                                 {cells.length === 0 ? (
-                                  <Typography variant="body2" color="text.disabled">·</Typography>
+                                  <Typography variant="body2" color="text.disabled">–</Typography>
                                 ) : (
                                   cells.map((g) => (
-                                    <Typography
-                                      key={`${g.start}-${g.end}`}
-                                      variant="body2"
-                                      sx={{ fontWeight: 600, color: g.conflict ? 'error.main' : g.warning ? 'warning.main' : 'text.primary' }}>
-                                      {g.start}–{g.end} · {g.rows.length} binôme{g.rows.length > 1 ? 's' : ''}
-                                    </Typography>
+                                    <Box key={`${g.start}-${g.end}`} sx={(t) => slotCard(t, g)}>
+                                      <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, lineHeight: 1.3, fontVariantNumeric: 'tabular-nums' }}>
+                                        {g.start}–{g.end}
+                                      </Typography>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.3 }}>
+                                        {g.rows.length} binôme{g.rows.length > 1 ? 's' : ''}
+                                      </Typography>
+                                    </Box>
                                   ))
                                 )}
                               </TableCell>
@@ -470,11 +509,11 @@ const WeekPlanning = () => {
                           </TableRow>
                         ))}
                         {unassigned.some((n) => n > 0) && (
-                          <TableRow>
+                          <TableRow sx={{ bgcolor: (t) => alpha(t.palette.warning.main, 0.08) }}>
                             <TableCell sx={{ fontWeight: 600, color: 'warning.main' }}>Sans salle</TableCell>
                             {unassigned.map((n, i) => (
-                              <TableCell key={i} sx={{ color: n ? 'warning.main' : 'text.disabled' }}>
-                                {n || '·'}
+                              <TableCell key={i} sx={{ px: 0.75, color: n ? 'warning.main' : 'text.disabled', fontWeight: n ? 700 : 400 }}>
+                                {n || '–'}
                               </TableCell>
                             ))}
                           </TableRow>
