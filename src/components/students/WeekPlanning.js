@@ -79,6 +79,23 @@ const slotGroups = (rows) => {
   return groups;
 };
 
+// Load of the week: sessions per slot and per day, without the pairs (pauses
+// left out). Slots sorted by start time.
+const weekLoad = (week) => {
+  const slots = new Map();
+  week.days.forEach((d, i) =>
+    d.rows.forEach((r) => {
+      if (r.kind === 'pause') return;
+      const key = `${r.start}-${r.end}`;
+      if (!slots.has(key)) slots.set(key, { start: r.start, end: r.end, counts: Array(7).fill(0) });
+      slots.get(key).counts[i] += 1;
+    })
+  );
+  const list = [...slots.values()].sort((a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end));
+  const totals = week.days.map((_, i) => list.reduce((n, s) => n + s.counts[i], 0));
+  return { slots: list, totals, total: totals.reduce((n, x) => n + x, 0) };
+};
+
 // Planning of one week: a block per day, one line per expected session
 const WeekPlanning = () => {
   const [from, setFrom] = useState(null);
@@ -212,6 +229,66 @@ const WeekPlanning = () => {
               )}
             </Paper>
           ))}
+          <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              Charge de la semaine
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Nombre de séances par créneau et par jour (pauses non comptées, sans le détail des binômes).
+            </Typography>
+            {weekLoad(week).slots.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                Aucune séance cette semaine.
+              </Typography>
+            ) : (
+              <Box sx={{ overflowX: 'auto' }}>
+                {(() => {
+                  const load = weekLoad(week);
+                  return (
+                    <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 560 }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ width: '20%' }}>Créneau</TableCell>
+                          {week.days.map((d) => (
+                            <TableCell key={d.date} align="center">
+                              {d.day.slice(0, 3)}
+                              {d.off && (
+                                <Typography variant="caption" display="block" color="warning.main">
+                                  {d.off}
+                                </Typography>
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {load.slots.map((s) => (
+                          <TableRow key={`${s.start}-${s.end}`}>
+                            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                              {s.start}–{s.end}
+                            </TableCell>
+                            {s.counts.map((n, i) => (
+                              <TableCell key={i} align="center" sx={{ color: n ? 'text.primary' : 'text.disabled', fontWeight: n ? 600 : 400 }}>
+                                {n || '·'}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
+                          {load.totals.map((n, i) => (
+                            <TableCell key={i} align="center" sx={{ fontWeight: 700 }}>
+                              {n}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  );
+                })()}
+              </Box>
+            )}
+          </Paper>
         </>
       )}
     </Box>
