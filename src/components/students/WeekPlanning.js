@@ -275,8 +275,8 @@ const WeekPlanning = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {load.slots.map((s) => (
-                          <TableRow key={`${s.start}-${s.end}`}>
+                        {load.slots.map((s, idx) => (
+                          <TableRow key={`${s.start}-${s.end}`} sx={{ bgcolor: idx % 2 ? "action.hover" : "transparent" }}>
                             <TableCell sx={{ whiteSpace: 'nowrap' }}>
                               {s.start}–{s.end}
                             </TableCell>
