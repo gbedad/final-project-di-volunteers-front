@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Alert, Box, Button, Chip, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import toast from 'react-hot-toast';
 import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -40,7 +41,7 @@ const shift = (s, n) => {
 
 // Rows of the week as a CSV file (opened in a spreadsheet)
 const toCsv = (week) => {
-  const head = ['Jour', 'Date', 'Début', 'Fin', 'Élève', 'Tuteur', 'Matières', 'Lieu', 'Type', 'Remarque'];
+  const head = ['Jour', 'Date', 'Début', 'Fin', 'Élève', 'Tuteur', 'Matières', 'Lieu', 'Salle', 'Type', 'Remarque'];
   const lines = [head];
   week.days.forEach((d) =>
     d.rows.forEach((r) =>
@@ -53,6 +54,7 @@ const toCsv = (week) => {
         r.tutor,
         r.subjects.join(', '),
         r.remote ? 'À distance' : r.place,
+        r.room_label || '',
         KIND_LABEL[r.kind] || '',
         r.remark,
       ])
@@ -129,6 +131,36 @@ const WeekPlanning = () => {
 
   const current = from || week?.from;
 
+  // Reloads the week without clearing the screen (after a room is chosen)
+  const refresh = () =>
+    axios
+      .get(`${BASE_URL}/admin/binomes/planning`, { params: { from: current } })
+      .then(({ data }) => setWeek(data))
+      .catch(() => toast.error('Le planning n’a pas pu être actualisé'));
+
+  // The room of one session; '' clears it. The conflicts are recomputed by
+  // the server, so the week is reloaded.
+  const setRoom = (r, value) =>
+    axios
+      .put(`${BASE_URL}/admin/session-rooms`, {
+        binome_id: r.binome_id,
+        date: r.date,
+        start_time: r.start,
+        room_id: value === '' ? null : Number(value),
+      })
+      .then(refresh)
+      .catch((err) => toast.error(err.response?.data?.error || 'La salle n’a pas pu être enregistrée'));
+
+  // The rooms of the week before, for the pairs that have one (kept when set)
+  const copyPrevious = () =>
+    axios
+      .post(`${BASE_URL}/admin/session-rooms/copy`, { from: current })
+      .then(({ data }) => {
+        toast.success(data.copied ? `${data.copied} salle${data.copied > 1 ? 's' : ''} reprise${data.copied > 1 ? 's' : ''}` : 'Rien à reprendre : aucune salle la semaine précédente');
+        return refresh();
+      })
+      .catch(() => toast.error('Les salles n’ont pas pu être reprises'));
+
   return (
     <Box>
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1} sx={{ mb: 2 }} className="no-print">
@@ -156,6 +188,11 @@ const WeekPlanning = () => {
           <ToggleButton value="charge" sx={VIOLET_TOGGLE}>Charge</ToggleButton>
         </ToggleButtonGroup>
         <Box sx={{ flexGrow: 1 }} />
+        {view === 'detail' && (
+          <Button size="small" variant="outlined" disabled={!week} onClick={copyPrevious}>
+            Reprendre les salles de la semaine précédente
+          </Button>
+        )}
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
           Exporter en CSV
         </Button>
@@ -189,15 +226,16 @@ const WeekPlanning = () => {
                 </Typography>
               ) : (
                 <Box sx={{ overflowX: 'auto' }}>
-                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 760 }}>
+                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 900 }}>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ width: '15%' }}>Horaire</TableCell>
-                        <TableCell sx={{ width: '17%' }}>Élève</TableCell>
-                        <TableCell sx={{ width: '17%' }}>Tuteur</TableCell>
-                        <TableCell sx={{ width: '16%' }}>Matières</TableCell>
-                        <TableCell sx={{ width: '14%' }}>Lieu</TableCell>
-                        <TableCell sx={{ width: '21%' }}>Remarque</TableCell>
+                        <TableCell sx={{ width: '14%' }}>Horaire</TableCell>
+                        <TableCell sx={{ width: '15%' }}>Élève</TableCell>
+                        <TableCell sx={{ width: '15%' }}>Tuteur</TableCell>
+                        <TableCell sx={{ width: '13%' }}>Matières</TableCell>
+                        <TableCell sx={{ width: '10%' }}>Lieu</TableCell>
+                        <TableCell sx={{ width: '19%' }}>Salle</TableCell>
+                        <TableCell sx={{ width: '14%' }}>Remarque</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -208,7 +246,7 @@ const WeekPlanning = () => {
                             {shared && (
                               <TableRow>
                                 <TableCell
-                                  colSpan={6}
+                                  colSpan={7}
                                   sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', fontWeight: 600, py: 0.5 }}>
                                   {g.start}–{g.end} · {g.rows.length} binômes sur ce créneau
                                 </TableCell>
@@ -238,6 +276,37 @@ const WeekPlanning = () => {
                                 <TableCell>{r.tutor}</TableCell>
                                 <TableCell>{r.subjects.join(', ')}</TableCell>
                                 <TableCell>{r.remote ? 'À distance' : r.place}</TableCell>
+                                <TableCell>
+                                  {r.remote || r.kind === 'pause' ? (
+                                    <Typography variant="body2" color="text.disabled">—</Typography>
+                                  ) : (
+                                    <>
+                                      <Select
+                                        size="small"
+                                        fullWidth
+                                        displayEmpty
+                                        value={r.room_id || ''}
+                                        color={r.room_conflict ? 'error' : r.needs_room ? 'warning' : 'primary'}
+                                        onChange={(e) => setRoom(r, e.target.value)}
+                                        sx={{ fontSize: '0.85rem' }}
+                                        inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
+                                        <MenuItem value="">
+                                          <em>{r.needs_room ? 'À définir' : 'Aucune'}</em>
+                                        </MenuItem>
+                                        {(week.rooms || []).map((x) => (
+                                          <MenuItem key={x.id} value={x.id}>
+                                            {x.label}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                      {r.room_conflict && (
+                                        <Typography variant="caption" color="error" display="block">
+                                          Salle déjà prise par {r.room_conflict_with.join(', ')}
+                                        </Typography>
+                                      )}
+                                    </>
+                                  )}
+                                </TableCell>
                                 <TableCell>{r.remark}</TableCell>
                               </TableRow>
                             ))}

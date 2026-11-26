@@ -7,6 +7,7 @@ import {
   Box,
   Chip,
   Divider,
+  IconButton,
   Link,
   MenuItem,
   Stack,
@@ -22,6 +23,7 @@ import {
 } from '@mui/x-data-grid';
 import FilterBar from '../FilterBar';
 import HistoryIcon from '@mui/icons-material/History';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import PairDialog from './PairDialog';
 import { durationLabel, formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
@@ -390,16 +392,17 @@ const SessionsLog = () => {
             </Button>
           )}
           {row.kind === 'session' && row.source === 'equipe' && manager && (
-            <Button
-              size="small"
-              sx={{ minWidth: 0, px: 0.5 }}
-              title="Corriger ce qui a été confirmé par l'équipe"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditing(row);
-              }}>
-              Modifier
-            </Button>
+            <Tooltip title="Modifier ce qui a été confirmé par l'équipe">
+              <IconButton
+                size="small"
+                aria-label="Modifier"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditing(row);
+                }}>
+                <EditOutlinedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           )}
         </Stack>
       ),

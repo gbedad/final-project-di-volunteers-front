@@ -187,6 +187,11 @@ const MyStudents = () => {
                 {s.school &&
                   [s.school.type, s.school.city].filter(Boolean).join(', ')}
               </Line>
+              <Line label="Salles des prochaines séances">
+                {(pair.rooms || [])
+                  .map((x) => `${new Date(`${x.date}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })} ${x.start_time} · ${x.room_label}`)
+                  .join(' ; ')}
+              </Line>
               <Line label="Début">{formatDate(pair.start_date)}</Line>
               {pair.note && (
                 <Line label="Message de l'association">{pair.note}</Line>
