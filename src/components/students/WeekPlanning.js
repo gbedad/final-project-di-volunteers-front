@@ -14,6 +14,15 @@ const KIND_LABEL = {
   pause: 'Pause',
 };
 
+// Détail / Charge in the theme's secondary colour (violet), apart from the
+// cyan confirmation buttons
+const VIOLET_TOGGLE = {
+  color: 'secondary.main',
+  borderColor: 'secondary.main',
+  '&.Mui-selected': { bgcolor: 'secondary.main', color: '#fff' },
+  '&.Mui-selected:hover': { bgcolor: 'secondary.dark' },
+};
+
 // Exceptional sessions and replacements stand out: coloured chip and row tint
 const KIND_COLOR = { supplementaire: 'secondary', remplacement: 'warning', pause: 'default' };
 const KIND_TINT = {
@@ -143,8 +152,8 @@ const WeekPlanning = () => {
           value={view}
           onChange={(e, v) => v && setView(v)}
           aria-label="Affichage du planning">
-          <ToggleButton value="detail">Détail</ToggleButton>
-          <ToggleButton value="charge">Charge</ToggleButton>
+          <ToggleButton value="detail" sx={VIOLET_TOGGLE}>Détail</ToggleButton>
+          <ToggleButton value="charge" sx={VIOLET_TOGGLE}>Charge</ToggleButton>
         </ToggleButtonGroup>
         <Box sx={{ flexGrow: 1 }} />
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
