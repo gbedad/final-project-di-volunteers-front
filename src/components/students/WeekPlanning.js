@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import RoomsDialog from './RoomsDialog';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -115,6 +116,7 @@ const WeekPlanning = () => {
   const [view, setView] = useSessionState('planning.view', 'charge');
   const [week, setWeek] = useState(null);
   const [error, setError] = useState(false);
+  const [roomsOpen, setRoomsOpen] = useState(false);
 
   useEffect(() => {
     setWeek(null);
@@ -195,6 +197,9 @@ const WeekPlanning = () => {
         )}
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
           Exporter en CSV
+        </Button>
+        <Button size="small" variant="outlined" onClick={() => setRoomsOpen(true)}>
+          Gérer les salles
         </Button>
         <Button size="small" variant="outlined" disabled={!week} onClick={() => window.print()}>
           Imprimer
@@ -286,7 +291,7 @@ const WeekPlanning = () => {
                                         fullWidth
                                         displayEmpty
                                         value={r.room_id || ''}
-                                        color={r.room_conflict ? 'error' : r.needs_room ? 'warning' : 'primary'}
+                                        color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
                                         onChange={(e) => setRoom(r, e.target.value)}
                                         sx={{ fontSize: '0.85rem' }}
                                         inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
@@ -301,7 +306,12 @@ const WeekPlanning = () => {
                                       </Select>
                                       {r.room_conflict && (
                                         <Typography variant="caption" color="error" display="block">
-                                          Salle déjà prise par {r.room_conflict_with.join(', ')}
+                                          Salle pleine sur ce créneau, avec {r.room_conflict_with.join(', ')}
+                                        </Typography>
+                                      )}
+                                      {!r.room_conflict && r.room_warning && (
+                                        <Typography variant="caption" color="warning.main" display="block">
+                                          {r.room_count} binômes dans cette salle sur ce créneau : {r.room_conflict_with.join(', ')}
                                         </Typography>
                                       )}
                                     </>
@@ -383,6 +393,14 @@ const WeekPlanning = () => {
           )}
         </>
       )}
+      <RoomsDialog
+        open={roomsOpen}
+        onClose={() => {
+          setRoomsOpen(false);
+          // The room choices of the week may have changed
+          if (week) refresh();
+        }}
+      />
     </Box>
   );
 };
