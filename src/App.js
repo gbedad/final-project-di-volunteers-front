@@ -217,6 +217,7 @@ function App() {
             <Route path="/tutoriel/:slug" element={<TutorialPage />} />
             <Route path="/binomes" element={<PairsPage />} />
             <Route path="/binomes/seances" element={<PairsPage />} />
+            <Route path="/binomes/planning" element={<PairsPage />} />
             <Route path="/consentement/:token" element={<ConsentPage />} />
             {/* Parent: family convention signed online (no account) */}
             <Route
