@@ -166,7 +166,7 @@ const WeekPlanning = () => {
             </b>{' '}
             du {dateLabel(week.from)} au {dateLabel(week.to)}. Séances attendues d’après les créneaux des binômes actifs : rien n’est enregistré ici.
           </Typography>
-          {week.days.map((d) => (
+          {view === 'detail' && week.days.map((d) => (
             <Paper key={d.date} variant="outlined" sx={{ mb: 2, p: 2 }}>
               <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, textTransform: 'capitalize' }}>
