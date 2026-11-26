@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import RoomsDialog from './RoomsDialog';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -115,6 +116,7 @@ const WeekPlanning = () => {
   const [view, setView] = useSessionState('planning.view', 'charge');
   const [week, setWeek] = useState(null);
   const [error, setError] = useState(false);
+  const [roomsOpen, setRoomsOpen] = useState(false);
 
   useEffect(() => {
     setWeek(null);
@@ -195,6 +197,9 @@ const WeekPlanning = () => {
         )}
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
           Exporter en CSV
+        </Button>
+        <Button size="small" variant="outlined" onClick={() => setRoomsOpen(true)}>
+          Gérer les salles
         </Button>
         <Button size="small" variant="outlined" disabled={!week} onClick={() => window.print()}>
           Imprimer
@@ -383,6 +388,14 @@ const WeekPlanning = () => {
           )}
         </>
       )}
+      <RoomsDialog
+        open={roomsOpen}
+        onClose={() => {
+          setRoomsOpen(false);
+          // The room choices of the week may have changed
+          if (week) refresh();
+        }}
+      />
     </Box>
   );
 };
