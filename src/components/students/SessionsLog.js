@@ -222,6 +222,8 @@ const SessionsLog = () => {
   );
   // Expected session confirmed by the team (call, message…)
   const [confirming, setConfirming] = useState(null);
+  // Session confirmed by the team, to correct
+  const [editing, setEditing] = useState(null);
   const manager = (() => {
     try {
       return isManager(JSON.parse(localStorage.getItem('user'))?.user?.role);
@@ -385,6 +387,18 @@ const SessionsLog = () => {
                 setConfirming(row);
               }}>
               Renseigner
+            </Button>
+          )}
+          {row.kind === 'session' && row.source === 'equipe' && manager && (
+            <Button
+              size="small"
+              sx={{ minWidth: 0, px: 0.5 }}
+              title="Corriger ce qui a été confirmé par l'équipe"
+              onClick={(e) => {
+                e.stopPropagation();
+                setEditing(row);
+              }}>
+              Modifier
             </Button>
           )}
         </Stack>
@@ -650,11 +664,15 @@ const SessionsLog = () => {
         onChanged={() => setReload((n) => n + 1)}
       />
       <ConfirmSession
-        open={!!confirming}
-        pair={confirming?.pair}
-        date={confirming?.date}
+        open={!!confirming || !!editing}
+        pair={(editing || confirming)?.pair}
+        date={(editing || confirming)?.date}
         slot={confirming?.slot}
-        onClose={() => setConfirming(null)}
+        session={editing}
+        onClose={() => {
+          setConfirming(null);
+          setEditing(null);
+        }}
         onSaved={() => setReload((n) => n + 1)}
       />
       <JotformPendingDialog
