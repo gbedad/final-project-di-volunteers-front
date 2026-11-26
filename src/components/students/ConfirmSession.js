@@ -67,7 +67,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
         attendance: null,
         duration_minutes: '',
         late: false,
-        channel: 'appel_tuteur',
+        channel: '',
         note: '',
       });
     }
@@ -184,7 +184,7 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
               select
               size="small"
               label="Comment l'avez-vous su ?"
-              value={form.channel || 'appel_tuteur'}
+              value={form.channel || ''}
               onChange={set('channel')}>
               {CHANNELS.map((c) => (
                 <MenuItem key={c.value} value={c.value}>
@@ -222,7 +222,8 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
           disabled={
             busy ||
             !form.date ||
-            !form.attendance
+            !form.attendance ||
+            !form.channel
           }
           onClick={save}>
           Enregistrer
