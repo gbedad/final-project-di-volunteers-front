@@ -47,6 +47,8 @@ const CHANNELS = [
   { value: 'appel_tuteur', label: 'Appel au tuteur' },
   { value: 'message_tuteur', label: 'Message au tuteur' },
   { value: 'famille', label: 'Contact avec la famille' },
+  { value: 'wa', label: 'Messages groupés WA' },
+  { value: 'non_renseigne', label: 'Non renseigné' },
   { value: 'autre', label: 'Autre' },
 ];
 const DURATIONS = [30, 45, 60, 75, 90, 120];
