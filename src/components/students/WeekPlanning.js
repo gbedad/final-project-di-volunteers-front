@@ -8,6 +8,7 @@ import useSessionState from '../../js/useSessionState';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import RoomsDialog from './RoomsDialog';
+import { weekToXlsx, downloadBlob } from '../../js/planningXlsx';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -237,6 +238,14 @@ const WeekPlanning = () => {
         )}
         <Button size="small" variant="contained" disabled={!week} onClick={() => download(`planning-${week.from}.csv`, toCsv(week))}>
           Exporter en CSV
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="success"
+          disabled={!week}
+          onClick={async () => downloadBlob(`planning-${week.from}.xlsx`, await weekToXlsx(week))}>
+          Exporter en Excel
         </Button>
         <Button size="small" variant="outlined" onClick={() => setRoomsOpen(true)}>
           Gérer les salles

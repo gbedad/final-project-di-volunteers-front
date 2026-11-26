@@ -25,6 +25,7 @@
     "crypto-js": "^4.1.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
+    "exceljs": "^4.4.0",
     "file-loader": "^6.2.0",
     "file-saver": "^2.0.5",
     "jsonwebtoken": "^9.0.2",
