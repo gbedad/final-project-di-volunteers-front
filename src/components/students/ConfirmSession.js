@@ -57,21 +57,39 @@ const DURATIONS = [30, 45, 60, 75, 90, 120];
 // the team knows happened. It took place, the student did not come, or there
 // was cancelled, by the student or by the tutor.
 // pair: { id, student, tutor }, date: prefilled day, slot: that day's slot
-const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
+// session (optional): a session already confirmed by the team, to correct
+const ConfirmSession = ({ open, pair, date, slot, session, onClose, onSaved }) => {
   const [form, setForm] = useState({});
   const [busy, setBusy] = useState(false);
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+    if (session) {
+      // Back from the stored "Appel au tuteur — note" to the choices
+      const [label, ...rest] = String(session.confirmation || '').split(' — ');
       setForm({
-        date: date || today(),
-        attendance: null,
-        duration_minutes: '',
-        late: false,
-        channel: '',
-        note: '',
+        date: String(session.date).slice(0, 10),
+        attendance:
+          session.attendance === 'annulé'
+            ? session.cancelled_by === 'eleve'
+              ? 'annule_eleve'
+              : 'annule_tuteur'
+            : session.attendance,
+        duration_minutes: session.duration_minutes || '',
+        late: !!session.late,
+        channel: CHANNELS.find((c) => c.label === label)?.value || '',
+        note: rest.join(' — '),
       });
+      return;
     }
-  }, [open, date]);
+    setForm({
+      date: date || today(),
+      attendance: null,
+      duration_minutes: '',
+      late: false,
+      channel: '',
+      note: '',
+    });
+  }, [open, date, session]);
   const set = (field) => (e) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
 
@@ -79,12 +97,17 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
     setBusy(true);
     try {
       const cancelledBy = CANCELLED[form.attendance];
-      await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, {
+      const body = {
         ...form,
         attendance: cancelledBy ? 'annulé' : form.attendance,
         cancelled_by: cancelledBy || null,
-      });
-      toast.success('C’est renseigné', { position: 'bottom-left' });
+      };
+      if (session) {
+        await axios.patch(`${BASE_URL}/admin/seances/${session.id}`, body);
+      } else {
+        await axios.post(`${BASE_URL}/admin/binomes/${pair.id}/seances`, body);
+      }
+      toast.success(session ? 'C’est modifié' : 'C’est renseigné', { position: 'bottom-left' });
       onSaved?.();
       onClose();
     } catch (err) {
@@ -100,7 +123,9 @@ const ConfirmSession = ({ open, pair, date, slot, onClose, onSaved }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>
-        {date
+        {session
+          ? `Modifier la séance du ${dayLabel(String(session.date).slice(0, 10))}`
+          : date
           ? `Séance du ${dayLabel(date)}${slot ? `, ${slot.startTime}–${slot.endTime}` : ''}`
           : 'Renseigner une séance'}
         <Typography variant="body2" color="text.secondary">
