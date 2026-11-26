@@ -151,15 +151,15 @@ const WeekPlanning = () => {
                 </Typography>
               ) : (
                 <Box sx={{ overflowX: 'auto' }}>
-                  <Table size="small">
+                  <Table size="small" sx={{ tableLayout: 'fixed', minWidth: 760 }}>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Horaire</TableCell>
-                        <TableCell>Élève</TableCell>
-                        <TableCell>Tuteur</TableCell>
-                        <TableCell>Matières</TableCell>
-                        <TableCell>Lieu</TableCell>
-                        <TableCell>Remarque</TableCell>
+                        <TableCell sx={{ width: '15%' }}>Horaire</TableCell>
+                        <TableCell sx={{ width: '17%' }}>Élève</TableCell>
+                        <TableCell sx={{ width: '17%' }}>Tuteur</TableCell>
+                        <TableCell sx={{ width: '16%' }}>Matières</TableCell>
+                        <TableCell sx={{ width: '14%' }}>Lieu</TableCell>
+                        <TableCell sx={{ width: '21%' }}>Remarque</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -179,19 +179,20 @@ const WeekPlanning = () => {
                             {g.rows.map((r, i) => (
                               <TableRow
                                 key={`${r.binome_id}-${r.kind}-${i}`}
-                                sx={{
+                                sx={(t) => ({
                                   opacity: r.kind === 'pause' ? 0.6 : 1,
                                   bgcolor: KIND_TINT[r.kind],
-                                  ...(shared && { '& > td:first-of-type': { borderLeft: 4, borderLeftColor: 'primary.main' } }),
-                                }}>
+                                  // Bar drawn inside the cell: no shift of the columns
+                                  ...(shared && { '& > td:first-of-type': { boxShadow: `inset 4px 0 0 ${t.palette.primary.main}` } }),
+                                })}>
                                 <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                  {shared ? '' : `${r.start}–${r.end}`}
+                                  {`${r.start}–${r.end}`}
                                   {KIND_LABEL[r.kind] && (
                                     <Chip
                                       size="small"
                                       label={KIND_LABEL[r.kind]}
                                       color={KIND_COLOR[r.kind]}
-                                      sx={{ ml: shared ? 0 : 1, fontWeight: 600 }}
+                                      sx={{ ml: 1, fontWeight: 600 }}
                                     />
                                   )}
                                 </TableCell>
