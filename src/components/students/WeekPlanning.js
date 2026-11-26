@@ -272,7 +272,7 @@ const WeekPlanning = () => {
                               <TableRow>
                                 <TableCell
                                   colSpan={7}
-                                  sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', fontWeight: 600, py: 0.5 }}>
+                                  sx={{ bgcolor: 'action.hover', color: 'primary.main', fontWeight: 600, fontSize: '0.78rem', py: '2px !important', borderBottom: 0 }}>
                                   {g.start}–{g.end} · {g.rows.length} binômes sur ce créneau
                                 </TableCell>
                               </TableRow>
