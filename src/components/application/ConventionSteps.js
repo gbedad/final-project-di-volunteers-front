@@ -241,7 +241,7 @@ const TeamFields = ({ userId, signing, onSaved, locked }) => {
   );
 };
 
-// The president signs once; her signature is then added with one click
+// The president (or her delegate) signs once; the signature is then added with one click
 const CountersignButton = ({ userId, onDone }) => {
   const [drawing, setDrawing] = useState(false);
   const [signature, setSignature] = useState(null);
@@ -637,7 +637,7 @@ const ConventionSteps = ({ userId, admin = false, onValidate }) => {
           </Typography>
         )
       ) : signedFile ? (
-        admin && signing?.i_am_president && onlineSigned ? (
+        admin && signing?.can_countersign && onlineSigned ? (
           <Stack spacing={1}>
             <Typography variant="body2">
               Votre signature sera ajoutée à la convention signée par le
@@ -651,7 +651,7 @@ const ConventionSteps = ({ userId, admin = false, onValidate }) => {
           <Typography variant="body2" color="warning.dark">
             {admin
               ? onlineSigned
-                ? 'À contresigner en ligne par la présidente : le bouton « Contresigner » apparaît ici quand Emmanuelle Berrebi ouvre cette fiche avec son compte.'
+                ? 'À contresigner en ligne par la présidente ou sa déléguée : le bouton « Contresigner » apparaît ici quand elles ouvrent cette fiche avec leur compte.'
                 : 'Convention papier : à faire signer par la présidente, puis à déposer ici.'
               : "En attente de la signature de la présidente de l'association. Vous recevrez un e-mail dès qu'elle sera disponible."}
           </Typography>
