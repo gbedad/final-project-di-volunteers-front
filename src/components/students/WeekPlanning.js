@@ -281,7 +281,11 @@ const WeekPlanning = () => {
             du {dateLabel(week.from)} au {dateLabel(week.to)}. Séances attendues d’après les créneaux des binômes actifs : rien n’est enregistré ici.
           </Typography>
           {view === 'detail' && (
-            <Paper variant="outlined" sx={{ mb: 2, p: 1.5 }} className="no-print">
+            // Stays under the top bar (fixed, about 60 to 72 px) while the sessions scroll
+            <Paper
+              variant="outlined"
+              className="no-print"
+              sx={{ mb: 2, p: 1.5, position: 'sticky', top: { xs: 60, sm: 72 }, zIndex: 5, bgcolor: 'background.paper', boxShadow: 1 }}>
               <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   Pinceau
