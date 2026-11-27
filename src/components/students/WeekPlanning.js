@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Alert, Box, Button, Chip, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import toast from 'react-hot-toast';
 import { alpha } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
@@ -159,6 +159,8 @@ const WeekPlanning = () => {
   const [week, setWeek] = useState(null);
   const [error, setError] = useState(false);
   const [roomsOpen, setRoomsOpen] = useState(false);
+  // Room painted on the sessions of the détail view: a room id, 'clear', or null
+  const [brush, setBrush] = useState(null);
 
   useEffect(() => {
     setWeek(null);
@@ -182,18 +184,28 @@ const WeekPlanning = () => {
       .then(({ data }) => setWeek(data))
       .catch(() => toast.error('Le planning n’a pas pu être actualisé'));
 
-  // The room of one session; '' clears it. The conflicts are recomputed by
-  // the server, so the week is reloaded.
-  const setRoom = (r, value) =>
-    axios
-      .put(`${BASE_URL}/admin/session-rooms`, {
-        binome_id: r.binome_id,
-        date: r.date,
-        start_time: r.start,
-        room_id: value === '' ? null : Number(value),
-      })
+  // The room of some sessions; '' clears it. Sent together, then the week is
+  // reloaded once (the conflicts are recomputed by the server).
+  const saveRooms = (rows, value) =>
+    Promise.all(
+      rows.map((r) =>
+        axios.put(`${BASE_URL}/admin/session-rooms`, {
+          binome_id: r.binome_id,
+          date: r.date,
+          start_time: r.start,
+          room_id: value === '' ? null : Number(value),
+        })
+      )
+    )
       .then(refresh)
       .catch((err) => toast.error(err.response?.data?.error || 'La salle n’a pas pu être enregistrée'));
+
+  // Paints the brush's room on these sessions (pauses and remote ones are left out)
+  const paint = (rows) => {
+    if (!brush) return toast('Choisissez une salle dans le pinceau, puis touchez les séances');
+    const targets = rows.filter((r) => !r.remote && r.kind !== 'pause');
+    if (targets.length) saveRooms(targets, brush === 'clear' ? '' : String(brush));
+  };
 
   // The rooms of the week before, for the pairs that have one (kept when set)
   const copyPrevious = () =>
@@ -268,6 +280,41 @@ const WeekPlanning = () => {
             </b>{' '}
             du {dateLabel(week.from)} au {dateLabel(week.to)}. Séances attendues d’après les créneaux des binômes actifs : rien n’est enregistré ici.
           </Typography>
+          {view === 'detail' && (
+            <Paper variant="outlined" sx={{ mb: 2, p: 1.5 }} className="no-print">
+              <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1.5}>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  Pinceau
+                </Typography>
+                {[...new Set((week.rooms || []).map((x) => x.site))].map((site) => (
+                  <Stack key={site} direction="row" alignItems="center" gap={0.5}>
+                    <Typography variant="caption" color="text.secondary">
+                      {site}
+                    </Typography>
+                    <ToggleButtonGroup size="small" exclusive value={brush} onChange={(e, v) => setBrush(v)} aria-label={`Salles ${site}`}>
+                      {week.rooms
+                        .filter((x) => x.site === site)
+                        .map((x) => (
+                          <ToggleButton key={x.id} value={x.id} sx={TOGGLE}>
+                            {x.name}
+                          </ToggleButton>
+                        ))}
+                    </ToggleButtonGroup>
+                  </Stack>
+                ))}
+                <ToggleButtonGroup size="small" exclusive value={brush} onChange={(e, v) => setBrush(v)} aria-label="Effacer la salle">
+                  <ToggleButton value="clear" sx={TOGGLE}>
+                    Effacer
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                {brush
+                  ? 'Touchez une salle de séance, ou un créneau (en-tête gris), pour l’y mettre. Touchez le pinceau à nouveau pour le lâcher.'
+                  : 'Choisissez une salle dans le pinceau, puis touchez les séances ou un créneau.'}
+              </Typography>
+            </Paper>
+          )}
           {view === 'detail' && week.days.map((d) => (
             <Paper key={d.date} variant="outlined" sx={{ mb: 2, p: 2 }}>
               <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1 }}>
@@ -303,7 +350,16 @@ const WeekPlanning = () => {
                               <TableRow>
                                 <TableCell
                                   colSpan={7}
-                                  sx={{ bgcolor: 'action.hover', color: 'primary.main', fontWeight: 600, fontSize: '0.78rem', py: '2px !important', borderBottom: 0 }}>
+                                  onClick={() => paint(g.rows)}
+                                  sx={{
+                                    bgcolor: 'action.hover',
+                                    color: 'primary.main',
+                                    fontWeight: 600,
+                                    fontSize: '0.78rem',
+                                    py: '2px !important',
+                                    borderBottom: 0,
+                                    cursor: brush ? 'pointer' : 'default',
+                                  }}>
                                   {g.start}–{g.end} · {g.rows.filter((r) => r.kind !== 'pause').length} séance{g.rows.filter((r) => r.kind !== 'pause').length > 1 ? 's' : ''}
                                   {g.rows.some((r) => r.kind === 'pause') && ` · ${g.rows.filter((r) => r.kind === 'pause').length} en pause`}
                                 </TableCell>
@@ -337,26 +393,15 @@ const WeekPlanning = () => {
                                   {r.remote || r.kind === 'pause' ? (
                                     <Typography variant="body2" color="text.disabled">—</Typography>
                                   ) : (
-                                    <>
-                                      <Select
-                                        size="small"
-                                        fullWidth
-                                        displayEmpty
-                                        value={r.room_id || ''}
-                                        color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
-                                        onChange={(e) => setRoom(r, e.target.value)}
-                                        sx={{ fontSize: '0.85rem', '& .MuiSelect-select': { py: 0.75 } }}
-                                        inputProps={{ 'aria-label': `Salle de ${r.student} le ${r.date}` }}>
-                                        <MenuItem value="">
-                                          <em>{r.needs_room ? 'À définir' : 'Aucune'}</em>
-                                        </MenuItem>
-                                        {(week.rooms || []).map((x) => (
-                                          <MenuItem key={x.id} value={x.id}>
-                                            {x.label}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                    </>
+                                    <Chip
+                                      size="small"
+                                      onClick={() => paint([r])}
+                                      color={r.room_conflict ? 'error' : r.room_warning || r.needs_room ? 'warning' : 'primary'}
+                                      variant={r.room_id ? 'filled' : 'outlined'}
+                                      label={r.room_label || (r.needs_room ? 'À définir' : 'Aucune')}
+                                      aria-label={`Salle de ${r.student} le ${r.date}`}
+                                      sx={{ maxWidth: '100%', fontSize: '0.8rem', cursor: brush ? 'pointer' : 'default' }}
+                                    />
                                   )}
                                 </TableCell>
                                 <TableCell>
