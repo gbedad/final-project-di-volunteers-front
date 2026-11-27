@@ -437,7 +437,7 @@ const WeekPlanning = () => {
                               <TableCell key={i} sx={{ px: 0.75, py: 1 }}>
                                 {n ? (
                                   <Box sx={loadCard(n, peak)}>
-                                    <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.3, fontVariantNumeric: 'tabular-nums' }}>
+                                    <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, lineHeight: 1.3, fontVariantNumeric: 'tabular-nums' }}>
                                       {n}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.3 }}>
