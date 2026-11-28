@@ -27,6 +27,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import PairDialog from './PairDialog';
 import { durationLabel, formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
+import { useFillHeight } from '../../js/useFillHeight';
 import { JotformPendingDialog } from './JotformPending';
 import ConfirmSession from './ConfirmSession';
 import { isManager } from '../../js/roles';
@@ -206,6 +207,7 @@ const Toolbar = ({ fileName }) => (
 // Every session of a period (tab "Séances" of the page "Binômes"), with
 // the sessions expected from the slots but with nothing recorded
 const SessionsLog = () => {
+  const [gridRef, gridHeight] = useFillHeight();
   const [periodKey, setPeriodKey] = useSessionState('sessions.period', 'month');
   const [custom, setCustom] = useSessionState(
     'sessions.custom',
@@ -641,7 +643,13 @@ const SessionsLog = () => {
           Jotform et Zoom
         </Link>
       </Typography>
-      <Box sx={{ height: 620, width: '100%', bgcolor: 'background.paper' }}>
+      <Box
+        ref={gridRef}
+        sx={{
+          height: gridHeight,
+          width: '100%',
+          bgcolor: 'background.paper',
+        }}>
         <DataGrid
           ignoreDiacritics
           rows={rows}

@@ -18,6 +18,7 @@ import PairDialog, { AlertChips } from './PairDialog';
 import { PAIR_STATUS } from './StudentPairs';
 import { formatHours } from './Sessions';
 import { useSessionState } from '../../js/useSessionState';
+import { useFillHeight } from '../../js/useFillHeight';
 import SessionsLog from './SessionsLog';
 import WeekPlanning from './WeekPlanning';
 
@@ -71,6 +72,7 @@ const matchesText = (p, q) => {
 
 // Every tutor / student pair, with alerts on the pairs to follow up
 const PairsPage = () => {
+  const [gridRef, gridHeight] = useFillHeight();
   const [pairs, setPairs] = useState(null);
   const [filter, setFilter] = useSessionState('pairs.filter', 'all');
   const [open, setOpen] = useState(null);
@@ -300,7 +302,13 @@ const PairsPage = () => {
               </Typography>
             }
           />
-          <Box sx={{ height: 600, width: '100%', bgcolor: 'background.paper' }}>
+          <Box
+            ref={gridRef}
+            sx={{
+              height: gridHeight,
+              width: '100%',
+              bgcolor: 'background.paper',
+            }}>
             <DataGrid
               // "lea" finds "Léa"
               ignoreDiacritics
